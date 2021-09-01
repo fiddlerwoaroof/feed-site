@@ -1,0 +1,936 @@
+<feed xmlns="http://www.w3.org/2005/Atom">
+  
+    <title>Wide Awake Developers</title>
+  
+  <link href="http://michaelnygard.com/" rel="self">
+  <link href="http://michaelnygard.com/">
+  <updated>2021-06-19T16:27:50+00:00</updated>
+  <id>http://michaelnygard.com/</id>
+  <author>
+    <name>Michael Nygard</name>
+    <email>michael.nygard@n6consulting.com</email>
+  </author>
+  <generator>Hugo -- gohugo.io</generator>
+  <entry>
+    <title type="html"><![CDATA[Counterfactuals are not Causality]]></title>
+    <link href="http://michaelnygard.com/blog/2021/06/counterfactuals-are-not-causality/">
+    <id>http://michaelnygard.com/blog/2021/06/counterfactuals-are-not-causality/</id>
+    <published>2021-06-19T16:27:50+00:00</published>
+    <updated>2021-06-19T16:27:50+00:00</updated>
+    <content type="html"><![CDATA[
+
+<p>Suppose we&rsquo;ve had a recent error with a Kubernetes cluster. As often happens with a problem in our systems, we noticed it first in terms of the visible error, which we could state as &ldquo;<strong>Builds did not complete.</strong>&rdquo; Now we want to trace backwards to figure out what happened. A common technique is the &ldquo;Five Whys&rdquo; popularized by Lean thinking. So we ask &ldquo;Why did builds not complete&rdquo; and we find &ldquo;Kubernetes could not start the pod, and the operation timed out after 1 hour.&rdquo;</p>
+
+<p>We could certainly debate whether that&rsquo;s a single &ldquo;why&rdquo; or two of them in one step, but that&rsquo;s not the key topic right now. The main thing is that this is a straightforward statement about causality. &ldquo;Pod no start&rdquo; leads directly to &ldquo;build no done.&rdquo;</p>
+
+<p>The next step in this analysis reveals that the pod would not start because a volume was full with too many files. Again, direct causality.</p>
+
+<p>The tricky bit comes next. Why was the volume full with too many files? At this point, we&rsquo;re likely to see a change in the nature of the explanation. Some variation of the following might be offered:</p>
+
+<ul>
+<li>The admin did not configure file purging.</li>
+<li>The cluster admins did not monitor for &ldquo;volume full&rdquo; conditions.</li>
+<li>The developers did not clean up files from old builds.</li>
+</ul>
+
+<p>Do you notice how all these &ldquo;causes&rdquo; are stated in the form of something that didn&rsquo;t happen? They are &ldquo;counterfactuals.&rdquo;</p>
+
+<p>A counterfactual is a statement about how the world might be different now if something had happened differently in the past. It&rsquo;s a kind of &ldquo;alternate history&rdquo; idea.</p>
+
+<p>Here&rsquo;s the rub: a counterfactual <strong>cannot</strong> be a cause. By definition the counterfactual did not happen, therefore it cannot have caused anything. Only events that actually occur can be causes of other events. Causality should be stated in a form &ldquo;Because X then Y&rdquo;. The statement &ldquo;If not X then not Y&rdquo; is not an explanation, it is a kind of wishful thinking about how the past might have unfolded differently.</p>
+
+<p>When performing Five Whys it is important to avoid this counterfactual leap. Stick to the events that actually occurred.</p>
+
+<h2 id="unlimited-counterfactuals">Unlimited Counterfactuals</h2>
+
+<p>Notice in the incident analysis I outlined earlier, there are three counterfactuals listed. Each of them independently would have been sufficient to avert the incident. But these are hardly the only three counterfactuals we could construct:</p>
+
+<ul>
+<li>We used Kubernetes for our CI cluster instead of static VMs.</li>
+<li>We use CI instead of a human working at the command line.</li>
+<li>We put code in a repository instead of directly editing files on production instances.</li>
+</ul>
+
+<p>I could go on, but you probably felt like the first three were somehow more reasonable than these three. In some way, the original set are &ldquo;closer&rdquo; to actual reality than these three. Nonetheless, I could go on constructing counterfactuals for an unlimited period of time. &ldquo;If the Earth hadn&rsquo;t been habitable then we would not be here to care about our CI builds not finishing.&rdquo; Once you start making counterfactuals, there&rsquo;s really no end to them. Again, that&rsquo;s because these are not events that happened. Only a finite number of events actually happened so the chain of causality is finite. An infinite number of things didn&rsquo;t happen so we can always find more &ldquo;missing things&rdquo; to blame.</p>
+
+<h2 id="speaking-of-blame">Speaking of Blame</h2>
+
+<p>This is also where people come into conflict when analyzing the chain of events. One person might posit a counterfactual about an event a different person or team didn&rsquo;t do. That person or team naturally bristles&ndash;it feels like they are being blamed. (And worse, being blamed for <strong>not</strong> doing something, so they are being called negligent!) They would be impelled to put forward their own counterfactual which might haul in yet another team. If the negative outcome was significant, this cloud of hypotheticals becomes a &ldquo;blamestorm&rdquo; looking to rain down on somebody. Defenses go up, and learning stops.</p>
+
+<p>Counterfactuals are the condensation nuclei for blamestorms.</p>
+
+<h2 id="using-counterfactuals-for-good">Using Counterfactuals For Good</h2>
+
+<p>The counterfactual leap indicates where people stop looking for causes and jump to thinking about solutions. Try to reformulate the counterfactual as a statement about future prevention:</p>
+
+<ul>
+<li>If we configure file purging, then this won&rsquo;t happen again</li>
+<li>If we monitor for &ldquo;volume full&rdquo; conditions, then this won&rsquo;t happen again</li>
+<li>If we clean up files from old builds, then this won&rsquo;t happen again.</li>
+</ul>
+
+<p>These are useful statements. When formulated this way, they&rsquo;re clearly talking about the future and not hypothesizing an alternate history. (You might have noticed that I also snuck in a bunch of &ldquo;we&rdquo; statements in place of the more specific attributes above.)</p>
+
+<p>As long as we remain clear that these counterfactuals are not the <strong>cause</strong> of the problem that already happened, but are changes to our reality that can prevent <strong>future</strong> occurrences, we can use them without inducing blamestorming.</p>
+
+<p>As a practical technique, during a Five Whys or post-incident review, when someone poses a counterfactual as a cause, I suggest capturing it in the forward-looking version in a parking lot of potential changes.</p>
+
+<h2 id="stepping-farther-away-from-reality">Stepping Farther Away From Reality</h2>
+
+<p>This reformulation also helps weed out the more far-fetched conterfactuals&hellip; the ones that felt kind of &ldquo;out there&rdquo; or even silly before. Let&rsquo;s try it with the second set from above:</p>
+
+<ul>
+<li>If we use static VMs instead of Kubernetes for our CI cluster, then this won&rsquo;t happen again. (Possibly true statement, though somewhat lacking in support.)</li>
+<li>If we use a human working at the command line instead of CI, then this won&rsquo;t happen again. (Probably. Humans are more adaptable and can figure out when to purge files. But there are likely to be other undesirable effects.)</li>
+<li>If we edit files directly on production instances instead of putting code in a repository, then this won&rsquo;t happen again. (Umm&hellip; definitely a case where the cure is worse than the disease!)</li>
+</ul>
+
+<p>This last one also lets me illustrate something about the counterfactuals from before. You might have felt more resistance to the second set because you were automatically thinking about negative consequences if that statement had been true. Humans are very good at hypothesizing these counterfactuals. Faced with a bad outcome, our brains spontaneously and instantly conjecture a large branching tree of alternate histories. And just as quickly, we prune that tree of those branches which we know would produce other negative effects that are <strong>worse</strong> than the outcome we had. Just imagine, &ldquo;If we provoke a nuclear war that ends civilization, then this CI build failure won&rsquo;t happen again.&rdquo;</p>
+
+<p>So when I pose a counterfactual that says &ldquo;if we edit files directly on production instances, this won&rsquo;t happen again,&rdquo; your instinctive response is to say, &ldquo;yeah, <strong>but</strong>.&rdquo; This is now thinking about two steps away from the current reality. Step 1 is to imagine the alternative history where the counterfactual had occurred. Step 2 is to extrapolate the negative outcome of the consequences of that alternative history. Sometimes we even go further steps away from reality by postulating still more counterfactuals that could compensate for the negative consequences of the first one.</p>
+
+<h2 id="conclusions">Conclusions</h2>
+
+<p>Counterfactuals don&rsquo;t say anything about what actually happened. They express wishful thinking about an alternate history where the bad event <strong>didn&rsquo;t</strong> happen. Because they represent &ldquo;events that didn&rsquo;t occur&rdquo; they cannot have caused anything. However, <strong>stating</strong> a counterfactual can trigger an unhelpful round of blamestorming. Try to reformulate counterfactuals offered as explanations for past events so you can state them as injections to prevent recurrence. Of course, you must also contemplate what other effects those injections would have!</p>
+
+<p>Watch out for the pitfall of counterfactuals when analyzing anything. It&rsquo;s a common trap for post-incident reviews, retrospectives, project post-mortems, and other cases when you need to reconstruct a chain of events.</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[&#34;Manual&#34; and &#34;Automated&#34; are just words]]></title>
+    <link href="http://michaelnygard.com/blog/2020/10/manual-and-automated-are-just-words/">
+    <id>http://michaelnygard.com/blog/2020/10/manual-and-automated-are-just-words/</id>
+    <published>2020-10-15T13:35:45-05:00</published>
+    <updated>2020-10-15T13:35:45-05:00</updated>
+    <content type="html"><![CDATA[
+
+<p>Driving down a shady road, windows down, listening to the frogs and crickets, my family was in the car talking about various stuff and things. This summer evening we happened to talk about the invention and emergence of the word &ldquo;yeet.&rdquo; I observed that it was kind of cool to have a word with a known origin and etymology, even if that was only because it was a made-up word.
+My daughter instantly responded that &ldquo;all words were made up by someone.&rdquo;</p>
+
+<p>What could I say? Of course it&rsquo;s true!</p>
+
+<p>I&rsquo;ve previously talked about the difficulty that words present. In 2015 I discussed <a href="https://www.michaelnygard.com/blog/2015/04/the-perils-of-semantic-coupling/">the perils of semantic coupling</a> that could emerge when we get fooled by nouns. The existence of a noun makes us think we understand a concept. Once we try to define a predicate to answer &ldquo;Is X an instance of Y?&rdquo; for any noun Y it becomes difficult, verging on impossible, to find a categorical statement. Instead we fall back to the Potter Stewart method.</p>
+
+<p>In <a href="https://www.michaelnygard.com/blog/2016/07/wittgenstein-and-design/">Wittgenstein and Design</a> (say that three times fast) I talked about pursuing adjectives instead of nouns as a way to carve a design space.</p>
+
+<p>Today, I want to talk about how we use words as signifiers for their semiotic content. In particular, the words &ldquo;manual&rdquo; and &ldquo;automated.&rdquo;</p>
+
+<h1 id="two-legs-good-four-legs-bad">Two-legs good, four-legs bad</h1>
+
+<p>We are now ten years into the DevOps era. Among both practitioners and adopters, there is a tendency to use &ldquo;automated&rdquo; as a pseudo-synonym (psynonym?) for &ldquo;good&rdquo; while &ldquo;manual&rdquo; stands in for &ldquo;bad.&rdquo; The trouble is that the closer you look the harder it gets to tell whether any particular thing is manual or automated!</p>
+
+<p>Suppose we are in an incident. I invoke the &ldquo;break glass&rdquo; process to ssh into a server to run a bash script. Was that manual or automated? Well, both, sort of.</p>
+
+<ul>
+<li>We are in an incident&hellip; probably initiated without human intervention based on monitoring systems that detected a triggering condition.</li>
+<li>I invoke the break glass process&hellip; wait a second. How did I even get involved? Maybe the systems notified me directly via PagerDuty. That would have no human intervention. Or maybe our operations center decided to escalate to level 3 support, and I&rsquo;m the on-call this week. In the second case, a human decided the escalation was required and clicked a button in ServiceNow. ServiceNow then used a database to contact me. Was that manual? Automated? Semi-automated?</li>
+<li>I invoke the break glass process&hellip; wait another second. Once I&rsquo;m involved, I have to bring information into my head. That information came from humans and systems. I have to then decide a course of action. I guess we&rsquo;d call that manual? (Although &ldquo;manual&rdquo; derives from Latin &ldquo;manus&rdquo; which means hand powered, not brain powered.) Invoking the break glass process is an action in a system that I trigger by entering a rationale and clicking a button.</li>
+<li>to ssh into a server&hellip; entirely facilitated by the systems.</li>
+<li>to run a bash script&hellip; does a bash script count as automated? Or is it manual because I had to invoke the script? What if there&rsquo;s no script but a wiki page with a list of commands I keystroke each time? Sounds more manual, but I&rsquo;m still invoking tools that already exist.
+At some level, everything above <a href="https://www.youtube.com/watch?v=Sr9mmsLQmYs">toggling a program</a> is automated.</li>
+</ul>
+
+<h1 id="out-of-the-morass">Out of the Morass</h1>
+
+<p>Instead of applying a blanket statement like &ldquo;manual&rdquo; or &ldquo;automated&rdquo;, we should look more closely. Specifically, what actions are being executed by which people or systems via which tools in response to which stimuli.</p>
+
+<p>When we engage with detail at that level we can begin to ask and answer more useful questions than &ldquo;is it automated&rdquo;. For example:</p>
+
+<ul>
+<li>How long does it take from the stimulus to the action? Bear in mind that <a href="https://en.wikipedia.org/wiki/Pilot-induced_oscillation">shorter is not always better</a>.</li>
+<li>What is the probability of error in performing the action? Toggling in that 1401 program&hellip; pretty high probability of error. Running a bash script&hellip; low probability of error. (But that probability rises geometrically with each argument to the script!)</li>
+<li>What judgement or decision-making is required to choose an action in response to a stimulus? As we build ever-more-powerful levers to move our systems, and particularly as we give our systems their own internal feedback loops through the control plane, we need to think of them more like cybernetic systems. (Think about PID controllers, Kalman filters, inertial models, or creating a radar track from a series of intermittent &ldquo;blips.&rdquo;)</li>
+</ul>
+
+<p>Breaking the question down this way won&rsquo;t help us answer whether something is &ldquo;automated&rdquo; or &ldquo;manual.&rdquo; But it will help us answer how likely the process is to deliver availability, stability, security; or conversely, how likely it is to amplify noise, create oscillation, or induce drag.</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Blocker? Pre-requisite.]]></title>
+    <link href="http://michaelnygard.com/blog/2020/09/blocker-pre-requisite./">
+    <id>http://michaelnygard.com/blog/2020/09/blocker-pre-requisite./</id>
+    <published>2020-09-22T10:27:07-05:00</published>
+    <updated>2020-09-22T10:27:07-05:00</updated>
+    <content type="html"><![CDATA[<p>In discussions about change in a complex system I commonly hear people object, “We can’t do that because X.”</p>
+
+<p>(That statement often follows a passive-aggressive prelude such as “That’s all well and good” or “being tactical for a moment.” Depending on your organizational culture you may also hear “That’s great in theory&hellip;” Or if your company is more aggressive-aggressive, &ldquo;Get real!&rdquo;)</p>
+
+<p>My advice is to reformulate that statement. Treat the blocker as a missing prerequisite: “In order to do that, X must be true. Let’s see what it would take.”</p>
+
+<p>At that point, you may find “We can’t do X because Y.” Keep going, turn Y into a prerequisite for X. As you continue this process, you’re building out a “future reality tree”. It is a tree of preconditions that ultimate arrive at a desirable effect.</p>
+
+<p>Now comes the really hard part. You have to scrutinize the resulting tree. I recommend using the “Categories of Legitimate Reservation” that emerged from <a href="https://www.tocinstitute.org/eliyahu-goldratt.html">Eliyahu Goldratt</a>’s work on the <a href="https://www.tocinstitute.org/theory-of-constraints.html">Theory of Constraints</a>.</p>
+
+<p>Once you’re satisfied that the tree is a true depiction of the preconditions, you need to get brutally honest and look for unintended consequences. For every precondition in your tree, ask “what <strong>other</strong> effects will result.” Those effects are <a href="https://www.michaelnygard.com/blog/2020/06/consequences-are-not-pros-or-cons/">consequences</a>. You must add those to your tree, otherwise you only consider benefits not costs or drawbacks.</p>
+
+<p>When you’re done with this tree, you need to evaluate it. Does the net result of all the consequences produce a better outcome than the situation you’re in? Are the actions needed to create the preconditions possible? Feasible?</p>
+
+<p>If you’ve truly captured the prerequisites and consequences, then people who both support the changes and dislike the changes should be able to agree on the truth of the tree. If not, you are either missing preconditions, disagree about the likelihood of the consequences, or you are working from different sets of axioms.</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Delay Induces Lamination]]></title>
+    <link href="http://michaelnygard.com/blog/2020/09/delay-induces-lamination/">
+    <id>http://michaelnygard.com/blog/2020/09/delay-induces-lamination/</id>
+    <published>2020-09-21T00:00:00+00:00</published>
+    <updated>2020-09-21T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[<p>I’ve seen a repeated pattern that plays out in many companies. Delay, or more accurately, the perception of delay induces the creation of “extra” layers in the architecture. The pattern goes like this:</p>
+
+<ol>
+<li>A component or subsystem needs to add a capability to serve some end-user need.</li>
+<li>It will take &ldquo;too long&rdquo; to implement that capability in the component. (This is where the perception part really steps in.) Maybe the team is stretched too thinly. Maybe the capability is low value relative to the rest of the pipeline and gets scheduled out in the future. Maybe the team has a lot of technical debt to contend with. Or maybe it just really does take a long time to implement in a particular layer.</li>
+<li>The requestor then moves up the call stack and looks for a component at a layer closer to the end user, so the capability can be added there. Often this means introducing a new layer between the end user and the &ldquo;slow&rdquo; component.
+This might be a kind of strategic maneuver to engulf and extinguish the other component. In a strongly political environment, you will see this play out as executives jockey for position against each other.
+It might be a good faith effort to create a new &ldquo;orchestration&rdquo; layer to bring together diverse capabilities.</li>
+<li>If the effort succeeds, there is a loss of coherence: the new layer never implements the same interface as the one it decorates. So callers must decide which layer to invoke. Behavior differs. Maybe even the data available differs.</li>
+<li>If there is more than one community of end users, they are likely to pick different layers to interact with. Legacy users may prefer to stick with calls to the lower layer, as they see only cost and no benefit to switching. Newer users may prefer the newer layer, especially if it’s interface style is more contemporary.</li>
+</ol>
+
+<p>The net result is:</p>
+
+<ul>
+<li>Increase in complexity and technical debt.</li>
+<li>Increase in &ldquo;organizational debt&rdquo; (measured by the number of teams needed to effect a user-visible change.)</li>
+<li>Customer frustration once they experience channel disparity.</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Complexity Collapse]]></title>
+    <link href="http://michaelnygard.com/blog/2020/09/complexity-collapse/">
+    <id>http://michaelnygard.com/blog/2020/09/complexity-collapse/</id>
+    <published>2020-09-20T11:53:00-05:00</published>
+    <updated>2020-09-20T11:53:00-05:00</updated>
+    <content type="html"><![CDATA[<p>There&rsquo;s a pattern I&rsquo;ve observed a few times through scientific and computing history. I think of it as &ldquo;complexity collapse&rdquo;. It&rsquo;s probably related to Kuhn&rsquo;s <a href="https://en.wikipedia.org/wiki/Paradigm_shift">paradigm shift</a>.</p>
+
+<p>The pattern starts with an approach that worked in the past. Gaps in the approach lead to accretions and additions. These restore the approach to functionality, but at the expense of added complexity.</p>
+
+<p>That added complexity at first appears preferable to rebuilding the approach from the ground up. Eventually, however, the tower of complexity becomes impossible to extend further. At this point, the field is ripe for a complexity collapse and replacement with a fundamentally different approach.</p>
+
+<p>In the realm of science, this complexity collapse has led to the most famous reformulations in history:</p>
+
+<ul>
+<li><p>Ancient astronomers assumed that the heavens were perfect. The stars were permanently fixed to a sphere, except for the &ldquo;wanderers.&rdquo; Planets and our moon, being heavenly bodies, must move in circles. The fly in the ointment was that circles alone could not explain apparent retrograde motion. Hipparchus and Ptolemy believed the explanation to be <a href="https://en.wikipedia.org/wiki/Deferent_and_epicycle">epicycles</a> &ndash; circles superimposed on circles. Eventually, Copernicus showed that the number of epicycles needed would be drastically reduced with a heliocentric model. However, further improvements in optics and measurements caused the epicycles to proliferate again.</p></li>
+
+<li><p>Kepler swept the epicycles away with a clean, simple explanation: orbits are ellipses. His three laws, derived with the aid of Tycho Brahe&rsquo;s incredibly accurate observations, described the motion of all the wanderers with a single explanation. Newton later showed the inverse square law of gravity would produce those ellipses. Newton <strong>could not have</strong> discovered the universal law of gravitation in the paradigm of epicycles.</p></li>
+
+<li><p>Near the end of the nineteenth century, physicists faced a similar tower of complexity when it came to explaning <a href="https://en.wikipedia.org/wiki/Black-body_radiation">black-body radiation</a> spectra. All the existing models for light, heat, and emission predicted much higher energy radiation at high frequencies than was actually observed. This would imply something called the &ldquo;ultraviolet catastrophe&rdquo; (which should absolutely be your next band name). It meant the night sky should be blazing with hard ultraviolet light. Not just that, but the farther you looked to the high frequency end of the spectrum, the higher the energy you would find. In other words, a black-body radiator could produce nearly infinite energy by just sitting there.</p></li>
+
+<li><p>As with the epicycles, the first response was to add adjustments to fix the ultraviolet catastrophe within existing equations of classical mechanics. Many such models were created by theorists whose names are only known to students of science history today. They all focused on adding corrective terms&ndash;based on unknown mechanisms&ndash;to the high end of the spectrum.</p></li>
+
+<li><p><a href="https://en.wikipedia.org/wiki/Max_Planck">Max Planck</a> showed instead that the entire observed spectrum could be explained with one simple law. It only required that light came in particles (later called &ldquo;photons&rdquo;) whose energy depended on their <strong>wavelength</strong> rather than their mass times velocity. Planck swept away the complexity of the old model, replaced it with a simple set of equations, and laid the foundation for quantum mechanics.</p></li>
+
+<li><p>In the Java programming world, the challenge of building data-based shared systems with HTML front ends led a collection of vendors (virtually all gone now, absorbed into either Oracle or IBM) to create the &ldquo;Java Enterprise Edition&rdquo; specifications including the notorious Enterprise JavaBeans (EJB). This built on a tower of complex specifications for remote invocation and activation, interface descriptions, several roles that didn&rsquo;t exist before (or since.) This stack could indeed allow programmers to create HTML based applications with a database hiding in the shadows.</p></li>
+
+<li><p>The Spring framework emerged as an alternative that focused instead on &ldquo;plain old Java objects&rdquo; (POJOs). It replaced complex interactions across development time, configuration time, deployment time, and run time with a simple model: objects that could be &ldquo;injected&rdquo;. Then it offered a collection of libraries that included classes useful for building the kind of applications developers needed to build.</p></li>
+</ul>
+
+<p>Admittedly, the examples from astronomy and quantum physics are more fundamental to our understanding of the universe than XML-based dependency injection. But these examples all illustrate a similar dynamic. Complexity accumulates, a new theory replaces the old one, leading to complexity collapse.</p>
+
+<p>All those examples include a common coda as well: complexity grows again!</p>
+
+<ul>
+<li><p>The elliptical orbits of Kepler and Newton work when bodies are far from very massive objects. There is a &ldquo;correction&rdquo; needed. That correction was predicted in 1915 and observed in 1919 in what may be the only planetary occultation to reach the front page of the New York Times. The corrected theory neatly explained the same simple elliptical orbits. It also predicted that Mercury, being very close to our Sun, would exhibit orbital precession because it made a simple ellipse on curved space (a geodesic ellipse.) That new theory explained the earlier results along with some new ones&hellip; but we did have to fundamentally change our view of space and time, and open the door to black holes, the twins paradox, and a host of other counterintuitive (but verified!) phenomena. Einstein&rsquo;s beautiful equation fits on a single line of one page&hellip; but it takes a stack of books on one side of you to understand the equation, and a taller stack of books on the other side to explore the incredible implications.</p></li>
+
+<li><p>Planck&rsquo;s law is simple, but nobody would make the same claim about the quantum mechanics it ushered in. The more we pursued Planck&rsquo;s implications, the weirder our universe got.</p></li>
+
+<li><p>Of Spring, many people have quoted Harvey Dent from &ldquo;The Dark Knight&rdquo;&hellip; “You either die a hero or live long enough to see yourself become the villian.”</p></li>
+</ul>
+
+<p>Today, the contradictions between quantum mechanics and general relativity lead many physicists to look for a new model. Not adjustments but a new paradigm to sweep away and unify the towers of complexity in both fields.</p>
+
+<p>In the realm of data-based applications with web-ish interfaces, complexity collapse led many to embrace Ruby on Rails or Node.js. Both ecosystems have had mini-collapses but no complete replacement, yet.</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Staggering Skeleton]]></title>
+    <link href="http://michaelnygard.com/blog/2020/09/staggering-skeleton/">
+    <id>http://michaelnygard.com/blog/2020/09/staggering-skeleton/</id>
+    <published>2020-09-19T20:09:53-05:00</published>
+    <updated>2020-09-19T20:09:53-05:00</updated>
+    <content type="html"><![CDATA[<p>We&rsquo;ve talked before about a walking skeleton. That is a fully connected, but not very functional, system that includes all the major integrations. It serves to demonstrate that <strong>anything</strong> at all can run in the expected topology.</p>
+
+<p>But some languages and frameworks ask you to get more correct to form a walking skeleton. Strongly typed languages, frameworks that require you to run from a non &ldquo;-SNAPSHOT&rdquo; library version, deployment tools that only fetch from official repositories, etc.</p>
+
+<p>On the other hand, some languages and ecosystems let you put a bunch of half-broken, mostly inconsistent crap together and it still <strong>kind of</strong> works. There&rsquo;s a good chance that the copy-and-pasted monstrosity will fall apart if you poke it with unexpected input. And it might blow up, crash, or delete the contents of your high school permanent record. But it still works just enough to say &ldquo;I can improve on it from here.&rdquo;</p>
+
+<p>This is a staggering skeleton. It could fall over at any moment, but <strong>eppur si muove</strong>.</p>
+
+<p>Depending on your background, you might view the staggering skeleton as yet another way we allow a mostly broken stack of complex, unreliable software to keep proliferating. Or you might say it makes an easier on-ramp and allows more people to contribute without forcing them through Hindley-Milner hoops.</p>
+
+<p>Either way, you can&rsquo;t deny that staggering skeletons were a big influence on the web. Early websites were a lot of copy-paste-and-modify. That&rsquo;s part of how the web grew so fast.</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Weakness Invites Competition]]></title>
+    <link href="http://michaelnygard.com/blog/2020/09/weakness-invites-competition/">
+    <id>http://michaelnygard.com/blog/2020/09/weakness-invites-competition/</id>
+    <published>2020-09-15T00:00:00+00:00</published>
+    <updated>2020-09-15T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[<p>Today, nobody wants to start up a competitor to Amazon. New ecommerce retailers aim at niche markets because Amazon is such a juggernaut and fierce competitor that it would be foolhardy to go against them.</p>
+
+<p>Those niche retailers look at Amazon as an <em>exit strategy</em> more than a competitor. Like Microsoft in the 90&rsquo;s, Amazon isn&rsquo;t the competition, they&rsquo;re the <em>environment</em> that any entrant deals with.</p>
+
+<p>Competitors emerge when they sense an opportunity to take away market share from a weakened incumbent. This starts at the periphery: a new entrant takes away a small, uninteresting, or insignificant portion of the market.</p>
+
+<p>The incumbent gradually finds themselves hemmed in by upstarts each nibbling away at their fringes.</p>
+
+<p>The upstarts will both expand the edges into areas the incumbent never realized were part of their TAM. Meanwhile the upstarts make incursions into the core.</p>
+
+<p>Eventually one or two of the upstarts will become the dominant player in the new, expanded market.</p>
+
+<p>This is the classic &ldquo;Innovator&rsquo;s Dilemma.&rdquo; It starts when the dominant player is seen as vulnerable.</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Scaffold or Straightjacket?]]></title>
+    <link href="http://michaelnygard.com/blog/2020/08/scaffold-or-straightjacket/">
+    <id>http://michaelnygard.com/blog/2020/08/scaffold-or-straightjacket/</id>
+    <published>2020-08-27T00:00:00+00:00</published>
+    <updated>2020-08-27T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[
+
+<h1 id="scaffold-or-straightjacket">Scaffold or Straightjacket?</h1>
+
+<p>Douglas Adams&rsquo; classic sci-fi comedy novel &ldquo;The Hitchhiker&rsquo;s Guide to the
+Galaxy&rdquo; opens with a bulldozer approach Arthur Dent&rsquo;s house. Since Arthur is
+still inside the house, he is naturally concerned.</p>
+
+<p>When Arthur confronts the foreman of the demolition crew, he is informed that his house is to be destroyed to make way for a highway bypass. When discussing the public notice that the local planning office had posted, they have this conversation:</p>
+
+<p>“But the plans were on display…”</p>
+
+<p>“On display? I eventually had to go down to the cellar to find them.”</p>
+
+<p>“That’s the display department.”</p>
+
+<p>“With a flashlight.”</p>
+
+<p>“Ah, well, the lights had probably gone.”</p>
+
+<p>“So had the stairs.”</p>
+
+<p>“But look, you found the notice, didn’t you?”</p>
+
+<p>“Yes,” said Arthur, “yes I did. It was on display in the bottom of a locked
+filing cabinet stuck in a disused lavatory with a sign on the door saying
+&lsquo;Beware of the Leopard&rsquo;.”</p>
+
+<p>For the record, there was no leopard.</p>
+
+<p>This is a funny moment for both the absurdity and the familiarity. Anyone who
+has interacted with a bureaucracy can recognize their experience in Arthur&rsquo;s.
+Unfortunately, we tend to attach the name <strong>process</strong> to both that kind of
+experience and a very different one.</p>
+
+<h2 id="process-as-accidental-constraint">Process as (Accidental) Constraint</h2>
+
+<p>Some processes are deliberately designed to limit or constrain the &ldquo;consumer&rdquo; of
+the process. These are the exception though.</p>
+
+<p>Most of the time, a group or department manager will create a process for how
+that particular group does its work. Where the trouble arises is that an Arthur
+Dent doesn&rsquo;t just interact with that one group. Instead, he has to deal with
+several groups that each have their own processes. Each group knows their own
+process, but probably has no view into the processes of the other groups. They
+can point Arthur from their own department to another (to go get a signed form
+of some kind of another.)</p>
+
+<p>Each group acted reasonably, but the experience <strong>from Arthur&rsquo;s point of view</strong>
+is absurd.</p>
+
+<p>As a personal anecdote, my wife is a US citizen who was born to two US parents
+in a US Army field hospital in Bangkok, Thailand. Consequently she had dual
+citizenship until age 18. At that point, the US State Department contacted her
+to declare which citizenship she intended to keep. She had to send a form back
+to that department, including a consular certificate of natural birth. Where
+would that certificate come from? The US State Department. In other words, she
+had to send a request to one office in the State Department to get a document to
+send back to another office in the State Department. For years we have joked
+that those offices are probably across the hall from each other.</p>
+
+<p>We have here what the outside observer experiences as one &ldquo;process.&rdquo; But no-one
+can tell them the entire process because there is no global designer. It is a
+piecemeal of constantly-changing internal departmental processes. Thus the whole
+picture is shrouded (the lights had gone) and there are leopards.</p>
+
+<h2 id="taiichi-ohno-s-kind-of-process">Taiichi Ohno&rsquo;s Kind of Process</h2>
+
+<p>Taiichi Ohno created what we now call the Toyota Production System. It has
+inspired decades of study in quality and rapid improvement. From TPS we have
+gained vocabulary like &ldquo;kanban&rdquo;, &ldquo;andon cord&rdquo;, and &ldquo;kaizen.&rdquo; You could get a
+Master&rsquo;s level course in process design by studying just Toyota and Waffle
+House. (The American restaurant chain.)</p>
+
+<p>One of the most eye-opening things about TPS is how they approached processes.
+Every work station had the work process printed and posted right where the work
+is done. Every process was updated almost every day. In fact, Ohno would walk
+the factory floor looking for process documents that looked aged: stained paper,
+yellowing, tears, etc. He would then ask the worker why they had not learned
+anything in such a long time. He would then ask that worker&rsquo;s manager why
+<strong>they</strong> had not learned anything. In TPS, kaizen is not a big enterprise
+initiative&hellip; it happens a thousand times a day in small groups of workers and
+their managers solving problems together.</p>
+
+<p>On a previous project, we had an XP lab full of pairing stations. We wanted all
+the pairing stations to be identical: same OS, same configuration, same IDE.
+That way any pair could take any station on any day and be productive. To make
+this work, we had a wiki page with setup instructions. Every time we needed to
+do a fresh setup, we would walk through the instructions. I wrote the initial
+instructions, but even so I walked through the instructions each time to make
+sure I incorporated improvements that other people had made. If we found errors,
+we updated the process. If we found ways to improve efficiency, we updated the
+process. In fact, the most common kind of problem came because we didn&rsquo;t do the
+process <strong>often enough</strong> so today we would probably reimage one station every
+day to make sure we kept pressure on improving that process. The consistency of
+the stations paid dividends every day because we never had contention for &ldquo;the QA
+machine&rdquo; or &ldquo;the machine with the memory card reader.&rdquo;</p>
+
+<h2 id="scaffolding-versus-straightjackets">Scaffolding versus Straightjackets</h2>
+
+<p>It&rsquo;s an unfortunate collision in the English language that both of these
+experiences have the word &ldquo;process.&rdquo;</p>
+
+<p>Taiichi Ohno&rsquo;s kind of process is a scaffolding. It supports the work and lifts
+up the worker to perform at a higher level of quality. It captures the best of
+what we&rsquo;ve learned about how to do the work so that everyone can benefit.</p>
+
+<p>Because the process is written and posted right with the work, it means that
+changing the process document <strong>actually</strong> changes the process. (As opposed to
+changing the document then holding training sessions, sending work in progress
+back to square one, and having stragglers following the old process for months.)
+In other words, they write the process down exactly so it can be changed!</p>
+
+<p>Ohno&rsquo;s processes allow the worker to improve his or her own work. The Arthur
+Dent style of process is defined by the worker <strong>for other people to follow</strong>.
+The difference is immense.</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Deleting From Databases is Not Cleanup]]></title>
+    <link href="http://michaelnygard.com/blog/2020/08/deleting-from-databases-is-not-cleanup/">
+    <id>http://michaelnygard.com/blog/2020/08/deleting-from-databases-is-not-cleanup/</id>
+    <published>2020-08-05T00:00:00+00:00</published>
+    <updated>2020-08-05T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[<p>Creating thousands or millions of entities and then deleting them does not
+return your database to its initial state.</p>
+
+<p>Queries won&rsquo;t show the deleted entities, but operational results can.</p>
+
+<p>For example, a table in an RDBMS may have extra storage segments allocated to
+it. These can generate higher I/O times until someone runs an analyze job to
+reset the table stats for the query planner. Some databases treat &ldquo;DELETE FROM
+USER&rdquo; very differently from &ldquo;TRUNCATE USER&rdquo;.</p>
+
+<p>Some non-relational DBs use tombstone records to indicate where a deleted entity
+had been. That&rsquo;s to facilitate eventual consistency when propagating the
+deletion overlaps with propagating other modifications.</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Narrow but Deep?]]></title>
+    <link href="http://michaelnygard.com/blog/2020/07/narrow-but-deep/">
+    <id>http://michaelnygard.com/blog/2020/07/narrow-but-deep/</id>
+    <published>2020-07-27T07:20:35-05:00</published>
+    <updated>2020-07-27T07:20:35-05:00</updated>
+    <content type="html"><![CDATA[<p>In &ldquo;A Philosophy of Software Design,&rdquo; (ISBN-13: 978-1732102200) John Ousterhout
+describes the ideal functional interface as &ldquo;narrow but deep.&rdquo; That is, it
+should not expose many methods or functions, but the ones it does expose should
+be powerful.</p>
+
+<p>I have mixed reactions to this principle, so I&rsquo;d like to explore some examples
+that support it and others that argue against it. Throughout this section, my
+lens is malleability.</p>
+
+<p>First, imagine a somewhat typical Java domain object with a &ldquo;broad but shallow&rdquo;
+interface. That is, it exposes getters and setters for many attributes. That
+gives it a wide surface area. The functionality provided by those methods is
+slim. One could argue (and I have) that this is no better than making the
+object&rsquo;s attributes public. It adheres to a naming convention that was created
+for 90&rsquo;s era GUI builders and the pedantic rule that members ought to be
+private.</p>
+
+<p>Thin as that Java object&rsquo;s interface is, it can still inhibit change if any of
+the members are references to other objects. A caller must navigate a graph of
+references, thereby coupling to what should be the internal structure of the
+object and preventing the object from changing those internals. (c.f. <a href="http://wiki.c2.com/?LawOfDemeter">The Law
+of Demeter</a>) I will consider this example as
+supportive of the &ldquo;Narrow but Deep&rdquo; principle, in that we see a clear failure
+mode of the contrapositive.</p>
+
+<p>Second, consider a more intelligent Java object that does not merely expose
+attributes but provides behavior beyond &ldquo;addXxxListener&rdquo; or &ldquo;addOrderLine&rdquo;. It
+likely has a wider interface, making it &ldquo;broad but deep&rdquo;. Would this object
+inhibit change? Possibly. In this case it largely depends on how much of that
+surface area any particular caller engages. The broader the object&rsquo;s interface,
+the more specialized its use becomes. A very wide interface on an object that is
+used just once indicates it is exquisitely adapted to its current usage. One
+would not expect to use it in different compositions. On the other hand, an
+object with the same wide interface might be used in multiple contexts where the
+additional breadth indicates affordances added to facilitate reuse. This style
+would be characteristic of Smalltalk or it&rsquo;s cousin Objective-C. &ldquo;Broad but
+Deep&rdquo; then sits on the border for me. I think it can work but easily becomes a
+barrier to change.</p>
+
+<p>Third, let us consider a case that we might call &ldquo;Narrow but Too Deep.&rdquo; A very
+narrow interface would be something like the Interpreter pattern from the Gang
+of Four (ISBN-13: 978-0201633610). An interpreter has basically one method
+<code>interpret</code> which takes an object that supplies instructions. Perhaps the
+argument is an AST or even a string. This is very narrow and very deep. How does
+it do on change?</p>
+
+<p>Change in the caller is very well handled. The caller can readily supply a
+different set of instructions to achieve new behavior. Change within the
+interpreter is a more complex question. Changes to the <em>implementation</em> of the
+<code>interpret</code> method are easily done. Callers have no visibility into the
+machinery of execution. Changes to the <em>instruction set</em> are more difficult.
+Addition to the instructions are easily accomplished. Forward-compatible
+modifications to the instructions are feasible (though they may or may not be
+easy.) <em>Removal</em> of instructions will be difficult. That is because callers have
+absolute freedom to construct their instructions however they like. Thus,
+narrowing the instruction set either requires an extended deprecation period for
+callers to upgrade, or it requires the ability for the interpreter&rsquo;s authors to
+change the call sites.</p>
+
+<p>When we consider those change cases together, we see that a) expansion is easy;
+b) modification is possible if it is forward compatible; and c) contraction is a
+breaking change. These are the characteristics of an interface! We have created
+a <em>new level</em> in which we&rsquo;ve defined a broad (and potentially shallow)
+interface: the instruction set. This should not surprise us&ndash;after all the
+pattern is called &ldquo;Interpreter&rdquo; so the fact that we&rsquo;ve created a new language is
+implicit in the pattern. It is the interface in that new language which becomes
+challenging to evolve.</p>
+
+<p>(Best advice about the interface in that language: you are a language designer.
+Design carefully. Be conservative about additions, because whatever you add will
+be very difficult to retract.)</p>
+
+<p>We can see this same effect with interprocess communication interfaces as well.
+HTTP offers a narrow interface: headers, a handful of methods, a URL, and a
+payload. (The headers are probably the broadest part, especially when you
+consider their mutual interactions. But most non-browser use of HTTP is
+restricted to a tiny handful of those headers.) HTTP is too narrow by itself, so
+application programmers have variously adopted XMLRPC, SOAP, REST, and GraphQL
+to provide a new level of language atop raw HTTP. Let&rsquo;s consider REST for a
+moment.</p>
+
+<p>As a new level, we should think of a collection of REST resources as a language.
+Indeed, we commonly see resource representations, URL schemas, and response
+codes defined with an interface definition language (IDL) called
+<a href="https://swagger.io/specification/">OpenAPI</a>. Looking back through previous IPC
+mechanisms, we always find some kind of IDL, whether it is called as such or
+not. That IDL in fact defines the new language level. The collection of IDLs in
+play within the boundaries of set of collaborating applications supplies the
+grammar of that specific distributed system. Perhaps this is one reason why it
+is so difficult to achieve a coherent distributed system, because the grammar is
+amalgamated from many disparate sources that lack an overall design.</p>
+
+<p>Another example of &ldquo;Broad but Too Deep&rdquo; would be SQL. If you take a hard look at
+JDBC and strip away everything that is just there to construct other JDBC
+objects, you have basically two parts: execution and introspection.
+Introspection allows Java code to examine the constructs created and consumed by
+the SQL language. Ignore that for a moment and consider execution. Executing a
+SQL statement from inside an application closely resembles executing it from a
+command line. Submit a string to the database and read the results. Most of SQL
+reduces to one method: <code>execute</code>. There are variations that serve only to bridge
+between the two language levels: batching, cached statements, query versus
+modification. I consider these to be accumulated cruft that are not the essence
+of the interface.</p>
+
+<p>Nobody, anywhere would say that using SQL from inside an application makes it
+easier to modify the system. Instead, as with our Interpreter pattern, we have
+to consider what the interface is in the new language level. That is, we must
+design the SQL interface to enhance malleability. One way to do that is to
+create views for consumers rather than having them tie directly to tables. This
+is the exact analog of programming to segregated interfaces on objects instead
+of directly engaging the objects&rsquo; full complement of methods. Elaborate joins in
+application code are the SQL equivalent to violating the Law of Demeter.</p>
+
+<p>(Ironically, I usually see this problem solved in the exact opposite way: with a
+mapping layer on the caller side that makes it <em>even easier</em> to directly couple
+to the precise table definitions.)</p>
+
+<p>We refer to the structure of tables and constraints in the database as a model,
+but we could also describe it as a grammar. We can only make statements in the
+language of the database that the grammar permits. And again, we find that it is
+easy to expand the grammar (schema), may or may not be easy to modify, and very
+difficult to contract.</p>
+
+<p>This characteristic of creating a new language level seems to pop up every time
+we make the interface at one level sufficiently narrow and deep. Then we need to
+worry about coupling and malleability of the new level.</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Consequences are not Pros or Cons]]></title>
+    <link href="http://michaelnygard.com/blog/2020/06/consequences-are-not-pros-or-cons/">
+    <id>http://michaelnygard.com/blog/2020/06/consequences-are-not-pros-or-cons/</id>
+    <published>2020-06-28T00:00:00+00:00</published>
+    <updated>2020-06-28T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[<p>I&rsquo;ve noticed a pattern in much business writing, including technical writing.
+People feel compelled to label every effect as &ldquo;pro&rdquo; or &ldquo;con&rdquo;. I think this
+springs from our primary-school training in persuasive writing. As a result,
+what should be an engineering analysis often reads like marketing copy.</p>
+
+<p>(A related effect, when writing persuasively, people tend to minimize or
+discount the effects they don&rsquo;t like. Richard Feymann <a href="http://calteches.library.caltech.edu/51/2/CargoCult.htm">advised
+students</a> to be their
+own harshest critics, to find ways to poke holes in their own arguments. It&rsquo;s
+the only way to avoid fooling yourself, he said, and you are the easiest person
+in the world for you to fool.)</p>
+
+<p>Instead, I suggest we first describe simply consequences, not benefits or
+problems. That&rsquo;s because a consequence is just a statement about how the future
+will differ from the past. It is <em>objective</em>.</p>
+
+<p>Whether you judge that consequence to be a &ldquo;pro&rdquo; or &ldquo;con&rdquo; depends entirely on
+your relationship to the change. If you perceive the change as an improvement to
+status quo then you call it a &ldquo;pro&rdquo;. If you don&rsquo;t like the version of the future
+which includes that consequence, then you call it a &ldquo;con&rdquo;. That means labelling
+a consequence as a benefit is <em>subjective</em>. It describes the relationship of you
+and the change.</p>
+
+<p>What about the changes that you don&rsquo;t particularly like or dislike? The ones
+that are neither &ldquo;pro&rdquo; nor &ldquo;con&rdquo;? Most of the time those don&rsquo;t get written down
+at all!</p>
+
+<p>(As an aside, I also see technical writeups that include a list of &ldquo;pros&rdquo; for
+the recommended solution, where each &ldquo;pro&rdquo; precisely lines up with a &ldquo;con&rdquo; of
+the current world. This always tells me the author chose the solution first,
+then stated the problem in such a way that their chosen solutions appears to be
+the best option.)</p>
+
+<p>I recommend that you begin by listing the consequences. Find all the ways that
+the future will be unlike the past, if we choose that path. Look for
+second-order effects&ndash;the consequences of the consequences.</p>
+
+<p>Look for interactions. How does this approach combine with other systems,
+processes, or people?</p>
+
+<p>As you make this list of consequences, try to avoid coloring your thoughts about
+the consequences by what your intentions are. Whether you proposed a technical
+system, a process change, or a policy difference, once the change is made your
+intentions are irrelevant. Only the resulting system state matters. Anything the
+system allows will be done regardless of whether that matches your intended
+application. Therefore, think beyond the intended outcome or purpose of your
+approach. How could this be accidentally misused? Or deliberately abused?</p>
+
+<p>Armed with this list, you will be ready to think about how the consequences
+affect you and your organization. This is when you judge whether the effect of
+those consequences creates a future that you like better than today.</p>
+
+<p>See also: <a href="https://ethicsunwrapped.utexas.edu/glossary/veil-of-ignorance">Rawl&rsquo;s Veil of Ignorance</a>, <a href="https://en.wikipedia.org/wiki/Unintended_consequences">Unintended Consequences</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Why did we stop at 2?]]></title>
+    <link href="http://michaelnygard.com/blog/2020/06/why-did-we-stop-at-2/">
+    <id>http://michaelnygard.com/blog/2020/06/why-did-we-stop-at-2/</id>
+    <published>2020-06-24T00:00:00+00:00</published>
+    <updated>2020-06-24T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[
+
+<p>In the dim reaches of Unix history, the first shell was written. It
+attached file descriptor 0 as a pipe from the TTY device to a
+process. That became &ldquo;stdin&rdquo;. File descriptor 1 is a pipe from the
+process out to the TTY. That&rsquo;s &ldquo;stdout&rdquo;. I don&rsquo;t know when FD 2 became
+&ldquo;stderr&rdquo; but it was early.</p>
+
+<p>When you write a Unix program, you don&rsquo;t have to open these file
+descriptors. They&rsquo;re opened by the parent process, before it uses
+&ldquo;exec&rdquo; to load the new program&rsquo;s code. So by the time &ldquo;main()&rdquo; is
+called in the child program, FDs 0, 1, and 2 are already connected.</p>
+
+<p>For back end services, we kind of abandoned stdout for a long time, in
+favor of logging frameworks that wrote output into files. Then we
+added log scrapers and aggregators to gather those logs on a server.</p>
+
+<p>That looked like this:</p>
+
+<ul>
+<li>Logging framework (extra dependency in codebase, impediment to
+library composition) writes to file</li>
+<li>Agent on host tails file sends to collector</li>
+<li>Collector daemon on log aggregator writes to FS there</li>
+<li>Search engine indexes logs</li>
+</ul>
+
+<p>Recently, stdout has had a bit of a renaissance with the advent of
+sidecars. Before your application starts (usually in a container now),
+the container platform connects a pipe to FD 1. The other end of that
+pipe goes to a socket which is connected to a &ldquo;sidecar&rdquo;. The sidecar
+reads from the socket and passes the data along to a log collector.</p>
+
+<p>So now instead of this linkage that requires a logging framework
+inside your application, you just use builtin functions like
+<code>printf()</code> or <code>System.out.println()</code>. You still have to format the log
+line, which might want a library function in your app. But now
+different libraries that each spit to stdout can compose nicely. We&rsquo;ll
+leave it up to the log collector and indexer to ingest different
+formats.</p>
+
+<p>This is a nice example of the general pattern of <1613d96a>.</p>
+
+<p>Let&rsquo;s pursue this idea further. What else could we simply provide to
+an application by hooking up file descriptors before executing it?</p>
+
+<h2 id="messaging-topics">Messaging Topics</h2>
+
+<p>When an application wants to use messaging, it has to include a client
+library that knows how to connect to the messaging service. That
+requires authentication so the application has to manage credentials
+to supply to the client library to connect to the messaging service.</p>
+
+<p>Those credentials are not part of the application code base, they have
+to get mixed in by some build or deployment step.</p>
+
+<p>Because the application has to include a client library, the
+application becomes specific to a particular messaging product.</p>
+
+<p>What if we said &ldquo;fd 3 and up are for messaging topics?&rdquo; Each FD could
+be bound to a topic as either input or output. The application would
+just use &ldquo;send&rdquo; and &ldquo;recv&rdquo; socket operations on those FDs. (If we used
+&ldquo;read&rdquo; and &ldquo;write&rdquo; file operations on the FD, we&rsquo;d have to figure out
+how many bytes to read. What we really want is &ldquo;a message&rdquo; as a unit.)</p>
+
+<p>It would then be the responsibility of the runtime platform to supply
+&ldquo;pipes&rdquo; that connect those FDs for the application to the actual
+messaging infrastructure. We would certainly implement that connection
+via sidecars again.</p>
+
+<p>With this approach, the application no longer needs a client
+library. The platform would be responsible to provide <em>some</em> messaging
+ability. Applications that need precise control over acknowledgements
+might not be able to use this but simple applications that don&rsquo;t worry
+about batching or distributed transactions could go a long way with
+basic send and receive operations.</p>
+
+<h2 id="databases">Databases</h2>
+
+<p>Similar situation with databases. Why do we need all kinds of specific
+wire protocols? How about a file descriptor that is connected directly
+to a database. Write to &ldquo;stddb&rdquo; and the DB gets it as a SQL statement
+or query. Read from &ldquo;stddb&rdquo; to read results.</p>
+
+<p>Now the application doesn&rsquo;t need driver libraries in it. Nor does it
+need to manage credentials. That would be part of the platform
+configuration for the application, so we&rsquo;re separating concerns in a
+different way.</p>
+
+<h2 id="other-uses">Other Uses</h2>
+
+<p>What else could we simplify if we renew the idea that a program&rsquo;s
+environment is set up by the runtime that launches the program?</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Time Emerges From Events]]></title>
+    <link href="http://michaelnygard.com/blog/2020/06/time-emerges-from-events/">
+    <id>http://michaelnygard.com/blog/2020/06/time-emerges-from-events/</id>
+    <published>2020-06-18T19:33:35-05:00</published>
+    <updated>2020-06-18T19:33:35-05:00</updated>
+    <content type="html"><![CDATA[<p>Without an event, no time passes. This may seem like an odd
+assertion. You may say, &ldquo;I can see time passing all around me!&rdquo; But
+how do you see it? Do you look at the ticking hands of a clock? In a
+mechanical clock, each tick is an event: when the tension on an
+escapement exceeds the friction between its prong and the gear, and
+the escapement knocks over to the other side with the familiar &ldquo;tick.&rdquo;
+That motion transfers to gears which torque the hands a bit further
+around.</p>
+
+<p>A digital clock? An oscillating quartz crystal resonates at a
+frequency, causing a changing voltage. That voltage feeds a
+transistor, and when the voltage is high enough the transistor feeds
+current to a counter. Transistors inside the counter flip and flop,
+eventually charging some LCD segments and discharging others.</p>
+
+<p>Events everywhere.</p>
+
+<p>Then there are the photons that bounce off the clock into your
+eyeballs. They excite your retinal neurons which fire signals to your
+brain and trigger a whole new cascade of electrochemical activity.</p>
+
+<p>Without all those events, you can&rsquo;t even perceive the current time.</p>
+
+<p>All clocks require physical interactions, whether mediated by springs
+and gears, quartz oscillators, or network packets (which arrive as
+self-propagating excitations of the electromagnetic field.)</p>
+
+<p>What about computers? How do they understand time? Let&rsquo;s start with
+the easy case of a physical machine like a laptop or desktop machine.</p>
+
+<p>Inside the computer is an oscillator, just like in your digital
+clock. It may be a piezo-electric quartz oscillator, or it may be an
+&ldquo;LC oscillator&rdquo; (a capacitor and an inductor.) That oscillator emits a
+voltage to a clock circuit in your CPU which increments a counter. A
+program executing on that CPU can run an instruction like <code>RDTSC</code> to
+get that counter value. Your operating system gives the impression of
+multiple simultaneous programs by generating an interrupt every so
+often, which makes the CPU stop what it&rsquo;s doing and go execute
+something else. Physical interactions all over the place! There&rsquo;s the
+mechanical vibration of the crystal, or the back-and-forth of electric
+to magnetic field in the LC oscillator. In the CPU, the transistors
+flip on and off shuttling electrons around.</p>
+
+<p>What about a virtual machine? It doesn&rsquo;t have an oscillator, but the
+underlying host machine does. So the VM can send an I/O instruction to
+ask the &ldquo;hypervisor&rdquo; what it&rsquo;s clock says. Or, after waking up the
+virtual machine, the hypervisor can just sent an I/O packet to the VM
+with the current time. More events: all the physical interaction of
+the physical host&rsquo;s clock, plus the electron-shuffling of I/O to the
+VM.</p>
+
+<p>If you were to somehow stop all those physical interactions, time
+would not pass.</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Reading List]]></title>
+    <link href="http://michaelnygard.com/blog/2020/04/reading-list/">
+    <id>http://michaelnygard.com/blog/2020/04/reading-list/</id>
+    <published>2020-04-27T08:36:55-05:00</published>
+    <updated>2020-04-27T08:36:55-05:00</updated>
+    <content type="html"><![CDATA[<h1>​Architecture​ &amp; Development<br/></h1>
+<h2>Require​d Reading<br/></h2>
+<p>
+</p>
+<ul>
+   <li>​​<a href="http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions">Architecture Decision Records</a>​<br/></li>
+   <li>
+      <a href="https://c4model.com/">C4 Model​</a>&#160;(Note: we will only use the first 3 C&#39;s.)<br/></li>
+   <li>
+      <a href="https://itrevolution.com/book/accelerate/">Accelerate​</a><br/></li>
+   <li>​​​​​<a href="https://medium.com/wardleymaps">Wardley Maps</a>​<br/></li>
+   <li>
+      <a href="https://medium.com/%40adrianco/failure-modes-and-continuous-resilience-6553078caad5">Failure Modes and Continuous Resilience</a><br/></li>
+</ul>
+<p>
+</p>
+<h2>Recomm​ended&#160;Reading<br/></h2>
+<ul>
+   <li>
+      <a href="https://www.goodreads.com/book/show/6278270-the-principles-of-product-development-flow">The Principles of Product Development Flow​</a></li>
+   <li>
+      <a href="https://www.amazon.com/Software-Architecture-Practice-3rd-Engineering/dp/0321815734">Software Architecture in Practice</a><br/></li>
+   <li>
+      <a href="https://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215/ref=pd_sbs_14_1/131-8203722-8537424?_encoding=UTF8&amp;pd_rd_i=0321125215&amp;pd_rd_r=758241ac-8153-11e9-b9be-2339e3b9437a&amp;pd_rd_w=S5SL3&amp;pd_rd_wg=7Db86&amp;pf_rd_p=588939de-d3f8-42f1-a3d8-d556eae5797d&amp;pf_rd_r=BM0852ZW5EY2V17WMXKX&amp;psc=1&amp;refRID=BM0852ZW5EY2V17WMXKX">Domain-Driven Design</a><br/></li>
+   <ul>
+   </ul>
+   <li>​<a href="https://www.alibris.com/Data-and-Reality-William-Kent/book/1492738">Data and Reality, 2ed</a>&#160;(Note, the 3rd edition is not as good. Best to stick with 2nd edition.)<br/></li>
+   <li>
+      <a href="https://itrevolution.com/book/the-phoenix-project/">The Phoenix Project</a>&#160;- A novel about IT transformation with a devops flavor.<br/></li>
+   <li>​<a href="https://itrevolution.com/the-unicorn-project/">The Unicorn Project​</a> - A followup to the Phoenix Project that looks more directly&#160;at development.<br/></li>
+   <li>
+      <a href="https://www.goodreads.com/book/show/8217748-pattern-oriented-software-architecture-volume-1-a-system-of-patterns">Pattern Oriented Software Architecture</a> - Volumes 1, 3, and 4.<br/></li>
+   <li>
+      <a href="https://pragprog.com/book/mnee2/release-it-second-edition">Release It!</a> - Design and Deploy Production-Ready Software<br/></li>
+</ul>
+<h2>Suggested Reading</h2>
+<ul>
+   <li>Event Sourcing at Nordstrom</li>
+   <ul>
+      <li>
+         <a href="https://medium.com/tech-at-nordstrom/adventures-in-event-sourced-architecture-part-1-cc21d06187c7">Part 1</a><br/></li>
+      <li>
+         <a href="https://medium.com/tech-at-nordstrom/event-sourcing-at-nordstrom-part-2-f64c416d1885">Part 2​</a><br/></li>
+   </ul>
+   <li>Enterprise Architecture as Strategy<br/></li>
+   <li>
+      <a href="https://www.goodreads.com/book/show/604529.Software_by_Numbers">Software by Numbers</a> - Discusses crucial concept of &quot;marketable features&quot; and &quot;architecture elements&quot; to support them. Lays out a method for incrementally delivering architecture as we incrementally deliver features.<br/></li>
+   <li>
+      <a href="http://markburgess.org/blog_cap.html">CAP and Relativity</a><br/></li>
+   <li>​​​<a href="http://curtclifton.net/papers/MoseleyMarks06a.pdf">Out of the Tar Pit</a> - The essential paper on essential versus accidental complexity. We are drowning in accidental complexity.<br/></li>
+   <ul>
+   </ul>
+   <li>​<a href="https://blog.jessitron.com/2015/06/06/ultratestable-coding-style/">Ultratestable Coding​</a>​​<br/></li>
+   <li>
+      <a href="https://martinfowler.com/articles/domain-oriented-observability.html">Domain-Oriented Observability</a><br/></li>
+   <li>
+      <a href="http://www.donellameadows.org/wp-content/userfiles/Leverage_Points.pdf">Leverage Points: Places to Intervene in a System</a> - Donella Meadows&#39;&#160;cornerstone paper.<br/></li>
+   <li>
+      <a href="https://www.goodreads.com/book/show/34459.Metaphors_We_Live_By">Metaphors We Live By​</a><br/></li>
+</ul>]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Shared Mutable Team State]]></title>
+    <link href="http://michaelnygard.com/blog/2019/03/shared-mutable-team-state/">
+    <id>http://michaelnygard.com/blog/2019/03/shared-mutable-team-state/</id>
+    <published>2019-03-21T08:36:55-05:00</published>
+    <updated>2019-03-21T08:36:55-05:00</updated>
+    <content type="html"><![CDATA[
+
+<h1 id="shared-state">Shared State</h1>
+
+<p>When programming distributed systems, the hardest kind of data to manage is shared mutable state. It requires some kind of synchronization between writers to avoid missed updates. And, after changes, it requires some kind of mechanism to restore coherence between readers.</p>
+
+<p>I previously wrote about that idea of a <a href="/blog/2018/01/coherence-penalty-for-humans/">coherence penalty</a> as it applies to humans. Following those lines, we might regard the system of development teams in an organization as its own distributed system. Teams pass messages.  Both sides must understand the semantics. Packets get lost. Nodes disappear.</p>
+
+<p>Within that framework, we can consider the same dimensions of state as we would with a distributed computing system:</p>
+
+<ol>
+<li>Local, immutable state. Easy.</li>
+<li>Local, mutable state. Relatively easy to manage.</li>
+<li>Shared, immutable state. Essentially write-once. This is a send-only (unicast or broadcast) item that doesn&rsquo;t require further synchronization. (But see my note later about the time dimension.)</li>
+<li>Shared, mutable state. Both synchronization and coherence penalties apply here.</li>
+</ol>
+
+<p>So what would constitute shared mutable state between teams?</p>
+
+<h2 id="mutable-state-for-humans">Mutable State for Humans</h2>
+
+<p>Teams and the humans on the teams carry around an understanding of how the system works. That definitely constitutes mutable state.</p>
+
+<p>I think that the <em>metadata</em> used by the software also constitutes shared state. It may be mutable or immutable. More about that shortly.</p>
+
+<p>The software these teams create has shared mutable state of its own. That would be data that the software creates and reads. The data may be at rest in a database or it may be in motion, in the form of messages being passed around.</p>
+
+<p>For the teams that create the software, however, the shared state is the protocol or schema definition. When those change, synchronization and coherence mechanisms are required. To some extent, this is just a consequence of <a href="https://en.wikipedia.org/wiki/Conway's_law">Conway&rsquo;s Law</a>, but it&rsquo;s taken me ten years to understand it.</p>
+
+<h2 id="consequences-of-shared-state">Consequences of Shared State</h2>
+
+<p>For teams to move quickly and independently, we want to minimize the synchronization and coherence delays between teams, in exactly the same way we would do when making the software itself more scalable. So we want to reduce the amount of shared, mutable metadata across team boundaries.</p>
+
+<p>Some corollaries.</p>
+
+<h3 id="less-shared-metadata-means-less-penalties">Less Shared Metadata Means Less Penalties</h3>
+
+<p>Every API has a schema. That means every novel API becomes a new piece of shared state. If you expect to evolve that API, you are planning to mutate the state. Find out if there will be multiple writers!</p>
+
+<p>Where possible, favor a new implementation of an existing API to reduce the amount of state involved. Consider using standard media types and representations, or creating local standards. The time spent creating the standard definitely counts as a synchronization delay, but at least it is explicitly recognized rather than buried in Jira tickets. Also, this time spent creating the standard may cause you to create a better definition that won&rsquo;t need to change as much. Thus you trade a larger early penalty for repeated penalties later.</p>
+
+<p>Integration via database table maximizes the need for concurrent mutation of the schema. This is why we&rsquo;ve come to believe that we should avoid such integration. But again, there may be a place to use it effectively, so long as we recognize the effect on our team-scalability.</p>
+
+<h3 id="immutable-metadata">Immutable Metadata</h3>
+
+<p>Shared, immutable data allows consuming software to scale better by avoiding propagation delays. Shared, immutable data also benefits from caching and can use a publication model.</p>
+
+<p>The same goes for teams. API or schema definitions that never change only require publication. But do they allow for change? Yes, with some constraints.</p>
+
+<p>If every change is strictly additive then we can consider the &ldquo;publication date&rdquo; of an updated protocol definition to be part of the protocol&rsquo;s name. Thus, it isn&rsquo;t a revision of the old protocol, but rather a new protocol entirely that derives from the old one without replacing or invalidating it.</p>
+
+<p>For instance, the existance of HTTP/2 does not mean that HTTP/1.1 no longer exists.</p>
+
+<p>Likewise, you may create a new API definition under a new name. As long as you continue supporting the old definition, then you have not mutated the old shared state, you&rsquo;ve just created a new piece of immutable shared data.</p>
+
+<p>The technology we use doesn&rsquo;t make it easy to maintain multiples of some shared state. For example, RDBMSs have no way to express the idea that the new schema is a copy of the old schema with an extra table. Not only is their data model all about &ldquo;update in place&rdquo; but their metadata is also &ldquo;update in place.&rdquo; Similarly, most of our frameworks for writing APIs are too explicit about routes in URLs. They bake in URL parts like &ldquo;/api/v1&rdquo; in every route so it is hard to say that &ldquo;v3&rdquo; is &ldquo;v2&rdquo; with some changes, and &ldquo;v2&rdquo; is &ldquo;v1&rdquo; with some changes.</p>
+
+<h3 id="consider-structuring-teams-around-shared-state">Consider Structuring Teams Around Shared State</h3>
+
+<p>This is the dual of Conway&rsquo;s Law. One way to decide team boundaries is around interfaces. That is, set up your teams such that there is a team boundary everywhere you want an interface.</p>
+
+<p>That interface definition is shared state which may be mutable. So, consider also drawing team boundaries to maximize ownership over that state. Transform it from shared state to private state and the rate of mutation matters less. Of course, as soon as you draw those new lines you may have created new interfaces, so look carefully for team designs that reduce the <em>global</em> amount of shared mutable state.</p>
+
+<p>If you follow that approach when considering all the different interfaces you must negotiate, then everything gets sucked into a single gigantic team. I think this is why there&rsquo;s a kind of &ldquo;gravitational&rdquo; attraction that tries to pull interacting pieces of software into one mass.</p>
+
+<p>Maybe it&rsquo;s like the life of a star. The life of a star is the unsteady conflict betwee gravity and pressure. Gravity tries to collapse the star, which creates fusion. Fusion makes pressure which holds the star up from collapse.</p>
+
+<p>In software, shared mutable state at interface boundaries plays the role of gravity. Taken to the limit you get monoliths. Communciation overhead and coherence penalties (scaling quadratically with team size) act like pressure. Taken to their limit you get pico-services with solo owners. Rules like the two-pizza team are meant to impose a constraint via force majure.</p>
+
+<h2 id="more-to-explore">More to Explore</h2>
+
+<p>Some of what we know from fallible message-passing networks can extend to the system that creates the software systems. But we must also keep in mind that people have resilience mechanisms that computers lack. &ldquo;Hey, did you get my email?&rdquo; actually works with humans. Humans can also switch from discussing their shared state (say, a protocol definition) to negotiating a new meta-model for that shared state (the meta-meta-model for the data the software will pass.) Software systems cannot renegotiate their protocols dynamically.</p>
+
+<p>There may be more insight available from looking at team and organizational structure as a distributed system.</p>
+]]></content>
+  </entry>
+</feed>

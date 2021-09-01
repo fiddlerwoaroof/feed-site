@@ -1,0 +1,656 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"> <channel> <title>(proclaim λ)</title> <link>//blog.macrolet.net</link> <atom:link href="//blog.macrolet.net/rss.xml" rel="self" type="application/rss+xml"/> <language>en-us</language> <pubDate>Mon, 22 Mar 2021 21:24:56 GMT</pubDate> <item> <title>How to use Stylus to stay sane</title> <link>//blog.macrolet.net/posts/How-to-use-Stylus-to-stay-sane.html</link> <pubDate>2021-03-22 21:15:07+01:00</pubDate> <author>Olof-Joachim Frahm</author> <guid isPermaLink="true">//blog.macrolet.net/posts/How-to-use-Stylus-to-stay-sane.html</guid> <category><![CDATA[ no-ads ]]></category> <description><![CDATA[ <p><a href="https://github.com/openstyles/stylus" >Stylus</a> (formerly known as
+Stylish) is a browser extension to apply custom CSS stylesheets to any
+website you might want to alter.  This a fantastic capability, which
+allows you to remove unnecessary clutter and otherwise give control back
+to you, the user.</p>
+
+<p>Let's walk through this using the Twitter website as an example.</p>
+
+<p>As of 2021 you'll normally see a &quot;Trends&quot; and &quot;Who to follow?&quot; block on
+the right sight of the desktop version of the page, assuming enough
+screen space is available.  You might want to skip these and by that,
+focus more on the actual content of the accounts you're following:</p>
+
+<p><img src="https://macrolet.net/data/twitter-side-bar.png" alt="Picture of inspector showing the Twitter homepage" /></p>
+
+<p>Now how do you achieve this goal?  For one, you might download a
+pre-made stylesheet, or install a browser extensions, or use a custom
+script (say, via Greasemonkey).</p>
+
+<p>However, Stylish makes it very low effort to filter out unwanted content
+yourself.  (Later we will see some other tools (like <a href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/" >uBlock
+Origin</a>),
+which are less powerful in some ways, but can accomplish a subset of
+what we're doing here with perhaps greater speed.)</p>
+
+<p>Unfortunately, Twitter doesn't like you enough to use unminified and
+unobfuscated CSS rules, therefore what you end up with in the inspector
+is something like this:</p>
+
+<p><img src="https://macrolet.net/data/twitter-css-class-names.png" alt="Picture of inspector showing the CSS class names of the Twitter homepage" /></p>
+
+<p>Not to worry though, using the &quot;Copy &gt; CSS Selector&quot; option allows us to
+get a matching selector that we can then paste into the User Styles
+editor:</p>
+
+<p><img src="https://macrolet.net/data/twitter-inspector-copy-css.png" alt="Picture of inspector showing &quot;Copy &gt; CSS Selector&quot; option" /></p>
+
+<p>Since we're at it, let's do the same for the other two elements, but
+let's leave the search option, just in case:</p>
+
+<p><img src="https://macrolet.net/data/twitter-user-styles-rules.png" alt="Picture of inspector showing &quot;Copy &gt; CSS Selector&quot; option" /></p>
+
+<pre><code>.r-1uhd6vh:nth-child(3), .r-1uhd6vh:nth-child(4), .r-1niwhzg:nth-child(5) {
+    display: none;
+}</code></pre>
+
+<p>Once saved, the homepage greets us with plenty empty and unobstrusive
+space.  Much better.</p>
+ ]]></description> </item><item> <title>Capturing JVM TLS traffic for SBT</title> <link>//blog.macrolet.net/posts/Capturing-JVM-TLS-traffic-for-SBT.html</link> <pubDate>2020-04-22 21:20:20+02:00</pubDate> <author>Olof-Joachim Frahm</author> <guid isPermaLink="true">//blog.macrolet.net/posts/Capturing-JVM-TLS-traffic-for-SBT.html</guid> <category><![CDATA[ jvm ]]></category><category><![CDATA[ sbt ]]></category> <description><![CDATA[ <p>Today I've had to dig deeper into some problem authenticating against an
+HTTPS API.  This client was sending Basic Authentication information
+following a 3XX redirect, which then would make the second server (well,
+S3 really) return a 400 Bad Request, since it's refusing to deal with
+more than one authentication method at the same time.</p>
+
+<p>This is all and good, but debugging what was actually being sent is a
+little bit more difficult if <code>curl</code> is not the method of choice.</p>
+
+<p>Instead I found the
+<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/jsse/ReadDebug.html" ><code>-Djavax.net.debug=all</code></a>
+option for the JVM.  This will make it dump a lot of information
+throughout a connection.  Mostly that's already enough to debug the
+issue, since a hexdump of the HTTP traffic is included.  On the other
+hand it's also pretty verbose.</p>
+
+<p>Another option is the slightly more involved
+<a href="http://jsslkeylog.sourceforge.net/" >jSSLKeyLog</a>, which requires the use
+of a JVM parameter to include the Java agent, e.g. for SBT like so:</p>
+
+<pre><code>env JAVA_OPTS="-javaagent:jSSLKeyLog.jar==/jsslkeylog.log" sbt</code></pre>
+
+<p>Two more notes here:  Compiling the tool is really easy, once cloned <code>mvn
+package</code> results in a ready-to-use JAR file.  Also the log contains more
+information when two equal signs are used (handy for manual inspection).</p>
+
+<p>This file can then be directly fed into WireShark (&quot;Edit&quot;,
+&quot;Preferences&quot;, &quot;Protocols&quot;, &quot;TLS&quot;, &quot;(Pre-)-Master-Secret log filename&quot;)
+and will then allow the decoding of the captured network traffic
+(e.g. via <code>tcpdump -i any -s 0 -w dump.pcap</code>).</p>
+ ]]></description> </item><item> <title>Docker and Redis from scratch</title> <link>//blog.macrolet.net/posts/Docker-and-Redis-from-scratch.html</link> <pubDate>2020-04-19 14:50:06+02:00</pubDate> <author>Olof-Joachim Frahm</author> <guid isPermaLink="true">//blog.macrolet.net/posts/Docker-and-Redis-from-scratch.html</guid> <category><![CDATA[ go ]]></category><category><![CDATA[ docker ]]></category><category><![CDATA[ redis ]]></category> <description><![CDATA[ <p>Docker is ubiquitous in many projects and therefore it may be useful to
+dig into more detail about its inner workings.  Arguably those aren't
+too complicated to build a smallish program that does the essentials in
+a few hours.</p>
+
+<p>The <a href="https://codecrafters.io/" >CodeCrafters</a> challenges focus on exactly
+this kind of idea, taking an existing tool and rebuilding it from
+scratch.  Since they're currently in Early Access, I've only had the
+opportunity to try out the
+<a href="https://codecrafters.io/challenges/docker" >Docker</a> and
+<a href="https://codecrafters.io/challenges/redis" >Redis</a> challenges so far, but
+I thought maybe a few insights from them would be good to share.</p>
+
+<p>Part of the challenge is to run the entrypoint of a container; using Go
+it's actually fairly easy to run external programs.  Using the
+<a href="https://pkg.go.dev/os/exec" >os/exec</a> package is straightforward, even
+redirecting I/O is easy enough by looking at the
+<a href="https://pkg.go.dev/os/exec?tab=doc#Cmd" >Cmd</a> structure a bit closer and
+assigning values to the <code>Stdin</code>, <code>Stdout</code> and <code>Stderr</code> fields.  Also the
+exit status can be easily gotten from the <code>error</code> return value by
+checking for <code>ExitError</code> (only if it was not successful, that is,
+non-zero):</p>
+
+<pre><code><span class="code">if err = cmd.Run<span class="paren1">(<span class="code"></span>)</span>; err != <span class="symbol">nil</span> <span class="paren1">{<span class="code">
+    if exitError, ok := err.<span class="paren2">(<span class="code">*exec.ExitError</span>)</span>; ok <span class="paren2">{<span class="code">
+        ...
+    </span>}</span>
+</span>}</span></span></code></pre>
+
+<p>Interestingly enough the <code>SysProcAttr</code> field exposes some functionality
+that is a bit more difficult to use in, say, C.  While using the
+<a href="https://pkg.go.dev/syscall?tab=doc#Chroot" >syscall</a> package is
+possible, it's mostly easier to assign a few values in that field
+instead, using the definition of the
+<a href="https://pkg.go.dev/syscall?tab=doc#SysProcAttr" >SysProcAttr</a> structure
+itself.</p>
+
+<p>Later on there's also the need to parse some JSON - that's again easily
+done with the standard library, using
+<a href="https://pkg.go.dev/encoding/json?tab=doc" ><code>encoding/json</code></a>, in
+particular
+<a href="https://pkg.go.dev/encoding/json?tab=doc#Unmarshal" ><code>Unmarshal</code></a> to a
+<code>map[string]interface{}</code> (in case we just want to grab a top-level entry
+in a JSON object), or to a pointer of a custom class using structure
+tags like so:</p>
+
+<pre><code><span class="code"><span class="symbol">type</span> Foo struct <span class="paren1">{<span class="code">
+     Bars <span class="paren2">[<span class="code"></span>]</span>Bar `json:<span class="string">"bars"</span>`
+</span>}</span>
+
+<span class="symbol">type</span> Bar struct <span class="paren1">{<span class="code">
+     Baz <span class="symbol">string</span> `json:<span class="string">"baz"</span>`
+</span>}</span>
+
+...
+
+foo := Foo<span class="paren1">{<span class="code"></span>}</span>
+if err := json.Unmarshal<span class="paren1">(<span class="code">body, &amp;foo</span>)</span>; err != <span class="symbol">nil</span> <span class="paren1">{<span class="code">
+    <span class="symbol">panic</span><span class="paren2">(<span class="code">err</span>)</span>
+</span>}</span>
+
+for _, bar := range foo.Bars <span class="paren1">{<span class="code">
+    <span class="symbol">println</span><span class="paren2">(<span class="code">bar.Baz</span>)</span>
+</span>}</span></span></code></pre>
+
+<p>The Redis challenge is comparatively more contained to just using
+standard library tools, the most interesting thing I've noticed was that
+there's now a concurrency-friendly map implementation called
+<a href="https://pkg.go.dev/sync?tab=doc#Map" ><code>sync.Map</code></a>, so no external
+synchronization primitive is needed.</p>
+
+<p>What else helped is the <a href="https://redis.io/topics/rediscli" ><code>redis-cli</code></a>
+tool, though I had to find out for myself that it doesn't interpret the
+specification very strictly, in fact, just about everything returned
+from the server response will be printed, even when not valid according
+to the spec.</p>
+
+<p>Overall the biggest challenge here might be to accurately parse the
+command input and deal with expiration (I simply chose a lazy approach
+there, instead of clearing out the map on a timer I suppose - this will
+of course not be memory-friendly long-term, but for implementing a very
+simple Redis server it's more than enough to pass all tests).</p>
+ ]]></description> </item><item> <title>Testing with Scala</title> <link>//blog.macrolet.net/posts/Testing-with-Scala.html</link> <pubDate>2020-04-14 16:37:37+02:00</pubDate> <author>Olof-Joachim Frahm</author> <guid isPermaLink="true">//blog.macrolet.net/posts/Testing-with-Scala.html</guid> <category><![CDATA[ scala ]]></category> <description><![CDATA[ <p>After working with Scala for a while now, I thought it would be good to
+write down a couple of notes on my current testing setup, in particular
+with regards to which libraries I've settled on and which style of
+testing I've ended up using.</p>
+
+<p>Tests end up in the same package as the code that's tested.  A group of
+tests are always in a class with the <code>Tests</code> suffix, e.g. <code>FooTests</code>.
+If it's about a particular class <code>Foo</code> the same applies.</p>
+
+<p><a href="https://www.scalatest.org/" ><code>scalatest</code></a> is used as the testing
+framework, using
+<a href="https://www.scalatest.org/user_guide/selecting_a_style" ><code>AnyWordSpec</code></a>,
+that means we're using the <code>should</code> /
+<code>in</code> pattern.</p>
+
+<p>For mocking the only addition is
+<a href="http://www.scalatest.org/user_guide/testing_with_mock_objects#mockito" ><code>MockitoSugar</code></a>
+to make things more
+Scala-ish.</p>
+
+<p>How does it look like?</p>
+
+<pre><code><span class="code">package com.example.foo
+
+import org.mockito.MockitoSugar
+import org.scalatest.wordspec.AnyWordSpec
+
+class FooTests extends AnyWordSpec <span class="symbol">with</span> MockitoSugar <span class="paren1">{<span class="code">
+  <span class="string">"Foo"</span> should <span class="paren2">{<span class="code">
+    <span class="string">"do something"</span> <span class="symbol">in</span> <span class="paren3">{<span class="code">
+      <span class="symbol">val</span> bar = mock<span class="paren4">[<span class="code">Bar</span>]</span>
+      <span class="symbol">val</span> foo = <span class="symbol">new</span> Foo<span class="paren4">(<span class="code">bar</span>)</span>
+      foo.baz<span class="paren4">(<span class="code">42L</span>)</span>
+      verify<span class="paren4">(<span class="code">bar</span>)</span>.qux<span class="paren4">(<span class="code">42L</span>)</span>
+    </span>}</span>
+  </span>}</span>
+</span>}</span></span></code></pre>
+
+<p>Easy enough.  There's also some more syntactic sugar for other Mockito
+features, meaning
+<a href="https://github.com/mockito/mockito-scala#orgmockitoargumentmatcherssugar" ><code>ArgumentMatchersSugar</code></a>
+should also be imported when
+needed.  Same as <code>scalatest</code> has a number of additional helpers for
+particular types like <code>Option</code> or <code>Either</code>,
+e.g. <a href="https://www.scalatest.org/user_guide/using_OptionValues" ><code>OptionValues</code></a>
+and
+<a href="https://www.scalatest.org/user_guide/using_EitherValues" ><code>EitherValues</code></a>.</p>
+
+<pre><code><span class="code">class BarTests extends AnyWordSpec <span class="symbol">with</span> Matchers <span class="symbol">with</span> EitherValues <span class="symbol">with</span> OptionValues <span class="paren1">{<span class="code">
+  <span class="string">"Bar"</span> should <span class="paren2">{<span class="code">
+    <span class="string">"do something else"</span> <span class="symbol">in</span> <span class="paren3">{<span class="code">
+      <span class="symbol">val</span> bar = <span class="symbol">new</span> Bar
+      bar.qux<span class="paren4">(<span class="code">42L</span>)</span>.left.value should be<span class="paren4">(<span class="code">empty</span>)</span>
+      bar.quux<span class="paren4">(<span class="code"></span>)</span>.value shouldBe <span class="string">"a value"</span>
+    </span>}</span>
+  </span>}</span>
+</span>}</span></span></code></pre>
+
+<p>This can be done to the extreme, but usually it looks easier to me to
+simply assign highly nested values to a variable and continue with
+matchers on <em>that</em> variable instead.</p>
+
+<p>Since <code>sbt</code> is often used, the two test dependencies would look like this:</p>
+
+<pre><code><span class="code">libraryDependencies ++= Seq<span class="paren1">(<span class="code">
+  <span class="string">"org.scalatest"</span> %% <span class="string">"scalatest"</span>               % <span class="string">"3.1.1"</span>  % Test,
+  <span class="string">"org.mockito"</span>   %% <span class="string">"mockito-scala-scalatest"</span> % <span class="string">"1.13.0"</span> % Test,
+</span>)</span></span></code></pre>
+ ]]></description> </item><item> <title>Scala Macros to the Rescue</title> <link>//blog.macrolet.net/posts/Scala-Macros-to-the-Rescue.html</link> <pubDate>2018-12-20 21:38:45+01:00</pubDate> <author>Olof-Joachim Frahm</author> <guid isPermaLink="true">//blog.macrolet.net/posts/Scala-Macros-to-the-Rescue.html</guid> <category><![CDATA[ scala ]]></category> <description><![CDATA[ <p>Did you know Scala has macros?  Coming from Common Lisp they serve pretty much
+the same purpose, doing things that the (plethora of) other language features
+don't support and to shortcut the resulting boilerplate code.  And even the
+S-expressions can be had when macro debugging is turned on, though the
+pretty-printed Scala code is arguably much more useful here.</p>
+
+<p>Why would you realistically use them then?  Turns out I had to deal with some
+auto-generated code dealing with Protobuf messages.  The generated classes for
+any message look something like this (in Java syntax since that's what the
+generated code is):</p>
+
+<pre><code><span class="code">public interface ExampleResponseOrBuilder
+  extends com.google.protobuf.MessageOrBuilder;
+
+public static final class ExampleResponse
+  extends com.google.protobuf.GeneratedMessageV3
+  implements ExampleReponseOrBuilder <span class="paren1">{<span class="code">
+
+  public static Builder newBuilder<span class="paren2">(<span class="code"></span>)</span>;
+
+  public static final class Builder
+    extends com.google.protobuf.GeneratedMessageV3.Builder&lt;Builder&gt;
+    implements ExampleResponseOrBuilder;
+</span>}</span></span></code></pre>
+
+<p>That is, we have one interface, two classes, one of them conveniently gives you
+a builder for new objects of the class.  That's used like this (back to Scala
+here):</p>
+
+<pre><code><span class="code"><span class="symbol">val</span> builder: ExampleResponse.Builder = Example.newBuilder<span class="paren1">(<span class="code"></span>)</span>
+builder.mergeFrom<span class="paren1">(<span class="code">stream</span>)</span>
+<span class="symbol">val</span> result: ExampleResponse = builder.build<span class="paren1">(<span class="code"></span>)</span></span></code></pre>
+
+<p>If you try and make a generic builder here, you'll quickly notice that this is
+rather hard as the generic types don't really express the relationship between
+<code>ExampleResponse</code> and <code>ExampleResponse.Builder</code> well.</p>
+
+<p>As an aside, you want to have a generic builder parametrised on the return type
+to be able to write something like this:</p>
+
+<pre><code><span class="code"><span class="symbol">val</span> result = build<span class="paren1">[<span class="code">ExampleResponse</span>]</span><span class="paren1">(<span class="code">stream</span>)</span></span></code></pre>
+
+<p>Without ever having to pass through the type as a value.  Better even if you
+just specify the result type and the type parameter for <code>build</code> is then
+automatically derived.</p>
+
+<p>These builders look something like this then:</p>
+
+<pre><code><span class="code"><span class="symbol">trait</span> ProtobufBuilder<span class="paren1">[<span class="code">T &lt;: Message</span>]</span> <span class="paren1">{<span class="code">
+  <span class="symbol">def</span> underlying<span class="paren2">(<span class="code"></span>)</span>: Message.Builder
+
+  <span class="symbol">def</span> build<span class="paren2">(<span class="code">string: String</span>)</span><span class="paren2">(<span class="code"><span class="symbol">implicit</span> parser: JsonFormat.Parser</span>)</span>: T = <span class="paren2">{<span class="code">
+    <span class="symbol">val</span> builder = underlying<span class="paren3">(<span class="code"></span>)</span>
+    parser.merge<span class="paren3">(<span class="code">string, builder</span>)</span>
+    builder.build<span class="paren3">(<span class="code"></span>)</span>.asInstanceOf<span class="paren3">[<span class="code">T</span>]</span>
+  </span>}</span>
+</span>}</span>
+
+class ExampleResponseBuilder<span class="paren1">(<span class="code"></span>)</span> extends ProtobufBuilder<span class="paren1">[<span class="code">ExampleResponse</span>]</span> <span class="paren1">{<span class="code">
+  <span class="symbol">override</span> <span class="symbol">def</span> underlying<span class="paren2">(<span class="code"></span>)</span>: ExampleResponse.Builder =
+    ExampleResponse.newBuilder<span class="paren2">(<span class="code"></span>)</span>
+</span>}</span></span></code></pre>
+
+<p>This then allows us to use some <code>implicit</code> magic to pass these through to the
+decoder (<code>sttp</code>'s framework in this case) to correctly decode the incoming
+data.</p>
+
+<p>But, we've to 1. write one class for each type, 2. instantiate it.  This is
+roughly five lines of code per type depending on the formatting.</p>
+
+<p>Macros to the rescue!</p>
+
+<p>Inspired by the <code>circe</code> derivation API I finally got all the pieces together to
+create such a macro:</p>
+
+<pre><code><span class="code"><span class="symbol">def</span> deriveProtobufBuilder<span class="paren1">[<span class="code">T &lt;: Message</span>]</span>: ProtobufBuilder<span class="paren1">[<span class="code">T</span>]</span> = macro deriveProtobufBuilder_impl<span class="paren1">[<span class="code">T</span>]</span>
+
+<span class="symbol">def</span> deriveProtobufBuilder_impl<span class="paren1">[<span class="code">T &lt;: Message: c.WeakTypeTag</span>]</span><span class="paren1">(<span class="code">
+    c: blackbox.Context</span>)</span>: c.Expr<span class="paren1">[<span class="code">ProtobufBuilder<span class="paren2">[<span class="code">T</span>]</span></span>]</span> = <span class="paren1">{<span class="code">
+  import c.universe._
+
+  <span class="symbol">val</span> messageType   = weakTypeOf<span class="paren2">[<span class="code">T</span>]</span>
+  <span class="symbol">val</span> companionType = messageType.typeSymbol.companion
+
+  c.Expr<span class="paren2">[<span class="code">ProtobufBuilder<span class="paren3">[<span class="code">T</span>]</span></span>]</span><span class="paren2">(<span class="code">q<span class="string">""</span><span class="string">"
+    new ProtobufBuilder[$messageType] {
+      override def underlying(): $companionType.Builder = $companionType.newBuilder()
+    }
+   "</span><span class="string">""</span></span>)</span>
+</span>}</span></span></code></pre>
+
+<p>Used then like this:</p>
+
+<pre><code><span class="code">private <span class="symbol">implicit</span> <span class="symbol">val</span> exampleResponseBuilder: ProtobufBuilder<span class="paren1">[<span class="code">ExampleResponse</span>]</span> = deriveProtobufBuilder</span></code></pre>
+
+<p>That's one or two lines and the types are only mentioned once (the variable
+name can be changed).  Unfortunately getting rid of the variable name doesn't
+seem to be possible.</p>
+
+<p>Easy, wasn't it?  Unfortunately all of this is hampered by the rather
+undocumented APIs, you really have to search for existing code or Stackoverflow
+questions to figure this out.</p>
+
+<p>One thing that helped immensly was the <code>-Ymacro-debug-lite</code> option, which
+prints the expanded macro when used in <code>sbt</code> via <code>compile</code>.</p>
+ ]]></description> </item><item> <title>Act!  Heuristics for determining intent.</title> <link>//blog.macrolet.net/posts/Act--Heuristics-for-determining-intent.html</link> <pubDate>2018-12-09 14:11:18+01:00</pubDate> <author>Olof-Joachim Frahm</author> <guid isPermaLink="true">//blog.macrolet.net/posts/Act--Heuristics-for-determining-intent.html</guid> <category><![CDATA[ lisp ]]></category> <description><![CDATA[ <p>I wrote down a little scenario for myself for the next iteration of <code>act</code>:</p>
+
+<ul>
+<li>mark &quot;http://www.google.de&quot; with mouse (selection -&gt; goes to x11
+  buffer-cut)</li>
+<li>listen on those changes and show current context and choices</li>
+<li>press+release &quot;act primary&quot; key -&gt; runs primary action immediately</li>
+<li>(or) press &quot;act&quot; key once -&gt; opens buffer for single character input
+  to select choice</li>
+<li>buffer captures keyboard, after single character action is taken, esc
+  aborts, &quot;act&quot; again should expand the buffer to full repl</li>
+<li>mouse -&gt; selection of source? history?</li>
+<li>context -&gt; focused window? -&gt; lookup for program gives cwd, etc.</li>
+<li>since that's not foolproof an obvious addition to the protocol would
+be to store a reference to the source of the clipboard (or the
+program that will be queried for it)</li>
+<li>you should always be able to interrogate windows about their origin
+and capabilities, including their scripting interface</li>
+<li>pattern matching url -&gt; rule based decisions</li>
+<li>primary / secondary actions -&gt; rule of three basically, except we err
+  on the side of caution and just bind two actions two keys</li>
+<li>special handling for clipboard types that aren't text?  allow for
+  example to override a rule based on whether a picture would be
+  available</li>
+</ul>
+
+<p>Now, there are several problems with this on a regular X11-based desktop
+already:</p>
+
+<ul>
+<li>How do you identify the program / PID belonging to a particular window?</li>
+<li>How do you get information about that program, e.g. its current working
+  directory?</li>
+</ul>
+
+<p>In addition, since I'm using <code>tmux</code> inside a terminal emulator there are some
+more problems:</p>
+
+<ul>
+<li>How do you know which <code>tmux</code> session is currently active?</li>
+<li>How do you know which program is currently &quot;active&quot; in a <code>tmux</code> session?</li>
+</ul>
+
+<p>Basically it's a recursive lookup for the &quot;current state&quot; of what's being
+displayed to the user.  Not only that, but for things like browsers, image
+editors, video editors, anything document based it's still the same problem at
+another level, namely, what the current &quot;context&quot; is, like the currently open
+website, picture, video, scene, what have you.</p>
+
+<p>Coming back to earlier thoughts about automation, there's no way for most of
+these to be accurately determined at this time.  Neither is e.g. <code>DBUS</code>
+scripting common enough to &quot;just use it&quot; for scripting, there are also several
+links missing in the scenario described above and some can likely never be
+fixed to a sufficient degree to not rely on heuristics.</p>
+
+<p>Nevertheless, with said heuristics it's still possible to get to a state where
+a productivity plus can be achieved with only moderate amount of additional
+logic to step through all the indirections between processes and presentation
+layers.</p>
+
+<p>Now let me list a few answers to the questions raised above:</p>
+
+<ul>
+<li>The PID for a particular window can be derived from an X11 property, together
+  with <code>xdotool</code> this gives us an easy pipeline to get this value: ``.</li>
+<li>Information about the running process can then be retrieved via the <code>proc</code>
+  filesystem, e.g. <code>readlink /proc/$PID/cwd</code> for the current working directory.
+  Of course this has limited value in a multi-threaded program or any
+  environment that doesn't rely on the standard filesystem interface (but uses
+  its own defaults).</li>
+<li>I do not have an answer for the currently active <code>tmux</code> session yet,
+  presumably you should somehow be able to get from a PID to a socket and thus
+  to the session?</li>
+<li>For <code>tmux</code>, the currently active program in a session is a bit more complex,
+  ``, which we'll also have to filter for the active values.</li>
+</ul>
+
+<p>For scripting interfaces, many programs have their own little implementation of
+this, but most problematic here is that you want to go from a X11 window / PID
+to the scripting interface, not through some workaround by querying for
+interfaces!</p>
+
+<p>For programs like Emacs and any programmable environment we can likely script
+something together, but again it's not a very coherent whole by any means.</p>
+ ]]></description> </item><item> <title>DBus and PolicyKit from Common Lisp</title> <link>//blog.macrolet.net/posts/DBus-and-PolicyKit-from-Common-Lisp.html</link> <pubDate>2018-12-04 23:56:27+01:00</pubDate> <author>Olof-Joachim Frahm</author> <guid isPermaLink="true">//blog.macrolet.net/posts/DBus-and-PolicyKit-from-Common-Lisp.html</guid> <category><![CDATA[ lisp ]]></category> <description><![CDATA[ <h2>Intro</h2>
+
+<p>Regardless of your position on DBus, sometimes you might need to interact with
+it.  Common Lisp currently has at least two libraries ready for you, one of
+them is in <a href="https://www.quicklisp.org/" >Quicklisp</a>,
+<a href="https://github.com/death/dbus/">https://github.com/death/dbus/</a>.</p>
+
+<h2>Setup</h2>
+
+<p>Have it loaded and create a package to use it, then change into it.</p>
+
+<pre><code><span class="code"><span class="comment">;; (asdf:load-system '#:dbus)
+</span><span class="comment">;; or
+</span><span class="comment">;; (ql:quickload "dbus)
+</span>
+<span class="paren1">(<span class="code"><i><span class="symbol">defpackage</span></i> <span class="keyword">#:example</span>
+  <span class="paren2">(<span class="code"><span class="keyword">:use</span> <span class="keyword">#:cl</span> <span class="keyword">#:dbus</span></span>)</span></span>)</span>
+
+<span class="paren1">(<span class="code">in-package <span class="keyword">#:example</span></span>)</span></span></code></pre>
+
+<p>For reference, I'm going to refer to a (very old)
+<a href="https://www.freedesktop.org/software/polkit/docs/0.105/polkit-apps.html#polkit-raw-dbus-py" >polkit example</a>
+in Python.  For reference I'm reproducing it here (it still works in current
+Python 3 without any changes except the <code>print</code>):</p>
+
+<pre><code><span class="code">import dbus
+
+bus = dbus.SystemBus<span class="paren1">(<span class="code"></span>)</span>
+proxy = bus.get_object<span class="paren1">(<span class="code">'org.freedesktop.PolicyKit1', '/org/freedesktop/PolicyKit1/Authority'</span>)</span>
+authority = dbus.Interface<span class="paren1">(<span class="code">proxy, dbus_interface='org.freedesktop.PolicyKit1.Authority'</span>)</span>
+
+system_bus_name = bus.get_unique_name<span class="paren1">(<span class="code"></span>)</span>
+
+subject = <span class="paren1">(<span class="code">'system-bus-name', {'name' <span class="keyword">:</span> system_bus_name}</span>)</span>
+action_id = 'org.freedesktop.policykit.exec'
+details = {}
+flags = 1            # AllowUserInteraction flag
+cancellation_id = '' # No cancellation id
+
+result = authority.CheckAuthorization<span class="paren1">(<span class="code">subject, action_id, details, flags, cancellation_id</span>)</span>
+
+print<span class="paren1">(<span class="code">result</span>)</span></span></code></pre>
+
+<p>So, how does this look in Common Lisp?  Mostly the same, except that at least
+at the moment you have to specify the variant type explicitly!  This was also
+the reason to document the example, it's quite hard to understand what's wrong
+if there's a mistake, including the socket connection just dying on you and
+other fun stuff.</p>
+
+<pre><code><span class="code"><span class="paren1">(<span class="code"><i><span class="symbol">with-open-bus</span></i> <span class="paren2">(<span class="code">bus <span class="paren3">(<span class="code">system-server-addresses</span>)</span></span>)</span>
+  <span class="paren2">(<span class="code"><i><span class="symbol">with-introspected-object</span></i> <span class="paren3">(<span class="code">authority bus
+                                       <span class="string">"/org/freedesktop/PolicyKit1/Authority"</span>
+                                       <span class="string">"org.freedesktop.PolicyKit1"</span></span>)</span>
+    <span class="paren3">(<span class="code"><i><span class="symbol">let*</span></i> <span class="paren4">(<span class="code"><span class="paren5">(<span class="code">subject `<span class="paren6">(<span class="code"><span class="string">"system-bus-name"</span> <span class="paren1">(<span class="code"><span class="paren2">(<span class="code"><span class="string">"name"</span> <span class="paren3">(<span class="code"><span class="paren4">(<span class="code"><span class="keyword">:string</span></span>)</span> ,<span class="paren4">(<span class="code">bus-name bus</span>)</span></span>)</span></span>)</span></span>)</span></span>)</span></span>)</span>
+           <span class="paren5">(<span class="code">action-id <span class="string">"org.freedesktop.policykit.exec"</span></span>)</span>
+           <span class="paren5">(<span class="code">details <span class="paren6">(<span class="code"></span>)</span></span>)</span>
+           <span class="paren5">(<span class="code">flags 1</span>)</span>
+           <span class="paren5">(<span class="code">cancellation-id <span class="string">""</span></span>)</span>
+           <span class="paren5">(<span class="code">result
+                <span class="paren6">(<span class="code">authority <span class="string">"org.freedesktop.PolicyKit1.Authority"</span> <span class="string">"CheckAuthorization"</span>
+                           subject action-id details flags cancellation-id</span>)</span></span>)</span></span>)</span>
+      <span class="paren4">(<span class="code">format T <span class="string">"~A~%"</span> result</span>)</span></span>)</span></span>)</span></span>)</span></span></code></pre>
+
+<p>Note the encoding of the dictionary:  The type of the whole argument
+<a href="https://www.freedesktop.org/software/polkit/docs/latest/eggdbus-interface-org.freedesktop.PolicyKit1.Authority.html#eggdbus-struct-Subject" >is specified</a>
+as <code>(sa{sv})</code>, a structure of a string and a dictionary of strings to variants
+- we're spelling out the variant type here, compared to what's automatically
+done by the Python library.</p>
+ ]]></description> </item><item> <title>Lisp shell semantics</title> <link>//blog.macrolet.net/posts/Lisp-shell-semantics.html</link> <pubDate>2018-08-08 01:36:29</pubDate> <author>Olof-Joachim Frahm</author> <guid isPermaLink="true">//blog.macrolet.net/posts/Lisp-shell-semantics.html</guid> <category><![CDATA[ lisp ]]></category><category><![CDATA[ unix ]]></category><category><![CDATA[ emacs ]]></category> <description><![CDATA[ <p>Continuing <a href="/posts/Limits-of-Unix-shell.html" >from an earlier post</a>, what might
+the semantics be that we'd like to have for a more useful shell integrated with
+a Lisp environment?</p>
+
+<h1>Syntax</h1>
+
+<p>Of course we can always keep the regular Common Lisp reader; however it's not
+best suited for interactive shell use.  In fact I'd say interactive use period
+requires heavy use of editing commands to juggle parens.  Which is why some
+people use one of the simplifications of not requiring the outermost layer of
+parens on the REPL.</p>
+
+<p>So, one direction would be to have better S-expression manipulation on the
+REPL, the other to have a syntax that's more incremental than S-expressions.</p>
+
+<p>E.g. imagine the scenario that,</p>
+
+<ol>
+<li>as a terminal user,</li>
+<li>I'm navigating directories,</li>
+<li>listing files,</li>
+<li>then looking for how many files there were,</li>
+<li>then grepping for a particular pattern,</li>
+<li>then opening one of the matches.</li>
+</ol>
+
+<p>In <code>sh</code> terms that's something the lines of</p>
+
+<pre><code>$ cd foo
+$ ls
+...
+$ ls | wc -l
+42
+$ ls | grep bar
+...
+$ vim ...</code></pre>
+
+<p>In reality I'm somewhat sure no one's going as far as doing the last two steps
+in an iterative fashion, like via <code>ls | grep x | grep y | xargs vim</code>, as most
+people will have a mouse readily available to select the desired name.  There
+are some terminal widgets which allow the user to select from e.g. one of the
+input lines in a command line dialog, but again it's not a widespread pattern
+and still requires manual intervention in such a case.</p>
+
+<p>Also note that instead of reusing the computation the whole expression keeps
+being reused, which also makes this somewhat inefficient.  The notion of the
+&quot;current&quot; thing being worked on (&quot;this&quot;, &quot;self&quot;) also isn't expressed directly
+here.</p>
+
+<p>In the new shell I'd like to see part of explored.  We already have the three
+special variables <code>*</code>, <code>**</code> and <code>***</code> (and <code>/</code> etc.!) in Common Lisp - R,
+IPython and other environments usually generalise this to a numbered history,
+which arguably we might want to add here as well - so it stands to reason that
+these special variables make sense for a shell as well.</p>
+
+<pre><code>$ cd foo
+$ ls
+...
+$ * | wc
+42
+$ grep ** bar
+...
+$ vim *</code></pre>
+
+<p>(Disregarding the need for a different globbing character ...)</p>
+
+<p>There's also the very special exit status special variable in shells that we
+need to replicate.  This will likely be similar to Perl special variables that
+keep track of one particular thing instead of reusing the <code>*</code> triad of
+variables for this too.</p>
+
+<h1>Pipelines</h1>
+
+<p>The expression compiler should be able to convert from a serial to a concurrent
+form as necessary, that is, by converting to the required form at each pipeline
+step.</p>
+
+<pre><code>ls | wc -l | vim</code></pre>
+
+<p>Here, <code>ls</code> will be the built-in <code>LIST-DIRECTORY</code>, which is capable of
+outputting e.g. a stream of entries.  <code>wc -l</code> might be compiled to simply
+<code>LENGTH</code>, which, since it operates on fixed sequences, will force <code>ls</code> to be
+fully evaluated (disregarding a potential optimisation of just counting the
+entries instead of producing all filenames).  The pipe to <code>vim</code> will then force
+the <code>wc</code> output to text format, since <code>vim</code> is an unknown native binary.</p>
+
+<p>These would be the default conversions.  We might force a particular
+interpretation by adding explicit (type) conversions, or adding annotations to
+certain forms to explain that they accept a certain input/output format; for
+external binaries the annotations necessarily would be more extensive.</p>
+
+<p>For actual pipelines it's extremely important that each step progresses as new
+data becomes available.  Including proper backpressure this will ensure good
+performance and keep the buffer bloat to a minimum.  Again this might be a
+tunable behaviour too.</p>
+
+<h1>I/O</h1>
+
+<p>The shell should be convenient.  As such any output and error output should be
+captured as a standard behaviour, dropping data if the buffers would get too
+big.  This will then allow us to refer to previous output <em>without having to
+reevaluate</em> any expression / without having to run a program again (which in
+both cases might be expensive).</p>
+
+<p>Each datatype and object should be able to be rendered and parsed in more than
+a single format too.  E.g. a directory listing itself might be an object, but
+will typically be rendered to text/JSON/XML, or to a graphical representation
+even.</p>
+ ]]></description> </item><item> <title>Keyboard protocol #2</title> <link>//blog.macrolet.net/posts/Keyboard-protocol-2.html</link> <pubDate>2018-07-25 23:17:22</pubDate> <author>Olof-Joachim Frahm</author> <guid isPermaLink="true">//blog.macrolet.net/posts/Keyboard-protocol-2.html</guid> <category><![CDATA[ hardware ]]></category> <description><![CDATA[ <p>Now in fact there are still reasons we need key codes that are different to the
+eventual text representation, e.g. for cursor movement and other special
+characters like function keys.</p>
+
+<p>Looking at the Xorg source code now, there's a relatively fixed notion of what
+a keyboard can actually do.  I suspect that conceptually a somewhat
+backwards-compatible extension would be to have a new dedicated kind of device,
+that is exposed (similarly to a keyboard with an integrated touchpad)
+separately to the other functionality of the device.</p>
+
+<p>In particular, I'd like to keep the keyboard in &quot;regular&quot; mode as long as the
+host hasn't signaled that it wants to use the extended functionality via,
+presumably some part of the USB negotiation.  Only at that point would the
+extension be activated and the keyboard output would be sent via it.  The
+regular keyboard device would then be virtually unplugged.</p>
+
+<p>I suspect that this is better than having two devices, one for key codes and
+one for text input, especially because we'd not be able to guarantee in which
+order the two devices would be read.  This is less / not a problem between a
+keyboard and a pointer device of course.</p>
+
+<p>Now given that X11 isn't the interface most applications are written against,
+how would the text actually arrive at an application?  I'd imagine basically
+extending the whole event handling by one more event, the text event, which
+wouldn't correspond to any key (thus, it can't <em>be</em> in a pressed or unpressed
+state).  In terms of GTK+ and QT this might be even easier than for a lower
+level application since many applications will only want to deal with text
+input and pre-defined keyboard shortcuts anyway.</p>
+
+<p>Speaking of which, what does &quot;Ctrl-C&quot; actually mean?  Of course the mnemonic
+for &quot;copy&quot; is in there, but also the &quot;control&quot; modifier.  How well does this
+play with text input?  Not at all, and I believe modifiers work better
+logically on the key code level; for text input I imagine other modifiers like
+&quot;emphasis&quot;, or, more specifically, &quot;bold&quot;, would make more sense, possible
+&quot;URL&quot;, or &quot;footnote&quot;.</p>
+
+<p>Overall there can of course be modifiers active while text input occurs, it's
+more a question of whether they (can) be assigned any meaning without falling
+back to the flawed character equals key press comparison.</p>
+
+<p>What does this gain us?  Ideally every application (or more accurately: each
+toolkit) could now drop logic specifically to translate key codes to text,
+since all of it would already be handled by the keyboard itself.  Keypresses
+would come in via the same interface and be used for specific, non-text
+functionality.</p>
+ ]]></description> </item><item> <title>Keyboard protocol</title> <link>//blog.macrolet.net/posts/Keyboard-protocol.html</link> <pubDate>2018-07-19 11:48:07</pubDate> <author>Olof-Joachim Frahm</author> <guid isPermaLink="true">//blog.macrolet.net/posts/Keyboard-protocol.html</guid> <category><![CDATA[ hardware ]]></category> <description><![CDATA[ <p>The keyboard protocol is still using the same approach as roughly since the
+start of computing:  The keyboard is a dumb device, reporting each mechanical
+button that's pressed.  The computer is the intelligent device, translating
+those into characters.</p>
+
+<p>There are some attempts that have made it into various places, e.g. there's a
+flag in the USB HID protocol to indicate the physical layout, be it US, or some
+other one.  Except no manufacturer sets it, so no driver uses it.</p>
+
+<p>But, what if we had a keyboard, courtesy of QMK and similar firmwares, that is
+substantially more intelligent?  If the protocol allowed for it we'd be able to
+have such nice things as sending an &quot;a&quot;, an &quot;あ&quot;, or a &quot;●&quot; without any
+remapping to be done!  In fact if the keyboard could send Unicode sequences we
+can do things that aren't possible by remapping, like sending characters from
+various scripts through a macro key without impacting any keypress since we
+have an immensely increased value space to work with.</p>
+ ]]></description> </item> </channel> </rss>

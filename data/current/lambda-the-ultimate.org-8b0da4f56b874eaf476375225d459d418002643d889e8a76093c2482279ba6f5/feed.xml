@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xml:base="http://lambda-the-ultimate.org">
+<channel>
+ <title>Lambda the Ultimate - Programming Languages Weblog</title>
+ <link>http://lambda-the-ultimate.org</link>
+ <description>Programming languages news, articles and discussion</description>
+ <language>en</language>
+<item>
+ <title>Introducing PathQuery, Google's Graph Query Language</title>
+ <link>http://lambda-the-ultimate.org/introducing-google-path-query</link>
+ <description>&lt;p &gt;&lt;a href=&quot;https://arxiv.org/abs/2106.09799&quot;&gt;Introducing PathQuery, Google's Graph Query Language&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;We introduce PathQuery, a graph query language developed to scale with Google's query and data volumes as well as its internal developer community. PathQuery supports flexible and declarative semantics. We have found that this enables query developers to think in a naturally &quot;graphy&quot; design space and to avoid the additional cognitive effort of coordinating numerous joins and subqueries often required to express an equivalent query in a relational space. Despite its traversal-oriented syntactic style, PathQuery has a foundation on a custom variant of relational algebra -- the exposition of which we presently defer -- allowing for the application of both common and novel optimizations. We believe that PathQuery has withstood a &quot;test of time&quot; at Google, under both large scale and low latency requirements. We thus share herein a language design that admits a rigorous declarative semantics, has scaled well in practice, and provides a natural syntax for graph traversals while also admitting complex graph patterns.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p &gt;Things that are somewhat interesting to me, from an engineering standpoint:&lt;/p&gt;
+&lt;p &gt;1. PathQuery has a module/compilation system, enabling re-use of PathQuery modules across projects.  (Someone had mentioned that Google has around 40,000 PathQuery modules already, internally...)&lt;br &gt;
+2. PathQuery supports native functions so that some query pieces can be evaluated procedurally (peephole optimization)&lt;br &gt;
+3. Use of relational algebra to enable a lot of known optimizations, plus future optimizations&lt;/p&gt;
+&lt;p &gt;Also, from a socio-linguistic perspective, Graph Languages are effectively the new Object-Relational Mapping layer, but they solve an interesting organizational problem of allowing multiple teams to code in different languages, without needing to re-write / re-implement entities and mapping configurations in each language.  It's the Old New Thing again...&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/24">DSL</category>
+ <pubDate>Wed, 30 Jun 2021 13:23:37 +0000</pubDate>
+</item>
+<item>
+ <title>Google announces Logica: organizing your data queries, making them universally reusable and fun</title>
+ <link>http://lambda-the-ultimate.org/google-announces-logica</link>
+ <description>&lt;p &gt;You can read more about it at the Google Open Source blog post, &lt;a href=&quot;https://opensource.googleblog.com/2021/04/logica-organizing-your-data-queries.html&quot;&gt;Logica: organizing your data queries, making them universally reusable and fun&lt;/a&gt;.&lt;/p&gt;
+&lt;p &gt;They advocate for datalog-like language they developed internally at Google.&lt;/p&gt;
+&lt;p &gt;The reason?&lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;Good programming is about creating small, understandable, reusable pieces of logic that can be tested, given names, and organized into packages which can later be used to construct more useful pieces of logic. SQL resists this workflow. Although you can encapsulate certain repeated computations into views and functions, the syntax and support for these can vary among implementations, the notions of packages and imports are generally nonexistent, and higher-level constructions (e.g. passing a function to a function) are impossible.&lt;/p&gt;&lt;/blockquote&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/5">Fun</category>
+ <pubDate>Thu, 29 Apr 2021 14:50:27 +0000</pubDate>
+</item>
+<item>
+ <title>Coq will be renamed</title>
+ <link>http://lambda-the-ultimate.org/node/5629</link>
+ <description>&lt;p &gt;From the &lt;A href=&quot;https://sympa.inria.fr/sympa/arc/coq-club/2021-04/msg00125.html&quot;&gt;Coq-club&lt;/A&gt;:&lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;
+The Coq development team acknowledges the recent discussions (started on the Coq-Club mailing list) around Coq's logo and name.&lt;/p&gt;
+&lt;p &gt;We wish to thank everyone that participated in these discussions. Testimonies from people who experienced harassment or awkward situations, reports about students (notably women) who ended up not learning / using Coq because of its name, were all very important so that the community could fully recognize the impact of the current name and its slang meaning in English, especially with respect to gender-diversity in the Coq community.&lt;/p&gt;
+&lt;p &gt;For these reasons, the Coq development team is open to a renaming.
+&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p &gt;Suggestions for alternative names go &lt;A href=&quot;https://github.com/coq/coq/wiki/Alternative-names&quot;&gt;here&lt;/A&gt;.&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/6">General</category>
+ <pubDate>Thu, 08 Apr 2021 13:47:05 +0000</pubDate>
+</item>
+<item>
+ <title>LAMBDA: The ultimate Excel worksheet function</title>
+ <link>http://lambda-the-ultimate.org/node/5621</link>
+ <description>&lt;p &gt;&lt;a href=&quot;https://www.microsoft.com/en-us/research/blog/lambda-the-ultimatae-excel-worksheet-function/&quot;&gt;Post by Andy Gordon and Simon Peyton Jones on LAMBDA&lt;/a&gt; giving Excel users the ability to define functions.&lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;
+Ever since it was released in the 1980s, Microsoft Excel has changed how people organize, analyze, and visualize their data, providing a basis for decision-making for the millions of people who use it each day. It’s also the world’s most widely used programming language. Excel formulas are written by an order of magnitude more users than all the C, C++, C#, Java, and Python programmers in the world combined. Despite its success, considered as a programming language Excel has fundamental weaknesses. Over the years, two particular shortcomings have stood out: (1) the Excel formula language really only supported scalar values—numbers, strings, and Booleans—and (2) it didn’t let users define new functions.&lt;/p&gt;
+&lt;p &gt;Until now.
+&lt;/p&gt;&lt;/blockquote&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/5">Fun</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/20">Lambda Calculus</category>
+ <pubDate>Wed, 27 Jan 2021 03:27:09 +0000</pubDate>
+</item>
+<item>
+ <title>Google Brain's Jax and Flax</title>
+ <link>http://lambda-the-ultimate.org/google-brain-jax</link>
+ <description>&lt;p &gt;Google's AI division, Google Brain, has two main products for deep learning: TensorFlow and Jax.  While TensorFlow is best known, Jax can be thought of as a higher-level language for specifying deep learning algorithms while automatically eliding code that doesn't need to run as part of the model.&lt;/p&gt;
+&lt;p &gt;&lt;a href=&quot;https://github.com/google/jax&quot;&gt;Jax&lt;/a&gt; evolved from Autograd, and is a combination of Autograd and &lt;a href=&quot;https://www.tensorflow.org/xla&quot;&gt;XLA&lt;/a&gt;.  Autograd &quot;can automatically differentiate native Python and Numpy code. It can handle a large subset of Python's features, including loops, ifs, recursion and closures, and it can even take derivatives of derivatives of derivatives. It supports reverse-mode differentiation (a.k.a. backpropagation), which means it can efficiently take gradients of scalar-valued functions with respect to array-valued arguments, as well as forward-mode differentiation, and the two can be composed arbitrarily. The main intended application of Autograd is gradient-based optimization.&quot;&lt;/p&gt;
+&lt;p &gt;&lt;a href=&quot;https://github.com/google/flax/&quot;&gt;Flax&lt;/a&gt; is then built on top of Jax, and allows for easier customization of existing models.&lt;/p&gt;
+&lt;p &gt;What do you see as the future of domain specific languages for AI?&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/8">Implementation</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/26">Python</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/34">Scientific Programming</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/17">Software Engineering</category>
+ <pubDate>Fri, 15 Jan 2021 13:59:26 +0000</pubDate>
+</item>
+<item>
+ <title>Built to Last</title>
+ <link>http://lambda-the-ultimate.org/node/5605</link>
+ <description>&lt;p &gt;Mar Hicks. &lt;a href=&quot;https://logicmag.io/care/built-to-last/&quot;&gt;Built to Last&lt;/a&gt;. Logic. Issue 11, &quot;Care&quot;. &lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;
+It was this austerity-driven lack of investment in people—rather than the handy fiction, peddled by state governments, that programmers with obsolete skills retired—that removed COBOL programmers years before this recent crisis. The reality is that there are plenty of new COBOL programmers out there who could do the job. In fact, the majority of people in the COBOL programmers’ Facebook group are twenty-five to thirty-five-years-old, and the number of people being trained to program and maintain COBOL systems globally is only growing. Many people who work with COBOL graduated in the 1990s or 2000s and have spent most of their twenty-first century careers maintaining and programming COBOL systems...&lt;/p&gt;
+&lt;p &gt;In this sense, COBOL and its scapegoating show us an important aspect of high tech that few in Silicon Valley, or in government, seem to understand. Older systems have value, and constantly building new technological systems for short-term profit at the expense of existing infrastructure is not progress. In fact, it is among the most regressive paths a society can take.&lt;/blockquote&gt;
+&lt;p &gt;
+Recently, work on the history of technology has been becoming increasingly more sophisticated and moved beyond telling the story of impressive technology to trying to unravel the social, political, and economic forces that affected the development, deployment, and use of a wide range of technologies and technological systems. Luckily, this trend is beginning to manifest itself in studies of the history of programming languages. While not replacing the need for careful, deeply informed, studies of the internal intellectual forces affecting the development of programming languages, these studies add a sorely needed aspect to the stories we tell.&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/4">Critiques</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/7">History</category>
+ <pubDate>Mon, 21 Sep 2020 07:10:51 +0000</pubDate>
+</item>
+<item>
+ <title>Tackling the Awkward Squad for Reactive Programming</title>
+ <link>http://lambda-the-ultimate.org/node/5603</link>
+ <description>&lt;p &gt;&lt;a href=&quot;https://2020.ecoop.org/details/ecoop-2020-papers/19/Tackling-the-Awkward-Squad-for-Reactive-Programming-The-Actor-Reactor-Model&quot;&gt;https://2020.ecoop.org/details/ecoop-2020-papers/19/Tackling-the-Awkward-Squad-for-Reactive-Programming-The-Actor-Reactor-Model&lt;/a&gt;&lt;/p&gt;
+&lt;p &gt;
+Sam Van den Vonder, Thierry Renaux, Bjarno Oeyen, Joeri De Koster, Wolfgang De Meuter
+&lt;/p&gt;
+&lt;p &gt;
+Reactive programming is a programming paradigm whereby programs are internally represented by a dependency graph, which is used to automatically (re)compute parts of a program whenever its input changes. In practice reactive programming can only be used for some parts of an application: a reactive program is usually embedded in an application that is still written in ordinary imperative languages such as JavaScript or Scala. In this paper we investigate this embedding and we distill “the awkward squad for reactive programming” as 3 concerns that are essential for real-world software development, but that do not fit within reactive programming. They are related to long lasting computations, side-effects, and the coordination between imperative and reactive code. To solve these issues we design a new programming model called the Actor-Reactor Model in which programs are split up in a number of actors and reactors. Actors and reactors enforce a strict separation of imperative and reactive code, and they can be composed via a number of composition operators that make use of data streams. We demonstrate the model via our own implementation in a language called Stella.
+&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/1">LtU Forum</category>
+ <pubDate>Tue, 15 Sep 2020 17:48:50 +0000</pubDate>
+</item>
+<item>
+ <title>The Simple Essence of Algebraic Subtyping: Principal Type Inference with Subtyping Made Easy</title>
+ <link>http://lambda-the-ultimate.org/node/5597</link>
+ <description>&lt;p &gt;&lt;a href=&quot;https://infoscience.epfl.ch/record/278576&quot;&gt;The Simple Essence of Algebraic Subtyping: Principal Type Inference with Subtyping Made Easy&lt;/a&gt;, Lionel Parreaux, ICFP 2020.&lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;MLsub extends traditional Hindley-Milner type inference with subtyping while preserving compact principal types, an exciting new development. However, its specification in terms of biunification is difficult to understand, relying on the new concepts of bisubstitution and polar types, and making use of advanced notions from abstract algebra. In this paper, we show that these are in fact not essential to understanding the mechanisms at play in MLsub. We propose an alternative algorithm called Simple-sub, which can be implemented efficiently in under &lt;a href=&quot;https://github.com/LPTK/simple-sub/tree/master/shared/src/main/scala/simplesub&quot;&gt;500 lines of code&lt;/a&gt; (including parsing, simplification, and pretty-printing), looks more familiar, and is easier to understand.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p &gt;There's also an &lt;a href=&quot;https://lptk.github.io/programming/2020/03/26/demystifying-mlsub.html&quot;&gt;introductory blog post&lt;/a&gt; and an &lt;a href=&quot;https://lptk.github.io/simple-sub/&quot;&gt;online demo&lt;/a&gt;.&lt;/p&gt;
+&lt;p &gt;Stephen Dolan's Algebraic Subtyping (&lt;a href=&quot;http://lambda-the-ultimate.org/node/5393&quot;&gt;discussion)&lt;/a&gt; unexpectedly provided a solution to the problem of combining type inference and subtyping, but used somewhat heavy and unusual machinery. Now Lionel Parreaux shows that the system can be implemented in a very straightforward and pleasing way. Here's to hoping that it makes it into real languages!&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/21">Type Theory</category>
+ <pubDate>Fri, 24 Jul 2020 07:46:20 +0000</pubDate>
+</item>
+<item>
+ <title>Applications of Blockchain to Programming Language Theory</title>
+ <link>http://lambda-the-ultimate.org/ltu-blockchain-plt-thinktank</link>
+ <description>&lt;p &gt;Let's talk about Blockchain.  Goal is to use this forum topic to highlight its usefulness to programming language theory and practice.  If you're familiar with existing research efforts, please share them here.  In addition, feel free to generate ideas for how Blockchain could improve languages and developer productivity.&lt;/p&gt;
+&lt;p &gt;As one tasty example: Blockchain helps to formalize thinking about &lt;a href=&quot;https://en.wikipedia.org/wiki/Mutual_knowledge_(logic)&quot;&gt;mutual knowledge&lt;/a&gt; and &lt;a href=&quot;https://en.wikipedia.org/wiki/Common_knowledge_(logic)&quot;&gt;common knowledge&lt;/a&gt;, and potentially think about sharing intergalactic computing power through vast distributed computing fabrics.  If we can design contracts in such a way that maximizes the usage of mutual knowledge while minimizing common knowledge to situations where you have to &quot;prove your collateral&quot;, third-party transactions could eliminate a lot of back office burden.  But, there might be benefits in other areas of computer science from such research, as well.&lt;/p&gt;
+&lt;p &gt;Some language researchers, like Mark S. Miller, have always dreamed of &lt;a href=&quot;https://www.youtube.com/watch?v=j5SuqIrgRJU&quot;&gt;Agoric and the Decades-Long Quest for Secure Smart Contracts&lt;/a&gt;.&lt;/p&gt;
+&lt;p &gt;Some may also be aware that &lt;a href=&quot;https://www.innoq.com/en/articles/2019/07/verifikation-von-smart-contracts/&quot;&gt;verification of smart contracts&lt;/a&gt; is an important research area, because of the notorious theft of purse via logic bug in an Ethereum smart contract.&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/5">Fun</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/8">Implementation</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/29">Semantics</category>
+ <pubDate>Mon, 13 Apr 2020 14:38:12 +0000</pubDate>
+</item>
+<item>
+ <title>Turnstile+: Dependent Type Systems as Macros</title>
+ <link>http://lambda-the-ultimate.org/node/5587</link>
+ <description>&lt;p &gt;In 2017, a team from Northeastern University released Turnstile, a framework for implementing propositionally typed languages in Racket; cf. naasking's story &lt;a href=&quot;http://lambda-the-ultimate.org/node/5426&quot;&gt;Type Systems as Macros&lt;/a&gt;. The system was really nice because it allowed type systems to be expressed in a manner similar to the way theoretical PL researchers would in a paper, and because it hooked into Racket's clean compiler backend.&lt;/p&gt;
+&lt;p &gt;Now Stephen Chang, one of that team, together with new coauthors Michael Ballantyne, Usamilo Turner and William Bowman, have released a rewrite that they call Turnstile+, together with a POPL article, &lt;a href=&quot;https://www.ccs.neu.edu/home/stchang/pubs/cbtb-popl2020.pdf&quot;&gt;Dependent Type Systems as Macros&lt;/a&gt;. From that article's introduction:&lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;
+Turnstile+ represents a major research leap over its predecessor. Specifically, we solve the major challenges necessary to implement dependent types and their accompanying DSLs and extensions (which Turnstile could not support), while retaining the original abilities of Turnstile. For example, one considerable obstacle was the separation between the macro expansion phase and a program’s runtime phase. Since dependently typed languages may evaluate expressions while type checking, checking dependent types with macros requires new macrology design patterns and abstractions for interleaving expansion, type checking, and evaluation. The following summarizes our key innovations.&lt;/p&gt;
+&lt;ul &gt;
+&lt;li &gt;Turnstile+ demands a radically different API for implementing a language’s types. It must be straightforward yet expressive enough to represent a range of constructs from base types, to binding forms like Π-types, to datatype definition forms for indexed inductive type families.
+&lt;li &gt;Turnstile+ includes an API for defining type-level computation, which we dub normalization by macro expansion. A programmer writes a reduction rule using syntax resembling familiar on-paper notation, and Turnstile+ generates a macro definition that performs the reduction during macro expansion. This allows easily implementing modular type-level evaluation.
+&lt;li &gt;Turnstile+’s new type API adds a generic type operation interface, enabling modular implementation of features such as error messages, pattern matching, and resugaring. This is particularly important for implementing tools like tactic systems that inspect intermediate type-checking steps and construct partial terms.
+&lt;li &gt;Turnstile+’s core type checking infrastructure requires an overhaul, specifically with first-class type environments, in order to accommodate features like dependent binding structures of the shape[x:τ]...,i.e., telescopes [de Bruijn 1991; McBride 2000].
+&lt;li &gt;Relatedly, Turnstile+’s inference-rule syntax is extended so that operations over telescopes, or premises with references to telescopes, operate as folds instead of as maps
+&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p &gt;The code is available at &lt;a href=&quot;https://github.com/stchang/macrotypes&quot;&gt;https://github.com/stchang/macrotypes&lt;/a&gt;.&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/15">Meta-Programming</category>
+ <pubDate>Fri, 14 Feb 2020 08:56:27 +0000</pubDate>
+</item>
+<item>
+ <title>Histogram: You have to know the past to understand the present by Tomas Petricek</title>
+ <link>http://lambda-the-ultimate.org/node/5582</link>
+ <description>&lt;p &gt;&lt;a href=&quot;http://tomasp.net/histogram/&quot;&gt;Histogram: You have to know the past to understand the present&lt;/a&gt; by Tomas Petricek, University of Kent&lt;/p&gt;
+&lt;p &gt;&lt;quote &gt; Programs are created through a variety of interactions. A programmer might write some code, run it interactively to check whether it works, use copy and paste, apply a refactoring or choose an item from an auto-complete list. Programming research often forgets about these and represents programs as the resulting text. Consequently, thinking about such interactions is often out of scope. This essay shifts focus from programs to a more interesting question of programming.&lt;/quote&gt; &lt;/p&gt;
+&lt;p &gt;&lt;quote &gt; We represent programs as lists of interactions such as triggering an auto-complete and choosing an option, declaring a value, introducing a variable or evaluating a piece of code. We explore a number of consequences of this way of thinking about programs. First, if we create functions by writing concrete code using a sample input and applying a refactoring, we do not lose the sample input and can use it later for debugging. Second, if we treat executing code interactively as an interaction and store the results, we can later use this information to give more precise suggestions in auto-complete. Third, by moving away from a textual representation, we can display the same program as text, but also in a view inspired by spreadsheets. Fourth, we can let programmers create programs by directly interacting with live previews as those interactions can be recorded and as a part of program history.&lt;/quote&gt; &lt;/p&gt;
+&lt;p &gt;&lt;quote &gt; We discuss the key ideas through examples in a simple programming environment for data exploration. Our focus in this essay is more on principles than on providing fine tuned user experience. We keep our environment more explicit, especially when this reveals what is happening behind the scenes. We aim to show that seeing programs as lists of interactions is a powerful change of perspective that can help us build better programming systems with novel features that make programming easier and more accessible. The data exploration environment in this interactive essay may not yet be that, but it gives a glimpse of the future.&lt;/quote&gt; &lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/1">LtU Forum</category>
+ <pubDate>Sun, 15 Sep 2019 01:26:13 +0000</pubDate>
+</item>
+<item>
+ <title>Applied Category Theory - The Emerging Science of Compositionality</title>
+ <link>http://lambda-the-ultimate.org/node/5581</link>
+ <description>&lt;p &gt;An enjoyable 25-minute introductory talk: &lt;a href=&quot;https://www.youtube.com/watch?v=iwvl0tBJhoM&quot;&gt;YOW! Lambda Jam 2019 - Ken Scambler - Applied Category Theory&lt;/a&gt; (&lt;a href=&quot;https://www.slideshare.net/kenbot/applied-category-theory-the-emerging-science-of-compositionality&quot;&gt;slides&lt;/a&gt;)&lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;What do programming, quantum physics, chemistry, neuroscience, systems biology, natural language parsing, causality, network theory, game theory, dynamical systems and database theory have in common?&lt;/p&gt;
+&lt;p &gt;As functional programmers, we know how useful category theory can be for our work - or perhaps how abstruse and distant it can seem. What is less well known is that applying category theory to the real world is an exciting field of study that has really taken off in just the last few years. It turns out that we share something big with other fields and industries - we want to make big things out of little things without everything going to hell! The key is compositionality, the central idea of category theory.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p &gt;Previously: &lt;a href=&quot;http://lambda-the-ultimate.org/node/5571&quot;&gt;Seven Sketches in Compositionality: An Invitation to Applied Category Theory&lt;/a&gt;.&lt;/p&gt;
+&lt;p &gt;(via &lt;a href=&quot;https://twitter.com/puffnfresh&quot;&gt;Brian McKenna&lt;/a&gt;)&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/22">Category Theory</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/10">Paradigms</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/25">Spotlight</category>
+ <pubDate>Mon, 05 Aug 2019 14:08:02 +0000</pubDate>
+</item>
+<item>
+ <title>Tensor Considered Harmful</title>
+ <link>http://lambda-the-ultimate.org/tensor-considered-harmful</link>
+ <description>&lt;p &gt;&lt;a href=&quot;http://nlp.seas.harvard.edu/NamedTensor&quot;&gt;Tensor Considered Harmful&lt;/a&gt;, by Alexander Rush&lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;
+TL;DR: Despite its ubiquity in deep learning, Tensor is broken. It forces bad habits such as exposing private dimensions, broadcasting based on absolute position, and keeping type information in documentation. This post presents a proof-of-concept of an alternative approach, &lt;strong &gt;named tensors&lt;/strong&gt;, with named dimensions. This change eliminates the need for indexing, dim arguments, einsum- style unpacking, and documentation-based coding. The prototype &lt;strong &gt;PyTorch library&lt;/strong&gt; accompanying this blog post is available as &lt;a href=&quot;https://github.com/harvardnlp/NamedTensor&quot;&gt;namedtensor&lt;/a&gt;.
+&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p &gt;Thanks to Edward Z. Yang for pointing me to this &quot;Considered Harmful&quot; position paper.&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/4">Critiques</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/8">Implementation</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/18">Teaching &amp; Learning</category>
+ <pubDate>Thu, 27 Jun 2019 14:26:57 +0000</pubDate>
+</item>
+<item>
+ <title>Seven Sketches in Compositionality: An Invitation to Applied Category Theory</title>
+ <link>http://lambda-the-ultimate.org/node/5571</link>
+ <description>&lt;a href=&quot;http://xahlee.info/math/i/category_theory_brendan_fong_david_spivak_2018-03.pdf&quot;&gt;Seven Sketches in Compositionality: An Invitation to Applied Category Theory&lt;/a&gt;
+&lt;p &gt;2018 by Brendan Fong and David I. Spivak&lt;/p&gt;
+&lt;blockquote &gt;
+Category theory is becoming a central hub for all of pure mathematics. It is unmatched
+in its ability to organize and layer abstractions, to find commonalities between structures of all sorts, and to facilitate communication between different mathematical
+communities.
+But it has also been branching out into science, informatics, and industry. We believe
+that it has the potential to be a major cohesive force in the world, building rigorous
+bridges between disparate worlds, both theoretical and practical. The motto at MIT is
+mens et manus, Latin for mind and hand. We believe that category theory—and pure
+math in general—has stayed in the realm of mind for too long; it is ripe to be brought
+to hand.
+&lt;/blockquote&gt;
+A very approachable but useful introduction to category theory. It avoids the Scylla and Charybdis of becoming incomprehensible after page 2 (as many academic texts do), and barely scratching the surface (as many popular texts do).</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/22">Category Theory</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/18">Teaching &amp; Learning</category>
+ <pubDate>Sun, 28 Apr 2019 03:53:25 +0000</pubDate>
+</item>
+<item>
+ <title>&quot;Three Things I Wish I Knew When I Started Designing Languages&quot;</title>
+ <link>http://lambda-the-ultimate.org/node/5569</link>
+ <description>&lt;p &gt;&lt;a href=&quot;https://www.infoq.com/presentations/language-design-process&quot;&gt;The transcript of &lt;i &gt;Three Things I Wish I Knew When I Started Designing Languages&lt;/i&gt;&lt;/a&gt;, a talk given by Peter Alvaro somewhere or other, is up at Info Q.&lt;/p&gt;
+&lt;p &gt;Peter Alavaro's main research interest is in taming distributed systems. He starts his talk with the provocative thesis, &quot;In the future, all radical new languages will be domain-specific languages.&quot;  He talks of the evolution of his ideas about dealing with distributed systems:&lt;/p&gt;
+&lt;ol &gt;
+&lt;li &gt;Little interest by designers of programming-language designers in filling huge difficulty of debugging in context of distributed systems;
+&lt;li &gt;PLs often make handling of data somewhat implicit, even with functional programming, which he says is dangerous in distributed programming;
+&lt;li &gt;To talk about the flow of data properly, we need to talk about time;
+&lt;li &gt;Two things that influenced him as a grad student: Jeff Ullman's claim that encapsulation and declarativity are in tension, and &lt;a href=&quot;https://en.wikipedia.org/wiki/Fagin%27s_theorem&quot;&gt;Fagin's theorem&lt;/a&gt; (the existential fragment of second-order logic characterises NP);
+&lt;li &gt;Idea that distributed systems can be considered as protocols specified a bit like SQL or Datalog queries;
+&lt;li &gt;Triviality with query languages of characterising the idea of place in distributive systems: they are just another relation parameter;
+&lt;li &gt;Describing evolution of a system in time can be done with two other things: counters and negation, leading to Bertram Ludäscher's language Statelog.  But this way of doing things leads to the kind of low-level overexpressive modelling he was trying to avoid;
+&lt;li &gt;&quot;What is it about...protocols that they seem to require negation to express?”  Turns out that if you drop negation, you characterise the protocols that deliver messages deterministically.
+&lt;/ol&gt;
+&lt;p &gt;He summarises by saying the only good reason to design a programming language (I assume he means a radically novel language) is to shape your understanding of the problem.  No regrets of being the only user of his first language, Datalist, because the point is that it shaped all his later thought in his research.&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/16">Parallel/Distributed</category>
+ <pubDate>Tue, 19 Mar 2019 00:20:53 +0000</pubDate>
+</item>
+</channel>
+</rss>

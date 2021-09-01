@@ -1,0 +1,8 @@
+{
+  "title":"Clojure-like destructuring in brev\n    ",
+  "date":"2021-08-20T02:03:29.000000-07:00",
+  "author":"Idiomdrottning",
+  "id":"https://idiomdrottning.org/clojure-like-destructuring-in-brev",
+  "link":"https://idiomdrottning.org/clojure-like-destructuring-in-brev",
+  "content":"I’ve been learning Clojure and it’s pretty fun because a lot of design\n              decisions are similar to brev. I really like Clojure a lot.\n            Of course, some things are very different.\n            One thing Clojure is famous for is its destructuring function\n              definitions. That’s something brev can do as well, although the more\n              direct inspiration was Haskell.\n            Here is an example:\n            (define fruit-color (call-table))\n\n(fruit-color 'banana 'yellow)\n(fruit-color 'apple 'red)\n(fruit-color 'pear 'green)\n\n(define (basket-color-inspect ('shopping-basket (= fruit-color x)))\n  (print &quot;The shopping basket has a &quot; x &quot; fruit.&quot;))\n\n(basket-color-inspect '(shopping-basket apple))\n\n            This prints out:\n            The shopping basket has a red fruit.\n\n            Here is another example:\n            (define computer-color (call-table))\n(computer-color 'apple 'bondi)\n\n(define leaf-color (call-table))\n(leaf-color 'apple 'green)\n\n(define (basket-apple-inspect ('shopping-basket (= (fn (x 'apple)) x)))\n  (print &quot;The shopping basket has a &quot; x &quot; apple.&quot;))\n\n(basket-apple-inspect `(shopping-basket ,leaf-color))\n\n            That prints out:\n            The shopping basket has a green apple.\n\n    "
+}

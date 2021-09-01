@@ -1,0 +1,1019 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[Filippo.io]]></title><description><![CDATA[Filippo.io]]></description><link>https://blog.filippo.io/</link><image><url>https://blog.filippo.io/favicon.png</url><title>Filippo.io</title><link>https://blog.filippo.io/</link></image><generator>Ghost 3.42</generator><lastBuildDate>Fri, 13 Aug 2021 15:27:34 GMT</lastBuildDate><atom:link href="https://blog.filippo.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Hacking together a USB-C charger for a cheap Chromebook]]></title><description><![CDATA[<p>The era of USB-C has come. The other day I threw all other cables into a box, and bought a set of USB-C to USB-C, Lightning, and microUSB cables. USB-C chargers around the house, USB-C PD power bank, even a nice small USB-C dock that works with the Nintendo Switch</p>]]></description><link>https://blog.filippo.io/usb-c-charger-for-a-cheap-chromebook/</link><guid isPermaLink="false">5e9b53f2914aa80038077763</guid><category><![CDATA[Technical notes]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Sat, 18 Apr 2020 19:53:05 GMT</pubDate><content:encoded><![CDATA[<p>The era of USB-C has come. The other day I threw all other cables into a box, and bought a set of USB-C to USB-C, Lightning, and microUSB cables. USB-C chargers around the house, USB-C PD power bank, even a nice small USB-C dock that works with the Nintendo Switch if the charger can do the right voltage. It's glorious.</p><p>Only one thing won't charge with USB-C, my awfully cheap ($190 for 4GB of RAM) Samsung Chromebook 3, a machine I use when I want the extra security of the Chrome OS platform. Instead, this laptop charges from an old-school 12V barrel connector, forcing me to carry around an extra brick. 😢</p><figure class="kg-card kg-image-card"><img src="https://blog.filippo.io/content/images/2020/04/zypds----1.jpeg" class="kg-image" alt="side view of the laptop with round charging connector"></figure><p>USB traditionally delivers 5V of power, but with the introduction of the USB Power Delivery standard, devices can negotiate higher voltages with capable power bricks. Indeed, 12V is an option, and at least a couple of my chargers support it.</p><figure class="kg-card kg-image-card"><img src="https://blog.filippo.io/content/images/2020/04/zypds----3.jpeg" class="kg-image" alt="USB charger with 12V marking amongst others"></figure><p>It should be possible to hack together a USB-C charger for my cheap Chromebook!</p><p>What we need is called a "USB-C PD trigger", a little board that negotiates a specific PD voltage with a charger. There are a few variants, including ones with a button to select the voltage, but the most common one is a tiny board with a female USB-C connector called ZYPDS.</p><p>They are so cheap that I suspect the reason the laptops don't come with them is that 1) it requires a charger that can deliver that specific voltage, and people are already confused enough by USB-C and 2) the USB-C charger side is probably more expensive.</p><p>They usually support 15V/20V (selected by soldering a bridge), and while I suspect 15V would have worked too, I found one on eBay claiming 9V/12V. It has the same model name, but a different PCB color. Perfect!</p><figure class="kg-card kg-image-card"><img src="https://blog.filippo.io/content/images/2020/04/Screen-Shot-2020-04-18-at-15.39.38.png" class="kg-image" alt="an order for a blue 9V/12V ZYPDS for $4.42"></figure><p>This thing is small enough to fit in a cable (or even in the laptop, but I wanted to keep this as uninvasive as possible) so I also got a short cable with a barrel connector, and some heat shrink tubing.</p><p>When it arrived it was already configured for 12V, and delivered more or less on the spot.</p><figure class="kg-card kg-image-card"><img src="https://blog.filippo.io/content/images/2020/04/zypds----7.jpeg" class="kg-image" alt="multimeter connected to the ZYPDS showing 12.17V"></figure><p>The only tricky thing was figuring out the polarity of the cable and the connector. I learned that the polarity of the connector is the marking on the charger that looks a little like <code>⊖--Ｃ●--⊕</code>, and commonly the outer surface of the barrel is the negative. I figured out which wire connected to the outer surface with the multimeter continuity mode.</p><figure class="kg-card kg-image-card"><img src="https://blog.filippo.io/content/images/2020/04/zypds----8.jpeg" class="kg-image" alt="multimeter connected to the barrel connector and a wire from the cable"></figure><p>A mediocre soldering job later I had a short adaptor from USB-C to a barrel connector.</p><figure class="kg-card kg-image-card"><img src="https://blog.filippo.io/content/images/2020/04/zypds----9-1.jpeg" class="kg-image" alt="ZYPDS with two wires soldered to the connector pads"></figure><p>And it successfully charges the laptop!</p><figure class="kg-card kg-image-card"><img src="https://blog.filippo.io/content/images/2020/04/zypds----11.jpeg" class="kg-image" alt="the adaptor connected to a charging laptop"></figure><p>The only snag was that the barrel connector I got wasn't a perfect fit for the laptop, so it would lose connection if not pulled downwards. Knowing the setup worked, I just cut the stock charger and used its connector instead. It was more annoying to solder because it's a concentric cable, but it works perfectly.</p><p>With the heat shrink tubing on it doesn't even look that bad, and definitely beats carrying an extra charger around! (By the way, heat shrink tubing is amazing.)</p><figure class="kg-card kg-image-card"><img src="https://blog.filippo.io/content/images/2020/04/zypds----2.jpeg" class="kg-image" alt="the adaptor charging a laptop"></figure><p>For more hacks, <a href="https://twitter.com/FiloSottile">follow me on Twitter</a>.</p>]]></content:encoded></item><item><title><![CDATA[Install Go tools from modules with brew-gomod]]></title><description><![CDATA[<p>As of Go 1.14, <a href="https://golang.org/doc/go1.14">modules are ready for production</a>. Compared to GOPATH, they make it much easier to keep workspaces clean by managing dependencies out of sight, and by letting you clone projects anywhere. However, there is no good way to simply install a Go binary from source, <a href="https://github.com/golang/go/issues/30515">yet</a></p>]]></description><link>https://blog.filippo.io/install-go-tools-from-modules-with-brew-gomod/</link><guid isPermaLink="false">5e6e70a5cee99000383ceebd</guid><category><![CDATA[Go]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Sun, 15 Mar 2020 18:18:54 GMT</pubDate><media:content url="https://blog.filippo.io/content/images/2020/03/carbon--4-.png" medium="image"/><content:encoded><![CDATA[<img src="https://blog.filippo.io/content/images/2020/03/carbon--4-.png" alt="Install Go tools from modules with brew-gomod"><p>As of Go 1.14, <a href="https://golang.org/doc/go1.14">modules are ready for production</a>. Compared to GOPATH, they make it much easier to keep workspaces clean by managing dependencies out of sight, and by letting you clone projects anywhere. However, there is no good way to simply install a Go binary from source, <a href="https://github.com/golang/go/issues/30515">yet</a>.</p><p>The core reason for this is that <code>go get</code> is a software development tool, not a software distribution tool, and binaries should be distributed through package managers. However, many tools are not packaged.</p><p>Back in the GOPATH days <a href="https://blog.filippo.io/cleaning-up-my-gopath-with-homebrew/">I had a script</a>, <code>brew-go-get</code>, which would run <code>go get</code> in a temporary GOPATH and then use Homebrew to safely link the binary in place, so that you could track the installation with <code>brew list</code> and remove it with <code>brew uninstall</code>.</p><p>I have updated the script for modules, and it works a lot better!</p><p><a href="https://github.com/FiloSottile/homebrew-gomod">Introducing <code>brew gomod</code>.</a></p><pre><code>$ brew install FiloSottile/gomod/brew-gomod
+$ brew gomod github.com/maruel/panicparse/cmd/pp
+go: creating new go.mod: module gomod-pp/2020-03-15
+go: downloading github.com/maruel/panicparse v1.3.0
+go: found github.com/maruel/panicparse/cmd/pp in github.com/maruel/panicparse v1.3.0
+go: downloading github.com/mattn/go-isatty v0.0.7
+go: downloading github.com/mattn/go-colorable v0.1.1
+go: downloading github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b
+go: downloading golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223
+Linking /usr/local/Cellar/gomod-pp/2020-03-15...  1 symlinks created
+$ pp -help
+Usage of pp: [...]
+$ brew uninstall gomod-pp
+Uninstalling /usr/local/Cellar/gomod-pp/2020-03-15... (3 files, 4.8MB)
+</code></pre><p>Here's how it works:</p><ol><li>it creates a new Go module at <code>/usr/local/Cellar/gomod-$name/$date/libexec/mod</code> (the Cellar is where Homebrew software is installed, and <code>libexec</code> is a magic path that doesn't get linked into <code>/usr/local</code>)</li><li>within that module, it runs <code>go get</code> with a <code>GOBIN</code> set to <code>/usr/local/Cellar/gomod-$name/$date/bin</code></li><li>it runs <code>brew link gomod-$name</code> to get the binary linked into <code>/usr/local/bin</code></li></ol><p>Like any Homebrew installation, it's easy to track and uninstall, and manual installations like this <a href="https://docs.brew.sh/Tips-N-Tricks#install-into-homebrew-without-formulae">are officially supported</a>. The modules solution also has a number of advantages over the GOPATH solution:</p><ul><li>it's secured by the <a href="https://golang.org/design/25530-sumdb">Go checksum database</a> agains tampering</li><li>it uses the system module and build cache, avoiding duplicate downloads and source trees</li><li>it leaves behind the exact versions used in <code>libexec/mod/go.mod</code></li><li>the built binaries have access to their own version via <a href="https://golang.org/pkg/runtime/debug/#BuildInfo"><code>debug.BuildInfo</code></a></li></ul><p>Install the command easily with</p><pre><code>$ brew install FiloSottile/gomod/brew-gomod
+</code></pre><p>and let me know <a href="https://twitter.com/FiloSottile">on Twitter</a> how it works.</p><!--kg-card-begin: html--><blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">I&#39;ve made a simple brew command to cleanly install binaries from Go modules as Homebrew packages.<br><br>$ brew install FiloSottile/gomod/brew-gomod<br>$ brew gomod <a href="https://t.co/TzTye7BzyJ">https://t.co/TzTye7BzyJ</a><br><br>Secured by the Go Checksum Database!<a href="https://t.co/a4LuTECcbw">https://t.co/a4LuTECcbw</a></p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/1239257085617090561?ref_src=twsrc%5Etfw">March 15, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script><!--kg-card-end: html-->]]></content:encoded></item><item><title><![CDATA[Efficient Go APIs with the mid-stack inliner]]></title><description><![CDATA[A common task in Go API design is returning a byte slice. In this post I will explore some old techniques and a new one. In particular, we'll see how the mid-stack inliner interacts with escape analysis to make it possible for the most natural API to be also the fastest.]]></description><link>https://blog.filippo.io/efficient-go-apis-with-the-inliner/</link><guid isPermaLink="false">5d2ff772d13a380038af87b2</guid><category><![CDATA[Go]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Thu, 18 Jul 2019 05:04:51 GMT</pubDate><media:content url="https://blog.filippo.io/content/images/2019/07/Screen-Shot-2019-07-18-at-12.24.20.png" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><img src="https://blog.filippo.io/content/images/2019/07/Screen-Shot-2019-07-18-at-12.24.20.png" alt="Efficient Go APIs with the mid-stack inliner"><p>A common task in Go API design is returning a byte slice. In this post I will explore some old techniques and a new one that became possible in Go 1.12 with the introduction of the mid-stack inliner.</p>
+<h2 id="returningafreshslice">Returning a fresh slice</h2>
+<p>The most natural approach is to return a fresh byte slice, like <a href="https://tip.golang.org/pkg/crypto/ed25519/#Sign"><code>crypto/ed25519.Sign</code></a>.</p>
+<pre><code class="language-no-highlight">package ed25519 // import &quot;crypto/ed25519&quot;
+
+func Sign(privateKey PrivateKey, message []byte) []byte
+    Sign signs the message with privateKey and returns a signature.
+</code></pre>
+<p>The unfortunate issue is that such an API forces a heap allocation for the returned slice. Since the slice's memory must survive the function's lifespan, the <a href="https://www.ardanlabs.com/blog/2017/05/language-mechanics-on-escape-analysis.html">escape analysis</a> has to move it to the heap, where allocations are expensive and put pressure on the garbage collector.</p>
+<pre><code>$ benchstat &lt;(gotip test -bench Sign -benchmem -count 10 crypto/ed25519)
+
+name       time/op
+Signing-4  53.5µs ± 0%
+
+name       alloc/op
+Signing-4    512B ± 0%
+
+name       allocs/op
+Signing-4    6.00 ± 0%
+</code></pre>
+<p>Of those six allocations, five are due to <code>hash.Hash</code> usage (more on this in the conclusion), but one is the return value. A single allocation might not matter for most applications, but when it does become significant, there is no way for the caller to mitigate it.</p>
+<h2 id="passingthedestination">Passing the destination</h2>
+<p>A straightforward solution is to let the caller pass the destination slice, when the output size is known. An example is the current <a href="https://godoc.org/golang.org/x/crypto/curve25519#ScalarBaseMult"><code>golang.org/x/crypto/curve25519.ScalarBaseMult</code></a> API.</p>
+<pre><code>package curve25519 // import &quot;golang.org/x/crypto/curve25519&quot;
+
+func ScalarBaseMult(dst, in *[32]byte)
+    ScalarBaseMult sets dst to the product in*base where dst and base are the x
+    coordinates of group points, base is the standard generator and all values
+    are in little-endian form.
+</code></pre>
+<p>Besides looking a lot like C, this API is not at all ergonomic: using it requires pre-allocating the destination even if the caller doesn't really care about performance.</p>
+<pre><code>var dst [32]byte
+curve25519.ScalarBaseMult(&amp;dst, &amp;peerShare)
+</code></pre>
+<h2 id="appendlikeapis">Append-like APIs</h2>
+<p>A great compromise are <a href="https://golang.org/pkg/builtin/#append">append</a>-like APIs. An append-like API appends the result to a passed slice and returns the extended (and possibly reallocated) slice, like <code>append()</code>. An example is <code>hash.Hash.Sum</code>.</p>
+<pre><code>h := sha256.New()
+h.Write([]byte(&quot;hello world\n&quot;))
+fmt.Printf(&quot;%x&quot;, h.Sum(nil))
+</code></pre>
+<p>If the caller is unconcerned with performance, they can just pass <code>nil</code>, and a new slice will be allocated for them. If they want to save the allocation, though, they just need to pass a slice with enough spare capacity to hold the result.</p>
+<pre><code>out := make([]byte, 0, 32)
+out = h.Sum(out)
+</code></pre>
+<p>It also works very well with <a href="https://golang.org/pkg/sync/#Pool"><code>sync.Pool</code></a>, since the used buffer can just be sliced to zero (<code>out[:0]</code>) and returned to the pool. The buffers in the pool will naturally grow to the necessary size.</p>
+<p>Still, passing <code>nil</code> to all APIs is awkward, and I've seen multiple people confused that <code>h.Sum(my32BytesSlice)</code> doesn't just fill the existing slice length. The API that returns a fresh slice would definitely be the most intuitive one, if only it didn't preclude the caller from optimizing away the allocation.</p>
+<h2 id="usingtheinliner">Using the inliner</h2>
+<p>Enter the mid-stack inliner! Since Go 1.12, the inliner learned how to <a href="https://docs.google.com/presentation/d/1Wcblp3jpfeKwA0Y4FOmj63PW52M_qmNqlQkNaLj0P5o/edit#slide=id.g1b2157b5d1_3_134">inline functions that call other functions</a>. We can use this capability to make our allocating APIs as efficient as any other.</p>
+<p>All we need to do is make the exposed function a very thin wrapper around the actual implementation that just allocates the output and makes the call. For example, this is the <a href="https://github.com/golang/go/issues/32670">new proposed curve25519 API</a>.</p>
+<pre><code>func X25519(scalar, point []byte) ([]byte, error) {
+	var dst [32]byte
+	return x25519(&amp;dst, scalar, point)
+}
+
+func x25519(dst *[32]byte, scalar, point []byte) ([]byte, error) {
+	// ...
+	return dst[:], nil
+}
+</code></pre>
+<p>While <code>dst</code> normally escapes to the heap, in practice the <code>X25519</code> body will be inlined in the caller along with the <code>dst</code> allocation, and if the caller is careful not to let it escape, it will stay on the caller's stack. It will be as if the caller were using the hidden, less ergonomic, and more efficient <code>x25519</code> API.</p>
+<p>We can verify that it works by looking at the inliner and escape analysis debug output (which I trimmed to the relevant lines). Note that the output in Go 1.13 <a href="https://github.com/golang/go/issues/32850">is a little different</a>.</p>
+<pre><code>$ cat x25519.go
+package main
+
+func main() {
+	scalar, point := make([]byte, 32), make([]byte, 32)
+	res, err := X25519(scalar, point)
+	if err != nil {
+		panic(err)
+	}
+	println(res)
+}
+
+func X25519(scalar, point []byte) ([]byte, error) {
+	var dst [32]byte
+	return x25519(&amp;dst, scalar, point)
+}
+
+func x25519(dst *[32]byte, scalar, point []byte) ([]byte, error) {
+	// [ actual crypto code omitted ]
+	return dst[:], nil
+}
+
+$ go build -gcflags -m x25519.go
+./x25519.go:??:6: can inline X25519
+./x25519.go:??:20: inlining call to X25519
+./x25519.go:??:13: leaking param: dst to result ~r3 level=0
+./x25519.go:??:20: main &amp;dst does not escape
+./x25519.go:??:16: &amp;dst escapes to heap
+./x25519.go:??:6: moved to heap: dst
+</code></pre>
+<p>What this is telling us is that <code>dst</code> escapes to the heap when allocated in <code>X25519()</code>, but when <code>X25519()</code> is inlined in <code>main()</code>, the <code>dst</code> instance that got inlined doesn't escape!</p>
+<p>This technique gets us the best of both worlds: we can make an intuitive API that's easy to use in the common case, but that still allows performance sensitive callers to avoid the heap allocation by ensuring they don't let the result escape.</p>
+<h3 id="constructors">Constructors</h3>
+<p>It's not just slice APIs that can benefit from it: we can use the inliner to allow saving any return value allocation. A very common case is <code>func NewFoo() *Foo</code> constructors.</p>
+<p>For example, here's how I plan to use it in the new <code>golang.org/x/crypto/chacha20</code> package.</p>
+<pre><code>func NewUnauthenticatedCipher(key, nonce []byte) (*Cipher, error) {
+    var c Cipher
+    return newCipher(&amp;c, key, nonce)
+}
+</code></pre>
+<p>Looks like <a href="https://go-review.googlesource.com/c/crypto/+/185980/3/chacha20/chacha_generic.go#62">this will realize a lot of the benefit of a combined ChaCha20-Poly1305 implementation without requiring all that extra assembly</a>! :partyparrot:</p>
+<h3 id="furtheroptimizations">Further optimizations</h3>
+<p>Like any good idea, this is not new, and apparently goes by the general name of <a href="https://pdfs.semanticscholar.org/6c72/2c58232816b74e23ebd60f9782073c29699b.pdf"><em>function outlining</em></a>: it's moving parts of functions into the parent to enable other optimizations. In this case we are doing so manually, and with the specific objective of enabling more efficient escape analysis.</p>
+<p>Russ Cox also pointed out that this will enable another optimization when interfaces are involved: inlining can help the compiler understand the concrete type of an interface return value, and that information can help the escape analysis ensure that arguments of the methods don't escape.</p>
+<p>Take for example the <a href="https://golang.org/pkg/crypto/sha256"><code>crypto/sha256</code></a> API. Unfortunately, <code>sha256.New</code> returns a <code>hash.Hash</code> interface value.</p>
+<pre><code>package sha256 // import &quot;crypto/sha256&quot;
+
+func New() hash.Hash
+    New returns a new hash.Hash computing the SHA256 checksum. The Hash also
+    implements encoding.BinaryMarshaler and encoding.BinaryUnmarshaler to
+    marshal and unmarshal the internal state of the hash.
+</code></pre>
+<p>The result is that any slice passed to the <code>Write([]byte)</code> method escapes, because the escape analysis doesn't actually know what the implementation of that virtual call is. The interface might be implemented by something that retains a reference to the argument!</p>
+<pre><code>s := make([]byte, 128)
+h := sha256.New()
+h.Write(s)
+h.Sum(nil)
+</code></pre>
+<p>Once <code>New</code> is inlined though, it's possible that it will become clear in the body of the caller that the concrete type of <code>h</code> is always <code>sha256.digest</code>, and the escape analysis would be able to prove <code>s</code> can stay on the caller's stack. This is called devirtualization, and it's <a href="https://github.com/golang/go/issues/19361">coming in Go 1.13</a>, although <a href="https://github.com/golang/go/issues/33160#issuecomment-512653356">it doesn't work yet with escape analysis</a>.</p>
+<p>Of course, this is yet another reason to always return concrete types from public APIs, but there's no changing <code>sha256.New</code> now.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>It's great when different optimizations interact to enable the most idiomatic code to be also the fastest. In this case we've seen that APIs that allocate a return value, including classic constructors, can be made efficient by leveraging the inliner and escape analysis.</p>
+<p>For more Go API design, you can <a href="https://twitter.com/FiloSottile">follow me on Twitter</a>.</p>
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="en" dir="ltr">Thanks to the new-ish mid-stack inliner, you can make Go APIs that return a new value without forcing a heap allocation!<br><br>func X25519(scalar, point []byte) ([]byte, error) {<br>    var dst [32]byte<br>    return x25519(&amp;dst, scalar, point)<br>}<a href="https://t.co/shR7wc0mzm">https://t.co/shR7wc0mzm</a></p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/1151890262861520898?ref_src=twsrc%5Etfw">July 18, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script><!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Using Ed25519 signing keys for encryption]]></title><description><![CDATA[@Benjojo12 and I are building an encryption tool that will support SSH keys as recipients. For Ed25519 keys that requires converting points between different elliptic curves. Let's see why and how.]]></description><link>https://blog.filippo.io/using-ed25519-keys-for-encryption/</link><guid isPermaLink="false">5cdf5eebf91e0600c0d6d839</guid><category><![CDATA[Crypto]]></category><category><![CDATA[Mainline]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Sat, 18 May 2019 16:25:20 GMT</pubDate><media:content url="https://blog.filippo.io/content/images/2019/05/Screen-Shot-2019-05-18-at-12.24.25.png" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><img src="https://blog.filippo.io/content/images/2019/05/Screen-Shot-2019-05-18-at-12.24.25.png" alt="Using Ed25519 signing keys for encryption"><p><a href="https://twitter.com/Benjojo12">@Benjojo12</a> and I are building <a href="https://docs.google.com/document/d/11yHom20CrsuX8KQJXBBw04s80Unjv8zCg_A7sPAX_9Y">an encryption tool</a> that will also support SSH keys as recipients, because everyone effectively already publishes their SSH public keys <a href="https://github.com/FiloSottile.keys">on GitHub</a>.</p>
+<p>For <a href="https://tools.ietf.org/html/rfc8332">RSA keys</a>, this is <a href="https://eprint.iacr.org/2011/615.pdf">dangerous</a> but straightforward: a PKCS#1 v1.5 signing key is the same as an OAEP encryption key.</p>
+<p><a href="https://tools.ietf.org/html/draft-ietf-curdle-ssh-ed25519-ed448-08#section-4">Ed25519 keys</a>, though, are specifically made to be used with <a href="https://tools.ietf.org/html/rfc8032">EdDSA, the Edwards-Curve Digital Signature Algorithm</a>. To encrypt to them we'll have to choose between converting them to X25519 keys to do Ephemeral-Static Diffie-Hellman, and devising our own Diffie-Hellman scheme that uses Ed25519 keys.</p>
+<p>While the latter is a totally viable strategy—you can do Ephemeral-Static Diffie-Hellman on twisted Edwards curves—I wanted to reuse the X25519 codepath, so I opted for the former.</p>
+<p>First, we need to understand the difference between Ed25519 and X25519. For that I recommend <a href="https://eprint.iacr.org/2017/212.pdf"><em>Montgomery curves and their arithmetic</em></a> by Craig Costello and Benjamin Smith, which is where I learned most of the underlying mechanics of Montgomery curves. The high level summary is that <strong>the twisted Edwards curve used by Ed25519 and the Montgomery curve used by X25519 are <em>birationally equivalent</em></strong>: you can convert points from one to the other, and they behave the same way. The main difference is that on Montgomery curves you can use the Montgomery ladder to do scalar multiplication of x coordinates, which is fast, constant time, and sufficient for Diffie-Hellman. Points on the Edwards curve are usually referred to as <code>(x, y)</code>, while points on the Montgomery curve are usually referred to as <code>(u, v)</code>.</p>
+<p>RFC 7748 conveniently <a href="https://tools.ietf.org/html/rfc7748#page-5">provides</a> the formulas to map <code>(x, y)</code> Ed25519 Edwards points to <code>(u, v)</code> Curve25519 Montgomery points and vice versa.</p>
+<pre><code class="language-no-highlight">(u, v) = ((1+y)/(1-y), sqrt(-486664)*u/x)
+(x, y) = (sqrt(-486664)*u/v, (u-1)/(u+1))
+</code></pre>
+<p>So that's what a <a href="https://tools.ietf.org/html/rfc7748#section-5">X25519 public key</a> is: a u coordinate on the Curve25519 Montgomery curve obtained by multiplying the basepoint by a secret scalar, which is the private key. An <a href="https://tools.ietf.org/html/rfc8032#section-5.1.5">Ed25519 public key</a> instead is the compressed encoding of a <code>(x, y)</code> point on the Ed25519 Edwards curve obtained by multiplying the basepoint by a secret scalar derived from the private key. (An Ed25519 private key is hashed to obtained two secrets, the first is the secret scalar, the other is used elsewhere in the signature scheme.)</p>
+<p>If we use the same secret scalar to calculate both an Ed25519 and an X25519 public key, we will get two points that are birationally equivalent, so we can convert from one to the other with the maps above. There is one catch though: you might have noticed that <strong>while we have both x and y coordinates for the Ed25519 public key, we only have the u coordinate for the X25519 key</strong>. That's because u coordinates are enough to do Diffie-Hellman (which is the core insight of Curve25519).</p>
+<p>For every valid u coordinate, there are two points on the Montgomery curve. The same is true of y coordinates and the Edwards curve. (When you use the birational map, y coordinates map to u coordinates and vice-versa.) That's why we can encode Ed25519 public keys as a y coordinate and a &quot;sign&quot; bit in place of the full x coordinate.</p>
+<p>This means that for each X25519 public key, there are two possible secret scalars (<code>k</code> and <code>-k</code>) and two equivalent Ed25519 public keys (with sign bit 0 and 1, also said to be one the negative of the other).</p>
+<p>By the way, this all works because the basepoints of the Montgomery and Edwards curves are equivalent. Interestingly enough, the spec made a mistake and picked the wrong v coordinate for the Montgomery basepoint, so that the Montgomery basepoint maps to the negative of the Edwards basepoint. <a href="https://www.rfc-editor.org/errata/eid4730">It's fixed in an errata</a> but no one cares about Montgomery v coordinates anyway.</p>
+<p>It should be mentioned that there is precedent for converting keys between the two curves: <a href="https://signal.org/docs/specifications/xeddsa/">Signal's XEd25519</a>. They do the opposite of what we want to do though, they use an X25519 key for EdDSA. That comes with an issue: an X25519 public key does not carry a v coordinate, so it can map to two Ed25519 keys. They solve it by defining the Edwards point sign bit to be 0, and then negating the Edwards secret scalar if it would generate a point with positive sign. (It also comes with more issues due to not having the other secret that you derive from an EdDSA private key, but that's out of scope. I like the diagram in <a href="https://blog.mozilla.org/warner/2011/11/29/ed25519-keys/">this blog post</a> if you are curious.)</p>
+<p>I recommend reading both <a href="https://signal.org/docs/specifications/xeddsa/#elliptic-curve-conversions">section 2.3 of the XEdDSA spec</a> and <a href="https://crypto.stackexchange.com/a/62881/6740">this StackExchange answer</a> if things don't feel clear at this point.</p>
+<p>Getting back to our use case, it turns out that it's pretty easy to use an Ed25519 public key for X25519, because <strong>an Ed25519 public key maps to a single X25519 public key</strong>, and the Ed25519 secret scalar will be one of the two valid X25519 private keys for that public key.</p>
+<p>To encrypt, we take the y coordinate of the Ed25519 public key and we convert it to a Montgomery u coordinate, which we use as an <a href="https://tools.ietf.org/html/rfc7748#section-5">X25519</a> public key for Ephemeral-Static Diffie-Hellman.</p>
+<pre><code>u = (1 + y) / (1 - y)
+
+ephemeral_secret = read(/dev/urandom, 32)
+ephemeral_share = X25519(ephemeral_secret, BASEPOINT)
+shared_secret = X25519(ephemeral_secret, u)
+</code></pre>
+<p>To decrypt, we derive the secret scalar <a href="https://tools.ietf.org/html/rfc8032#section-5.1.5">according to the Ed25519 spec</a>, and simply use it as an X25519 private key in Ephemeral-Static Diffie-Hellman.</p>
+<pre><code>secret_scalar = SHA-512(Ed25519_key)[:32]
+shared_secret = X25519(secret_scalar, ephemeral_share)
+</code></pre>
+<p>The two peers might end up with different v coordinates, if they were to calculate them, but in X25519 the shared secret is just the u coordinate, so no one will notice.</p>
+<p>What remains open for future work is checking for cross-protocol attacks. The only one that really concerns me is if a partial decryption oracle (where you can submit files to an endpoint and it will tell you if they decrypt successfully) allows generating an Ed25519 signature that can be used to log in to an SSH server. I can't see such an attack, but if you can, <a href="https://twitter.com/FiloSottile">let me know on Twitter</a>.</p>
+<p>P.S. Looks like libsodium already <a href="https://libsodium.gitbook.io/doc/advanced/ed25519-curve25519">supports this kind of Ed25519 to Curve25519 conversion</a>, which is great as it makes it easy for languages with libsodium bindings (most of them) to implement <em>age</em>, and it gets us something to test against.</p>
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="en" dir="ltr">It turns out it&#39;s fairly easy to reuse an Ed25519 key for X25519.<br><br>I wrote a quick blog post explaining the difference between the two, and how you can convert from one to the other.<a href="https://t.co/ihMNdOoxGC">https://t.co/ihMNdOoxGC</a></p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/1129786275924516864?ref_src=twsrc%5Etfw">May 18, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[A Go implementation of Poly1305 that makes sense]]></title><description><![CDATA[Cryptography code could be understandable if only we commented it. This Poly1305 implementation is an attempt to prove it.
+
+It should be readable with just an idea of what MACs are for, a beginner level of Go, and high school math.]]></description><link>https://blog.filippo.io/a-literate-go-implementation-of-poly1305/</link><guid isPermaLink="false">5ca2ed6bf91e0600c0d6d827</guid><category><![CDATA[Go]]></category><category><![CDATA[Crypto]]></category><category><![CDATA[Mainline]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Tue, 02 Apr 2019 16:45:07 GMT</pubDate><media:content url="https://blog.filippo.io/content/images/2019/04/Screen-Shot-2019-04-02-at-02.20.38-1.png" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><img src="https://blog.filippo.io/content/images/2019/04/Screen-Shot-2019-04-02-at-02.20.38-1.png" alt="A Go implementation of Poly1305 that makes sense"><p><a href="https://tools.ietf.org/html/rfc7539#section-2.5">Poly1305</a> is a Message Authentication Code—a cryptographic primitive for authenticating a message with a shared secret key, like <a href="https://en.wikipedia.org/wiki/HMAC">HMAC</a>.</p>
+<p>Although it's really a fraction of the complexity of e.g. elliptic curves, most of the implementations I've read look decidedly like <em>magic</em>, mysteriously multiplying values by enchanted constants, and shuffling bits like The Sorcerer's Apprentice in Fantasia. Even the paper does not explain <em>why and how</em> its design decisions lead to faster code!</p>
+<p>Still, after reverse-engineering what the implementations were doing, I grew convinced that <strong>cryptography code could be perfectly understandable <em>if only we commented it</em></strong>.</p>
+<p>I set out to prove this, and the code below is the Poly1305 implementation that came out. It should hopefully be readable with just an understanding of what MACs are for, a beginner level of Go, and high school math (like exponents and moduli). It aims to document both <em>what</em> it is doing and <em>how</em>, so it should not require any knowledge of Poly1305 specifically.</p>
+<p>It also happens to be 75% faster than the existing Go code it is <a href="https://go-review.googlesource.com/c/crypto/+/169037">meant to replace</a>. The amd64 assembly implementation in golang.org/x/crypto/poly1305 is only 30-60% faster than this code, which provides some timid hope for my dream of reducing the assembly in the Go crypto standard libraries year over year.</p>
+<p>(If the layout below does not work for you, <a href="https://go.googlesource.com/crypto/+/refs/changes/37/169037/3/poly1305/sum_generic.go">here's the same code</a> on Gitiles.)</p>
+<style>
+    .post, .inner {
+        max-width: 860px;
+    }
+    
+    .post h1, .post p {
+        max-width: 750px;
+    }
+    
+    pre {
+        background: none;
+        color: #333333;
+    }
+    
+    code {
+        font-family: "Fira Code", monospace;
+        line-height: 1.3;
+        -webkit-font-smoothing: antialiased;
+    }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+<pre><code class="language-no-highlight">// Copyright 2019 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found at https://golang.org/LICENSE.
+
+package poly1305
+
+import (
+	&quot;encoding/binary&quot;
+	&quot;math/bits&quot;
+)
+
+// Poly1305 [RFC 7539] is a relatively simple MAC algorithm: the authentication
+// tag for a 64 bytes message is approximately
+//
+//     s + m[0:16] * r⁴ + m[16:32] * r³ + m[32:48] * r² + m[48:64] * r  mod  2¹³⁰ - 5
+//
+// for some secret r and s. It can be computed sequentially like
+//
+//     for len(msg) &gt; 0:
+//         h += read(msg, 16)
+//         h *= r
+//         h %= 2¹³⁰ - 5
+//     return h + s
+//
+// All the complexity is about doing performant constant-time math on numbers
+// larger than any available numeric type.
+
+// MAC is an io.Writer computing a Poly1305 authentication tag of the data
+// written to it. After Sum has been called, Write must not be used anymore.
+type MAC struct {
+	macState
+
+	buffer [TagSize]byte
+	offset int
+}
+
+// TagSize is the size, in bytes, of a poly1305 authenticator.
+const TagSize = 16
+
+// New returns a new MAC for a single-use key.
+func New(key *[32]byte) *MAC {
+	h := &amp;MAC{}
+	initialize(key, &amp;h.r, &amp;h.s)
+	return h
+}
+
+// Write splits the incoming message into TagSize chunks, and passes them to
+// update. It buffers incomplete chunks.
+func (h *MAC) Write(p []byte) (int, error) {
+	if h.offset &gt; 0 {
+		n := copy(h.buffer[h.offset:], p)
+		if h.offset+n &lt; TagSize {
+			h.offset += n
+			return len(p), nil
+		}
+		p = p[n:]
+		h.offset = 0
+		update(&amp;h.macState, h.buffer[:])
+	}
+	if n := len(p) - (len(p) % TagSize); n &gt; 0 {
+		update(&amp;h.macState, p[:n])
+		p = p[n:]
+	}
+	if len(p) &gt; 0 {
+		h.offset += copy(h.buffer[h.offset:], p)
+	}
+	return len(p), nil
+}
+
+// Sum flushes the last incomplete chunk from the buffer, if any, and generates
+// the MAC output. It does not modify the MAC's state, in order to allow for
+// multiple calls to Sum, even if no Write should be performed after Sum.
+func (h *MAC) Sum(out *[TagSize]byte) {
+	state := h.macState
+	if h.offset &gt; 0 {
+		update(&amp;state, h.buffer[:h.offset])
+	}
+	finalize(out, &amp;state.h, &amp;state.s)
+}
+
+// macState holds numbers in saturated 64-bit little-endian limbs. That is,
+// the value of [x0, x1, x2] is x[0] + x[1] * 2⁶⁴ + x[2] * 2¹²⁸.
+type macState struct {
+	// h is the main accumulator. It is to be interpreted modulo 2¹³⁰ - 5, but
+	// can grow larger during and after rounds.
+	h [3]uint64
+	// r and s are the private key components.
+	r [2]uint64
+	s [2]uint64
+}
+
+// [rMask0, rMask1] is the specified Poly1305 clamping mask in little-endian. It
+// clears some bits of the secret coefficient to make it possible to implement
+// multiplication more efficiently.
+const (
+	rMask0 = 0x0FFFFFFC0FFFFFFF
+	rMask1 = 0x0FFFFFFC0FFFFFFC
+)
+
+func initialize(key *[32]byte, r, s *[2]uint64) {
+	r[0] = binary.LittleEndian.Uint64(key[0:8]) &amp; rMask0
+	r[1] = binary.LittleEndian.Uint64(key[8:16]) &amp; rMask1
+	s[0] = binary.LittleEndian.Uint64(key[16:24])
+	s[1] = binary.LittleEndian.Uint64(key[24:32])
+}
+
+// uint128 holds a 128-bit number as two 64-bit limbs, for use with the
+// bits.Mul64 and bits.Add64 intrinsics.
+type uint128 struct {
+	lo, hi uint64
+}
+
+func mul64(a, b uint64) uint128 {
+	hi, lo := bits.Mul64(a, b)
+	return uint128{lo, hi}
+}
+
+func add128(a, b uint128) uint128 {
+	lo, c := bits.Add64(a.lo, b.lo, 0)
+	hi, c := bits.Add64(a.hi, b.hi, c)
+	if c != 0 {
+		panic(&quot;poly1305: unexpected overflow&quot;)
+	}
+	return uint128{lo, hi}
+}
+
+func shiftRightBy2(a uint128) uint128 {
+	a.lo = a.lo&gt;&gt;2 | (a.hi&amp;3)&lt;&lt;62
+	a.hi = a.hi &gt;&gt; 2
+	return a
+}
+
+// update absorbs msg into the state.h accumulator. For each chunk of 128
+// bits of message, it computes
+//
+//     h₊ = (h + m) * r  mod  2¹³⁰ - 5
+//
+// If the msg length is not a multiple of TagSize, it assumes the last
+// incomplete chunk is the final one.
+func update(state *macState, msg []byte) {
+	h0, h1, h2 := state.h[0], state.h[1], state.h[2]
+	r0, r1 := state.r[0], state.r[1]
+
+	for len(msg) &gt; 0 {
+		var c uint64
+
+		// For the first step, h + m, we use a chain of bits.Add64 intrinsics.
+		// The resulting value of h might exceed 2¹³⁰ - 5, but will be partially
+		// reduced at the end of the multiplication below.
+		//
+		// The spec requires us to set a bit just above the message size, not to
+		// hide leading zeroes. For full chunks, that's 1 &lt;&lt; 128, so we can just
+		// add 1 to the most significant (2¹²⁸) limb, h2.
+		if len(msg) &gt;= TagSize {
+			h0, c = bits.Add64(h0, binary.LittleEndian.Uint64(msg[0:8]), 0)
+			h1, c = bits.Add64(h1, binary.LittleEndian.Uint64(msg[8:16]), c)
+			h2 += c + 1
+
+			msg = msg[TagSize:]
+		} else {
+			var buf [TagSize]byte
+			copy(buf[:], msg)
+			buf[len(msg)] = 1
+
+			h0, c = bits.Add64(h0, binary.LittleEndian.Uint64(buf[0:8]), 0)
+			h1, c = bits.Add64(h1, binary.LittleEndian.Uint64(buf[8:16]), c)
+			h2 += c
+
+			msg = nil
+		}
+
+		// Multiplication of big number limbs is similar to elementary school
+		// columnar multiplication. Instead of digits, there are 64-bit limbs.
+		//
+		// We are multiplying a 3 limbs number, h, by a 2 limbs number, r.
+		//
+		//                        h2    h1    h0  x
+		//                              r1    r0  =
+		//                       ----------------
+		//                      h2r0  h1r0  h0r0     &lt;-- individual 128-bit products
+		//            +   h2r1  h1r1  h0r1
+		//               ------------------------
+		//                 m3    m2    m1    m0      &lt;-- result in 128-bit overlapping limbs
+		//               ------------------------
+		//         m3.hi m2.hi m1.hi m0.hi           &lt;-- carry propagation
+		//     +         m3.lo m2.lo m1.lo m0.lo
+		//        -------------------------------
+		//           t4    t3    t2    t1    t0      &lt;-- final result in 64-bit limbs
+		//
+		// The main difference from pen-and-paper multiplication is that we do
+		// carry propagation in a separate step, as if we wrote two digit sums
+		// at first (the 128-bit limbs), and then carried the tens all at once.
+
+		h0r0 := mul64(h0, r0)
+		h1r0 := mul64(h1, r0)
+		h2r0 := mul64(h2, r0)
+		h0r1 := mul64(h0, r1)
+		h1r1 := mul64(h1, r1)
+		h2r1 := mul64(h2, r1)
+
+		// Since h2 is known to be at most 5 (see below), and r0 and r1 have their
+		// top 4 bits cleared by the mask, we know that their product is not going
+		// to overflow 64 bits, so we can ignore the high part of the products.
+		//
+		// This also means that the product doesn't have a fifth limb (t4).
+		if h2r0.hi != 0 {
+			panic(&quot;poly1305: unexpected overflow&quot;)
+		}
+		if h2r1.hi != 0 {
+			panic(&quot;poly1305: unexpected overflow&quot;)
+		}
+
+		m0 := h0r0
+		m1 := add128(h1r0, h0r1) // These two additions don't overflow thanks again
+		m2 := add128(h2r0, h1r1) // to the 4 masked bits at the top of r0 and r1.
+		m3 := h2r1
+
+		t0 := m0.lo
+		t1, c := bits.Add64(m1.lo, m0.hi, 0)
+		t2, c := bits.Add64(m2.lo, m1.hi, c)
+		t3, _ := bits.Add64(m3.lo, m2.hi, c)
+
+		// Now we have the result as 4 64-bit limbs, and we need to reduce it
+		// modulo 2¹³⁰ - 5. The special shape of this Crandall prime lets us do
+		// a cheap partial reduction according to the reduction identity
+		//
+		//     c * 2¹³⁰ + n  =  c * 5 + n  mod  2¹³⁰ - 5
+		//
+		// because 2¹³⁰ = 5 mod 2¹³⁰ - 5. Partial reduction since the result is
+		// likely to be larger than 2¹³⁰ - 5, but still small enough to fit the
+		// assumptions we make about h in the rest of the code.
+		//
+		// See also https://speakerdeck.com/gtank/engineering-prime-numbers?slide=23
+
+		// We split the final result at the 2¹³⁰ mark into h and cc, the carry.
+		// Note that the carry bits are effectively shifted left by 2, in other
+		// words, cc = c * 4 for the c in the reduction identity.
+		h0, h1, h2 = t0, t1, t2&amp;maskLow2Bits
+		cc := uint128{t2 &amp; maskNotLow2Bits, t3}
+
+		// To add c * 5 to h, we first add cc = c * 4, and then add (cc &gt;&gt; 2) = c.
+
+		h0, c = bits.Add64(h0, cc.lo, 0)
+		h1, c = bits.Add64(h1, cc.hi, c)
+		h2 += c
+
+		cc = shiftRightBy2(cc)
+
+		h0, c = bits.Add64(h0, cc.lo, 0)
+		h1, c = bits.Add64(h1, cc.hi, c)
+		h2 += c
+
+		// h2 is at most 3 + 1 + 1 = 5, making the whole of h at most
+		//
+		//     5 * 2¹²⁸ + (2¹²⁸ - 1) = 6 * 2¹²⁸ - 1
+	}
+
+	state.h[0], state.h[1], state.h[2] = h0, h1, h2
+}
+
+const (
+	maskLow2Bits    uint64 = 0x0000000000000003
+	maskNotLow2Bits uint64 = ^maskLow2Bits
+)
+
+// select64 returns x if v == 1 and y if v == 0, in constant time.
+func select64(v, x, y uint64) uint64 { return ^(v-1)&amp;x | (v-1)&amp;y }
+
+// [p0, p1, p2] is 2¹³⁰ - 5 in little endian order.
+const (
+	p0 = 0xFFFFFFFFFFFFFFFB
+	p1 = 0xFFFFFFFFFFFFFFFF
+	p2 = 0x0000000000000003
+)
+
+// finalize completes the modular reduction of h and computes
+//
+//     out = h + s  mod  2¹²⁸
+//
+func finalize(out *[TagSize]byte, h *[3]uint64, s *[2]uint64) {
+	h0, h1, h2 := h[0], h[1], h[2]
+
+	// After the partial reduction in update, h might be more than 2¹³⁰ - 5, but
+	// will be less than 2 * (2¹³⁰ - 5). To complete the reduction in constant
+	// time, we compute t = h - (2¹³⁰ - 5), and select h as the result if the
+	// subtraction underflows, and t otherwise.
+
+	t0, b := bits.Sub64(h0, p0, 0)
+	t1, b := bits.Sub64(h1, p1, b)
+	_, b = bits.Sub64(h2, p2, b)
+
+	// h = h if h &lt; p else h - p
+	h0 = select64(b, h0, t0)
+	h1 = select64(b, h1, t1)
+
+	// Finally, we compute the last Poly1305 step
+	//
+	//     tag = h + s  mod  2¹²⁸
+	//
+	// by just doing a wide addition with the 128 low bits of h and discarding
+	// the overflow.
+	h0, c := bits.Add64(h0, s[0], 0)
+	h1, _ = bits.Add64(h1, s[1], c)
+
+	binary.LittleEndian.PutUint64(out[0:8], h0)
+	binary.LittleEndian.PutUint64(out[8:16], h1)
+}
+</code></pre>
+<p>If you made it this far, consider <a href="https://twitter.com/FiloSottile">following me on Twitter</a>!</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">To prove that crypto code can be understandable, I gave my best shot at writing a readable Poly1305 implementation. It tries to explain both what it’s doing and how. (It’s also 75% faster than the current one.) <a href="https://t.co/4eKIw42uUU">https://t.co/4eKIw42uUU</a></p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/1113121897796038656?ref_src=twsrc%5Etfw">April 2, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script><!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[mkcert: valid HTTPS certificates for localhost]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p><em>(or for any other name)</em></p>
+<p><img src="https://blog.filippo.io/content/images/2019/01/mkcert.png" alt="example mkcert session"></p>
+<p>The web is moving to HTTPS, preventing network attackers from observing or injecting page contents. But HTTPS needs TLS certificates, and while deployment is increasingly a solved issue thanks to the ACME protocol and Let's Encrypt, development still mostly ends up happening over HTTP because</p>]]></description><link>https://blog.filippo.io/mkcert-valid-https-certificates-for-localhost/</link><guid isPermaLink="false">5c5cf17e4ad1e900170cbf1c</guid><category><![CDATA[Go]]></category><category><![CDATA[TLS]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Mon, 07 Jan 2019 02:08:29 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p><em>(or for any other name)</em></p>
+<p><img src="https://blog.filippo.io/content/images/2019/01/mkcert.png" alt="example mkcert session"></p>
+<p>The web is moving to HTTPS, preventing network attackers from observing or injecting page contents. But HTTPS needs TLS certificates, and while deployment is increasingly a solved issue thanks to the ACME protocol and Let's Encrypt, development still mostly ends up happening over HTTP because <a href="https://letsencrypt.org/docs/certificates-for-localhost/">no one can get an universally valid certificate for <em>localhost</em></a>.</p>
+<p>This is a problem because more and more browser features are being made available only to secure origins, and testing with HTTP hides any mixed content issues that can break a production HTTPS website. Developing with HTTPS should be as easy as deploying with HTTPS.</p>
+<p>That's what <strong>mkcert</strong> is for.</p>
+<p><img src="https://blog.filippo.io/content/images/2019/01/screenshot.png" alt="mkcert in action, a green lock for localhost"></p>
+<p><a href="https://github.com/FiloSottile/mkcert">mkcert</a> is a simple by design tool that hides all the arcane knowledge required to generate valid TLS certificates. It works for any hostname or IP, including <em>localhost</em>, because it only works for you.</p>
+<pre><code class="language-no-highlight">$ mkcert example.com example-staging.appspot.com localhost
+Using the local CA at &quot;/Users/filippo/Library/Application Support/mkcert&quot; ✨
+
+Created a new certificate valid for the following names 📜
+ - &quot;example.com&quot;
+ - &quot;example-staging.appspot.com&quot;
+ - &quot;localhost&quot;
+
+The certificate is at &quot;./example.com+2.pem&quot; and the key at &quot;./example.com+2-key.pem&quot; ✅
+</code></pre>
+<p>Here's the twist: it doesn't generate self-signed certificates, but certificates signed by your own private CA, which your machine is automatically configured to trust when you run <code>mkcert -install</code>. So when your browser loads a certificate generated by your instance of mkcert, it will show up with a green lock!</p>
+<pre><code class="language-no-highlight">$ mkcert -install
+Using the local CA at &quot;/Users/filippo/Library/Application Support/mkcert&quot; ✨
+The local CA is now installed in the system trust store! ⚡️
+The local CA is now installed in the Firefox trust store (requires browser restart)! 🦊
+</code></pre>
+<p>It supports <a href="https://github.com/FiloSottile/mkcert/blob/master/README.md#supported-root-stores">macOS, Linux, and Windows, and Firefox, Chrome and Java</a>. It even <a href="https://github.com/FiloSottile/mkcert#mobile-devices">works on mobile devices with a couple manual steps</a>.</p>
+<p>Also, unlike OpenSSL, it does the right thing by default, instead of forcing you to <a href="https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates">use a dozen flags and materialize a config file for each certificate</a>. (That is, it uses Subject Alternative Names, instead of the 20-years-deprecated Common Name.)</p>
+<p>The hardest part of the project, besides figuring out half a dozen different root stores, has been keeping the tool simple and focused. There are adjacent use cases that mkcert might be good for, like acting as a CA infrastructure for microservices, but that's not what mkcert is for. mkcert is a development tool, and that focus allowed it to provide useful defaults and limit configuration options to virtually zero. <a href="https://github.com/jsha/minica">Other tools</a> can fill other gaps better.</p>
+<p>One feature is left before mkcert is finished: an ACME server. If you are doing TLS certificates right in production, you are using Let's Encrypt via the ACME protocol. Development and staging should be as close to production as possible, so mkcert will soon act as an ACME server like Let's Encrypt, providing locally-trusted certificates with no verification. Then all you'll have to change between dev and prod will be the URL of the ACME endpoint.</p>
+<p>As for now, mkcert is already stable, with 8 releases and almost 12k stars. You can <a href="https://github.com/FiloSottile/mkcert#installation">install it from most package managers</a>, or <a href="https://github.com/FiloSottile/mkcert/releases">use the pre-built binaries</a>. Please try it in your workflows, and <a href="https://github.com/FiloSottile/mkcert/issues">report any usability issues</a>. You might also want to <a href="https://twitter.com/FiloSottile">follow me on Twitter</a>.</p>
+<p><img src="https://blog.filippo.io/content/images/2019/01/sticker-transparent.png" alt="mkcert logo"></p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Touch-to-operate password-store with YubiKey 4]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>There are dozens of tutorials on how to fight GnuPG to use YubiKeys for everything, but my favorite overlooked feature of the YubiKey 4 is &quot;touch to operate&quot;, where <strong>each cryptographic operation takes a physical touch of the gold surface</strong>.</p>
+<p>That pairs particularly well with <a href="https://www.passwordstore.org/">password-store</a>, a PGP</p>]]></description><link>https://blog.filippo.io/touch-to-operate-password-store-yubikey-4/</link><guid isPermaLink="false">5c5cf17e4ad1e900170cbf1b</guid><category><![CDATA[Technical notes]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Mon, 10 Sep 2018 04:25:31 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>There are dozens of tutorials on how to fight GnuPG to use YubiKeys for everything, but my favorite overlooked feature of the YubiKey 4 is &quot;touch to operate&quot;, where <strong>each cryptographic operation takes a physical touch of the gold surface</strong>.</p>
+<p>That pairs particularly well with <a href="https://www.passwordstore.org/">password-store</a>, a PGP backed password manager: when they key resides on the YubiKey, and each decryption takes a physical touch, even compromising the machine won't let an attacker dump all secrets from your store.</p>
+<p>The key can't be extracted from the YubiKey, and each use of it must be approved with a touch. Although the touch could be hijacked for a different entry, it will still slow the exfiltration down. You can even set up compartments with extra keys.</p>
+<p>Here's the high level of how to set that up, fruit of hours of unnecessary pain. To follow along you'll need the <code>gpg</code> and <code>pass</code> docs, some other tutorials, or the kind of dark experience I don't wish on anyone. This whole ecosystem is not beginner friendly, and I can't help you.</p>
+<blockquote class="twitter-tweet" data-lang="en-gb"><p lang="en" dir="ltr">I just wanted a new YubiKey for password-store.<br><br>I am now 3 hours in and grepping the git history of gnupg for a feature that I can see on tutorials but can’t reach.<br><br>Fuck this shit 🔥</p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/1038890540618723329?ref_src=twsrc%5Etfw">9 September 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<ul>
+<li>Set up the YubiKey
+<ul>
+<li>Disable OTP mode
+<ul>
+<li><code>ykman mode FIDO+CCID</code></li>
+</ul>
+</li>
+<li>Change the user and admin PIN
+<ul>
+<li><code>--card-edit</code> → <code>passwd</code></li>
+<li>PINs don't have to be numeric!</li>
+<li>There's a minimum length of 8 characters for the admin PIN</li>
+</ul>
+</li>
+<li>(Optional) Change the generated key sizes
+<ul>
+<li><code>--card-edit</code> → <code>key-attr</code> <a href="https://twitter.com/FiloSottile/status/1038893855687487488">with a recent enough version of GnuPG</a></li>
+</ul>
+</li>
+<li><strong>Enable touch-to-operate</strong>
+<ul>
+<li><code>ykman openpgp touch</code></li>
+<li>Note that for security you want <em>fixed</em> mode, or an attacker will just turn it off, but realize that it's irreversible</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Generate the keys
+<ul>
+<li><code>--card-edit</code> → <code>generate</code></li>
+<li>Assume the YubiKey will break or get lost, and either build redundancy at the <code>pass</code> level by encrypting to multiple keys, accept the offer to make a backup of the key, or generate the key (possibly offline) and load it on more than one YubiKey</li>
+<li>FYI, you still need the local key stubs to use the YubiKey, you won't be able to regenerate them if you delete them</li>
+</ul>
+</li>
+<li>Initialize <code>pass</code> to use the YubiKey PGP key
+<ul>
+<li>Now every time you try to access a <code>pass</code> entry the YubiKey will blink and you'll have to touch it to let it through</li>
+<li>You can use <code>pass init</code> to rekey an existing store</li>
+</ul>
+</li>
+<li>(Extra) Set up one or more higher security compartments by similarly setting up other YubiKeys which you won't be using day-to-day, and binding a <code>pass</code> subfolder to them (and only them) with <code>pass init -p subfolder</code>
+<ul>
+<li>The idea is that there will be even fewer touch events to hijack for these compartmented items</li>
+<li>Note that only one YubiKey works at a time, for some reason, so you'll have to disconnect your daily one to use the special ones</li>
+</ul>
+</li>
+<li>(Bonus) Use the same YubiKey for SSH
+<ul>
+<li>Touch-to-operate applies to SSH as well if you enable it for the <code>aut</code> key</li>
+</ul>
+</li>
+<li>(Bonus) Use the same YubiKey for U2F, the only secure countermeasure to phishing</li>
+<li>(Bonus) Consider a <a href="https://formulae.brew.sh/formula/pinentry-mac">graphical pinentry</a></li>
+</ul>
+<p>By the way, it's no secret that <a href="https://blog.filippo.io/giving-up-on-long-term-pgp/">I hate PGP</a>, and I think you should just never use it to communicate, but alas it's the only ecosystem that easily taps into cheap hardware tokens, which are a concrete step up in security, and at least you can rotate them.</p>
+<p>I would love to see a PGP-less YubiKey+TouchID driver backing SSH, <code>pass</code>, U2F, <a href="https://twitter.com/FiloSottile/status/1038897701100941312">and ponies</a>... but until then, you can <a href="https://twitter.com/FiloSottile">follow me on Twitter</a>.</p>
+<p>Good luck.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Making a Gmail bot with Apps Script and TypeScript]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>Google Apps Script is one of the best hidden features of Gmail.</p>
+<p>Did you ever want <em>just</em> a bit more flexibility from a filter? Maybe the ability to remove a label, or match on a header, or just decide the order they are applied in.</p>
+<p>Apps Script can do all</p>]]></description><link>https://blog.filippo.io/gmail-bot-with-apps-script-and-typescript/</link><guid isPermaLink="false">5c5cf17e4ad1e900170cbf1a</guid><category><![CDATA[Technical notes]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Thu, 03 May 2018 03:53:04 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>Google Apps Script is one of the best hidden features of Gmail.</p>
+<p>Did you ever want <em>just</em> a bit more flexibility from a filter? Maybe the ability to remove a label, or match on a header, or just decide the order they are applied in.</p>
+<p>Apps Script can do all that and then some. They are simple JavaScript programs with access to the Gmail API that run as cron jobs on Google servers. They are free and don't require a GCP account. They can even send emails.</p>
+<p>One could build some pretty complete bots by giving them their own Gmail account, but here I just wanted to mark Gerrit CL threads as read when I was the last to act on them.</p>
+<p>I know I could just write a bot in Go using the APIs, but then I'd have to take care of deployment, and authentication, and it's just not worth it anymore. Apps Script are point and click.</p>
+<p><em>This is a &quot;Technical note&quot; post, if you want to only follow a subset of this blog check out the <a href="https://blog.filippo.io/tags/">tags</a>.</em></p>
+<h2 id="settingoneup">Setting one up</h2>
+<p><img src="https://blog.filippo.io/content/images/2018/05/Screen-Shot-2018-05-02-at-11.13.16-PM.png" alt="a Script ready to go"></p>
+<p>For setting up a script I'll point you to one of Benjojo's projects, who told me about this feature. <a href="https://github.com/benjojo/Gmail_GeoIPTagger/blob/d2e50240baa0979b59336d8edfc7af91f6d3bb4c/README.md">It has screenshots and everything.</a></p>
+<p>Come back when you have it running. You can use this minimal script as a first program just to trigger permissions:</p>
+<pre><code class="language-js">function ProcessInbox() {
+    GmailApp.getInboxUnreadCount();
+}
+</code></pre>
+<p>There's no deployment or authentication effort beyond setting the schedule and clicking through the OAuth dialog.</p>
+<h2 id="letsgetserious">Let's get serious</h2>
+<p>The IDE at scripts.google.com makes an attempt at tracking types for autocompletion, but it doesn't even cross <code>forEach</code> or function boundaries. Not enough to make tolerable a language that has 1K points <em>controversial</em> StackOverflow answers on how to iterate an array.</p>
+<p>And anyway I want to use my editor and git, like a proper homo sapiens, so let's see how to develop scripts locally with <a href="https://github.com/google/clasp">clasp</a> and TypeScript. BTW, TypeScript is awesome.</p>
+<p>Start by installing <a href="https://github.com/google/clasp">clasp</a>, and don't skip the part about enabling the Apps Script API. Do a <code>clasp login</code>, too.</p>
+<p>Then in a new folder create a <code>.clasp.json</code> file with this content:</p>
+<pre><code class="language-json">{
+    &quot;scriptID&quot;: &quot;1...&quot;,
+    &quot;rootDir&quot;: &quot;built&quot;
+}
+</code></pre>
+<p>You'll find the <code>scriptID</code> in the scripts.google.com URL, before the <code>/edit</code> part. We use <code>built</code> as the <code>rootDir</code> so that we can put our TypeScript source outside of it.</p>
+<p>Just once run <code>clasp pull</code> to populate the <code>built/appsscript.json</code> file. <code>clasp push</code> will upload to our Script the content of <code>built</code> which we will generate soon.</p>
+<p>Create a TypeScript config file <code>tsconfig.json</code> file like this (most things are preferences, but notice the <code>target</code>, <code>lib</code> and <code>outDir</code>):</p>
+<pre><code class="language-json">{
+    &quot;compilerOptions&quot;: {
+        &quot;outDir&quot;: &quot;./built&quot;,
+        &quot;noImplicitAny&quot;: true,
+        &quot;strictNullChecks&quot;: true,
+        &quot;noImplicitThis&quot;: true,
+        &quot;noEmitOnError&quot;: true,
+        &quot;target&quot;: &quot;ES3&quot;,
+        &quot;lib&quot;: [&quot;ES2015&quot;]
+    },
+    &quot;include&quot;: [
+        &quot;./src/**/*&quot;
+    ]
+}
+</code></pre>
+<p>Then put some TypeScript code in <code>src/Code.ts</code> and run <code>tsc --pretty</code> to generate JavaScript in <code>built</code>!</p>
+<p>And here's the kicker: running <code>npm install --save @types/google-apps-script</code> will make type definitions for the Gmail API available to TypeScript, so an editor like Visual Studio Code will come with proper autocompletion out of the box.</p>
+<p>This is getting a bit too hip, so we add an old-fashioned <code>Makefile</code>:</p>
+<pre><code class="language-makefile">.PHONY: build deploy
+
+build:
+	npm install --silent
+	tsc --pretty
+
+deploy: build
+	clasp push
+</code></pre>
+<p>And sprinkle <code>.gitignore</code> to taste. I like to exclude the generated JavaScript (but not the JSON metadata) and the <code>node_modules</code> as we have a <code>package-lock.json</code>:</p>
+<pre><code class="language-gitignore">/built/*.js
+/node_modules
+</code></pre>
+<p>Now you can develop in TypeScript inside <code>src</code>, with full types and autocompletion support, and deploy to your Apps Script with <code>make deploy</code>. Google will run the Script every 5 minutes (if you followed Ben's instructions).</p>
+<p>For more yak shaving, <a href="https://twitter.com/FiloSottile">follow me on Twitter</a>.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Easy Windows and Linux cross-compilers for macOS]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>tl;dr: you can install cross-compiler toolchains to compile C/C++ for Windows or Linux from macOS with these two Homebrew Formulas.</p>
+<pre><code class="language-no-highlight">brew install FiloSottile/musl-cross/musl-cross
+brew install mingw-w64
+</code></pre>
+<hr>
+<style>
+hr { margin: 2em 0; }
+</style>
+<p>Cross-compiling C and C++ is dreadful.</p>
+<p>While in Go you just need to set an environment</p>]]></description><link>https://blog.filippo.io/easy-windows-and-linux-cross-compilers-for-macos/</link><guid isPermaLink="false">5c5cf17e4ad1e900170cbf11</guid><category><![CDATA[Technical notes]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Wed, 07 Feb 2018 22:57:39 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>tl;dr: you can install cross-compiler toolchains to compile C/C++ for Windows or Linux from macOS with these two Homebrew Formulas.</p>
+<pre><code class="language-no-highlight">brew install FiloSottile/musl-cross/musl-cross
+brew install mingw-w64
+</code></pre>
+<hr>
+<style>
+hr { margin: 2em 0; }
+</style>
+<p>Cross-compiling C and C++ is dreadful.</p>
+<p>While in Go you just need to set an environment variable, for C you need a whole separate toolchain, that might require an intermediate toolchain to build, and you need to know what you are targeting very well.</p>
+<h2 id="muslcrossmake">musl-cross-make</h2>
+<p>Thankfully, Rich Felker built a Makefile set to build musl-based cross-compilers, <a href="https://github.com/richfelker/musl-cross-make">musl-cross-make</a>. It took <a href="https://github.com/richfelker/musl-cross-make/pull/9">a few patches</a>, but it runs well on macOS.</p>
+<p>musl-cross-make builds beautifully self-contained cross-compilers, so you don't have to worry about pointing to the right libraries path or about where you keep the toolchain. Also, it can target Linux running on a number of different architectures.</p>
+<p>Maybe most importantly, it's based on the musl C standard library. This means that the binaries will <em>only</em> run on a musl-based system, like Alpine. However, if you build them as static binaries by passing <code>-static</code> as a LDFLAG they will run anywhere, including in <em>scratch</em> Docker containers. musl is specifically engineered to support fully static binaries, which is not recommended with glibc.</p>
+<h2 id="homebrewmuslcross">homebrew-musl-cross</h2>
+<p>Still, I'm a big Homebrew fan. It lets you build software in a well defined sandbox, and only the binaries are linked into your PATH, <a href="https://www.gnu.org/software/stow/">GNU Stow</a> style. Also, it manages resources and offers powerful dev tools.</p>
+<p>So, I wrapped up musl-cross-make in a Homebrew Formula, <a href="https://github.com/FiloSottile/homebrew-musl-cross">FiloSottile/homebrew-musl-cross</a>. It takes a long time to build, but it generates a full cross-compiler toolchain, and links into <code>/usr/local/bin</code> just the prefixed binaries, like <code>x86_64-linux-musl-gcc</code>.</p>
+<pre><code class="language-no-highlight">brew install FiloSottile/musl-cross/musl-cross
+</code></pre>
+<p>It comes with a precompiled Homebrew Bottle for High Sierra, so if you want to build everything from source use <code>brew install --build-from-source</code>.</p>
+<p>Other architectures are supported. For example to get a Raspberry Pi cross-compiler use:</p>
+<pre><code class="language-no-highlight">brew install FiloSottile/musl-cross/musl-cross --without-x86_64 --with-arm-hf
+</code></pre>
+<p>You can also use <code>--with-i486</code> (x86 32-bit), <code>--with-aarch64</code> (ARM 64-bit), <code>--with-arm</code> (ARM soft-float) and <code>--with-mips</code>.</p>
+<h2 id="usingthiswithgoandrust">Using this with Go and Rust</h2>
+<p>To cross-compile cgo projects you can set the CC and CXX environment flags when building to <code>x86_64-linux-musl-gcc</code> and <code>x86_64-linux-musl-g++</code> (or corresponding), on top of the usual <code>GOOS</code> and <code>GOARCH</code>.</p>
+<p>To use this toolchain as the target linker for Rust cross-compilation, add lines like these to your <code>.cargo/config</code>:</p>
+<pre><code class="language-no-highlight">[target.x86_64-unknown-linux-musl]
+linker = &quot;x86_64-linux-musl-gcc&quot;
+</code></pre>
+<p>A more complete guide to Rust cross-compilation is <a href="https://chr4.org/blog/2017/03/15/cross-compile-and-link-a-static-binary-on-macos-for-linux-with-cargo-and-rust/">here</a>.</p>
+<h2 id="mingww64">mingw-w64</h2>
+<p>For Windows, there is now a Mingw-w64 Formula directly in homebrew-core, so you can install it simply with <code>brew install mingw-w64</code>.</p>
+<p>The resulting GCC toolchain has prefixes <code>x86_64-w64-mingw32-</code> and <code>i686-w64-mingw32-</code>.</p>
+<p>If you find cross-compilation more fun than it probably is, you might want to <a href="https://twitter.com/FiloSottile">follow me on Twitter</a>.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Live streaming Cryptopals]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p><em>tl;dr: I'm livecoding the <a href="https://cryptopals.com">Cryptopals</a> in Go <a href="https://www.twitch.tv/filosottile">on Twitch</a>, one set every Sunday. The recordings are <a href="https://www.youtube.com/FilippoValsorda">on YouTube</a>.</em></p>
+<p><center>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Oh, wow. I love the idea. Would anyone here seriously watch 20 to 40 hours of me doing crypto, math and Go? Mic, screen, and everything. <a href="https://t.co/jx3s736bGm">https://t.co/jx3s736bGm</a></p>&mdash;</blockquote></center></p>]]></description><link>https://blog.filippo.io/live-streaming-cryptopals/</link><guid isPermaLink="false">5c5cf17e4ad1e900170cbf19</guid><category><![CDATA[Crypto]]></category><category><![CDATA[Go]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Sat, 14 Oct 2017 19:48:05 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p><em>tl;dr: I'm livecoding the <a href="https://cryptopals.com">Cryptopals</a> in Go <a href="https://www.twitch.tv/filosottile">on Twitch</a>, one set every Sunday. The recordings are <a href="https://www.youtube.com/FilippoValsorda">on YouTube</a>.</em></p>
+<p><center>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Oh, wow. I love the idea. Would anyone here seriously watch 20 to 40 hours of me doing crypto, math and Go? Mic, screen, and everything. <a href="https://t.co/jx3s736bGm">https://t.co/jx3s736bGm</a></p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/787777267313303553?ref_src=twsrc%5Etfw">October 16, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center></p>
+<p>Almost a year after promising to, I recently started live-coding in Go solutions to the <a href="https://cryptopals.com">Cryptopals Crypto Challenges</a> <a href="https://www.twitch.tv/filosottile">on Twitch</a>.</p>
+<p>This is an experiment, as I've never live-streamed before. I'm planning to solve one set per week, ramping up in difficulty, until Set 8 which will be a proper speed-run. Set 1 <a href="https://www.youtube.com/watch?v=eE_Tz6udUQU">aired on October 1st</a> and Set 2 <a href="https://www.twitch.tv/events/iONlet0-QxmvBnbEHIEcYg">will air on October 15th</a> (tomorrow!) at 2pm ET / 11am PT / 7pm BST.</p>
+<p>For context the Cryptopals, once known as the <em>Matasano Crypto Challenges</em>, are an extraordinary set of exercises that have you build and break cryptosystems with attacks that did and do apply to real world implementations. I personally owe a lot to them, as they made me discover I liked building and breaking crypto, revealed that what I had was in fact a marketable skill, and for almost a year sat at the top of my CV.</p>
+<p>I remember the thrill of playing them early on when unlocking each set required mailing the solutions to the previous one, and the satisfaction in <a href="https://news.ycombinator.com/item?id=12720838">being the first to complete Set 7</a> in a 30 hours run while at <a href="https://recurse.com">Recurse Center</a> in Fall 2013. It feels only right to redo them now that I'm attending a new batch of Recurse. I really look forward to Set 8, which I haven't played yet.</p>
+<p>The recordings will be <a href="https://www.youtube.com/FilippoValsorda">on YouTube</a> and the code <a href="https://github.com/FiloSottile/mostly-harmless/tree/master/cryptopals">on GitHub</a>. Below you can see the recording of the first set. Instead of donations, I hope to raise money for the <a href="https://archive.org/donate">Internet Archive</a>, in particular with the Set 8 speed-run; receipts can be sent to the gmail address <code>filippo.donations</code> to be tracked and thanked on-stream on a honour basis.</p>
+<p>To track when I go on air you can:</p>
+<ul>
+<li><a href="https://www.twitch.tv/filosottile">follow my channel on Twitch</a>;</li>
+<li><a href="https://www.youtube.com/FilippoValsorda">subscribe on YouTube</a>;</li>
+<li>or <a href="https://twitter.com/FiloSottile">follow me on Twitter</a>.</li>
+</ul>
+<p>Finally, if anyone wants to join me in solving them (maybe in other languages), I'd love to build a team and I'd be happy to cross-host them on my channel.</p>
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/eE_Tz6udUQU?rel=0" frameborder="0" allowfullscreen></iframe><!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[The scrypt parameters]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>The recommended scrypt parameters in the Go docs <a href="https://github.com/golang/go/issues/22082">were recently brought up for discussion</a> given they haven't changed since 2009.</p>
+<p>Even if at this point I memorized the three numbers (N=16384, r=8, p=1) I only have a vague understanding of their meaning, so I took some time</p>]]></description><link>https://blog.filippo.io/the-scrypt-parameters/</link><guid isPermaLink="false">5c5cf17e4ad1e900170cbf18</guid><category><![CDATA[Crypto]]></category><category><![CDATA[Mainline]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Wed, 04 Oct 2017 14:49:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>The recommended scrypt parameters in the Go docs <a href="https://github.com/golang/go/issues/22082">were recently brought up for discussion</a> given they haven't changed since 2009.</p>
+<p>Even if at this point I memorized the three numbers (N=16384, r=8, p=1) I only have a vague understanding of their meaning, so I took some time to read <a href="https://www.tarsnap.com/scrypt/scrypt.pdf">the scrypt paper</a>.</p>
+<p>It's an enjoyable and witty read, even if mathy at times, with lots of future predictions and reality modeling. Really drives across how scrypt is a fine piece of engineering. Also, it's single column with numbered pages, which earns it 100 points in my book.</p>
+<p>The definitions are nested, each building on top of the previous one. In this post I summed up how each parameter impacts the whole scrypt algorithm. Finally, I had a look at what parameters you should use in 2017.</p>
+<h2 id>𝑟</h2>
+<p>𝑟 is the second parameter, but we start with it because it's used by the deepest nested function, BlockMix.</p>
+<p>BlockMix turns a hash function with 𝑘-bit long inputs and outputs into a hash function with 2𝑟𝑘-bit long inputs and outputs. That is, <strong>it makes the core hash function in scrypt 2𝑟 wider</strong>.</p>
+<p>It does that by iterating the hash function 2𝑟 times, so <strong>both memory usage</strong> (to store the hash values) <strong>and CPU time scale linearly with it</strong>. That is, if 𝑟 doubles the resources double.</p>
+<p>That's useful because scrypt applies the hash to &quot;random&quot; memory positions. CPUs load memory in fixed-size blocks called cache lines. If the hash block size is smaller than the cache line, all the rest of the loaded line will be wasted memory bandwidth. Also, it dilutes the memory latency cost. Percival predicted both cache line sizes and memory latencies would increase over time, so made the hash size tunable to prevent scrypt from becoming latency-bound.</p>
+<p>I <a href="https://stackoverflow.com/questions/11126315/what-are-optimal-scrypt-work-factors">have read</a> that 𝑟 tunes memory usage, and believed it meant it is a memory-only work factor. That is incorrect because both CPU and memory scale with 𝑟. Also, while 𝑟 acts as a work factor, it's unclear increasing it provides the same security as 𝑁 (since there is no added randomization in memory accesses, see below), so it shouldn't be used as one.</p>
+<h2 id>𝑁</h2>
+<p>𝑁 is the one and only <strong>work factor</strong>.</p>
+<p><strong>Memory and CPU usage scale linearly with 𝑁.</strong> The mixing function, ROMix, stores 𝑁 sequential hash results in RAM, to then load them in a random order and sequentially xor and hash them.</p>
+<p>The reason 𝑁 must be a power of two is that to randomly select one of the 𝑁 memory slots at each iteration, scrypt converts the hash output to an integer and reduces it mod 𝑁. If 𝑁 is a power of two, that operation can be optimized into simple (and fast) binary masking.</p>
+<h4 id="estimatingscryptmemoryusage">Estimating scrypt memory usage</h4>
+<p>scrypt requires 𝑁 times the hash block size memory. Because of BlockMix, the hash block size is 2𝑟 the underlying hash output size. In scrypt, that hash is the <a href="https://cr.yp.to/salsa20.html">Salsa20 core</a>, which operates on 64-bytes blocks.</p>
+<p>So the minimum memory requirement of scrypt is:</p>
+<p>𝑁 × 2𝑟 × 64 = <strong>128 × 𝑁 × 𝑟 bytes</strong></p>
+<p>For 𝑁 = 16384 and 𝑟 = 8 that would be 16 MiB. It scales linearly with 𝑁 and 𝑟, and some implementations or APIs might cause internal copying doubling the requirement.</p>
+<h2 id>𝑝</h2>
+<p>𝑝 is used in the outmost function, MFcrypt. It is a parallelization parameter. <strong>𝑝 instances of the mixing function are run independently</strong> and their outputs concatenated as salt for the final PBKDF2.</p>
+<p>𝑝 &gt; 1 can be handled in two ways: sequentially, which does not increase memory usage but requires 𝑝 times the CPU and wall clock time; or parallelly, which requires 𝑝 times the memory and effective CPU time, but does not increase wall clock time.</p>
+<p>So 𝑝 can be used to <strong>increase CPU time without affecting memory requirements</strong> when handled sequentially, <strong>or without affecting wall clock time</strong> when handled parallelly. However, it offers attackers the same opportunity to optimize for processing or memory.</p>
+<h2 id="parametersfor2017">Parameters for 2017</h2>
+<p>We apply the same methodology of the paper to pick recommended 𝑁 values for interactive logins and file encryption: the biggest power of two that will run in less than 100ms and 5s respectively on <em>&quot;the CPU in the author's laptop&quot;</em> (a 3.1 GHz Intel Core i5).</p>
+<pre><code class="language-go">func main() {
+	for n := uint8(14); n &lt; 22; n++ {
+		b := testing.Benchmark(func(b *testing.B) {
+			for i := 0; i &lt; b.N; i++ {
+				scrypt.Key([]byte(&quot;password&quot;), []byte(&quot;salt&quot;), 1&lt;&lt;n, 8, 1, 32)
+			}
+		})
+		t := b.T / time.Duration(b.N)
+		fmt.Printf(&quot;N = 2^%d\t%dms\n&quot;, n, t/time.Millisecond)
+	}
+}
+</code></pre>
+<ul>
+<li>interactive logins: 2^15 — <code>1 &lt;&lt; 15</code> — 32 768 — 86ms</li>
+<li>file encryption: 2^20 — <code>1 &lt;&lt; 20</code> — 1 048 576 — 3802ms</li>
+</ul>
+<p>Curiously enough, the execution time of 𝑁 = 2^20 is exactly the same as in the paper's Table 1, while the sub-100ms value went from 2^14 to 2^15.</p>
+<p>Cache line sizes have not significantly increased since 2009, so 8 should still be optimal for 𝑟.</p>
+<p>If we really wanted to insist that CPUs have changed in 10 years we could say that more cores are now available, and increase the 𝑝 factor. However, common implementations don't spread the load of 𝑝 and instead compute each instance sequentially. Also, many use cases involve processing multiple parallel requests, so the available cores are not idle. So it seems ok to leave 𝑝 at 1.</p>
+<h2 id="finalmiscellaneousnotes">Final miscellaneous notes</h2>
+<p>Colin Percival seems to agree [<a href="https://github.com/Tarsnap/scrypt/issues/19">1</a>] [<a href="https://github.com/golang/go/issues/22082#issuecomment-332983728">2</a>] on the new parameters.</p>
+<p>Since the final output of scrypt is generated by PBKDF2(HMAC‑SHA256, <em>Password</em>, <em>MixingOutput</em>, 1), even if everything about scrypt were broken, it would still be a secure KDF as long as PBKDF2 with 1 iterations is. (While scrypt uses PBKDF2, it doesn't use it for its work factor.)</p>
+<p>Best quote from the paper:</p>
+<blockquote>
+<p>those few organizations which have the resources and inclination to design and fabricate custom circuits for password-cracking tend to be somewhat secretive</p>
+</blockquote>
+<p>If you like digging into a cryptography paper now and then, you might enjoy <a href="https://twitter.com/FiloSottile">following me on Twitter</a>.</p>
+<center>
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="en" dir="ltr">I never truly understood what the scrypt parameters 𝑁, 𝑟 and 𝑝 meant. So I read the paper and wrote it up for you. <a href="https://t.co/BL2a0BWAWH">https://t.co/BL2a0BWAWH</a></p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/915606863013728256?ref_src=twsrc%5Etfw">October 4, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center>
+<p><em>This post features my favourite Unicode points: U+2011 NON-BREAKING HYPHEN, U+202F NARROW NO-BREAK SPACE and the Mathematical Alphanumeric Symbols.</em></p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[We need to talk about Session Tickets]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>More specifically, TLS 1.2 Session Tickets.</p>
+<p>Session Tickets, specified in <a href="https://tools.ietf.org/html/rfc5077">RFC 5077</a>, are a technique to resume TLS sessions by storing key material encrypted on the clients. In TLS 1.2 they speed up the handshake from two to one round-trips.</p>
+<p>Unfortunately, a combination of deployment realities and three</p>]]></description><link>https://blog.filippo.io/we-need-to-talk-about-session-tickets/</link><guid isPermaLink="false">5c5cf17e4ad1e900170cbf17</guid><category><![CDATA[Mainline]]></category><category><![CDATA[TLS]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Thu, 28 Sep 2017 16:24:25 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>More specifically, TLS 1.2 Session Tickets.</p>
+<p>Session Tickets, specified in <a href="https://tools.ietf.org/html/rfc5077">RFC 5077</a>, are a technique to resume TLS sessions by storing key material encrypted on the clients. In TLS 1.2 they speed up the handshake from two to one round-trips.</p>
+<p>Unfortunately, a combination of deployment realities and three design flaws makes them the weakest link in modern TLS, potentially turning limited key compromise into passive decryption of large amounts of traffic.</p>
+<h2 id="howsessionticketswork">How Session Tickets work</h2>
+<p>A modern TLS 1.2 connection starts like this:</p>
+<ul>
+<li>The client sends the supported parameters;</li>
+<li>the server chooses the parameters and sends the certificate along with the first half of the Diffie-Hellman key exchange;</li>
+<li>the client sends the second half of the Diffie-Hellman exchange, computes the session keys and switches to encrypted communication;</li>
+<li>the server computes the session keys and switches to encrypted communication.</li>
+</ul>
+<p>This involves <em>two round-trips</em> between client and server before the connection is ready for application data.</p>
+<p><img src="https://blog.filippo.io/content/images/2017/09/Encrypting-the-Internet.001.png" alt="normal 1.2"></p>
+<p>The <a href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange">Diffie-Hellman key exchange</a> is what provides <a href="https://scotthelme.co.uk/perfect-forward-secrecy/">Forward Secrecy</a>: even if the attacker obtains the certificate key and a connection transcript after the connection ended they can't decrypt the data, because they don't have the <em>ephemeral</em> session key.</p>
+<p>Forward Secrecy also translates into security against a passive attacker. An attacker that can wiretap but not modify the traffic has the same capabilities of an attacker that obtains a transcript of the connection after it's over. Preventing passive attacks is important because they can be carried out at scale with little risk of detection.</p>
+<p>Session Tickets reduce the overhead of the handshake. When a client supports Session Tickets, the server will encrypt the session key with a key only the server has, the Session Ticket Encryption Key (STEK), and send it to the client. The client holds on to that encrypted session key, called a <em>ticket</em>, and to the corresponding session key. The server forgets about the client, allowing stateless deployments.</p>
+<p>The next time the client wants to connect to that server it sends the ticket along with the initial parameters. If the server still has the STEK it will decrypt the ticket, extract the session key, and start using it. This establishes a <em>resumed connection</em> and saves a round-trip by skipping the key negotiation. Otherwise, client and server fallback to a normal handshake.</p>
+<p><img src="https://blog.filippo.io/content/images/2017/09/Encrypting-the-Internet.002.png" alt="resumed 1.2"></p>
+<p>For a recap you can also watch the first part of <a href="https://media.ccc.de/v/33c3-8348-deploying_tls_1_3_the_great_the_good_and_the_bad">my 33c3 talk</a>.</p>
+<h3 id="fatalflaw1">Fatal flaw #1</h3>
+<p>The first problem with 1.2 Session Tickets is that resumed connections don't perform any Diffie-Hellman exchange, so they don't offer Forward Secrecy against the compromise of the STEK. That is, an attacker that obtains a transcript of a resumed connection and the STEK can decrypt the whole conversation.</p>
+<p>How the specification solves this is by stating that STEKs must be rotated and destroyed periodically. I now believe this to be extremely unrealistic.</p>
+<p>Session Tickets were expressly designed for stateless server deployments, implying scenarios where there are multiple servers serving the same site without shared state. These server must also share STEKs or resumption wouldn't work across them.</p>
+<p>As soon as a key requires distribution it's exposed to an array of possible attacks that an ephemeral key in memory doesn't face. It has to be generated somewhere, and transmitted somehow between the machines, and that transmission might be recorded or persisted. Twitter <a href="https://blog.twitter.com/engineering/en_us/a/2013/forward-secrecy-at-twitter.html">wrote about how they faced and approached exactly this problem</a>.</p>
+<p>Moreover, an attacker that compromises a single machine can now decrypt traffic flowing through other machines, potentially violating security assumptions.</p>
+<p>Finally, if a key is not properly rotated it allows an attacker to decrypt past traffic upon compromise.</p>
+<p>TLS 1.3 solves this by supporting Diffie-Hellman along with Session Tickets, but TLS 1.2 was not yet structured to support one round trip Diffie-Hellman (because of the legacy static RSA structure).</p>
+<p>These observations are not new, Adam Langley <a href="https://www.imperialviolet.org/2013/06/27/botchingpfs.html">wrote about them in 2013</a> and TLS 1.3 was indeed built to address them.</p>
+<h3 id="fatalflaw2">Fatal flaw #2</h3>
+<p>Session Tickets contain the session keys of the original connection, so a compromised Session Ticket lets the attacker decrypt not only the resumed connection, but also the original connection.</p>
+<p>This potentially degrades the Forward Secrecy of non-resumed connections, too.</p>
+<p>The problem is exacerbated when a session is regularly resumed, and the same session keys keep getting re-wrapped into new Session Tickets (a resumed connection can in turn generate a Session Ticket), possibly with different STEKs over time. The same session key can stay in use for weeks or even months, weakening Forward Secrecy.</p>
+<p>TLS 1.3 addresses this by effectively hashing (a one-way function) the current keys to obtain the keys for the resumed connection. While hashing is a pretty obvious solution, in TLS 1.2 there was no structured key schedule, so there was no easy agnostic way to specify how keys should be derived for each different cipher suite.</p>
+<h3 id="fatalflaw3">Fatal flaw #3</h3>
+<p>The NewSessionTicket message containing the Session Ticket is sent from the server to the client <em>just before</em> the ChangeCipherSpec message.</p>
+<pre><code class="language-no-highlight">Client                                               Server
+
+ClientHello                  --------&gt;
+                                                ServerHello
+                                                Certificate
+                                          ServerKeyExchange
+                             &lt;--------      ServerHelloDone
+ClientKeyExchange
+[ChangeCipherSpec]
+Finished                     --------&gt;
+                                           NewSessionTicket
+                                         [ChangeCipherSpec]
+                             &lt;--------             Finished
+Application Data             &lt;-------&gt;     Application Data
+</code></pre>
+<p>The ChangeCipherSpec message enables encryption with the session keys and the negotiated cipher, so everything exchanged during the handshake before that message is sent in plaintext.</p>
+<p>This means that Session Tickets are sent <em>in the clear</em> at the beginning of the original connection.</p>
+<p><code>(╯°□°)╯︵ ┻━┻</code></p>
+<p>An attacker with the STEK doesn't need to wait until session resumption is attempted. Session Tickets containing the <em>current</em> session keys are sent at the beginning of every connection that <em>merely supports</em> Session Tickets. In plaintext on the wire, ready to be decrypted with the STEK, fully bypassing Diffie-Hellman.</p>
+<p>TLS 1.3 solves this by... not sending them in plaintext. There is no strong reason I can find for why TLS 1.2 wouldn't wait until after the ChangeCipherSpec to send the NewSessionTicket. The two messages are sent back to back in the same flight. Someone suggested it might be not to complicate implementations that do not expect encrypted handshake messages (except Finished).</p>
+<h2 id="123dragnetsurveillance">1 + 2 + 3 = dragnet surveillance</h2>
+<p>The unfortunate combination of these three well known flaws is that an attacker that obtains the Session Ticket Encryption Key can <strong>passively decrypt all connections that support Session Tickets, resumed and not</strong>.</p>
+<p>It's grimly similar to a key escrow system: just before switching to encrypted communication, the session keys are sent on the wire encrypted with a (somewhat) fixed key.</p>
+<p>Passive attacks are the enablers of dragnet surveillance, what HTTPS aims to prevent, and the same actors that are known to engage in dragnet surveillance have specialized in surgical key extraction attacks.</p>
+<p>There is no proof that these attacks are currently performed and the aim of this post is not to spread FUD about TLS, which is still the most impactful security measure on the Internet today despite all its defects. However, war-gaming the most effective attacks is a valuable exercise to ensure we focus on improving the important parts, and Session Tickets are often the single weakest link in TLS, far ahead of the CA system that receives so much more attention.</p>
+<h3 id="sessionticketsintherealworld">Session Tickets in the real world</h3>
+<p>The likeliness and impact of the described attacks changes depending on how Session Tickets are deployed.</p>
+<p>Drew Springall et al. made a good survey in <a href="https://aaspring.com/imc2016/crypto-shortcuts.pdf">&quot;Measuring the Security Harm of TLS Crypto Shortcuts&quot;</a>, revealing how many networks neglect to regularly rotate STEKs. Tim Taubert <a href="https://timtaubert.de/blog/2014/11/the-sad-state-of-server-side-tls-session-resumption-implementations/">wrote about what popular software stacks do</a> regarding key rotation. The landscape is bleak.</p>
+<p>In some cases, the same STEK can be used across national borders, putting it under multiple jurisdictional threats. A single compromised machine then enables an attacker to decrypt traffic passively across the whole world by simply exfiltrating a short key every rotation period.</p>
+<p>Mitigating this by using different STEKs across geographical locations involves a trade-off, since it disables session resumption for clients roaming across them. It does however increase the cost for what appears to be the easiest dragnet surveillance avenue at this time, which is always a good result.</p>
+<p>In conclusion, <a href="https://timtaubert.de/blog/2017/02/the-future-of-session-resumption/">I can't wait for TLS 1.3</a>.</p>
+<center>
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en-gb"><p lang="en" dir="ltr">We need to talk about TLS 1.2 Session Tickets and how they are the weakest link in modern TLS deployments. <a href="https://t.co/tEQeYiTAPz">https://t.co/tEQeYiTAPz</a></p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/913441494866042880?ref_src=twsrc%5Etfw">28 September 2017</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[A secure captive portal browser with automatic DNS detection]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>Captive portals are the worst.</p>
+<p><strong>Flaky detection.</strong> The OS and browser try to detect these annoying network features but fail quite often, leaving you with broken connections.</p>
+<p><center><blockquote class="twitter-tweet" data-conversation="none" data-lang="en-gb"><p lang="en" dir="ltr">DID YOU KNOW that probe-based captive portal detection really doesn&#39;t work very well, with ~30% FP *and* ~30% FN rate in</p></blockquote></center></p>]]></description><link>https://blog.filippo.io/captive-browser/</link><guid isPermaLink="false">5c5cf17e4ad1e900170cbf16</guid><category><![CDATA[Go]]></category><category><![CDATA[Mainline]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Sat, 16 Sep 2017 14:47:47 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>Captive portals are the worst.</p>
+<p><strong>Flaky detection.</strong> The OS and browser try to detect these annoying network features but fail quite often, leaving you with broken connections.</p>
+<p><center><blockquote class="twitter-tweet" data-conversation="none" data-lang="en-gb"><p lang="en" dir="ltr">DID YOU KNOW that probe-based captive portal detection really doesn&#39;t work very well, with ~30% FP *and* ~30% FN rate in Chrome?</p>&mdash; Emily Stark (@estark37) <a href="https://twitter.com/estark37/status/908768529314308097">15 September 2017</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></center></p>
+<p><strong>Attack surface.</strong> Even if it worked reliably, you wouldn't want to use the OS automatic captive portal browser for security reasons. Since it can be triggered by a network attacker without user interaction, it's the perfect target. It <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-1800">had vulnerabilities before</a> and there is no information about whether it's up to date and sandboxed. There's also no option to disable Javascript or install security extensions.</p>
+<p><strong>DNS.</strong> I want to pick my own DNS server, and more specifically run my own unbound, for a number of reasons: clean results, local zones, overrides, DNSSEC... However most captive portals will block UDP traffic to anything except their DNS resolver (or would be trivially bypassed). So every time getting past a captive portal involves opening Network Settings, removing the custom DNS, logging in, and hopefully (that is, rarely) remember to put the custom DNS server back in.</p>
+<p><strong>HTTP.</strong> Finally, since a captive portal literally relies on a MitM attack, it results inaccessible when using HTTPS Everywhere in &quot;Block all unencrypted requests&quot; mode.</p>
+<p>To recap, logging in involves resetting the DNS server, opening an Incognito window, enabling Javascript, maybe fumbling with cookies, logging in, and reverting DNS settings.</p>
+<h2 id="adedicatedchromecaptivebrowser">A dedicated Chrome captive browser</h2>
+<p>To scratch this itch I decided to make my own captive portal browser based on Chrome, such that it can be secure and configured as I please.</p>
+<p>The main challenge is reaching the DHCP-provided captive portal DNS resolver without changing system settings. Chrome lacks the ability to configure DNS upstreams, but <a href="https://www.chromium.org/developers/design-documents/network-stack/socks-proxy">supports SOCKS5</a> which proxies name resolution.</p>
+<p>With 100 lines of Go I built a small SOCKS5 proxy based on <code>github.com/armon/go-socks5</code> that handles name resolution via a custom <code>net.Resolver</code> that always dials a fixed IP for the DNS server.</p>
+<p>It automatically discovers the DHCP DNS server on macOS with this command:</p>
+<pre><code class="language-no-highlight">ipconfig getoption en0 domain_name_server
+</code></pre>
+<p>Finally it starts a Chrome instance configured to use the SOCKS5 proxy with the following command and waits for it to quit:</p>
+<pre><code class="language-no-highlight">open -n -W -a &quot;Google Chrome&quot; --args \
+--user-data-dir=&quot;$HOME/Library/Application Support/Google/Captive&quot; \
+--proxy-server=&quot;socks5://$PROXY&quot; \
+--host-resolver-rules=&quot;MAP * ~NOTFOUND , EXCLUDE localhost&quot; \
+--no-first-run --new-window --incognito \
+http://example.com
+</code></pre>
+<p>The separate <code>--user-data-dir</code> allows it to run alongside your normal Chrome instance, while still being (separately) configurable and <code>--incognito</code> ensures that no state is preserved across executions.</p>
+<p>The commands can be configured with a TOML file to make the tool work on other operating systems.</p>
+<p>Usage boils down to running <code>captive-browser</code> and logging into the captive portal from a secure, configurable, ephemeral environment. All without touching DNS settings.</p>
+<p>Find the tool at <a href="https://github.com/FiloSottile/captive-browser">github.com/FiloSottile/captive-browser</a> and me <a href="https://twitter.com/FiloSottile">on Twitter</a>.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Playing with kernel TLS in Linux 4.13 and Go]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>Linux 4.13 introduces support for nothing less than... TLS!</p>
+<p><a href="https://github.com/torvalds/linux/commit/3c4d7559159bfe1e3b94df3a657b2cda3a34e218">The 1600 LoC patch</a> allows userspace to pass the kernel the encryption keys for an established connection, making encryption happen transparently inside the kernel.</p>
+<p>The only ciphersuite supported is AES-128-GCM as per <a href="https://tools.ietf.org/html/rfc5288">RFC 5288</a>, meaning it only supports TLS version</p>]]></description><link>https://blog.filippo.io/playing-with-kernel-tls-in-linux-4-13-and-go/</link><guid isPermaLink="false">5c5cf17e4ad1e900170cbf15</guid><category><![CDATA[Mainline]]></category><category><![CDATA[Crypto]]></category><category><![CDATA[Go]]></category><category><![CDATA[TLS]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Wed, 06 Sep 2017 20:07:09 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>Linux 4.13 introduces support for nothing less than... TLS!</p>
+<p><a href="https://github.com/torvalds/linux/commit/3c4d7559159bfe1e3b94df3a657b2cda3a34e218">The 1600 LoC patch</a> allows userspace to pass the kernel the encryption keys for an established connection, making encryption happen transparently inside the kernel.</p>
+<p>The only ciphersuite supported is AES-128-GCM as per <a href="https://tools.ietf.org/html/rfc5288">RFC 5288</a>, meaning it only supports TLS version 1.2. Most modern TLS connections on the Internet use that.</p>
+<p>The kernel only handles the record layer, that is, it only takes care of encrypting packets. Handshake, key exchange, certificate handling, alerts and renegotiation are left out of kernelspace. The userspace application, like OpenSSL, will do all that and then delegate to the kernel once the keys are established.</p>
+<p>Moreover, only encryption is supported, not decryption. This wasn't clear to me until I failed to find the <code>TLS_RX</code> constant.</p>
+<p>These limitations are very good to contain complexity and attack surface, but they mean that kTLS won't replace any userspace complexity as you still need a TLS library to do the handshake, for all other cipher suites, and for the receiving side of the connection. That makes kTLS purely a performance feature.</p>
+<p><a href="https://github.com/torvalds/linux/blob/v4.13/Documentation/networking/tls.txt">Keys are passed to the kernel with a <code>setsockopt(2)</code> call</a> on the TCP socket. Once that call is made everything written to that socket is transparently encrypted. A TLS record is made for each <code>send(2)</code> call unless a flag is used to request buffering. Alerts and any other messages which are not application data are sent via <code>CMSG</code>.</p>
+<p>The main motivation seems to be to allow use of <a href="https://manpages.debian.org/stretch/manpages-dev/sendfile.2.en.html"><code>sendfile(2)</code></a> on TLS connections. <code>sendfile(2)</code> allows data to be transferred from a file descriptor (like a file) to another (like a TCP connection) without paying the price of a copy round-trip through user space. If the kernel is handling TLS, <code>sendfile(2)</code> can be used also for encrypted connections. <a href="https://netdevconf.org/1.2/papers/ktls.pdf">The original paper by Facebook</a> claims a significant improvement in 99th percentile performance.</p>
+<p>I also saw a mention of using BPF filtering rules on plaintext data, which is clever.</p>
+<p>It seems all very sensibly executed, but I can't help being terrified nonetheless. First because even just the record layer of TLS 1.2 with AEAD has significant legacy baggage and attack surface, and secondly because any compatibility issue introduced by this code will add a dimension to the compatibility matrix.</p>
+<p>Moreover, the end goal seems to be to do TLS offloading on dedicated hardware managed by kernel drivers, and poorly-implemented hard-to-update hardware is exactly <a href="https://web.archive.org/web/20170311013249/https://bugs.chromium.org/p/chromium/issues/detail?id=694593">why TLS 1.3 hasn't been deployed yet</a>.</p>
+<center>
+<blockquote class="twitter-tweet" data-lang="en-gb"><p lang="en" dir="ltr">That said hold my mate, I&#39;m adding support to crypto/tls.</p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/904512695835250688">4 September 2017</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center>
+<p>So yeah, <a href="https://xkcd.com/1378/">not a huge fan</a>. But of course, it wouldn't be me if I didn't fork the Go <code>crypto/tls</code> package to work with it.</p>
+<p>To test kTLS I'll need a Linux VM running Linux 4.13. My favorite Linux distribution (Alpine) is not that cutting-edge with kernel versions, but one can of course trust Arch to have an up-to-date <em>linux-mainline</em> package. <em>3 painful hours of learning Arch and compiling Linux from AUR follow...</em></p>
+<p>To enable TLS support make sure to compile with <a href="https://github.com/torvalds/linux/commit/3c4d7559159bfe1e3b94df3a657b2cda3a34e218#diff-08d2655970006974bd3d10e3dc00e493"><code>CONFIG_TLS</code></a>.</p>
+<pre><code class="language-no-highlight">[root@localhost ~]# uname -a
+Linux localhost 4.13.0-mainline #1 SMP PREEMPT Wed Sep 6 01:04:02 BST 2017 x86_64 GNU/Linux
+</code></pre>
+<p>I tried toying with <code>mkerrors.sh</code> to get the TLS constants into the <code>syscall</code> package, but eventually gave up and redefined them in <code>crypto/tls</code>. There is <a href="https://go-review.googlesource.com/c/sys/+/61771">a CL for <code>golang.org/x/sys/unix</code></a> to update to Linux 4.13, but it's compiled without kTLS.</p>
+<p>The easiest place to hook kTLS into <code>crypto/tls</code> seemed to be <code>(*halfConn).changeCipherSpec()</code>. That's where encryption is enabled for that half (receiving or sending) of the connection. However that happened before sending the Finished handshake message, which we would have to send with a <code>CMSG</code>.</p>
+<p>Instead, I added a hook at the end of both client and server handshake. The new function <code>(*Conn).enableApplicationDataEncryption()</code> checks that the cipher is a <code>*fixedNonceAEAD</code> (i.e. AES-GCM) with the right key length, and that the connection is a <code>*net.TCPConn</code>, and then invokes <code>kTLSEnable()</code> with all the key material.</p>
+<p><a href="https://github.com/FiloSottile/go/blob/filippo/kTLS/src/crypto/tls/ktls.go">kTLSEnable</a> constructs the <code>tls_crypto_info</code> structure <a href="https://github.com/torvalds/linux/blob/v4.13/Documentation/networking/tls.txt">as per the docs</a>, hoping Go won't add padding for alignment purposes. It then uses <a href="https://golang.org/pkg/syscall/#RawConn"><code>syscall.RawConn.Control</code></a> and <code>syscall.SetsockoptString</code> to make the <code>setsockopt</code> syscalls to pass it to the kernel. There's a lot of <code>unsafe</code> involved, but no need for cgo (I just redefine the types manually).</p>
+<p>One of the quirks of AES-GCM in TLS 1.2 is that <a href="https://blog.cloudflare.com/tls-nonce-nse/#tls12gcm">it has 4 bytes of implicit IV and 8 bytes of explicit IV (counter)</a>. Linux calls the explicit part <code>iv</code> and the implicit part... <code>salt</code>. Ok. I guess.</p>
+<p>For a moment I thought it would be enough to then switch the cipher internally to unencrypted, but while it's not documented, for <code>sendfile(2)</code> to work the data must be sent with no framing at all. <a href="https://tools.ietf.org/html/rfc5246#section-6.2.1">Even unencrypted TLS packets are framed</a>. So as a last hack I added a dummy <code>kTLSCipher</code> that strips the record header instead of encrypting the record before sending it on the wire.</p>
+<p>I ran a simple HTTPS web server with <code>net/http</code>, loaded a page on Chrome, and instead of causing a kernel panic...</p>
+<pre><code class="language-no-highlight">[root@localhost ~]# go run https_server.go
+2017/09/06 16:21:39 kTLS: enabled
+2017/09/06 16:21:39 kTLS: sent 33 bytes of plaintext to the kernel
+2017/09/06 16:21:39 kTLS: enabled
+2017/09/06 16:21:39 kTLS: dropped alert on the floor
+2017/09/06 16:21:39 kTLS: sent 0 bytes of plaintext to the kernel
+2017/09/06 16:21:39 kTLS: enabled
+2017/09/06 16:21:39 kTLS: sent 33 bytes of plaintext to the kernel
+2017/09/06 16:21:39 kTLS: sent 107 bytes of plaintext to the kernel
+2017/09/06 16:21:39 kTLS: sent 37 bytes of plaintext to the kernel
+</code></pre>
+<p><img src="https://blog.filippo.io/content/images/2017/09/Untitled.png" alt="Browser loading kTLS"></p>
+<p>💥</p>
+<p>Future work includes getting the <a href="https://golang.org/pkg/io/#WriterTo"><code>io.WriterTo</code></a>-based <code>sendfile(2)</code> interface upgrade to work across the <code>*tls.Conn</code>, and running the various TLS test suites and fuzzers against kTLS.</p>
+<p>You can see the code <a href="https://github.com/FiloSottile/go/commit/dbed9972d9947eb0001e9f5b639e0df05acec8bd">here</a>. Please don't use it.</p>
+<p>But maybe <a href="https://twitter.com/FiloSottile">follow me on Twitter</a>!</p>
+<center>
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en-gb"><p lang="en" dir="ltr">Wrote about kernel TLS support in Linux 4.13 and gave in to the temptation of making it work with Go&#39;s crypto/tls 🔥<a href="https://t.co/EZAJ6YFskV">https://t.co/EZAJ6YFskV</a> <a href="https://t.co/3IVe4lzoDl">pic.twitter.com/3IVe4lzoDl</a></p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/905524052940423173">6 September 2017</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center><!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[restic cryptography]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p><em>tl;dr: this is not an audit and I take no responsibility for</em> your <em>backups, but I had a quick look at the crypto and I think I'm going to use restic for my personal backups.</em></p>
+<p>I keep hearing <a href="http://jpmens.net/2017/08/22/my-backup-software-of-choice-restic/">good things</a> about <a href="https://restic.github.io/">restic</a>. I am redoing my storage solution, and</p>]]></description><link>https://blog.filippo.io/restic-cryptography/</link><guid isPermaLink="false">5c5cf17e4ad1e900170cbf14</guid><category><![CDATA[Crypto]]></category><category><![CDATA[Go]]></category><category><![CDATA[Mainline]]></category><dc:creator><![CDATA[Filippo Valsorda]]></dc:creator><pubDate>Tue, 29 Aug 2017 20:32:59 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p><em>tl;dr: this is not an audit and I take no responsibility for</em> your <em>backups, but I had a quick look at the crypto and I think I'm going to use restic for my personal backups.</em></p>
+<p>I keep hearing <a href="http://jpmens.net/2017/08/22/my-backup-software-of-choice-restic/">good things</a> about <a href="https://restic.github.io/">restic</a>. I am redoing my storage solution, and restic seems to tick all the boxes for my personal backups:</p>
+<ul>
+<li>Open Source</li>
+<li>written in Go</li>
+<li>runs on OpenBSD</li>
+<li>B2 backend</li>
+<li>good docs</li>
+<li>verifiable backups</li>
+<li>reversable format</li>
+<li><em>encryption</em></li>
+</ul>
+<p>But it does not look like the encryption has ever been audited.</p>
+<p>Today I have to wait a couple hours to get a passport (I'm Italian, this involved rolling dice for Charm Person) so I figured I would have a look at it.</p>
+<p><strong>Important: this does NOT qualify as a professional audit, nor am I endorsing restic's encryption beyond &quot;I looked at it in a noisy waiting room for an hour I guess&quot;.</strong></p>
+<p>This post also does not attempt to fully explain all the cryptography it mentions, so if you find something particularly curious, confusing, or fascinating do <a href="https://twitter.com/FiloSottile">let me know</a> and I'll try to write properly about it.</p>
+<h2 id="datamodel">Data model</h2>
+<p>Let's see <em>what</em> we are encrypting. The <a href="https://restic.readthedocs.io/en/v0.7.3/references.html">full reference is here</a>.</p>
+<p>restic backs up to <em>repositories</em>. A repository is stored at a given remote. There's deduplication across the repository.</p>
+<p>Repository contents are content-addressed by SHA-256 at the encrypted file level, not at the backed up file level. That's good not to leak hashes of files, but I wonder how deduplication works.</p>
+<p>Everything else is abstractions built out of JSON inside those files. This is very reminiscent of Camlistore. I wonder if there are caches/indexes or if it knows how to walk the tree from scratch. (Turns out, both! See below.)</p>
+<h2 id="threatmodel">Threat model</h2>
+<p>They have an <a href="https://restic.readthedocs.io/en/v0.7.3/references.html#threat-model">explicit threat model</a>, which is great!</p>
+<p>It does speak more about implementation that adversaries, but now I'm asking too much.</p>
+<p>Essentially: confidentiality and authentication for stored files <em>and metadata</em> against an adversarial repository. Rollbacks and snapshot correlation are possible. Checks out.</p>
+<p>I imagine file/backup sizes are not protected, but it's not mentioned.</p>
+<h2 id="encryption">Encryption</h2>
+<p>Every in-repo file (the ones of which the SHA-256 is taken) is encrypted with AES-256-CTR-Poly1305-AES. Format is &quot;16 bytes random IV + ciphertext + MAC&quot;: encrypt-then-MAC, good.</p>
+<p>Unusual choice, not using AES-GCM. To be clear: GCM is awful, but for TLS reasons it's the AEAD with the fastest implementations. Case in point, <a href="https://github.com/golang/go/issues/20967">in Go AES-CTR is much slower with no good reason</a>. Also unusual is not using the TLS pairing ChaCha20-Poly1305. Choosing AES makes sense to use hardware acceleration, but then in practice ChaCha20-Poly1305 might be faster than AES-CTR for the reason above. All in all, it's a rational choice in theory, but unusual and a bit sub-optimal in practice. While still secure, a &quot;self-rolled&quot; AEAD is a bit of a yellow flag (but not a red flag).</p>
+<p>I admit I haven't studied Poly1305-AES before, but it's <a href="http://cr.yp.to/mac/poly1305-20050329.pdf">the original design of Poly1305</a>. The Poly1305 authenticator as I know it and as <a href="https://godoc.org/golang.org/x/crypto/poly1305">implemented by Go</a> uses one-time keys; Poly1305-AES uses a fixed-key AES operation to encrypt a nonce to make one-time keys. Poly1305 keys are 32 bytes, used in two halves as <em>r</em> (which is fixed in Poly1305-AES and gets masked) and <em>s</em> (which is the only part derived with AES in Poly1305-AES). Might be important to check that this Poly1305-AES implementation is keeping the right half fixed, since <code>golang.org/x/crypto/poly1305</code> simply takes an undocumented <code>*[32]byte</code> &quot;one-time key&quot; and I suspect switching derived and fixed half can be catastrophic. The Go package does not document which half is which.</p>
+<p>Good news is that even if the paper says...</p>
+<blockquote>
+<p>There are safe ways to reuse k for encryption, but those ways are not analyzed in this paper.</p>
+</blockquote>
+<p>... restic took the high road and uses separate keys for encryption and Poly1305-AES.</p>
+<p>Password to key derivation is classic double-wrapping: plaintext key metadata files (which include hostname/username) contain scrypt parameters, salt and a data blob. scrypt with the supplied password is used as a KDF to generate the keys to decrypt (AES256-Poly1305-AES) the blob, which contains the master key. An attacker can prevent password revocation, so changing a password after it got compromised doesn't protect future backups to that repository. This could be improved by making a new master key for subsequently generated blobs.</p>
+<p>I wonder if it's possible, manipulating N/r/p/salt, to make an unknown password generate a predictable key. If it is, an attacker can force a client to make a backup with keys they control. It probably isn't, but I don't have time to figure out which scrypt property it boils down to. (Exercise for the reader!)</p>
+<h2 id="deduplication">Deduplication</h2>
+<p>Data and tree blobs are encrypted individually and packed together in pack files with an encrypted header. A full index of all plaintext blobs is kept cached by the client, and encrypted in the repository.</p>
+<blockquote>
+<p>The data from each file is split into variable length Blobs cut at offsets defined by a sliding window of 64 byte. The implementation uses Rabin Fingerprints for implementing this Content Defined Chunking (CDC). An irreducible polynomial is selected at random and saved in the file <code>config</code> when a repository is initialized, so that watermark attacks are much harder.</p>
+</blockquote>
+<p>Hmm. So this is how deduplication happens. Like Camlistore.</p>
+<p>Not a fan of the sentence &quot;attacks are much harder&quot;. I know little about Rabin Fingerprints, but I can imagine the attack relies on leaks by the chunker algorithm through blob sizes. And packs don't help because I bet you can spot the Poly1305 authenticators in them, allowing you to split the blobs up without reading the header.</p>
+<p>I'll add to the TODO to learn more about CDC. (There's <a href="https://restic.github.io/blog/2015-09-12/restic-foundation1-cdc">a post about them</a> on the restic blog!) In the meantime I'll trust this irreducible polynomial to make leaks not too obvious, and remember not to backup potentially attacker-supplied data in a reliable manner.</p>
+<p>That's important also because attacker-supplied data can lead to straightforward fingerprinting attacks on any kind of deduplicated system. (This should have been in the threat model.)</p>
+<h2 id="implementation">Implementation</h2>
+<p>I started from <code>github.com/restic/restic/internal/crypto</code>, at commit 3559f9c7760ffadd32888c531d0d08f0c1aa98e3.</p>
+<p>Random bytes are generated with <code>crypto/rand</code> with <code>panic()</code> on error. Good.</p>
+<p>scrypt parameters are checked with <code>(*github.com/elithrar/simple-scrypt.Params).Check</code> which is reassuring since they are attacker controlled.</p>
+<p>There are explicit <code>Key</code>/<code>EncryptionKey</code>/<code>MACKey</code> structures with separate <code>K</code> and <code>R</code> for Poly1305-AES, which is good. The amount of indirection in filling them with random data makes me uncomfortable—one missing <code>*</code> and pass-by-value would result in an empty key—but it seems implemented right. Also, hey, that's what <code>(*Key).Valid()</code> is checking for, neat!</p>
+<p>The Poly1305-AES implementation seems to put <em>r</em> and <em>AES(k)(s)</em> in the right order for <code>golang.org/x/crypto/poly1305</code> (see above), <a href="https://github.com/golang/crypto/blob/81e90905daefcd6fd217b62423c0908922eadb30/poly1305/sum_ref.go#L20-L24">with <em>r</em> in the first 16 bytes</a> of the key.</p>
+<p>However, the application code <a href="https://github.com/restic/restic/blob/3559f9c7760ffadd32888c531d0d08f0c1aa98e3/internal/crypto/crypto.go#L52-L70">insists on masking <em>r</em> as the paper says</a> before calling <code>poly1305</code>, even if that package does not require it. And that got me worried, because the masking done by <code>poly1305</code> <a href="https://github.com/golang/crypto/blob/81e90905daefcd6fd217b62423c0908922eadb30/poly1305/sum_ref.go#L20-L24">looks different</a>. What if <code>poly1305</code> decided to use a different representation (since it can, since the key parts and format are unspecified) and now restic is masking off meaningful bits? 😱</p>
+<p><img src="https://blog.filippo.io/content/images/2017/08/Screen-Shot-2017-08-28-at-18.32.39.png" alt="paper keys section"></p>
+<p>And now I'm reading 130-bit arithmetic mapped to 26-bit integer registries to figure out what DJB's magic mask actually does to the numbers (deja-vu... <em>cough</em>clamping<em>cough</em>). This is what happens when you roll your own crypto. You make cryptographers hurt. Think about your cryptographer.</p>
+<p><em>Turns out</em> that it's the same masking in 26-bit little-endian windows. Here's the ASCII art sketch I had to make to figure it out. (It compares the paper masks, above, and the <code>poly1305</code> ones, below, after reversing the bit shifts and swapping endianness).</p>
+<p><a href="https://blog.filippo.io/content/images/2017/08/Screen-Shot-2017-08-28-at-18.32.07.png"><img src="https://blog.filippo.io/content/images/2017/08/Screen-Shot-2017-08-28-at-18.32.07.png" alt="ASCII art masks"></a></p>
+<p>Anyway applying the mask is pointless, dangerous, and took 45+ minutes to audit. I'm going to submit a PR to remove it when I recover.</p>
+<p><a href="https://github.com/restic/restic/pull/1187">I simplified</a> the rest of <code>Encrypt</code>/<code>Decrypt</code> while reviewing it. The <code>Decrypt</code> API (as opposed to the <code>Encrypt</code> one), does not return a new slice, but only an <code>int</code> for the caller to slice the plaintext with. That felt like an easy and bad thing to forget, so I inspected the callers with Sourcegraph. Found no issues.</p>
+<p>(FWIW, I'm a fan of <code>append()</code>-like interfaces, where you can still reuse buffers by slicing to <code>[:0]</code> but can't forget to reassign the resulting slice.)</p>
+<p>There seems to be a problem with the <code>Decrypt</code> overlap rules, though. To save memory you might want to use the same buffer for plaintext and ciphertext. That is allowed with some constraints. The <code>cipher.Stream</code> interface implemented by CTR mode says this at the method <code>XORKeyStream</code>:</p>
+<blockquote>
+<p>Dst and src may point to the same memory.</p>
+</blockquote>
+<p>That ain't helpful. There is already <a href="https://github.com/golang/go/issues/21279">a discussion about it in a Go issue</a> but I think it means that <code>dst</code> and <code>src</code> may overlap entirely (without misalignment) or not at all.</p>
+<p>However, calling <code>Decrypt</code> with the same buffer for plaintext and ciphertext (as done throughout the code and allowed by the docs) means that <code>buf[16:]</code> is decrypted into <code>buf[:]</code> because of the IV. That's theoretically(?) not ok.</p>
+<p>I <a href="https://github.com/restic/restic/issues/1190">opened an issue about it</a>, but I don't think it's a problem right now (but it might become one as the CTR implementation <a href="https://github.com/golang/go/issues/20967">is optimized</a>). I suggested adopting the standard <code>cipher.AEAD</code> interface, which is append-style and makes it easy to get exact overlap easy.</p>
+<p>I finally had a quick look at <code>internal/repository/key.go</code>. I made sure scrypt is the only KDF, and clarified that the <code>data</code> field in a key object is just encrypted like any other blob. The design docs <a href="https://github.com/restic/restic/pull/1189">had the MAC size wrong</a> and got me confused.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The design might not be perfect, but it's good. Encryption is a first-class feature, the implementation looks sane and I guess the deduplication trade-off is worth it.</p>
+<p>So... I'm going to use restic for my personal backups.</p>
+<p><em>Again, this is not a professional assessment of the cryptosystem, nor an audit of the implementation.</em> Thanks to <a href="https://github.com/fd0">Alexander Neumann</a> for writing restic and for providing useful feedback for this post.</p>
+<p><center>
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en-gb"><p lang="en" dir="ltr">I had a quick look at the AES256-Poly1305-AES encryption scheme and code of &quot;restic&quot; before using it for my backups. <a href="https://t.co/peWE7WdLpZ">https://t.co/peWE7WdLpZ</a></p>&mdash; Filippo Valsorda (@FiloSottile) <a href="https://twitter.com/FiloSottile/status/902631771862437892">29 August 2017</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center></p><!--kg-card-end: markdown-->]]></content:encoded></item></channel></rss>

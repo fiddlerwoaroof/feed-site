@@ -1,0 +1,8 @@
+{
+  "title":"The new GHC diagnostic infrastructure",
+  "date":"2021-08-22T17:00:00.000000-07:00",
+  "author":"alfredo",
+  "id":"http://www.well-typed.com/blog/2021/08/the-new-ghc-diagnostic-infrastructure",
+  "link":"https://well-typed.com/blog/2021/08/the-new-ghc-diagnostic-infrastructure",
+  "content":"TL;DR Starting from version 9.4, GHC will have a completely revamped API to deal with diagnostics (i.e. warnings or errors), moving away from loosely-structured strings in favour of richer Haskell types. This will make it easier to develop IDEs and other tools that work with GHC’s diagnostics.\nWell-Typed was able to carry out this work thanks to Richard Eisenberg, as part of NSF grant number 1704041.\nIntroduction\nThe topic of “Can we please have better IDEs?” crops up now and again within the Haskell community. Over the years tools like Haskell Language Server dramatically improved the situation, but all these tools had to deal with one constant factor: the limitations of the GHC API, in particular how it emitted diagnostics.\n\nPreviously, diagnostics were emitted as structured documents (SDocs), which can be seen as strings with a richer API to control their layout when being pretty-printed. Once GHC emitted a diagnostic as an SDoc, the best tools could do was to parse the text hoping to regain some structure out of it. Consider the following error:\nAnyM.hs:12:3: error:\n    Illegal bang-pattern (use BangPatterns):\n    ! res\n   |\n12 |   !res "
+}

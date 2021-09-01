@@ -1,0 +1,1333 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:planet="http://planet.intertwingly.net/" xmlns:indexing="urn:atom-extension:indexing" indexing:index="no"><access:restriction xmlns:access="http://www.bloglines.com/about/specs/fac-1.0" relationship="deny"/>
+  <title>Planet Scheme</title>
+  <updated>2021-09-01T06:34:22Z</updated>
+  <generator uri="http://intertwingly.net/code/venus/">Venus</generator>
+  <author>
+    <name>The Scheme.org Community</name>
+    <email>schemeorg@srfi.schemers.org</email>
+  </author>
+  <id>https://planet.scheme.org/atom.xml</id>
+  <link href="https://planet.scheme.org/atom.xml" rel="self" type="application/atom+xml">
+  <link href="https://planet.scheme.org/" rel="alternate">
+
+  <entry>
+    <id>tag:blogger.com,1999:blog-8288194986820249216.post-3272867687298467093</id>
+    <link href="https://funcall.blogspot.com/feeds/3272867687298467093/comments/default" rel="replies" title="Post Comments" type="application/atom+xml">
+    <link href="https://www.blogger.com/comment.g?blogID=8288194986820249216&amp;postID=3272867687298467093&amp;isPopup=true" rel="replies" title="0 Comments" type="text/html">
+    <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default/3272867687298467093" rel="edit" type="application/atom+xml">
+    <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default/3272867687298467093" rel="self" type="application/atom+xml">
+    <link href="https://funcall.blogspot.com/2021/08/tail-recursion-and-fold-left.html" rel="alternate" title="Tail recursion and fold-left" type="text/html">
+    <title>Tail recursion and fold-left</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p><code>fold-left</code> has this basic recursion:</p><pre>(fold-left f init ())      = init
+(fold-left f init (a . d)) = (fold-left f (f init a) d)</pre>
+A straightforward implementation of this is<pre>(defun fold-left (f init list)
+  (if (null list)
+      init
+      (fold-left f (funcall f init (car list)) (cdr list))))</pre>
+The straightforward implementation uses a slightly more space than
+necessary.  The call to <code>f</code> occurs in a subproblem
+position, so there the stack frame for <code>fold-left</code> is
+preserved on each call and the result of the call is returned to that
+stack frame.<p></p>
+<p>But the result of <code>fold-left</code> is the result of the last
+call to <code>f</code>, so we don't need to retain the stack frame
+for <code>fold-left</code> on the last call.  We can end the iteration on a tail call
+to <code>f</code> on the final element by unrolling the loop
+once:</p><pre>(defun fold-left (f init list)
+  (if (null list)
+      init
+      (fold-left-1 f init (car list) (cdr list))))
+
+(defun fold-left-1 (f init head tail)
+  (if (null tail)
+      (funcall f init head)
+      (fold-left-1 f (funcall f init head) (car tail) (cdr tail))))</pre><p></p>
+<p>There aren't many problems where this would make a difference (a
+  challenge to readers is to come up with a program that runs fine
+  with the unrolled loop but causes a stack overflow with the
+  straightforward implementation), but depending on how extreme your
+  position on tail recursion is, this might be worthwhile.</p></div>
+    </content>
+    <updated>2021-08-30T13:29:18Z</updated>
+    <published>2021-08-30T13:29:00Z</published>
+    <category scheme="http://www.blogger.com/atom/ns#" term="tail recursion"/>
+    <author>
+      <name>Joe Marshall</name>
+      <email>noreply@blogger.com</email>
+      <uri>http://www.blogger.com/profile/03233353484280456977</uri>
+    </author>
+    <source>
+      <id>tag:blogger.com,1999:blog-8288194986820249216</id>
+      <category term="Common Lisp"/>
+      <category term="Lisp"/>
+      <category term="tail recursion"/>
+      <category term="macros"/>
+      <category term="scheme"/>
+      <category term="C#"/>
+      <category term="CLOS"/>
+      <category term="continuation passing style"/>
+      <category term="ActiveScripting"/>
+      <category term="DotNet"/>
+      <category term="Windows"/>
+      <category term="recursion"/>
+      <category term="Java"/>
+      <category term="anaphoric"/>
+      <category term="lambda calculus"/>
+      <category term="pattern matching"/>
+      <category term="software development"/>
+      <author>
+        <name>Joe Marshall</name>
+        <email>noreply@blogger.com</email>
+        <uri>http://www.blogger.com/profile/03233353484280456977</uri>
+      </author>
+      <link href="https://funcall.blogspot.com/feeds/posts/default" rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml">
+      <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default?alt=atom" rel="self" type="application/atom+xml">
+      <link href="https://funcall.blogspot.com/" rel="alternate" type="text/html">
+      <link href="http://pubsubhubbub.appspot.com/" rel="hub" type="text/html">
+      <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default?alt=atom&amp;start-index=26&amp;max-results=25" rel="next" type="application/atom+xml">
+      <subtitle>Unorthodox opinions on computer science and programming.</subtitle>
+      <title>Abstract Heresies</title>
+      <updated>2021-08-30T13:30:03Z</updated>
+    </source>
+  </entry>
+
+  <entry xml:lang="en-US">
+    <id>https://srfi.schemers.org/srfi-228</id>
+    <link href="https://srfi.schemers.org/srfi-228/srfi-228.html" rel="alternate" type="text/html">
+    <title>SRFI 228: A further comparator library</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">SRFI 228 is now in <em>draft</em> status.<blockquote><p>Further procedures and syntax forms for defining <a href="https://srfi.schemers.org/srfi-128/srfi-128.html">SRFI 128</a> comparators, and for extracting comparison procedures similar to those defined for Schemeâ€™s built-in types using them.
+
+</p><p>Best enjoyed in combination with <a href="https://srfi.schemers.org/srfi-162/srfi-162.html">SRFI 162</a>.</p></blockquote></div>
+    </summary>
+    <updated>2021-08-28T20:00:00Z</updated>
+    <published>2021-08-28T20:00:00Z</published>
+    <author>
+      <name>Daphne Preston-Kendal</name>
+    </author>
+    <source>
+      <id>https://srfi.schemers.org/</id>
+      <link href="https://srfi.schemers.org/" rel="alternate" type="text/html">
+      <link href="https://srfi.schemers.org/rss" rel="self" type="application/rss+xml">
+      <subtitle>Updates to SRFI documents</subtitle>
+      <title>Scheme Requests for Implementation</title>
+      <updated>2021-09-01T06:32:43Z</updated>
+    </source>
+  </entry>
+
+  <entry>
+    <id>tag:blogger.com,1999:blog-8288194986820249216.post-5157674470383148490</id>
+    <link href="https://funcall.blogspot.com/feeds/5157674470383148490/comments/default" rel="replies" title="Post Comments" type="application/atom+xml">
+    <link href="https://www.blogger.com/comment.g?blogID=8288194986820249216&amp;postID=5157674470383148490&amp;isPopup=true" rel="replies" title="1 Comments" type="text/html">
+    <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default/5157674470383148490" rel="edit" type="application/atom+xml">
+    <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default/5157674470383148490" rel="self" type="application/atom+xml">
+    <link href="https://funcall.blogspot.com/2021/08/a-floating-point-problem.html" rel="alternate" title="A Floating-point Problem" type="text/html">
+    <title>A Floating-point Problem</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>Here's a 2x2 matrix:</p><pre>[64919121   -159018721]
+[41869520.5 -102558961]</pre>We can multiply it by a 2 element vector like this:<pre>(defun mxv (a b
+            c d
+
+            x
+            y
+
+            receiver)
+  (funcall receiver
+           (+ (* a x) (* b y))
+           (+ (* c x) (* d y))))
+
+* (mxv 64919121     -159018721
+       41869520.5d0 -102558961
+ 
+       3
+       1
+
+       #'list)
+
+(35738642 2.30496005d7)</pre>Given a matrix and a result, we want to
+  find the 2 element vector that produces that result.  To do this, we
+  compute the inverse of the matrix:<pre>(defun m-inverse (a b
+                  c d
+
+                  receiver)
+  (let ((det (- (* a d) (* b c))))
+    (funcall receiver
+             (/ d det) (/ (- b) det)
+             (/ (- c) det) (/ a det))))</pre>and multiply the inverse
+  matrix by the result:<pre>(defun solve (a b
+              c d
+
+              x
+              y
+
+              receiver)
+  (m-inverse a b
+             c d
+             (lambda (ia ib
+                      ic id)
+               (mxv ia ib
+                    ic id
+
+                    x
+                    y
+                    receiver))))</pre>So we can try this on our matrix<pre>* (solve 64919121     -159018721
+         41869520.5d0 -102558961
+
+         1
+         0
+         #'list)
+
+(1.02558961d8 4.18695205d7)</pre>and we get the wrong answer.<p></p>
+<p>What's the right answer?</p><pre>* (solve 64919121         -159018721
+         (+ 41869520 1/2) -102558961
+
+         1
+         0
+         #'list)
+
+(205117922 83739041)</pre>If we use double precision floating point, we get
+  the wrong answer by a considerable margin.<p></p>
+
+<p>I'm used to floating point calculations being off a little in the least
+  significant digits, and I've seen how the errors can accumulate in an iterative
+  calculation, but here we've lost all the significant digits in a straightforward
+  non-iterative calculation.  Here's what happened:  The determinant of our matrix is
+  computed by subtracting the product of the two diagonals.  One
+  diagonal is <code>(* 64919121 -102558961) =
+  -6658037598793281</code>, where the other diagonal is <code>(* (+
+  41869520 1/2) -159018721) = -6658037598793280.5</code>  This second
+  diagonal product cannot be represented in double precision floating
+  point, so it is rounded down to -6658037598793280.  This is where
+  the error is introduced.  An error of .5 in a quantity of
+  -6658037598793281 is small indeed, but we amplify this error when we
+  subtract out the other diagonal.  We still have an absolute error of
+  .5, but now it occurs within a quantity of 1, which makes it
+  relatively huge.  This is called “catastrophic cancellation”
+  because the subtraction “cancelled” all the significant digits
+(the “catastrophe” is presumably the amplification of the error).</p>
+
+<p>I don't care for the term “catastrophic cancellation”
+  because it places the blame on the operation of subtraction.  But
+  the subtraction did nothing wrong.  The difference betweeen
+  -6658037598793280 and -6658037598793281 is 1 and that is the result
+  we got.  It was the rounding in the prior step that introduced an
+  incorrect value into the calculation.  The subtraction just exposed
+  this and made it obvious.</p>
+
+<p>One could be cynical and reject floating point operations as being too
+  unreliable.  When we used exact rationals, we got the exactly correct result.
+  But rational numbers are much slower than floating point and they have a tendancy
+  to occupy larger and larger amounts of memory as the computation continues.
+  Floating point is fast and efficient, but you have to be careful when you use it.</p></div>
+    </content>
+    <updated>2021-08-27T13:47:59Z</updated>
+    <published>2021-08-27T13:47:00Z</published>
+    <author>
+      <name>Joe Marshall</name>
+      <email>noreply@blogger.com</email>
+      <uri>http://www.blogger.com/profile/03233353484280456977</uri>
+    </author>
+    <source>
+      <id>tag:blogger.com,1999:blog-8288194986820249216</id>
+      <category term="Common Lisp"/>
+      <category term="Lisp"/>
+      <category term="tail recursion"/>
+      <category term="macros"/>
+      <category term="scheme"/>
+      <category term="C#"/>
+      <category term="CLOS"/>
+      <category term="continuation passing style"/>
+      <category term="ActiveScripting"/>
+      <category term="DotNet"/>
+      <category term="Windows"/>
+      <category term="recursion"/>
+      <category term="Java"/>
+      <category term="anaphoric"/>
+      <category term="lambda calculus"/>
+      <category term="pattern matching"/>
+      <category term="software development"/>
+      <author>
+        <name>Joe Marshall</name>
+        <email>noreply@blogger.com</email>
+        <uri>http://www.blogger.com/profile/03233353484280456977</uri>
+      </author>
+      <link href="https://funcall.blogspot.com/feeds/posts/default" rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml">
+      <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default?alt=atom" rel="self" type="application/atom+xml">
+      <link href="https://funcall.blogspot.com/" rel="alternate" type="text/html">
+      <link href="http://pubsubhubbub.appspot.com/" rel="hub" type="text/html">
+      <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default?alt=atom&amp;start-index=26&amp;max-results=25" rel="next" type="application/atom+xml">
+      <subtitle>Unorthodox opinions on computer science and programming.</subtitle>
+      <title>Abstract Heresies</title>
+      <updated>2021-08-30T13:30:03Z</updated>
+    </source>
+  </entry>
+
+  <entry>
+    <id>https://blog.practical-scheme.net/gauche/20210826-negative-zero</id>
+    <link href="https://blog.practical-scheme.net/gauche/20210826-negative-zero" rel="alternate" type="text/html">
+    <title>Negative zero</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><h2 id="H-r3x1tm">Negative zero
+</h2><p>Gauche supports IEEE754 negative zero -0.0.  It simply wraps
+an IEEE754 double as a scheme object, so mostly it just works as specified
+in IEEE754 (and as supported by the underlying math library).
+Or, so we thought.
+</p><p>Let's recap the behavior of -0.0.
+It's numerically indistinguishable from 0.0 (so, it is <em>not</em>
+&quot;an infinitely small value less than zero&quot;):
+</p><pre>(= -0.0 0.0) ⇒ #t
+
+(&lt; -0.0 0.0) ⇒ #f
+
+(zero? -0.0) ⇒ #t
+</pre><p>But it can make a difference when there's a functon <em>f(x)</em> such that it is
+discontinuous at <em>x</em> = 0, and
+<em>f(x)</em> goes to different values when <em>x</em> approaches to zero from positive
+side or negative side.
+</p><pre>(/ 0.0)  ⇒ +inf.0
+(/ -0.0) ⇒ -inf.0
+</pre><p>For arithmetic primitive procedures, we simply pass unboxed double to
+the underlying math functions, so we didn't think we need to
+handle -0.0 specially.
+</p><hr></hr><p>The first wakeup call was this article via HackerNews:
+</p><p><a href="https://habr.com/en/post/574082/">One does not simply calculate the absolute value</a>
+</p><p>It talks about writing <code>abs</code> in Java, but every time I saw articles like
+this I just try it out on Gauche, and alas!
+</p><pre>;; Gauche 0.9.10
+(abs -0.0) ⇒ -0.0    ; Ouch!
+</pre><p>Yeah, the culprit was the C implementation of <code>abs</code>, the gist of which was:
+</p><pre>   if (x &lt; 0.0) return -x;
+   else return x;
+</pre><p>-0.0 doesn't satisfy <code>x &lt; 0.0</code> so it was returned without negation.
+</p><p>The easy fix is to use <code>signbit</code>.
+</p><pre>   if (signbit(x)) return -x;
+</pre><hr></hr><p>I reported the fix on Twitter, then somebody raised an issue: What about
+<code>(eqv? -0.0 0.0)</code>?
+</p><p>My initial reaction was that it should be <code>#t</code>, since <code>(= -0.0 0.0)</code>
+is <code>#t</code>.  In fact, R5RS states this:
+</p><blockquote><p>The <code>eqv?</code> procedure returns <code>#t</code> if:
+... <em>obj1</em> and <em>obj2</em> are both numbers, are numerically equal
+(see <code>=</code> ...), and are either both exact or both inexact.
+</p></blockquote><p>However, I realized that R7RS has more subtle definition.
+</p><blockquote><p>The <code>eqv?</code> procedure returns <code>#f</code> if:
+... <em>obj1</em> and <em>obj2</em> are both inexact numbers such that
+either they are numerically unequal (in the sense of <code>=</code>),
+or they do not yield the same results (...) when passed as arguments
+to any other procedure that can be defined as a finite composition
+of Scheme's standard arithmetic procedures, ...
+</p></blockquote><p>Clearly, -0.0 and 0.0 don't yield the same results when passed to <code>/</code>,
+so it should return <code>#f</code>.  (It is also mentioned in 6.2.4
+that -0.0 is distinct from 0.0 in a sense of <code>eqv?</code>.)
+</p><p>Fix for this is a bit involved.  When I fixed <code>eqv?</code>, a bunch of
+tests started failing.   It looks like some
+inexact integer division routines in the tests yield -0.0, and
+are compared to 0.0 with <code>equal?</code>, which should follow <code>eqv?</code>
+if arguments are numbers.
+</p><p>It turned out that the root cause was rounding primitives returning -0.0:
+</p><pre>;; Gauche 0.9.10
+(ceiling -0.5) ⇒ -0.0
+</pre><p>Although this itself is plausible, in most of the cases when
+you're thinking of integers (exact or inexact), you want to treat
+zero as zero.  Certainly you don't want to deal with two
+distint zeros in quotients or remainders.
+The choices would be either leave the rounding primitives as are
+and fix the integer divisions, or change the rounding primitives
+altogether.  I choose the latter.
+</p><hr></hr><p>The fixes are in the HEAD now.
+</p><pre>;; Gauche 0.9.11
+(eqv? -0.0 0.0) ⇒ #f
+(ceiling -0.5) ⇒ 0.0
+</pre><p><span class="tag-anchor">Tags: <a href="https://blog.practical-scheme.net/gauche?p=Tag:0.9.11">0.9.11</a>, <a href="https://blog.practical-scheme.net/gauche?p=Tag:Flonums">Flonums</a></span>
+</p><p>
+</p></div>
+    </content>
+    <updated>2021-08-26T19:15:44Z</updated>
+    <source>
+      <id>https://blog.practical-scheme.net/gauche</id>
+      <author>
+        <name>Gauche Devlog</name>
+      </author>
+      <link href="https://blog.practical-scheme.net/gauche" rel="alternate" type="text/html">
+      <link href="https://blog.practical-scheme.net/gauche?c=rss" rel="self" type="application/rdf+xml">
+      <subtitle>Blog on Gauche development</subtitle>
+      <title>Gauche Devlog</title>
+      <updated>2021-09-01T06:34:22Z</updated>
+    </source>
+  </entry>
+
+  <entry xml:lang="en-US">
+    <id>https://srfi.schemers.org/srfi-227</id>
+    <link href="https://srfi.schemers.org/srfi-227/srfi-227.html" rel="alternate" type="text/html">
+    <title>SRFI 227: Optional Arguments</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">SRFI 227 is now in <em>draft</em> status.<blockquote>    <p>This SRFI specifies the <code>opt-lambda</code> syntax, which
+      generalizes <code>lambda</code>.  An <code>opt-lambda</code> expression
+      evaluates to a procedure that takes a number of required and a number of
+      optional (positional) arguments, whose default values are determined by
+      evaluating corresponding expressions when the procedure is called.</p>
+
+    <p>This SRFI also specifies a variation <code>opt*-lambda</code>, which is
+      to <code>opt-lambda</code> as <code>let*</code> is to <code>let</code>
+      and the related binding constructs <code>let-optionals</code>
+      and <code>let-optionals*</code>.</p></blockquote></div>
+    </summary>
+    <updated>2021-08-25T20:00:00Z</updated>
+    <published>2021-08-25T20:00:00Z</published>
+    <author>
+      <name>Marc Nieper-Wißkirchen (spec and R6RS implementation) and Daphne Preston-Kendal (R7RS implementation)</name>
+    </author>
+    <source>
+      <id>https://srfi.schemers.org/</id>
+      <link href="https://srfi.schemers.org/" rel="alternate" type="text/html">
+      <link href="https://srfi.schemers.org/rss" rel="self" type="application/rss+xml">
+      <subtitle>Updates to SRFI documents</subtitle>
+      <title>Scheme Requests for Implementation</title>
+      <updated>2021-09-01T06:32:43Z</updated>
+    </source>
+  </entry>
+
+  <entry>
+    <id>http://letloop.xyz/notes/2021/ruse-scheme-shall-be.html</id>
+    <link href="http://letloop.xyz/notes/2021/ruse-scheme-shall-be.html" rel="alternate" type="text/html">
+    <title>Ruse Scheme shall be</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><div><h1>2021/05/18 - Ruse Scheme shall be</h1>
+<p>Ruse Scheme, formely known as Arew Scheme, is at this stage, a
+collection of Scheme libraries for Chez Scheme. There is a grand
+scheme plan plot machination for it. Read on.</p>
+<h2>What is a civilization kit?</h2>
+<p>A civilization kit is a software or set of software that ease the
+organization of life. So far, there is really one civkit that is
+mostly privateer that includes and is not limited to:</p>
+<ul>
+<li>Wikimedia project such as Wikipedia, Wikidata, Wiktionary...</li>
+<li>Google, Facebook, Github, Instagram, Twitter, Reddit, StackOverflow, Quora...</li>
+<li>Android, iOS, Firefox, Chrome..</li>
+<li>MacOS, FreeBSD, NetBSD, Windows, Debian, Fedora, Ubuntu...</li>
+<li>Mastodon, and other projects that rely on activitypub...</li>
+</ul>
+<p>And many more... that is only the visible part of Earth software
+system. They are software that aim to ease the the production of
+software or hardware. They are also software that helps with
+governance, provide tools to ease law making process, sustain
+production chain of food, energy, medecine, culture, education...</p>
+<p>They are a lot of software, and that collection form a civkit.</p>
+<h2>Is Ruse Scheme a new Scheme?</h2>
+<p>Yes, and no. It depends what is meant by a new Scheme.</p>
+<p>Sometime a Scheme is a software that gathers many Scheme libraries,
+and rely on existing Scheme to execute their code. That is the case of
+Ruse.</p>
+<p>Most of the time, a Scheme is a software that interpret and/or compile
+a lot of parentheses that is more or less compatible with RnRS. In
+this regard, Ruse is a Scheme, but it is not completly new. It rely on
+Chez Scheme to produce executables that can be run on a server or a
+desktop. Ruse will support Web Assembly and JavaScript to run Scheme
+in a Web browser.</p>
+<p>Some Scheme implementation do a little of both, and also deliver
+features that go beyond past or current RnRS. Ruse does that, and
+shall reach beyond...</p>
+<p>The main difference with existing Scheme implementations is not found
+at the programming language level. Ruse is and will stay a Scheme.</p>
+<p>The main area Ruse try to innovate is the rest: whether it is the the
+production or sharing of code, Ruse aim to make it easier than sharing
+a meme. Another area Ruse try to innovate is to state upfront the
+scope of the project.</p>
+<h2>What are the short term goal of Ruse Scheme?</h2>
+<p>The short term goal of Ruse Scheme is to build a scalable search
+engine: Babelia. Babelia will both scale-up and scale-down in terms of
+required hardware. In other words, it may run in the cloud or on a
+Raspberry Pi.</p>
+<p>That first milestone will demonstrate how to build a distributed Von
+Neumann architecture that aim to be easier to work with than current
+approaches.</p>
+<p>This is the first milestone because it is easier than going fully
+dencentralized first. It will deliver the necessary tools to work with
+the current Internet.</p>
+<p>The plan is to deliver Babelia in 2022.</p>
+<h2>What is the next Internet?</h2>
+<p>The next Internet is an Internet that is more open, more
+decentralized, more accessible, and resting upon the fundamental
+principle.</p>
+<h2>What is the distributed Von Neumann architecture?</h2>
+<p>The distributed Von Neumann architecture is like a regular computer
+that rely on multiple commodity computers.</p>
+<p>It is different from a compute grid, because it is not meant only for
+batch processing.</p>
+<p>In Babelia, that distributed computer has volatile memory,
+non-volatile memory, possibly vectors or graphics processing units,
+and generic computation units.</p>
+<p>The goal is to make it easier to build software inside a trusted
+network of computers.</p>
+<h2>What are the mid term goals of Ruse Scheme?</h2>
+<p>Mid term goals of Ruse Scheme are three folds:</p>
+<ul>
+<li><p>Offer enough tooling to make it easier to create, sell and make a
+living by producing Scheme code. This includes making it painless to
+interop with existing software.</p>
+</li>
+<li><p>Implement a package manager inspired from Nix, and backed up by
+content-addressable code that can be translated into multiple
+natural languages with the help of a decentralized peer-to-peer
+network.</p>
+</li>
+<li><p>Explore a new operating system desktop paradigm resting upon the
+fundamental principle.</p>
+</li>
+</ul>
+<h2>What is the goal of Ruse Scheme?</h2>
+<p>The goal of Ruse Scheme is to build a coherant bootstrapable
+whole-stack civkit for a sustainable civilization, resting upon the
+fundamental principle.</p>
+<h2>What is whole-stack?</h2>
+<p>Whole-stack build upon the full-stack concept to include programming
+databases, and kernels.</p>
+<h2>What is Ruse Scheme license?</h2>
+<p>Ruse Scheme is licensed under the Cooperative Non-violent Public
+License without exceptions.</p>
+<h2>What is the fundamental principle?</h2>
+<blockquote><p>If a system must serve the creative spirit, it must be entirely
+comprehensible by a single individual.</p>
+</blockquote>
+</div></div>
+    </content>
+    <updated>2021-08-25T17:17:57Z</updated>
+    <published>2021-05-18T00:00:00Z</published>
+    <source>
+      <id>http://letloop.xyz</id>
+      <author>
+        <name>Ruse Scheme</name>
+      </author>
+      <link href="http://letloop.xyz/feed.xml" rel="self" type="application/atom+xml">
+      <subtitle>Perfection is the limit.</subtitle>
+      <title>Ruse Scheme</title>
+      <updated>2021-08-25T17:17:57Z</updated>
+    </source>
+  </entry>
+
+  <entry>
+    <id>http://letloop.xyz/notes/2021/jack-one-thread-per-core.html</id>
+    <link href="http://letloop.xyz/notes/2021/jack-one-thread-per-core.html" rel="alternate" type="text/html">
+    <title>Jack: One Thread Per Core</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><div><h1>2021/08/25 - Jack: One Thread Per Core</h1>
+<p>I have being making progress with Babelia on the web user interface,
+IRC interface, and also the backend.</p>
+<p>Regarding the backend, even if Chez Scheme is fast, it is clear even
+on the small dataset I have put together, that is around eleven
+gigabytes without compression. I need something like map-reduce [1],
+in LISP world known under the name of <code>for-each-parallel-map</code>.</p>
+<p>In full-text search, and in a search product like google, they are
+tips, and tricks to avoid to hit the worst case. The worst being a
+query where the least frequent word is also one of the most frequent
+in the index. Possible workarounds include 0) using <code>AND</code> as the
+default operator 1) eliminating most common word (also known as
+stop-words); 2) caching results; 3) approximating results with user
+profiling...</p>
+<p>All those workarounds give rise to other problems, or they need a lot
+of work such as profiling users, which is in my opinion not a problem
+when that is limited to profiling users' data that are published in
+the open (unlike tracking search users via their queries, or mail,
+etc...).</p>
+<p>Anyway, threads are difficult, so I wanted to give it try. The above
+is trying to explain from where my motivation stems from.</p>
+<blockquote><p>It is still unclear whether <code>make-jack</code> works reliably all the time.
+You tell me.</p>
+</blockquote>
+<h2><code>(make-jack count) â†’ procedure?</code></h2>
+<p><code>make-jack</code> initialize a pool of <code>COUNT</code> parallel threads, and return
+a possibly endless generator that produces <em>jacks</em>. A jack is made of
+two procedure:</p>
+<ol>
+<li><p>The first procedure is an accumulator that will consume one or more
+thunks. That is how the user request the parallel execution of
+something.</p>
+</li>
+<li><p>The second procedure will generate the results of the thunks
+submitted with the associated accumulator in an unspecified order.</p>
+</li>
+</ol>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="nb">call-with-values </span><span class="nv">jack</span>
+   <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">consumer</span> <span class="nv">producer</span><span class="p">)</span>
+     <span class="c1">;; submit some work to the pool, the consumer will block</span>
+     <span class="c1">;; if there is too much work already scheduled.</span>
+     <span class="p">(</span><span class="nf">consumer</span> <span class="nv">thunks</span><span class="p">)</span>
+     <span class="c1">;; pull results</span>
+     <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">((</span><span class="nf">count</span> <span class="p">(</span><span class="nb">length </span><span class="nv">input</span><span class="p">)))</span>
+       <span class="p">(</span><span class="nf">unless</span> <span class="p">(</span><span class="nf">fxzero?</span> <span class="nv">count</span><span class="p">)</span>
+         <span class="c1">;; producer will block the current thread until there</span>
+     <span class="c1">;; is something to produce</span>
+         <span class="p">(</span><span class="nb">display </span><span class="p">(</span><span class="nf">producer</span><span class="p">))</span>
+     <span class="p">(</span><span class="nf">newline</span><span class="p">)</span>
+         <span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="nf">fx-</span> <span class="nv">count</span> <span class="mi">1</span><span class="p">))))))</span>
+</pre></div>
+<p>Here are some numbers that backup the claim that it may work as
+expected, the tests were done with pool of size five. The work, called
+<code>THUNKS</code> in the above snippet, is the computation of one thousand
+times fibonacci of 40:</p>
+
+<div><pre>(time (call-with-values jack ...))
+    no collections
+    0.029955076s elapsed cpu time
+    152.646622367s elapsed real time
+    592688 bytes allocated
+        Command being timed: &quot;scheme --libdirs src/ --program main.scm&quot;
+        User time (seconds): 761.84
+        System time (seconds): 0.04
+        Percent of CPU this job got: 498%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 2:32.71
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 49624
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 14194
+        Voluntary context switches: 1011
+        Involuntary context switches: 3646
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 0
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0</pre></div>
+<p>The code:</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="nf">define-record-type*</span> <span class="nv">&lt;queue&gt;</span>
+    <span class="c1">;; This is a fifo queue, that can signal when items are available</span>
+    <span class="c1">;; or space is available. Space is available when there is less</span>
+    <span class="c1">;; than MARK items inside the REST. It is used in jacks in both</span>
+    <span class="c1">;; accumulators and generators.</span>
+    <span class="p">(</span><span class="nf">make-queue%</span> <span class="nv">name</span> <span class="nv">head</span> <span class="nv">rest</span> <span class="nv">mark</span> <span class="nv">mutex</span> <span class="nv">item-available</span> <span class="nv">space-available</span><span class="p">)</span>
+    <span class="nv">queue?</span>
+    <span class="p">(</span><span class="nf">name</span> <span class="nv">queue-name</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">head</span> <span class="nv">queue-head</span> <span class="nv">queue-head!</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">rest</span> <span class="nv">queue-rest</span> <span class="nv">queue-rest!</span><span class="p">)</span>
+    <span class="c1">;; mark is an integer that allows to keep the number of produced,</span>
+    <span class="c1">;; and accumulated values low; Tho, there is room for starvation.</span>
+    <span class="p">(</span><span class="nf">mark</span> <span class="nv">queue-mark</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">mutex</span> <span class="nv">queue-mutex</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">item-available</span> <span class="nv">queue-item-available</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">space-available</span> <span class="nv">queue-space-available</span><span class="p">))</span>
+
+  <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">make-queue</span> <span class="nv">name</span> <span class="nv">mark</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">make-queue%</span> <span class="nv">name</span> <span class="o">'</span><span class="p">()</span> <span class="o">'</span><span class="p">()</span> <span class="nv">mark</span> <span class="p">(</span><span class="nf">make-mutex</span><span class="p">)</span> <span class="p">(</span><span class="nf">make-condition</span><span class="p">)</span> <span class="p">(</span><span class="nf">make-condition</span><span class="p">)))</span>
+
+  <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">queue-pop!</span> <span class="nv">queue</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">mutex-acquire</span> <span class="p">(</span><span class="nf">queue-mutex</span> <span class="nv">queue</span><span class="p">))</span>
+    <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">null? </span><span class="p">(</span><span class="nf">queue-head</span> <span class="nv">queue</span><span class="p">))</span>
+        <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">null? </span><span class="p">(</span><span class="nf">queue-rest</span> <span class="nv">queue</span><span class="p">))</span>
+            <span class="p">(</span><span class="nf">begin</span>
+              <span class="c1">;; Wait for work...</span>
+              <span class="p">(</span><span class="nf">condition-wait</span> <span class="p">(</span><span class="nf">queue-item-available</span> <span class="nv">queue</span><span class="p">)</span> <span class="p">(</span><span class="nf">queue-mutex</span> <span class="nv">queue</span><span class="p">))</span>
+              <span class="p">(</span><span class="nf">mutex-release</span> <span class="p">(</span><span class="nf">queue-mutex</span> <span class="nv">queue</span><span class="p">))</span>
+              <span class="c1">;; recurse</span>
+              <span class="p">(</span><span class="nf">queue-pop!</span> <span class="nv">queue</span><span class="p">))</span>
+            <span class="p">(</span><span class="k">let* </span><span class="p">((</span><span class="nf">item+new-head</span> <span class="p">(</span><span class="nb">reverse </span><span class="p">(</span><span class="nf">queue-rest</span> <span class="nv">queue</span><span class="p">)))</span>
+                   <span class="p">(</span><span class="nf">item</span> <span class="p">(</span><span class="nb">car </span><span class="nv">item+new-head</span><span class="p">))</span>
+                   <span class="p">(</span><span class="nf">new-head</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">item+new-head</span><span class="p">)))</span>
+              <span class="c1">;; There is nothing in the head, but the rest has stuff</span>
+              <span class="c1">;; reverse the rest to keep it FIFO, and replace the</span>
+              <span class="c1">;; HEAD with it. Return the first item immediatly to</span>
+              <span class="c1">;; avoid to pressure the mutex, and best performance.</span>
+              <span class="p">(</span><span class="nf">queue-rest!</span> <span class="nv">queue</span> <span class="o">'</span><span class="p">())</span>
+              <span class="p">(</span><span class="nf">condition-signal</span> <span class="p">(</span><span class="nf">queue-space-available</span> <span class="nv">queue</span><span class="p">))</span>
+              <span class="p">(</span><span class="nf">queue-head!</span> <span class="nv">queue</span> <span class="nv">new-head</span><span class="p">)</span>
+              <span class="p">(</span><span class="nf">mutex-release</span> <span class="p">(</span><span class="nf">queue-mutex</span> <span class="nv">queue</span><span class="p">))</span>
+              <span class="nv">item</span><span class="p">))</span>
+        <span class="c1">;; There is work, all is well.</span>
+        <span class="p">(</span><span class="k">let </span><span class="p">((</span><span class="nf">item</span> <span class="p">(</span><span class="nb">car </span><span class="p">(</span><span class="nf">queue-head</span> <span class="nv">queue</span><span class="p">)))</span>
+              <span class="p">(</span><span class="nf">new-head</span> <span class="p">(</span><span class="nb">cdr </span><span class="p">(</span><span class="nf">queue-head</span> <span class="nv">queue</span><span class="p">))))</span>
+          <span class="p">(</span><span class="nf">queue-head!</span> <span class="nv">queue</span> <span class="nv">new-head</span><span class="p">)</span>
+          <span class="p">(</span><span class="nf">mutex-release</span> <span class="p">(</span><span class="nf">queue-mutex</span> <span class="nv">queue</span><span class="p">))</span>
+          <span class="nv">item</span><span class="p">)))</span>
+
+  <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">queue-push!</span> <span class="nv">queue</span> <span class="o">.</span> <span class="nv">items</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">mutex-acquire</span> <span class="p">(</span><span class="nf">queue-mutex</span> <span class="nv">queue</span><span class="p">))</span>
+    <span class="c1">;; we only check that the rest is less than the mark. BUT the user</span>
+    <span class="c1">;; may append more than mark ITEMS.</span>
+    <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nf">fx&lt;?</span> <span class="p">(</span><span class="nb">length </span><span class="p">(</span><span class="nf">queue-rest</span> <span class="nv">queue</span><span class="p">))</span> <span class="p">(</span><span class="nf">queue-mark</span> <span class="nv">queue</span><span class="p">))</span>
+        <span class="p">(</span><span class="nf">begin</span>
+          <span class="p">(</span><span class="nf">queue-rest!</span> <span class="nv">queue</span> <span class="p">(</span><span class="nb">append </span><span class="nv">items</span> <span class="p">(</span><span class="nf">queue-rest</span> <span class="nv">queue</span><span class="p">)))</span>
+          <span class="c1">;; TODO: It may not be necessary to wake up all waiting</span>
+          <span class="c1">;; threads, but only (length (queue-rest queue))?</span>
+          <span class="p">(</span><span class="nf">condition-broadcast</span> <span class="p">(</span><span class="nf">queue-item-available</span> <span class="nv">queue</span><span class="p">))</span>
+          <span class="p">(</span><span class="nf">mutex-release</span> <span class="p">(</span><span class="nf">queue-mutex</span> <span class="nv">queue</span><span class="p">)))</span>
+        <span class="p">(</span><span class="nf">begin</span>
+          <span class="c1">;; Block until some work is done.</span>
+          <span class="p">(</span><span class="nf">condition-wait</span> <span class="p">(</span><span class="nf">queue-space-available</span> <span class="nv">queue</span><span class="p">)</span> <span class="p">(</span><span class="nf">queue-mutex</span> <span class="nv">queue</span><span class="p">))</span>
+          <span class="p">(</span><span class="nf">mutex-release</span> <span class="p">(</span><span class="nf">queue-mutex</span> <span class="nv">queue</span><span class="p">))</span>
+          <span class="c1">;; TODO: here it is possible to append the items without</span>
+          <span class="c1">;; recursing.</span>
+          <span class="p">(</span><span class="nb">apply </span><span class="nv">queue-push!</span> <span class="nv">queue</span> <span class="nv">items</span><span class="p">))))</span>
+
+  <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">make-jack</span> <span class="nv">count</span><span class="p">)</span>
+
+    <span class="c1">;; That is the queue for all work for the created thread pool.</span>
+    <span class="c1">;; The mark is an arbitrary number, it could be an argument.</span>
+    <span class="p">(</span><span class="k">define </span><span class="nv">input</span> <span class="p">(</span><span class="nf">make-queue</span> <span class="ss">'input</span> <span class="p">(</span><span class="nf">fx*</span> <span class="nv">count</span> <span class="mi">2</span><span class="p">)))</span>
+
+    <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">worker-loop</span> <span class="nv">index</span> <span class="nv">input</span><span class="p">)</span>
+      <span class="c1">;; TODO: replace thunk+output with output+thunk, and avoid the</span>
+      <span class="c1">;; cdr before the car.</span>
+      <span class="p">(</span><span class="k">let </span><span class="p">((</span><span class="nf">thunk+output</span> <span class="p">(</span><span class="nf">queue-pop!</span> <span class="nv">input</span><span class="p">)))</span>
+        <span class="p">(</span><span class="nf">queue-push!</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">thunk+output</span><span class="p">)</span> <span class="p">((</span><span class="nb">car </span><span class="nv">thunk+output</span><span class="p">)))</span>
+        <span class="p">(</span><span class="nf">worker-loop</span> <span class="nv">index</span> <span class="nv">input</span><span class="p">)))</span>
+
+    <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">worker-init</span> <span class="nv">count</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">((</span><span class="nf">count</span> <span class="nv">count</span><span class="p">))</span>
+        <span class="p">(</span><span class="nf">unless</span> <span class="p">(</span><span class="nf">fxzero?</span> <span class="nv">count</span><span class="p">)</span>
+          <span class="c1">;; count is passed as the thread index for debugging</span>
+          <span class="c1">;; purpose</span>
+          <span class="p">(</span><span class="nf">fork-thread</span> <span class="p">(</span><span class="k">lambda </span><span class="p">()</span> <span class="p">(</span><span class="nf">worker-loop</span> <span class="nv">count</span> <span class="nv">input</span><span class="p">)))</span>
+          <span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="nf">fx-</span> <span class="nv">count</span> <span class="mi">1</span><span class="p">)))))</span>
+
+    <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">input-consumer</span> <span class="nv">input</span> <span class="nv">output</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">thunks</span><span class="p">)</span>
+        <span class="c1">;; TODO: avoid the call to apply. The reverse is necessary, to</span>
+        <span class="c1">;; keep around the priority information FIFO.</span>
+        <span class="p">(</span><span class="nb">apply </span><span class="nv">queue-push!</span> <span class="nv">input</span> <span class="p">(</span><span class="nb">reverse </span><span class="p">(</span><span class="nb">map </span><span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">thunk</span><span class="p">)</span> <span class="p">(</span><span class="nb">cons </span><span class="nv">thunk</span> <span class="nv">output</span><span class="p">))</span> <span class="nv">thunks</span><span class="p">)))))</span>
+
+    <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">output-producer</span> <span class="nv">output</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">lambda </span><span class="p">()</span>
+        <span class="p">(</span><span class="nf">queue-pop!</span> <span class="nv">output</span><span class="p">)))</span>
+
+    <span class="c1">;; Initialize thread pool at call site, that is somewhat unusual</span>
+    <span class="c1">;; for a generator to have side-effects outside producing values.</span>
+    <span class="p">(</span><span class="nf">worker-init</span> <span class="nv">count</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="k">lambda </span><span class="p">()</span>
+      <span class="c1">;; again the mark is a clueless guess.</span>
+      <span class="p">(</span><span class="k">define </span><span class="nv">output</span> <span class="p">(</span><span class="nf">make-queue</span> <span class="ss">'output</span> <span class="p">(</span><span class="nf">fx*</span> <span class="nv">count</span> <span class="mi">2</span><span class="p">)))</span>
+      <span class="p">(</span><span class="nb">values </span><span class="p">(</span><span class="nf">input-consumer</span> <span class="nv">input</span> <span class="nv">output</span><span class="p">)</span> <span class="p">(</span><span class="nf">output-producer</span> <span class="nv">output</span><span class="p">))))</span>
+</pre></div>
+<h2>Reference</h2>
+<ol>
+<li><a href="https://research.google/pubs/pub62/">MapReduce: Simplified Data Processing on Large Clusters</a></li>
+</ol>
+</div></div>
+    </content>
+    <updated>2021-08-25T17:17:57Z</updated>
+    <published>2021-08-25T00:00:00Z</published>
+    <source>
+      <id>http://letloop.xyz</id>
+      <author>
+        <name>Ruse Scheme</name>
+      </author>
+      <link href="http://letloop.xyz/feed.xml" rel="self" type="application/atom+xml">
+      <subtitle>Perfection is the limit.</subtitle>
+      <title>Ruse Scheme</title>
+      <updated>2021-08-25T17:17:57Z</updated>
+    </source>
+  </entry>
+
+  <entry>
+    <id>https://idiomdrottning.org/gemrefinder</id>
+    <link href="https://idiomdrottning.org/gemrefinder" rel="self" type="application/atom+xml">
+    <link href="https://idiomdrottning.org/gemrefinder" rel="alternate" type="text/html">
+    <title type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><a href="https://idiomdrottning.org/gemrefinder">gemrefinder</a></div>
+    </title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>Usage:</p>
+            <pre><code>gemrefinder -p gemini://your.own.domain/page-with-your-posts
+</code></pre>
+            <p><code>gemrefinder</code> checks Gemini space for replies to your posts.</p>
+            <p>The current version checks</p>
+            <ul>
+              <li>Antenna</li>
+              <li>nytpu’s comitium subscriptions</li>
+              <li>gmisub aggregate</li>
+              <li>CAPCOM</li>
+              <li>Nightfall City’s Main Street, Dusk’s End, and Writer’s Lane</li>
+            </ul>
+            <p>It only checks titles of posts, and see if they start with “RE:
+              something you’ve started a post title with”.</p>
+            <p>Your own posts are included, but you can pipe the output of
+              gemrefinder through <code>grep -v</code> to get rid of those.</p>
+            <p>You can install it with</p>
+            <pre><code>chicken-install gemrefinder
+</code></pre>
+            <p>You also need to have <a href="https://sr.ht/~sircmpwn/gmni/">gmni</a> in your path.</p>
+            <p>For source code (AGPL),</p>
+            <pre><code>git clone https://idiomdrottning.org/gemrefinder
+</code></pre>
+            <h2>Update</h2>
+            <p>m15o <a href="https://miso.town/1629634533">writes in</a>:</p>
+            <blockquote>
+              <p>I love how a simple convention (RE:) that’s been around for years with email can
+                be leveraged with other tools to create a simple notification system.</p>
+            </blockquote>
+            <p>Right? It’s not as fool proof as checking for actual backlinks would
+              be, since some people do change the title somewhat, and in that case
+              gemrefinder will miss them. But it worked for me finding your reply
+              right now♥</p>
+            <blockquote>
+              <p>(By the way, I only now realize your site is mirrored on the web and looks
+                stunning!)</p>
+            </blockquote>
+            <p>That’s very flattering, thank you♥</p></div>
+    </content>
+    <updated>2021-08-21T15:57:11Z</updated>
+    <author>
+      <name>Idiomdrottning</name>
+      <email>sandra.snan@idiomdrottning.org</email>
+    </author>
+    <source>
+      <id>https://idiomdrottning.org/blog/programs</id>
+      <link href="https://idiomdrottning.org/blog/programs" rel="self" type="application/atom+xml">
+      <subtitle type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><ol>
+            <li><a href="https://idiomdrottning.org/blog">/blog</a></li>
+            <li><a href="https://idiomdrottning.org/blog/en">/blog/en</a></li>
+            <li>/blog/programs</li>
+            <li><a href="https://idiomdrottning.org/blog/programs/en">/blog/programs/en</a></li>
+          </ol></div>
+      </subtitle>
+      <title>Idiomdrottning</title>
+      <updated>2021-08-31T05:08:23Z</updated>
+    </source>
+  </entry>
+
+  <entry xml:lang="en">
+    <id>https://weinholt.se/articles/loko-scheme-0-9-0/</id>
+    <link href="https://weinholt.se/articles/loko-scheme-0-9-0/" rel="alternate" type="text/html">
+    <title>Loko Scheme 0.9.0</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>Loko Scheme 0.9.0 is now available from:</p>
+<ul>
+<li><a href="https://scheme.fail/releases/loko-0.9.0.tar.gz">https://scheme.fail/releases/loko-0.9.0.tar.gz</a></li>
+<li><a href="https://scheme.fail/releases/loko-0.9.0.tar.gz.sig">https://scheme.fail/releases/loko-0.9.0.tar.gz.sig</a></li>
+</ul>
+<p><span class="more"></span></p>
+<p>A bootable disk image for 64-bit PCs is available from:</p>
+<ul>
+<li><a href="https://scheme.fail/releases/disk-images/loko-hdd-0.9.0.img.gz">https://scheme.fail/releases/disk-images/loko-hdd-0.9.0.img.gz</a></li>
+<li><a href="https://scheme.fail/releases/disk-images/loko-hdd-0.9.0.img.gz.sig">https://scheme.fail/releases/disk-images/loko-hdd-0.9.0.img.gz.sig</a></li>
+</ul>
+<p>The signatures are made with the GnuPG key 0xE33E61A2E9B8C3A2.</p>
+<p>Loko Scheme 0.9.0 fixes bugs, improves performance and adds features.
+See NEWS.md in the distribution for a more detailed summary of
+changes.</p>
+<p>Loko Scheme is an optimizing Scheme compiler that builds statically
+linked binaries for bare metal, Linux and NetBSD/amd64. It supports
+the R6RS Scheme and R7RS Scheme standards.</p>
+<p>Loko Schemeâ€™s web site is <a href="https://scheme.fail">https://scheme.fail</a>, where you can find
+the release tarballs and the manual.</p>
+<p>Loko Scheme is available under GNU Affero GPL version 3 or later.</p></div>
+    </summary>
+    <updated>2021-08-21T00:00:00Z</updated>
+    <published>2021-08-21T00:00:00Z</published>
+    <author>
+      <name>weinholt</name>
+    </author>
+    <source>
+      <id>https://weinholt.se</id>
+      <link href="https://weinholt.se/feed.xml" rel="self" type="application/rss+xml">
+      <link href="https://weinholt.se" rel="alternate" type="text/html">
+      <subtitle>Insufficiently smart Internet blogger</subtitle>
+      <title>weinholt.se</title>
+      <updated>2021-08-21T00:00:00Z</updated>
+    </source>
+  </entry>
+
+  <entry>
+    <id>https://idiomdrottning.org/call-table-literals</id>
+    <link href="https://idiomdrottning.org/call-table-literals" rel="self" type="application/atom+xml">
+    <link href="https://idiomdrottning.org/call-table-literals" rel="alternate" type="text/html">
+    <title type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><a href="https://idiomdrottning.org/call-table-literals">call table literals</a></div>
+    </title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p><code>ct</code>, <code>ctq</code>, <code>ct*</code> and <code>ctq*</code> are sugar for creating a <a href="https://idiomdrottning.org/call-table">call-table</a>
+              with some values already filled.</p>
+            <p>The q variants are implicitly quasiquoted while the non-q variants aren’t.</p>
+            <p>I.e.</p>
+            <pre><code>(let ((banana-color 'yellow))
+  (ctq banana ,banana-color apple red))
+</code></pre>
+            <p>is equivalent to</p>
+            <pre><code>(let ((banana-color 'yellow))
+  (call-table seed: `((banana . ,banana-color) (apple . red))))
+</code></pre>
+            <p>and</p>
+            <pre><code>(let ((banana-color 'yellow))
+  (ct 'banana banana-color 'apple 'red))
+</code></pre>
+            <p>The * variants create <code>call-table*</code> instances instead.</p>
+            <p>These call-tables aren’t closed, you can add more keys and values to them.</p>
+            <p>In <a href="https://idiomdrottning.org/brev-separate">brev-separate</a> from version 1.42.</p>
+            <h2>In destructuring</h2>
+            <p>Our first example from our <a href="https://idiomdrottning.org/clojure-like-destructuring-in-brev" title="Clojure-like destructuring in brev">last post</a> becomes:</p>
+            <pre><code>(define (basket-color-inspect
+         ('shopping-basket (= (ctq banana yellow apple red pear green) x)))
+  (print &quot;The shopping basket has a &quot; x &quot; fruit.&quot;))
+
+(basket-color-inspect '(shopping-basket apple))
+</code></pre>
+            <p>That prints:</p>
+            <pre><code>The shopping basket has a red fruit.
+</code></pre>
+            <p><code>ct</code> is kinda like the curly-braced map literals in Clojure.</p></div>
+    </content>
+    <updated>2021-08-20T21:00:59Z</updated>
+    <author>
+      <name>Idiomdrottning</name>
+      <email>sandra.snan@idiomdrottning.org</email>
+    </author>
+    <source>
+      <id>https://idiomdrottning.org/blog/programs</id>
+      <link href="https://idiomdrottning.org/blog/programs" rel="self" type="application/atom+xml">
+      <subtitle type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><ol>
+            <li><a href="https://idiomdrottning.org/blog">/blog</a></li>
+            <li><a href="https://idiomdrottning.org/blog/en">/blog/en</a></li>
+            <li>/blog/programs</li>
+            <li><a href="https://idiomdrottning.org/blog/programs/en">/blog/programs/en</a></li>
+          </ol></div>
+      </subtitle>
+      <title>Idiomdrottning</title>
+      <updated>2021-08-31T05:08:23Z</updated>
+    </source>
+  </entry>
+
+  <entry>
+    <id>https://idiomdrottning.org/clojure-like-destructuring-in-brev</id>
+    <link href="https://idiomdrottning.org/clojure-like-destructuring-in-brev" rel="self" type="application/atom+xml">
+    <link href="https://idiomdrottning.org/clojure-like-destructuring-in-brev" rel="alternate" type="text/html">
+    <title type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><a href="https://idiomdrottning.org/clojure-like-destructuring-in-brev">Clojure-like destructuring in brev</a></div>
+    </title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>I’ve been learning Clojure and it’s pretty fun because a lot of design
+              decisions are similar to <a href="https://idiomdrottning.org/brev">brev</a>. I really like Clojure a lot.</p>
+            <p>Of course, <a href="https://idiomdrottning.org/lisp-naming">some things are very different</a>.</p>
+            <p>One thing Clojure is famous for is its destructuring function
+              definitions. That’s something brev can do as well, although the more
+              direct inspiration was Haskell.</p>
+            <p>Here is an example:</p>
+            <pre><code>(define fruit-color (call-table))
+
+(fruit-color 'banana 'yellow)
+(fruit-color 'apple 'red)
+(fruit-color 'pear 'green)
+
+(define (basket-color-inspect ('shopping-basket (= fruit-color x)))
+  (print &quot;The shopping basket has a &quot; x &quot; fruit.&quot;))
+
+(basket-color-inspect '(shopping-basket apple))
+</code></pre>
+            <p>This prints out:</p>
+            <pre><code>The shopping basket has a red fruit.
+</code></pre>
+            <p>Here is another example:</p>
+            <pre><code>(define computer-color (call-table))
+(computer-color 'apple 'bondi)
+
+(define leaf-color (call-table))
+(leaf-color 'apple 'green)
+
+(define (basket-apple-inspect ('shopping-basket (= (fn (x 'apple)) x)))
+  (print &quot;The shopping basket has a &quot; x &quot; apple.&quot;))
+
+(basket-apple-inspect `(shopping-basket ,leaf-color))
+</code></pre>
+            <p>That prints out:</p>
+            <pre><code>The shopping basket has a green apple.
+</code></pre></div>
+    </content>
+    <updated>2021-08-20T09:03:29Z</updated>
+    <author>
+      <name>Idiomdrottning</name>
+      <email>sandra.snan@idiomdrottning.org</email>
+    </author>
+    <source>
+      <id>https://idiomdrottning.org/blog/programs</id>
+      <link href="https://idiomdrottning.org/blog/programs" rel="self" type="application/atom+xml">
+      <subtitle type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><ol>
+            <li><a href="https://idiomdrottning.org/blog">/blog</a></li>
+            <li><a href="https://idiomdrottning.org/blog/en">/blog/en</a></li>
+            <li>/blog/programs</li>
+            <li><a href="https://idiomdrottning.org/blog/programs/en">/blog/programs/en</a></li>
+          </ol></div>
+      </subtitle>
+      <title>Idiomdrottning</title>
+      <updated>2021-08-31T05:08:23Z</updated>
+    </source>
+  </entry>
+
+  <entry>
+    <id>tag:blogger.com,1999:blog-8288194986820249216.post-8045083318505598872</id>
+    <link href="https://funcall.blogspot.com/feeds/8045083318505598872/comments/default" rel="replies" title="Post Comments" type="application/atom+xml">
+    <link href="https://www.blogger.com/comment.g?blogID=8288194986820249216&amp;postID=8045083318505598872&amp;isPopup=true" rel="replies" title="8 Comments" type="text/html">
+    <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default/8045083318505598872" rel="edit" type="application/atom+xml">
+    <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default/8045083318505598872" rel="self" type="application/atom+xml">
+    <link href="https://funcall.blogspot.com/2021/08/fold-right.html" rel="alternate" title="Fold right" type="text/html">
+    <title>Fold right</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p><code>fold-left</code> takes arguments like
+this:</p><pre>(fold-left <i>function</i> <i>init</i> <i>list</i>)</pre>and
+  computes<pre>* (fold-left (lambda (l r) `(f ,l ,r)) 'init '(a b c))
+(F (F (F INIT A) B) C)</pre>Notice how <code>init</code> is the leftmost
+of all the arguments to the function, and each argument appears left
+  to right as it is folded in.<p></p>
+<p>Now look at the usual way <code>fold-right</code> is
+  defined:</p><pre>(fold-right <i>function</i> <i>init</i> <i>list</i>)</pre>It
+  computes <pre>* (fold-right (lambda (l r) `(f ,l ,r)) 'init '(a b c))
+(F A (F B (F C INIT)))</pre>although <code>init</code> appears first
+  and to the left of <code>'(a b c)</code> in the arguments
+  to <code>fold-right</code>, it is actually used as the rightmost
+  argument to the last application.<p></p>
+<p>It seems to me that the arguments to <code>fold-right</code> should
+  be in this order:</p><pre>; (fold-right <i>function</i> <i>list</i> <i>final</i>)
+* (fold-right (lambda (l r) `(f ,l ,r)) '(a b c) 'final)
+(F A (F B (F C FINAL)))</pre>
+The argument lists to <code>fold-left</code>
+and <code>fold-right</code> would no longer match, but I think
+  switching things around so that the anti-symmetry of the arguments
+  matches the anti-symmetry of the folding makes things clearer.<p></p></div>
+    </content>
+    <updated>2021-08-18T12:35:34Z</updated>
+    <published>2021-08-18T12:35:00Z</published>
+    <author>
+      <name>Joe Marshall</name>
+      <email>noreply@blogger.com</email>
+      <uri>http://www.blogger.com/profile/03233353484280456977</uri>
+    </author>
+    <source>
+      <id>tag:blogger.com,1999:blog-8288194986820249216</id>
+      <category term="Common Lisp"/>
+      <category term="Lisp"/>
+      <category term="tail recursion"/>
+      <category term="macros"/>
+      <category term="scheme"/>
+      <category term="C#"/>
+      <category term="CLOS"/>
+      <category term="continuation passing style"/>
+      <category term="ActiveScripting"/>
+      <category term="DotNet"/>
+      <category term="Windows"/>
+      <category term="recursion"/>
+      <category term="Java"/>
+      <category term="anaphoric"/>
+      <category term="lambda calculus"/>
+      <category term="pattern matching"/>
+      <category term="software development"/>
+      <author>
+        <name>Joe Marshall</name>
+        <email>noreply@blogger.com</email>
+        <uri>http://www.blogger.com/profile/03233353484280456977</uri>
+      </author>
+      <link href="https://funcall.blogspot.com/feeds/posts/default" rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml">
+      <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default?alt=atom" rel="self" type="application/atom+xml">
+      <link href="https://funcall.blogspot.com/" rel="alternate" type="text/html">
+      <link href="http://pubsubhubbub.appspot.com/" rel="hub" type="text/html">
+      <link href="https://www.blogger.com/feeds/8288194986820249216/posts/default?alt=atom&amp;start-index=26&amp;max-results=25" rel="next" type="application/atom+xml">
+      <subtitle>Unorthodox opinions on computer science and programming.</subtitle>
+      <title>Abstract Heresies</title>
+      <updated>2021-08-30T13:30:03Z</updated>
+    </source>
+  </entry>
+
+  <entry xml:lang="en">
+    <id>https://weinholt.se/articles/record-type-representation-trick/</id>
+    <link href="https://weinholt.se/articles/record-type-representation-trick/" rel="alternate" type="text/html">
+    <title>A Record Type Representation Trick</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>I’ve been working on optimizations in <a href="https://scheme.fail">Loko Scheme</a> recently and
+have implemented large parts
+of <a href="https://andykeep.com/pubs/scheme-12b.pdf">A Sufficiently Smart Compiler for Procedural Records</a> (Keep
+&amp; Dybvig, 2012). At the same time I have improved the representation
+of record type descriptors and wanted to share a simple trick
+I used to improve record type checks for non-sealed records. But first
+I should explain what a record is in Scheme.</p>
+<p><span class="more"></span></p>
+<h1 id="background-records-in-scheme">Background: Records in Scheme</h1>
+<p>Scheme supports <em>record types</em>, which are user-defined data
+types. <a href="https://r7rs.scheme.org/">R⁷RS Scheme</a> has a syntax-based variant of this feature,
+based on <a href="https://srfi.schemers.org/srfi-9/">SRFI-9</a>. Here’s an example:</p>
+<pre><code class="lang-scheme">(<span class="name"><span class="builtin-name">import</span></span> (<span class="name">scheme</span> base))
+
+(<span class="name">define-record-type</span> point
+  (<span class="name">make-point</span> x y)
+  point?
+  (<span class="name">x</span> point-x point-x-set!)
+  (<span class="name">y</span> point-y point-y-set))
+</code></pre>
+<p>This will let you write <code>(make-point 0.0 0.0)</code> to get a point at (0.0,
+0.0), and <code>(point-x p)</code> to access the <em>x</em> field of <em>p</em>. That’s it for
+records in R⁷RS and SRFI-9.</p>
+<p>The record type system in <a href="https://r7rs.scheme.org/">R⁶RS Scheme</a> improves on SRFI-9 in
+several ways. In R⁶RS you would instead write this:</p>
+<pre><code class="lang-scheme">(<span class="name"><span class="builtin-name">import</span></span> (<span class="name">rnrs</span>))
+
+(<span class="name">define-record-type</span> point
+  (<span class="name">fields</span> (<span class="name">mutable</span> x)
+          (<span class="name">mutable</span> y)))
+</code></pre>
+<p>There is no longer any need to explicitly write out the names of the
+constructor, predicate, accessors and mutators (unless you want to).
+Additionally, you can extend a record type, you can customize the
+constructor, and you can control what happens if <code>define-record-type</code>
+runs multiple times, i.e. if it makes a new type each time or not.</p>
+<p>A syntactical record layer can be abstraction on top of a procedural
+layer. What you can do with syntax, you can also do with procedure
+calls at runtime. R⁶RS standardizes this layer as well. It also
+standardizes a record inspection layer that lets you get the record
+type descriptor (<em>RTD</em>) from a record at runtime (unless it’s marked
+as <em>opaque</em>) and also to inspect all aspects of RTDs. In fact, RTDs
+are objects in their own right, just like pairs and symbols.</p>
+<p>The above record type definition might expand to this code that uses
+the procedural layer (a real expansion would use fresh identifiers for
+the RTD and RCD):</p>
+<pre><code class="lang-scheme">(<span class="name"><span class="builtin-name">define</span></span> point-rtd
+  (<span class="name">make-record-type-descriptor</span>
+    <span class="symbol">'point</span> <span class="literal">#f</span> <span class="literal">#f</span> <span class="literal">#f</span> <span class="literal">#f</span>
+    '#((<span class="name">mutable</span> x) (<span class="name">mutable</span> y))))
+(<span class="name"><span class="builtin-name">define</span></span> point-rcd
+  (<span class="name">make-record-constructor-descriptor</span>
+    point-rtd <span class="literal">#f</span> <span class="literal">#f</span>))
+
+(<span class="name"><span class="builtin-name">define</span></span> point? (<span class="name">record-predicate</span> point-rtd))
+(<span class="name"><span class="builtin-name">define</span></span> make-point (<span class="name">record-constructor</span> point-rcd))
+(<span class="name"><span class="builtin-name">define</span></span> point-x (<span class="name">record-accessor</span> point-rtd <span class="number">0</span>))
+(<span class="name"><span class="builtin-name">define</span></span> point-y (<span class="name">record-accessor</span> point-rtd <span class="number">1</span>))
+(<span class="name"><span class="builtin-name">define</span></span> point-x-set! (<span class="name">record-mutator</span> point-rtd <span class="number">0</span>))
+(<span class="name"><span class="builtin-name">define</span></span> point-y-set! (<span class="name">record-mutator</span> point-rtd <span class="number">1</span>))
+</code></pre>
+<p>This code uses the helpers <code>record-predicate</code>, <code>record-constructor</code>,
+<code>record-accessor</code> and <code>record-mutator</code> to create procedures. An
+intermediate <em>record constructor descriptor</em> contains the information
+needed to make the constructor.</p>
+<p>Next we will have a look at records in memory, how the code above
+is optimized, and finally a trick to speed up record type checks.</p>
+<h1 id="record-type-representation">Record Type Representation</h1>
+<p>Loko Scheme has a straightforward representation of records. Using the
+above <code>point</code> type as an example, here are the records returned by
+<code>(make-point 1.0 2.0)</code> and <code>(make-point 1.5 -2.0)</code> as they are
+structured in memory. The rows are 64-bit words and the arrows are
+tagged pointers. Memory allocations are aligned to 16 bytes, and the
+empty space created by alignment is also shown.</p>
+<p><a href="https://weinholt.se/articles/record-type-representation-trick/point.dot"><img alt="Graphviz view of two point records" src="https://weinholt.se/articles/record-type-representation-trick/point.svg"></a></p>
+<p>The information stored in the record is a pointer to the record type
+descriptor, which is reused for each record of the same type, followed
+by a slot for each field in the record.</p>
+<p>The information in the record type descriptor is used by the record
+inspection procedures and the garbage collector. The slots contain: a
+type tag for the rtd itself, the size of the records, an optional
+parent type, an optional record unique identifier, the field names,
+field mutability (a bit-field), and an optional record writer
+procedure.</p>
+<p>Loko uses the first slot in the RTD to store the length of the RTD and
+these flags: <em>opaque?</em>, <em>sealed?</em>, <em>generative?</em>.</p>
+<p>Other R⁶RS implementations will have similar representations of RTDs
+because all this information is needed at runtime.</p>
+<h1 id="single-inheritance">Single Inheritance</h1>
+<p>R⁶RS supports single inheritance for record types. Instead of
+demonstrating this with some contrived geometric shapes or balloon
+animals, let’s use an example from working code. The following record
+types are simplified variants of records used in Loko’s PCI library.</p>
+<pre><code class="lang-scheme">(<span class="name">define-record-type</span> pcibar
+  (<span class="name">fields</span> reg base size))
+
+(<span class="name">define-record-type</span> pcibar-i/o
+  (<span class="name">parent</span> pcibar))
+
+(<span class="name">define-record-type</span> pcibar-mem
+  (<span class="name">parent</span> pcibar)
+  (<span class="name">fields</span> type prefetchable?))
+</code></pre>
+<p>PCI base address registers (BARs) all have these fields: <em>reg</em>,
+<em>base</em>, and <em>size</em>. If they are in I/O space then that’s all, but BARs
+in memory space have two additional fields: <em>type</em> and
+<em>prefetchable?</em>.</p>
+<p><a href="https://weinholt.se/articles/record-type-representation-trick/pcibar.dot"><img alt="Graphviz view of PCI bars records" src="https://weinholt.se/articles/record-type-representation-trick/pcibar.svg"></a></p>
+<p>Notice that both <code>pcibar-i/o</code> and <code>pcibar-mem</code> point to <code>pcibar</code> as
+their parent. The size field is larger in <code>pcibar-mem</code> to account for
+the extra fields. The extra fields in the <code>pcibar-mem</code> record are
+placed immediately after the fields that belong to <code>pcibar</code>, so
+accessors for <code>pcibar</code> don’t need to recompute the slot numbers when
+passed a <code>pcibar-mem</code>.</p>
+<h1 id="predicates-for-non-sealed-types">Predicates for Non-Sealed Types</h1>
+<p>R⁶RS lets you say that a record type is <em>sealed</em>. This prevents a
+record type from being extended. As a consequence, type checks are
+more efficient. Why is that?</p>
+<p>The record predicate <code>pcibar?</code> is given an object and returns true if
+the object has that record type, and false otherwise. If the
+implementation uses tagged pointers then the predicate first checks
+the tag. Next, it reads the type field of the object and compares it
+to the <code>pcibar</code> type.</p>
+<p>But if types are not sealed then they can be extended, and it’s
+possible that the type that the predicate is checking for was used as
+a parent. The <code>pcibar?</code> predicate should return true even for a
+<code>pcibar-mem</code> record.</p>
+<h1 id="the-trick">The Trick</h1>
+<p>Previously Loko Scheme’s <code>record-predicate</code> procedure worked as
+follows. It checked the RTD to see if it’s sealed. For sealed RTDs it
+returned a procedure that implemented the fast check described above.</p>
+<p>For non-sealed RTDs another procedure was returned that did that
+check, and additionally looped over all parent RTDs to see if any of
+them was the desired RTD:</p>
+<pre><code class="lang-scheme">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name">record-predicate</span> rtd)
+  (<span class="name"><span class="builtin-name">if</span></span> (<span class="name">record-type-sealed?</span> rtd)
+      (<span class="name"><span class="builtin-name">lambda</span></span> (obj)     <span class="comment">;fast path</span>
+        (<span class="name"><span class="builtin-name">and</span></span>
+          (<span class="name">$box?</span> obj)
+          (<span class="name"><span class="builtin-name">eq?</span></span> (<span class="name">$box-type</span> obj) rtd)))
+      (<span class="name"><span class="builtin-name">lambda</span></span> (obj)     <span class="comment">;slow path</span>
+        (<span class="name"><span class="builtin-name">and</span></span>
+          (<span class="name">$box?</span> obj)
+          (<span class="name"><span class="builtin-name">let</span></span> ((<span class="name">t</span> (<span class="name">$box-type</span> obj)))
+            (<span class="name"><span class="builtin-name">or</span></span>
+              (<span class="name"><span class="builtin-name">eq?</span></span> t rtd)
+              (<span class="name"><span class="builtin-name">and</span></span>
+                (<span class="name">record-type-descriptor?</span> t)
+                (<span class="name"><span class="builtin-name">let</span></span> lp ((<span class="name">t</span> (<span class="name">record-type-parent</span> t)))
+                  (<span class="name"><span class="builtin-name">cond</span></span>
+                    ((<span class="name"><span class="builtin-name">eq?</span></span> t rtd) <span class="literal">#t</span>)
+                    ((<span class="name"><span class="builtin-name">not</span></span> t) <span class="literal">#f</span>)
+                    (<span class="name"><span class="builtin-name">else</span></span>
+                     (<span class="name">lp</span> (<span class="name">record-type-parent</span> t))))))))))))
+</code></pre>
+<p>I haven’t checked around, but I suspect that most R⁶RS implementations
+do something similar. Even when I checked Chez Scheme’s assembly
+output I saw a loop that’s morally equivalent to this one. This loop
+also shows up in accessors and mutators, because they need to know
+that the object they’ve been passed has the right type.</p>
+<p><strong>The trick:</strong> this loop can be avoided by extending the RTD
+representation so that each RTD directly contains pointers to all
+parent RTDs. The pointers are laid out so that the base type is placed
+first, followed by the sub-types in order. An RTD will then appear at
+a <em>fixed</em> location in any RTD that extends it.</p>
+<p>I’m sure that there are other language implementations where this
+problem of sub-typing shows up and someone else has come up with just
+this optimization, because it’s kind of obvious.</p>
+<p>Suppose that we have a base record type and some record types that
+extend each other. For simplicity, I will not give them any fields.</p>
+<pre><code class="lang-scheme">(<span class="name">define-record-type</span> A)
+
+(<span class="name">define-record-type</span> B (<span class="name">parent</span> A))
+(<span class="name">define-record-type</span> C (<span class="name">parent</span> B))
+
+(<span class="name">define-record-type</span> S (<span class="name">parent</span> A))
+(<span class="name">define-record-type</span> T (<span class="name">parent</span> S))
+</code></pre>
+<p>The expression <code>(A? (make-A))</code> evaluates to true, which also <code>A?</code> does
+for all types shown. But <code>(B? (make-T))</code> evaluates to false because
+<code>T</code> does not have <code>B</code> anywhere in its chain of parents. That’s what
+the loop would be checking.</p>
+<p>This picture shows the memory layout when the trick is used on these
+RTDs.</p>
+<p><a href="https://weinholt.se/articles/record-type-representation-trick/inherit.dot"><img alt="Graphviz view of the flat parent list" src="https://weinholt.se/articles/record-type-representation-trick/inherit.svg"></a></p>
+<p>The pointer to the <code>A</code> RTD is always in the <code>0:</code> slot for any RTD that
+extends it. Similarly, the predicate for <code>B</code> knows to always check in
+the <code>1:</code> slot. A bounds check on the RTD is also needed in this
+layout.</p>
+<h1 id="taking-it-further">Taking it further</h1>
+<p>Further improvements on this layout are possible. Loko Scheme always
+allocates memory for four parent RTDs. If an RTD will appear at slots
+0 to 3, then the predicate does not need to do bounds checking on the
+RTD. The <code>parent:</code> slot is not strictly needed and can be removed.</p>
+<p>Specially just for Loko Scheme, the predicates hidden inside accessors
+and mutators use slightly less code than the predicate procedures.
+These hidden predicates do not explicitly verify the tags on the
+pointers, instead leaving it up to the processor’s
+built-in <a href="https://weinholt.se/articles/alignment-check/">alignment checking</a> to trap
+invalid references.</p>
+<p>The type checks are even faster if specialized predicates, accessors,
+and mutators can be generated at compile time. If the RTD is known at
+compile time then the slot that contains the RTD is also known and can
+be inlined.</p>
+<h1 id="sufficiently-smart">Sufficiently Smart</h1>
+<p>A <em>sufficiently smart compiler</em> is a legendary compiler that does your
+favorite optimizations so that your favorite language feature becomes
+very efficient.</p>
+<p>In <a href="https://andykeep.com/pubs/scheme-12b.pdf">A Sufficiently Smart Compiler for Procedural Records</a>, Andy
+Keep and Kent Dybvig present their work on optimizing the R⁶RS
+procedural record system in Chez Scheme. It builds on top of the
+source-level optimizer cp0. Loko Scheme has its own implementation of
+cp0, so adapting their work has been pretty simple.</p>
+<p>The basic idea is to have cp0 generate static or partially static
+RTDs, which are then propagated throughout the program using cp0’s
+existing mechanisms. If cp0 succeeds in propagating the RTDs to where
+<code>record-accessor</code> (etc) are called, then it can also generate code
+specialized to each record type.</p>
+<p>I’ve implemented large parts of the ideas in the paper in Loko Scheme,
+together with the improved record type representation.</p>
+<h1 id="post-script">Post-script</h1>
+<p>Compiling Loko Scheme with Loko Scheme is now almost as fast as
+compiling it with Chez Scheme, <em>if garbage collection time is not
+counted</em> (run the compilation with something like <code>LOKO_HEAP=28000</code> if
+you have enough RAM). I’m not sure it’s an apples-to-apples comparison
+though, because when Chez is used, it also has to load and compile
+Loko’s compiler, whereas Loko cheats by already having it loaded. But
+still, Loko’s performance is improving. I’m interested in seeing how
+well the next release will fare in the <a href="https://ecraven.github.io/r7rs-benchmarks/">Scheme Benchmarks</a>.</p></div>
+    </summary>
+    <updated>2021-08-14T00:00:00Z</updated>
+    <published>2021-08-14T00:00:00Z</published>
+    <author>
+      <name>weinholt</name>
+    </author>
+    <source>
+      <id>https://weinholt.se</id>
+      <link href="https://weinholt.se/feed.xml" rel="self" type="application/rss+xml">
+      <link href="https://weinholt.se" rel="alternate" type="text/html">
+      <subtitle>Insufficiently smart Internet blogger</subtitle>
+      <title>weinholt.se</title>
+      <updated>2021-08-21T00:00:00Z</updated>
+    </source>
+  </entry>
+
+  <entry xml:lang="en-US">
+    <id>https://srfi.schemers.org/srfi-229</id>
+    <link href="https://srfi.schemers.org/srfi-229/srfi-229.html" rel="alternate" type="text/html">
+    <title>SRFI 229: Tagged Procedures</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">SRFI 229 is now in <em>draft</em> status.<blockquote>    <p>This SRFI defines <dfn>tagged procedures</dfn>, which are procedures
+      that are tagged with a Scheme value when created through the
+      syntax <code>lambda/tag</code> and <code>case-lambda/tag</code>.  The
+      value of the tag of a procedure can be retrieved
+      with <code>procedure-tag</code>, and the
+      predicate <code>procedure/tag?</code> discerns whether a procedure is
+      tagged.</p></blockquote></div>
+    </summary>
+    <updated>2021-08-06T20:00:00Z</updated>
+    <published>2021-08-06T20:00:00Z</published>
+    <author>
+      <name>Marc Nieper-Wißkirchen</name>
+    </author>
+    <source>
+      <id>https://srfi.schemers.org/</id>
+      <link href="https://srfi.schemers.org/" rel="alternate" type="text/html">
+      <link href="https://srfi.schemers.org/rss" rel="self" type="application/rss+xml">
+      <subtitle>Updates to SRFI documents</subtitle>
+      <title>Scheme Requests for Implementation</title>
+      <updated>2021-09-01T06:32:43Z</updated>
+    </source>
+  </entry>
+
+  <entry xml:lang="en-US">
+    <id>https://srfi.schemers.org/srfi-226</id>
+    <link href="https://srfi.schemers.org/srfi-226/srfi-226.html" rel="alternate" type="text/html">
+    <title>SRFI 226: Control Features</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">SRFI 226 is now in <em>draft</em> status.<blockquote>    <p>This SRFI defines a rich set of control operators for the
+      Scheme programming language, including the
+      venerable <code>call/cc</code>
+      (<code>call-with-current-continuation</code>).  The set of
+      operators was highly influenced by the control operators provided
+      by <a href="https://racket-lang.org/"><cite>Racket</cite></a>.
+
+    </p><p>Continuations can be delimited by continuation prompts, and all
+      continuations become delimited continuations, at the latest by
+      the default prompt at the start of each thread.  Moreover,
+      continuations are divided into composable and non-composable
+      continuations, which can be captured and reinstated.</p>
+
+    <p>To investigate continuations, this SRFI supports continuation
+      marks and offers operators to set and retrieve them.</p>
+
+    <p>Moreover, this SRFI defines clear semantics of
+      exceptions, parameter objects, promises, and threads consistent
+      with the other concepts defined here.</p></blockquote></div>
+    </summary>
+    <updated>2021-08-06T20:00:00Z</updated>
+    <published>2021-08-06T20:00:00Z</published>
+    <author>
+      <name>Marc Nieper-Wißkirchen</name>
+    </author>
+    <source>
+      <id>https://srfi.schemers.org/</id>
+      <link href="https://srfi.schemers.org/" rel="alternate" type="text/html">
+      <link href="https://srfi.schemers.org/rss" rel="self" type="application/rss+xml">
+      <subtitle>Updates to SRFI documents</subtitle>
+      <title>Scheme Requests for Implementation</title>
+      <updated>2021-09-01T06:32:43Z</updated>
+    </source>
+  </entry>
+</feed>

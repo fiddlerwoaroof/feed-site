@@ -1,0 +1,1644 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:georss="http://www.georss.org/georss" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:media="http://search.yahoo.com/mrss/">
+
+<channel>
+	<title>Eirik Tsarpalis' blog</title>
+	<atom:link href="https://eiriktsarpalis.wordpress.com/feed/" rel="self" type="application/rss+xml"/>
+	<link>https://eiriktsarpalis.wordpress.com</link>
+	<description>Notes in Programming &amp; Mathematics</description>
+	<lastBuildDate>Mon, 20 Jul 2020 22:38:52 +0000</lastBuildDate>
+	<language>en</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>http://wordpress.com/</generator>
+<cloud domain="eiriktsarpalis.wordpress.com" port="80" path="/?rsscloud=notify" registerProcedure="" protocol="http-post"/>
+<image>
+		<url>https://s0.wp.com/i/buttonw-com.png</url>
+		<title>Eirik Tsarpalis' blog</title>
+		<link>https://eiriktsarpalis.wordpress.com</link>
+	</image>
+	<atom:link rel="search" type="application/opensearchdescription+xml" href="https://eiriktsarpalis.wordpress.com/osd.xml" title="Eirik Tsarpalis' blog"/>
+	<atom:link rel="hub" href="https://eiriktsarpalis.wordpress.com/?pushpress=hub"/>
+	<item>
+		<title>Effect Programming in C#</title>
+		<link>https://eiriktsarpalis.wordpress.com/2020/07/20/effect-programming-in-csharp/</link>
+					<comments>https://eiriktsarpalis.wordpress.com/2020/07/20/effect-programming-in-csharp/#respond</comments>
+		
+		<dc:creator><![CDATA[eirik]]></dc:creator>
+		<pubDate>Mon, 20 Jul 2020 22:38:52 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">http://eiriktsarpalis.wordpress.com/?p=4577</guid>
+
+					<description><![CDATA[Programming with algebraic effects and handlers, a method for reasoning about computational effects of programs that originates from functional programming research, has recently found increasing adoption in more mainstream languages. Implementations can be found in OCaml, Haskell, Scala, F# and the Koka language. Algebraic effects are an immensely powerful language feature that can be used &#8230; <a href="https://eiriktsarpalis.wordpress.com/2020/07/20/effect-programming-in-csharp/" class="more-link">Continue reading <span class="screen-reader-text">Effect Programming in&#160;C#</span> <span class="meta-nav">&#8594;</span></a>]]></description>
+										<content:encoded><![CDATA[<p>Programming with algebraic effects and handlers, a method for reasoning about computational effects of programs that originates from functional programming research, has recently found increasing adoption in more mainstream languages. Implementations can be found in <a href="https://www.eff-lang.org/">OCaml</a>, <a href="https://hackage.haskell.org/package/effect-handlers">Haskell</a>, <a href="https://b-studios.de/scala-effekt/">Scala</a>, <a href="https://github.com/palladin/Eff">F#</a> and the <a href="https://www.microsoft.com/en-us/research/project/koka/">Koka language</a>.</p>
+<p>Algebraic effects are an immensely powerful language feature that can be used to implement a diverse array of features such as dependency injection, cancellation, nondeterminism, debug tracing, first-class continuations and replayable computations.</p>
+<p>For a beginner&#8217;s introduction to the concept of algebraic effects, I would recommend reading Dan Abramov&#8217;s <a href="https://overreacted.io/algebraic-effects-for-the-rest-of-us/">excellent article on the subject</a>, which provides a primer using a hypothetical dialect of JavaScript.</p>
+<p>In this article I will be talking about <a href="https://github.com/nessos/Eff">Eff</a>, an experimental C# library that provides a pragmatic adaptation of the concept by taking advantage of the <a href="https://devblogs.microsoft.com/premier-developer/dissecting-the-async-methods-in-c/">async method extensibility features</a> available since C# 7. It was originally created by my former colleague, Nick Palladinos, and recently I have also been contributing to the project.</p>
+<p>I have decided to start writing about Eff since I strongly believe in its experimental potential, and since hardly any documentation exists about it online.</p>
+<h2>Key Concepts</h2>
+<p>At its core, the library defines a task-like type, <code>Eff</code>, which can be built using <code>async</code> methods:</p>
+<pre class="brush: csharp; title: ; notranslate">
+using Nessos.Effects;
+
+async Eff&lt;int&gt; Sqr(int x) =&gt; x * x;
+</pre>
+<p>and can be composed using the <code>await</code> keyword:</p>
+<pre class="brush: csharp; title: ; notranslate">
+async Eff&lt;int&gt; SumOfSquares(params int[] inputs)
+{
+    int sum = 0;
+    foreach (int input in inputs)
+    {
+        sum += await Sqr(input);
+    }
+    return sum;
+}
+</pre>
+<p>An <code>Eff</code> computation has to be run explicitly by passing an <em>effect handler</em>:</p>
+<pre class="brush: csharp; title: ; notranslate">
+using Nessos.Effects.Handlers;
+
+Eff&lt;int&gt; computation = SumOfSquares(1,2,3);
+
+computation.Run(new DefaultEffectHandler());
+</pre>
+<p>It should be noted that unlike <code>Task</code>, Eff values have delayed semantics and so running</p>
+<pre class="brush: csharp; title: ; notranslate">
+async Eff HelloWorld() =&gt; Console.WriteLine("Hello, World!");
+
+Eff hello = HelloWord();
+</pre>
+<p>will have no observable side-effect. It is useful to think of Eff values as delegates, as opposed to futures.</p>
+<p>Finally, Eff methods are capable of awaiting regular async awaitables</p>
+<pre class="brush: csharp; title: ; notranslate">
+async Eff Delay()
+{
+    await Task.Delay(1000);
+}
+</pre>
+<p>It should be noted however that the opposite is not possible, that is Eff values cannot be awaited inside regular async methods.</p>
+<h2>Programming with Effects</h2>
+<p>The examples thus far illustrate what is effectively an alternative implementation for async method builders. We have not talked about effects yet.</p>
+<p>In the Eff library, abstract effects can be defined by inheriting the abstract <code>Effect&lt;T&gt;</code> class:</p>
+<pre class="brush: csharp; title: ; notranslate">
+public class DateTimeNowEffect : Effect&lt;DateTime&gt;
+{
+
+}
+</pre>
+<p>Abstract effects can be awaited inside Eff computations:</p>
+<pre class="brush: csharp; title: ; notranslate">
+async Eff&lt;bool&gt; IsSummerWeekend()
+{
+    DateTime now = await new DateTimeNowEffect();
+    return (now.Month, now.DayOfWeek) switch
+    {
+        (6 or 7 or 8, DayOfWeek.Saturday or DayOfWeek.Sunday) =&gt; true,
+        _ =&gt; false,
+    };
+}
+</pre>
+<p>And Eff computations depending on Effects can be further composed with other Eff computations:</p>
+<pre class="brush: csharp; title: ; notranslate">
+async Eff SomeDomainLogic(Customer customer)
+{
+   if (await IsSummerWeekend())
+   {
+       await SendIceCreamPromo(customer);
+   }
+}
+</pre>
+<p>Let&#8217;s now see how we can run this effect computation. Suppose I try to pass it the default effect handler:</p>
+<pre class="brush: csharp; title: ; notranslate">
+SomeDomainLogic(customer).Run(new DefaultEffectHandler());
+</pre>
+<p>Then execution will fail with an exception:</p>
+<pre class="brush: plain; title: ; notranslate">
+System.NotSupportedException: Abstract effects not supported by this handler.
+   at Nessos.Effects.Handlers.DefaultEffectHandler.Handle[TResult](EffectAwaiter`1 awaiter) 
+</pre>
+<p>The failure is caused by the fact that the effect handler we used does not provide semantics for <code>DateTimeNowEffect</code>. In order to get this to work we need to implement an effect handler of our own:</p>
+<pre class="brush: csharp; title: ; notranslate">
+public class DateTimeEffectHandler : EffectHandler
+{
+    public override async ValueTask Handle&lt;TResult&gt;(EffectAwaiter&lt;TResult&gt; awaiter)
+    {
+        switch (awaiter)
+        {
+            case EffectAwaiter&lt;DateTime&gt; { Effect: DateTimeNowEffect } dateTimeEffectAwaiter:
+                dateTimeEffectAwaiter.SetResult(DateTime.Now);
+                break;
+        }
+    }
+}
+</pre>
+<p>The handler runs a pattern match over an <code>EffectAwaiter</code> argument, and populates any <code>DateTimeNowEffect</code> awaiter with the result of <code>System.DateTime.Now</code>. We can now run the previous computation with our new effect handler:</p>
+<pre class="brush: csharp; title: ; notranslate">
+SomeDomainLogic(customer).Run(new DateTimeEffectHandler());
+</pre>
+<p>which will execute with the expected result.</p>
+<p>We can also use effect handlers to mock the result of an effect:</p>
+<pre class="brush: csharp; title: ; notranslate">
+public class MockedDateTimeEffectHandler : EffectHandler
+{
+    public DateTime Now { get; set; }
+
+    public override async ValueTask Handle&lt;TResult&gt;(EffectAwaiter&lt;TResult&gt; awaiter)
+    {
+        switch (awaiter)
+        {
+            case EffectAwaiter&lt;DateTime&gt; { Effect: DateTimeNowEffect } dateTimeEffectAwaiter:
+                dateTimeEffectAwaiter.SetResult(Now);
+                break;
+        }
+    }
+}
+
+var handler = new MockedDateTimeEffectHandler() { Now = DateTime.Parse(&quot;2020-07-19&quot;) };
+SomeDomainLogic(customer).Run(handler);
+</pre>
+<h2>Combining Effects</h2>
+<p>Consider the following set of abstract console effects</p>
+<pre class="brush: csharp; title: ; notranslate">
+public static class ConsoleEffect
+{
+    public static WriteLineEffect WriteLine(string line) =&gt; new WriteLineEffect() { LogEntry = line };
+    public static ReadLineEffect ReadLine() =&gt; new ReadLineEffect();
+
+    public class WriteLineEffect : Effect
+    {
+        public string? LogEntry { get; set; }
+    }
+
+    public class ReadLineEffect : Effect&lt;string&gt;
+    {
+
+    }
+}
+</pre>
+<p>and relevant handler that is backed by System.Console:</p>
+<pre class="brush: csharp; title: ; notranslate">
+public class ConsoleEffectHandler : EffectHandler
+{
+    public override async ValueTask Handle&lt;TResult&gt;(EffectAwaiter&lt;TResult&gt; awaiter)
+    {
+        switch (awaiter)
+        {
+            case EffectAwaiter { Effect: ConsoleEffect.WriteLineEffect writeLineEffect } writeLineAwaiter:
+                Console.WriteLine(writeLineEffect.LogEntry);
+                writeLineAwaiter.SetResult();
+                break;
+
+            case EffectAwaiter&lt;string&gt; { Effect: ConsoleEffect.ReadLineEffect } readLineAwaiter:
+                string line = Console.ReadLine();
+                readLineAwaiter.SetResult(line);
+                break;
+        }
+    }
+}
+</pre>
+<p>Now suppose we have an Eff computation that combines effects from both examples:</p>
+<pre class="brush: csharp; title: ; notranslate">
+async Eff Test()
+{
+    DateTime now = await new DateTimeNowEffect();
+    await ConsoleEffect.WriteLine($"The current date is {now}.");
+}
+</pre>
+<p>Then defining an effect handler that supports both effect families is very straightforward:</p>
+<pre class="brush: csharp; title: ; notranslate">
+public class CombinedDateTimeConsoleEffectHandler : EffectHandler
+{
+    private readonly EffectHandler[] _nestedHandlers = new EffectHandler[]
+    {
+        new ConsoleEffectHandler(),
+        new DateTimeEffectHandler(),
+    };
+
+    public override async ValueTask Handle&lt;TResult&gt;(EffectAwaiter&lt;TResult&gt; awaiter)
+    {
+        foreach (EffectHandler handler in _nestedHandlers)
+        {
+            await handler.Handle(awaiter);
+            if (awaiter.IsCompleted)
+            {
+                return;
+            }
+        }
+    }
+}
+
+Test().Run(new CombinedDateTimeConsoleEffectHandler());
+</pre>
+<p>It should be then clear by the examples that effects can be used to define a form of dependency injection. There is however a twist: since effect handlers flow with function calls, there is no need to pass dependencies via constructor parameters. Domain logic can be expressed by composing static methods, with the effect handler serving as the composition root for the application. This provides a truly functional approach to dependency injection.</p>
+<h2>Encoding Cancellation</h2>
+<p>A common criticism of C# is that async methods do not flow cancellation, that is any cancellation tokens will have to be passed manually to operations that require it. We will now see how one might use effects to work around that limitation; the Eff library comes with a <a href="https://github.com/nessos/Eff/blob/688d7e85ec808ec182c2d7f0ed54b968476b3d86/src/Eff/Applications/Cancellation/CancellationEffectHandler.cs">baked-in effect handler</a> that provides cancellation semantics. Consider the following example:</p>
+<pre class="brush: csharp; title: ; notranslate">
+using Nessos.Effects.Cancellation;
+
+async Eff Test()
+{
+    while (true)
+    {
+        await Delay();
+
+        async Eff Delay()
+        {
+            await Task.Delay(1000);
+        }
+    }
+}
+
+var cts = new CancellationTokenSource(millisecondsDelay:10_000);
+var handler = new CancellationEffectHandler(cts.Token);
+Test().Run(handler);
+</pre>
+<p>While one might expect the above to diverge, it will actually throw an <code>OperationCanceledException</code> after ten seconds. This is because the effect handler will <a href="https://github.com/nessos/Eff/blob/688d7e85ec808ec182c2d7f0ed54b968476b3d86/src/Eff/Applications/Cancellation/CancellationEffectHandler.cs#L48">actively check for cancellation</a> before evaluating the state machine of a nested <code>Eff</code> call.</p>
+<p>But what happens if we need to pass the cancellation token to a non-eff asynchronous operation? We can recover it by awaiting on the cancellation token effect:</p>
+<pre class="brush: csharp; title: ; notranslate">
+async Eff&lt;HttpResponseMessage&gt; Get(HttpClient httpClient, string requestUri)
+{
+    // get the cancellation token from the effect handler
+    CancellationToken token = await CancellationTokenEffect.Value;
+    return await httpClient.GetAsync(requestUri, token);
+}
+</pre>
+<p>For those familiar with F#, this is precisely how its <a href="https://docs.microsoft.com/en-us/dotnet/fsharp/tutorials/asynchronous-and-concurrent-programming/async">async method implementation</a> flows cancellation.</p>
+<h2>Conclusions</h2>
+<p>This concludes my introductory overview of the Eff library. I have tried to convey its most basic concepts, however this article hardly covers all capabilities of effects. I will try to follow up with future articles digging deeper into both applications and the implementation details of Eff itself. For the impatient, there is a fairly extensive <a href="https://github.com/nessos/Eff/tree/master/samples">catalog of samples</a> in the Eff repo itself, including a proof-of-concept <a href="https://github.com/nessos/Eff/tree/master/samples/Eff.Examples.AspNetCore">AspNetCore application</a>.</p>
+<p>I do hope that you have found the concepts interesting, and that this might furthermore spark a conversation about future programming paradigms.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://eiriktsarpalis.wordpress.com/2020/07/20/effect-programming-in-csharp/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		
+		<media:content url="https://2.gravatar.com/avatar/8f4d9242545461f6ae5f1fde759d3d67?s=96&amp;d=identicon&amp;r=G" medium="image">
+			<media:title type="html">eiriktsarpalis</media:title>
+		</media:content>
+	</item>
+		<item>
+		<title>Applying the Tagless-Final pattern in F# Generic Programs</title>
+		<link>https://eiriktsarpalis.wordpress.com/2019/07/02/applying-the-tagless-final-pattern-in-f-generic-programs/</link>
+					<comments>https://eiriktsarpalis.wordpress.com/2019/07/02/applying-the-tagless-final-pattern-in-f-generic-programs/#comments</comments>
+		
+		<dc:creator><![CDATA[eirik]]></dc:creator>
+		<pubDate>Tue, 02 Jul 2019 22:19:57 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">http://eiriktsarpalis.wordpress.com/?p=4562</guid>
+
+					<description><![CDATA[A few years back, I blogged about how one could use the TypeShape library for writing practical generic programs in F#. While the library has seen success in both OSS and proprietary applications, from the beginning there have existed pretty self-evident usability issues when working with the library itself. On simple inspection of a basic &#8230; <a href="https://eiriktsarpalis.wordpress.com/2019/07/02/applying-the-tagless-final-pattern-in-f-generic-programs/" class="more-link">Continue reading <span class="screen-reader-text">Applying the Tagless-Final pattern in F# Generic&#160;Programs</span> <span class="meta-nav">&#8594;</span></a>]]></description>
+										<content:encoded><![CDATA[<p>A few years back, I <a href="https://eiriktsarpalis.wordpress.com/2016/08/05/typeshape-practical-generic-programming-in-f/">blogged</a> about how one could use the <a href="https://github.com/eiriktsarpalis/TypeShape">TypeShape</a> library for writing practical generic programs in F#. While the library has seen success in both OSS and proprietary applications, from the beginning there have existed pretty self-evident usability issues when working with the library itself.</p>
+<p>On simple inspection of a <a href="https://github.com/eiriktsarpalis/TypeShape/blob/1ebd3d945f1ba839d3755cd6b4d34121ed34c3ce/samples/TypeShape.Samples/printer.fs">basic example</a> one can easily detect the following problems:</p>
+<ul>
+<li>Accessing generic types requires extensive use of visitors which result in awkward looking code, which is hard to read and hard to write.</li>
+<li>The type checker can hardly handle such expressions, and explicit type annotations are required almost everywhere.</li>
+<li>Most importantly, unsafe casts are required at the boundaries of generic program composition. While those generally only result in errors at program generation time and not at execution time, they are still a source of runtime errors.</li>
+</ul>
+<p>In this article, I propose an alternative approach to generic programming in F#, one that provides a simpler and type-safe approach to building polytypic programs. The approach combines techniques that are long established in the literature.</p>
+<h3>Encoding Higher-Kinded Types</h3>
+<p>A core ingredient for the new approach is the ability to express higher-kinded types. While F# does not natively support higher-kinded types, they can be encoded using an approach first described by <a href="https://www.cl.cam.ac.uk/~jdy22/papers/lightweight-higher-kinded-polymorphism.pdf">Yallop and White</a> in the context of OCaml. Various ports of that encoding exist in F#, most prominent being the <a href="https://github.com/palladin/Higher">Higher library</a>.</p>
+<p>For the purposes of this application, I&#8217;m going to use a simplistic variant of the encoding:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type App&lt;'F, 't&gt; = App of payload : obj
+
+module HKT =
+
+    // associate HKT encoding to underlying type using SRTPs
+    let inline private assoc&lt;'F, 'a, 'Fa when 'F : (static member Assign : App&lt;'F, 'a&gt; * 'Fa -&gt; unit)&gt; = ()
+
+    // pack and unpack functions
+    let inline pack (value : 'Fa) : App&lt;'F, 'a&gt; = assoc&lt;'F, 'a, 'Fa&gt; ; App value
+    let inline unpack (App value : App&lt;'F, 'a&gt;) : 'Fa = assoc&lt;'F, 'a, 'Fa&gt; ; unbox value
+        
+    // helper active pattern
+    let inline (|Unpack|) app = unpack app
+</pre>
+<p>Let&#8217;s put the above definitions into use. Here&#8217;s how we can encode optionals as a higher-kinded type:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Option =
+    static member Assign(_ : App&lt;Option, 'a&gt;, _ : 'a option) = ()
+
+let encoded : App&lt;Option, _&gt; = HKT.pack (Some 42)
+let payload = HKT.unpack encoded
+</pre>
+<p>The <code>HKT.pack</code> function takes an instance of type <code>int option</code> and returns an instance of type <code>App&lt;Option, int&gt;</code>, whereas <code>unpack</code> does the inverse. The type <code>Option</code> is an uninhabited type representing the <code>_ option</code> type constructor and is known as the <em>brand</em> of the encoding. The compiler infers the association between <code>App&lt;Option, int&gt;</code> and <code>int option</code> by virtue of the <code>Assign</code> method type signature using SRTP method constraints.</p>
+<p>Let&#8217;s see how we can use this encoding to express programs that are generic w.r.t. type constructors. Here&#8217;s the obligatory functor example:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Functor&lt;'F&gt; =
+    abstract member Fmap : ('a -&gt; 'b) -&gt; App&lt;'F, 'a&gt; -&gt; App&lt;'F, 'b&gt;
+
+let fmap f xs : _ when 'F :&gt; Functor&lt;'F&gt; = (new 'F()).Fmap f xs
+
+let incrSqr x = x |&gt; fmap ((+) 1) |&gt; fmap ((*) 2)
+</pre>
+<p>Here we describe the functor abstraction using an interface that is generic w.r.t the higher-kinded brand. We also use default constructor constraints and type inference to define a generic <code>fmap</code> combinator and a sample pipeline on top of that.</p>
+<p>We can create functor instances as follows:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+[&lt;Struct&gt;]
+type List =
+    static member Assign(_ : App&lt;List, 'a&gt;, _ : 'a list) = ()
+    interface Functor&lt;List&gt; with
+        member __.Fmap f (HKT.Unpack xs) = HKT.pack (List.map f xs)
+
+let lst : App&lt;List,_&gt; = HKT.pack [1;2;3;4]
+
+incrSqr lst |&gt; HKT.unpack
+// val it : int list = [4; 6; 8; 10]
+</pre>
+<p>If you&#8217;re interested in more elaborate HKT encodings, please refer to the original paper or the samples in the Higher library.</p>
+<h2>Application to Generic Programming</h2>
+<p>A very common generic programming application is the <a href="https://github.com/eiriktsarpalis/TypeShape/blob/49ccbc7c22b7657e427b318abd1db7caf0103c7a/samples/TypeShape.Samples/printer.fs">pretty printer</a>. It involves taking an arbitrary type <code>'a</code> and generating a function of type <code>'a -&gt; string</code>. It can be represented using a higher-kinded type encoding like so:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type PrettyPrinter =
+    static member Assign(_ : App&lt;PrettyPrinter, 'a&gt;, _ : 'a -&gt; string) = ()
+</pre>
+<p>Thus, generating a pretty-printer for type <code>'a</code> boils down to obtaining an instance of type <code>App&lt;PrettyPrinter,'a&gt;</code>.</p>
+<h3>Defining Higher-Kinded Generic Programs</h3>
+<p>We can combine the ideas described above to obtain an abstraction capable of describing most generic programming applications. Consider the interface:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type ITypeBuilder&lt;'F&gt; =
+    // base types
+    abstract Bool : unit -&gt; App&lt;'F, bool&gt;
+    abstract Int : unit -&gt; App&lt;'F, int&gt;
+    abstract String : unit -&gt; App&lt;'F, string&gt;
+    // combinators
+    abstract Option : App&lt;'F, 't&gt; -&gt; App&lt;'F, 't option&gt;
+    abstract List : App&lt;'F, 't&gt; -&gt; App&lt;'F, 't list&gt;
+    abstract Tuple : App&lt;'F, 't1&gt; -&gt; App&lt;'F, 't2&gt; -&gt; App&lt;'F, 't1 * 't2&gt;
+</pre>
+<p>Which defines a set of constructors capable of producing generic programs for a small subset of types. As before, we can use a bit of type inference to expose the interface methods as proper combinators:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let inline private inst() : 'F when 'F :&gt; ITypeBuilder&lt;'F&gt; = new 'F()
+let bool () = inst().Bool()
+let int () = inst().Int()
+let string () = inst().String()
+let option t = inst().Option t
+let list t = inst().List t
+let tuple t = inst().Tuple t
+</pre>
+<p>Then, writing</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let sample () = int () |&gt; list |&gt; option |&gt; tuple (bool ())
+</pre>
+<p>Produces a generic constructor for instances of type <code>App&lt;'F,bool * int list option&gt;</code>.</p>
+<p>We can now produce a generic pretty-printer by implementing the <code>ITypeBuilder</code> interface:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+[&lt;Struct&gt;]
+type PrettyPrinter =
+    static member Assign(_ : App&lt;PrettyPrinter, 'a&gt;, _ : 'a -&gt; string) = ()
+
+    interface ITypeBuilder&lt;PrettyPrinter&gt; with
+        member __.Bool () = HKT.pack (function true -&gt; &quot;true&quot; | false -&gt; &quot;false&quot;)
+        member __.Int () = HKT.pack (fun i -&gt; i.ToString())
+        member __.String() = HKT.pack (sprintf &quot;\&quot;%s\&quot;&quot;)
+
+        member __.Option (HKT.Unpack ep) = HKT.pack(function None -&gt; &quot;None&quot; | Some x -&gt; sprintf &quot;Some(%s)&quot; (ep x))
+        member __.List (HKT.Unpack ep) = HKT.pack(Seq.map ep &gt;&gt; String.concat &quot;; &quot; &gt;&gt; sprintf &quot;[%s]&quot;)
+        member __.Tuple (HKT.Unpack lp) (HKT.Unpack rp) = HKT.pack (fun (l,r) -&gt; sprintf &quot;(%s, %s)&quot; (lp l) (rp r))
+</pre>
+<p>Which we can consume as follows:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let mkPrinter (x : App&lt;PrettyPrinter,_&gt;) = HKT.unpack x
+
+let p = sample() |&gt; mkPrinter
+
+p (false, Some [1;2])
+// val it : string = "(false, Some([1; 2]))"
+</pre>
+<p>The same sample value can be reused in the context of other generic programs. Here is one that returns values with zeroed out fields:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+[&lt;Struct&gt;]
+type Zero =
+    static member Assign(_ : App&lt;Zero, 'a&gt;, _ : 'a) = ()
+
+    interface ITypeBuilder&lt;Zero&gt; with
+        member __.Bool () = HKT.pack false
+        member __.Int () = HKT.pack 0
+        member __.String() = HKT.pack &quot;&quot;
+
+        member __.Option (HKT.Unpack z) = HKT.pack(Some z)
+        member __.List (HKT.Unpack z) = HKT.pack [z]
+        member __.Tuple (HKT.Unpack lz) (HKT.Unpack rz) = HKT.pack (lz,rz)
+
+
+let mkZero (x : App&lt;Zero,_&gt;) = HKT.unpack x
+
+sample() |&gt; mkZero
+// val it : bool * int list option = (false, Some [0])
+</pre>
+<p>For the sake of completeness, I should mention that this application is a special case of the tagless-final pattern, which was originally described in a paper by <a href="http://okmij.org/ftp/tagless-final/index.html#tagless-final">Kiselyov et al</a>.</p>
+<h3>Folding arbitrary types</h3>
+<p>One issue with the above approach is that we need to explicitly construct the <code>App&lt;_,_&gt;</code> instances by calling the combinators. While this might be acceptable in the context of simple applications, we&#8217;d still like a way to generate programs just by passing a simple type argument.</p>
+<p>Luckily, this can be achieved by harnessing the usual TypeShape constructs:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let rec fold&lt;'F, 't when 'F :&gt; ITypeBuilder&lt;'F&gt; and 'F : (new : unit -&gt; 'F)&gt; () : App&lt;'F, 't&gt; =
+    let wrap (x : App&lt;'F,_&gt;) : App&lt;'F, 't&gt; = unbox x
+    match shapeof&lt;'t&gt; with
+    | Shape.Bool -&gt; bool() |&gt; wrap
+    | Shape.Int32 -&gt; int() |&gt; wrap
+    | Shape.String -&gt; string() |&gt; wrap
+    | Shape.FSharpOption s -&gt;
+        s.Element.Accept {
+            new ITypeVisitor&lt;App&lt;'F, 't&gt;&gt; with
+                member __.Visit&lt;'e&gt; () =
+                    let e = fold&lt;'F, 'e&gt;()
+                    option e |&gt; wrap
+        }
+
+    | Shape.FSharpList s -&gt;
+        s.Element.Accept {
+            new ITypeVisitor&lt;App&lt;'F, 't&gt;&gt; with
+                member __.Visit&lt;'e&gt; () =
+                    let e = fold&lt;'F, 'e&gt;()
+                    list e |&gt; wrap
+        }
+
+    | Shape.Tuple s when s.Elements.Length = 2 -&gt;
+        let ls = s.Elements.[0].Member
+        let rs = s.Elements.[1].Member
+        ls.Accept {
+            new ITypeVisitor&lt;App&lt;'F, 't&gt;&gt; with
+                member __.Visit&lt;'l&gt; () =
+                    rs.Accept {
+                        new ITypeVisitor&lt;App&lt;'F, 't&gt;&gt; with
+                            member __.Visit&lt;'r&gt;() =
+                                let l = fold&lt;'F, 'l&gt;()
+                                let r = fold&lt;'F, 'r&gt;()
+                                tuple l r |&gt; wrap
+                    }
+        }
+    | _ -&gt; failwithf &quot;I do not know how to fold type %O&quot; typeof&lt;'t&gt;
+</pre>
+<p>It is then possible to define a generic pretty-printer by doing the following:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let mkPrettyPrinter&lt;'a&gt; () = fold&lt;PrettyPrinter, 'a&gt; () |&gt; HKT.unpack
+
+let p' = mkPrettyPrinter&lt;int * (bool list * string option)&gt; ()
+
+p' (42, ([false;true], Some &quot;string&quot;))
+// val it : string = &quot;(42, ([false; true], Some(&quot;string&quot;)))&quot;
+</pre>
+<p>As before, we can reuse the fold function for the zero program:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let zero&lt;'a&gt; = fold&lt;Zero, 'a&gt; () |&gt; HKT.unpack
+
+zero&lt;int * (string option * bool list)&gt;  
+// val it : int * (string option * bool list) = (0, (Some &quot;&quot;, [false]))
+</pre>
+<p>You can find the code sample above in <a href="http://fssnip.net/7WK">fssnip</a>, complete with type annotations.</p>
+<h2>Conclusions</h2>
+<p>While the ideas above are in an early prototype state, the approach in general seems very promising. It significantly simplifies the generic program authoring process by being type safe, eliminating visitors and requiring almost no type annotations. While it may lack the flexibility of the TypeShape constructs, it seems to be good enough for most generic programming applications.</p>
+<p>You can find more involved implementations of the above idea in the <a href="https://github.com/eiriktsarpalis/TypeShape/tree/49ccbc7c22b7657e427b318abd1db7caf0103c7a/samples/TypeShape.Samples/HKT">TypeShape samples folder</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://eiriktsarpalis.wordpress.com/2019/07/02/applying-the-tagless-final-pattern-in-f-generic-programs/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		
+		
+		<media:content url="https://2.gravatar.com/avatar/8f4d9242545461f6ae5f1fde759d3d67?s=96&amp;d=identicon&amp;r=G" medium="image">
+			<media:title type="html">eiriktsarpalis</media:title>
+		</media:content>
+	</item>
+		<item>
+		<title>A Contract Pattern for Schemaless DataStores</title>
+		<link>https://eiriktsarpalis.wordpress.com/2018/10/30/a-contract-pattern-for-schemaless-datastores/</link>
+					<comments>https://eiriktsarpalis.wordpress.com/2018/10/30/a-contract-pattern-for-schemaless-datastores/#respond</comments>
+		
+		<dc:creator><![CDATA[eirik]]></dc:creator>
+		<pubDate>Tue, 30 Oct 2018 21:54:20 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">http://eiriktsarpalis.wordpress.com/?p=4554</guid>
+
+					<description><![CDATA[At Jet we do a lot of event sourcing. Our event types are typically modelled using discriminated unions: Since DUs carry no canonical representation in most popular serialization formats, encoding and decoding typically involves a bit of manual work: where the functions serialize : 'T -&#62; string and deserialize : string -&#62; 'T represent some &#8230; <a href="https://eiriktsarpalis.wordpress.com/2018/10/30/a-contract-pattern-for-schemaless-datastores/" class="more-link">Continue reading <span class="screen-reader-text">A Contract Pattern for Schemaless&#160;DataStores</span> <span class="meta-nav">&#8594;</span></a>]]></description>
+										<content:encoded><![CDATA[<p>At Jet we do a lot of event sourcing. Our event types are typically modelled using discriminated unions:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type CartEvent =
+    | CartCreated
+    | ItemAdded of ItemAdded
+    | ItemRemoved of ItemRemoved
+    | CartCheckedOut of CartCheckedOut
+
+and ItemAdded = { skuId : string ; quantity : int }
+and ItemRemoved = { skuId : string }
+and CartCheckedOut = { paymentDetails : string }
+</pre>
+<p>Since DUs carry no canonical representation in most popular serialization formats, encoding and decoding typically involves a bit of manual work:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let encode = function
+    | CartCreated -&gt; "cartCreated", "null"
+    | ItemAdded e -&gt; "itemAdded", serialize e
+    | ItemRemoved e -&gt; "itemRemoved", serialize e
+    | CartCheckedOut e -&gt; "cartCheckedOut", serialize e
+
+let decode = function
+    | "cartCreated", _ -&gt; CartCreated
+    | "itemAdded", json -&gt; ItemAdded(deserialize json)
+    | "itemRemoved", json -&gt; ItemAdded(deserialize json)
+    | "cartCheckedout", json -&gt; CartCheckedOut(deserialize json)
+    | t,_ -&gt; failwithf "unrecognized event type '%s'" t
+</pre>
+<p>where the functions <code>serialize : 'T -&gt; string</code> and <code>deserialize : string -&gt; 'T</code> represent some serialization library like Json.NET. The purpose of the encoder functions is to embed domain events into a tupled representation, the first element being a string identifier for the event type, and the second potentially containing pickled payload data. Sending encoded events over the wire is then a relatively straightforward undertaking.</p>
+<p>While this approach works fine with small examples, the boilerplate it introduces tends to become unwieldy as domain complexity grows. The keen-eyed reader might have noticed that I&#8217;ve inserted a couple of bugs in my decode function.</p>
+<p>While one could argue that using techniques such as property based testing might be sufficient to catch such classes of bugs, the issue remains that making changes in event types generally comes with high maintenance. What if there existed a way to canonically represent union types in a way that is properly generic and serialization format agnostic?</p>
+<h3>The UnionContract Module</h3>
+<p>The <a href="https://github.com/eiriktsarpalis/TypeShape">TypeShape</a> library that I maintain ships with a small module called <a href="https://github.com/eiriktsarpalis/TypeShape/blob/ba3ae331ac9246253a0bccc4fab6cb44d7e667fa/src/TypeShape/Applications/UnionContract.fs">UnionContract</a>. The surface API is tiny, exposing only a single function and a couple of interfaces. At its core it defines a datatype generic program which accepts a serializer instance, represented by instances of the interface:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type IEncoder&lt;'Format&gt; =
+    abstract Encode&lt;'T&gt; : value:'T -&gt; 'Format
+    abstract Decode&lt;'T&gt; : fmt:'Format -&gt; 'T
+    abstract Empty : 'Format
+</pre>
+<p>and generates functions capable of encoding and decoding union values in the sense described previously. We can equivalently express the above encoders using the code:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+open System.Runtime.Serialization
+open TypeShape.UnionContract
+open Newtonsoft.Json
+
+type CartEvent =
+    | [&lt;DataMember(Name = "cartCreated")&gt;] CartCreated
+    | [&lt;DataMember(Name = "itemAdded")&gt;] ItemAdded of ItemAdded
+    | [&lt;DataMember(Name = "itemRemoved")&gt;] ItemRemoved of ItemRemoved
+    | [&lt;DataMember(Name = "cartCheckedOut")&gt;] CartCheckedOut of CartCheckedOut
+with
+    interface IUnionContract // marker interface
+
+// object  json string encoder used for union case payloads
+let jsonEncoder =
+    { new IEncoder&lt;string&gt; with
+        member __.Empty = "null" // payload to be inserted in nullary cases
+        member __.Encode(t : 'T) = JsonConvert.SerializeObject(t)
+        member __.Decode(json : string) = JsonConvert.DeserializeObject&lt;'T&gt;(json) }
+
+// creates a union contract encoder
+let unionEncoder = UnionContractEncoder.Create&lt;CartEvent, string&gt;(jsonEncoder)
+</pre>
+<p>The <code>UnionContractEncoder.Create</code> method accepts a datatype generic encoder that pickles union case payloads into a fixed format type (in this case <code>string</code>), and generates an encoder that acts on the union level.</p>
+<p>We can use the newly created encoder to encode and decode union instances:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+unionEncoder.Encode(CartCreated)
+// val it : EncodedUnion&lt;string&gt; = {CaseName = "cartCreated";
+//                                  Payload = "null";}
+
+unionEncoder.Encode(ItemAdded { skuId = "a" ; quantity = 2 })
+// val it : EncodedUnion&lt;string&gt; = {CaseName = "itemAdded";
+//                                  Payload = "{"skuId":"a","quantity":2}";}
+</pre>
+<p>Union instances can be reconstructed by applying the inverse function to the encoded unions:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+unionEncoder.Decode { CaseName = "cartCreated" ; Payload = null }
+// val it : CartEvent = CartCreated
+</pre>
+<p>So how does it all work? Under the hood, the implementation uses constructs from the TypeShape library to duplicate the logic of the original <code>encode</code> and <code>decode</code> functions in a datatype generic manner.</p>
+<h3>Plugging Serialization Formats</h3>
+<p>Serialization formats can be controlled by plugging different <code>IEncoder</code> implementations. For instance:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+open Newtonsoft.Json.Linq
+
+let jtokenEncoder =
+    { new IEncoder&lt;JToken&gt; with
+        member __.Empty = JValue.CreateNull() :&gt; _
+        member __.Encode(t : 'T) = JToken.FromObject t
+        member __.Decode(t : JToken) = t.ToObject&lt;'T&gt;() }        
+
+let jtokenUnionEncoder = UnionContractEncoder.Create&lt;CartEvent,JToken&gt;(jtokenEncoder)
+</pre>
+<p>produces an encoder that pickles event payloads as Newtonsoft <code>JToken</code> values.</p>
+<h2>Versioning Events</h2>
+<p>In the original example, suppose we want to alter the <code>ItemRemoved</code> event so that it additionally includes a <code>quantityRemoved</code> field like so:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type ItemRemoved = { skuId : string ; quantityRemoved : int}
+</pre>
+<p>Assuming that events using the original shape have already been persisted to the database, it is evident that this introduces a breaking change to the schematisation. Many databases typically used for event sourcing are of the &#8220;schemaless&#8221; variety, however as the author of <a href="https://dataintensive.net/">Designing Data-Intensive Applications</a> put it:</p>
+<blockquote><p>Document databases are sometimes called schemaless, but that’s misleading, as the code that reads the data usually assumes some kind of structure—i.e., there is an implicit schema, but it is not enforced by the database. A more accurate term is schema-on-read (the structure of the data is implicit, and only interpreted when the data is read), in contrast with schema-on-write (the traditional approach of relational databases, where the schema is explicit and the database ensures all written data conforms to it).</p>
+<p><cite>-Chapter 2, Data Models and Query Languages</cite></p></blockquote>
+<p>So how do we ensure that union contracts enforce a version tolerant schema-on-read? I propose an approach adhering to the following set of principles:</p>
+<ol>
+<li>Apply <a href="https://fsharpforfunandprofit.com/posts/serializating-your-domain-model/">separation of domain types from DTOs</a>.</li>
+<li>Model DTOs using the UnionContract construct.</li>
+<li>Make DTO union contracts append-only.</li>
+<li>Freely evolve domain types as schema changes.</li>
+<li>Push versioning and migration responsibility to the DTO layer.</li>
+</ol>
+<p>Applying this to the above example would result in the following arrangement for domain events:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+namespace Domain
+
+type CartEvent =
+    | CartCreated
+    | ItemAdded of ItemAdded
+    | ItemRemoved of ItemRemoved
+    | CartCheckedOut of CartCheckedOut
+
+and ItemRemoved = { skuId : string ; quantityRemoved : int}
+...
+</pre>
+<p>whereas the contract type would look as follows:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+namespace Contracts
+
+type CartEventDto =
+    | [&lt;DataMember(Name = "cartCreated")&gt;] CartCreated
+    | [&lt;DataMember(Name = "itemAdded")&gt;] ItemAdded of ItemAdded
+    | [&lt;DataMember(Name = "itemRemoved")&gt;] ItemRemovedV1 of ItemRemovedV1
+    | [&lt;DataMember(Name = "itemRemoved/v2")&gt;] ItemRemovedV2 of ItemRemovedV2
+    | [&lt;DataMember(Name = "cartCheckedOut")&gt;] CartCheckedOut of CartCheckedOut
+with
+    interface IUnionContract
+
+and ItemRemovedV1 = { skuId : string }
+and ItemRemovedV2 = { skuId : string ; quantityRemoved : int}
+...
+</pre>
+<p>Notice how the two versions of <code>ItemRemoved</code> are defined as separate, explicitly qualified DTO union cases. On the other hand, the Domain event type only contains a single, canonicalized <code>ItemRemoved</code> case.</p>
+<p>We need a <code>fromDomain</code> function to map domain events to DTOs:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let fromDomain = function
+    | CartEvent.CartCreated -&gt; CartEventDto.CartCreated
+    | CartEvent.ItemAdded e -&gt; CartEventDto.ItemAdded { skuId = e.skuId ; quantity = e.quantity }
+    | CartEvent.ItemRemoved e -&gt; CartEventDto.ItemRemovedV2 { skuId = e.skuId ; removedQuantity = e.removedQuantity }
+    | CartEvent.CartCheckedOut e -&gt; CartEventDto.CartCreated { checkoutDetails = e.checkoutDetails }
+</pre>
+<p>The opposite <code>toDomain</code> function is more interesting, as it contains migration logic:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let toDomain = function
+    | CartEventDto.CartCreated -&gt; CartEvent.CartCreated
+    | CartEventDto.ItemAdded e -&gt; CartEvent.ItemAdded { skuId = e.skuId ; quantity = e.quantity }
+    | CartEventDto.ItemRemovedV1 e -&gt; CartEvent.ItemRemoved { skuId = e.skuId ; removedQuantity = 1 }
+    | CartEventDto.ItemRemovedV2 e -&gt; CartEvent.ItemRemoved { skuId = e.skuId ; removedQuantity = e.removedQuantity }
+    | CartEventDto.CartCheckedOut e -&gt; CartEvent.CartCreated { checkoutDetails = e.checkoutDetails }
+</pre>
+<p>In this function, we choose to interpret &#8220;v1&#8221; <code>ItemRemoved</code> events as having removed quantity 1. By using the two functions in conjunction with the union encoder we obtain serialization/schema-on-read for the domain types as follows:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let serialize (e : CartEvent) = fromDomain e |&gt; unionEncoder.Encode
+let deserialize (c : EncodedUnion) = unionEncoder.Decode c |&gt; toDomain
+</pre>
+<p>A nice property of this approach is that we are forcing any versioning and migration concerns outside of the domain, making business logic cleaner to work with. We have been using this pattern with success in a few of our systems.</p>
+<h3>Versioning Snapshots</h3>
+<p>This pattern is not strictly applicable to event serialization. We can also use it for versioning snapshot schemata:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type SnapshotV1 = { ... }
+type SnapshotV2 = { ... }
+type SnapshotV3 = { ... }
+
+type SnapshotDto =
+    | [&lt;DataMember(Name = "snapshot/v1")&gt;] SnapshotV1 of SnapshotV1
+    | [&lt;DataMember(Name = "snapshot/v2")&gt;] SnapshotV2 of SnapshotV2
+    | [&lt;DataMember(Name = "snapshot/v3")&gt;] SnapshotV3 of SnapshotV3 // current
+with
+    interface IUnionContract
+
+let unionEncoder = UnionContractEncoder.Create&lt;SnapshotDto,_&gt;(jtokenEncoder)
+</pre>
+<p>We can then define our conversion functions, with a slight variation:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let fromDomain snapshot = SnapshotV3 snapshot
+
+let toDomain = function
+    | SnapshotV1 snap -&gt; migrateFromV1 snap
+    | SnapshotV2 snap -&gt; migrateFromV2 snap
+    | SnapshotV3 snap -&gt; snap // current snapshot, no migration needed
+</pre>
+<p>Then as before, we obtain the serialization/migration functions by composition</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let serialize (e : SnapshotV3) = fromDomain e |&gt; unionEncoder.Encode
+let deserialize (c : EncodedUnion) = unionEncoder.Decode c |&gt; toDomain
+</pre>
+<p>Again, we have achieved pushing all versioning and migration concerns to the DTO layer of our codebase.</p>
+<h3>Conclusions</h3>
+<p>I have attempted to illustrate the utility of using F# Discriminated Unions as a means to encode code-first schematisations for &#8220;schemaless&#8221; (schema-on-read) datastores. The use of the TypeShape UnionContract module in conjunction with separating domain types from DTOs provides us with an effective pattern to isolate versioning and data migration concerns from core domain logic. The versioning logic itself is pure and as such highly amenable to testing. We have used this pattern effectively in multiple production systems across at least two different teams within Jet.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://eiriktsarpalis.wordpress.com/2018/10/30/a-contract-pattern-for-schemaless-datastores/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		
+		<media:content url="https://2.gravatar.com/avatar/8f4d9242545461f6ae5f1fde759d3d67?s=96&amp;d=identicon&amp;r=G" medium="image">
+			<media:title type="html">eiriktsarpalis</media:title>
+		</media:content>
+	</item>
+		<item>
+		<title>Property Testing Generic Programs</title>
+		<link>https://eiriktsarpalis.wordpress.com/2018/02/05/property-testing-generic-programs/</link>
+					<comments>https://eiriktsarpalis.wordpress.com/2018/02/05/property-testing-generic-programs/#comments</comments>
+		
+		<dc:creator><![CDATA[eirik]]></dc:creator>
+		<pubDate>Mon, 05 Feb 2018 00:55:30 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">http://eiriktsarpalis.wordpress.com/?p=4545</guid>
+
+					<description><![CDATA[One of the interesting challenges when dealing with generic programming is testing. How could you possibly achieve extensive test coverage for a piece of code that works with arbitrary types? Suppose for instance that we have implemented a generic equality function: One of the properties we would expect this function to satisfy is reflexivity. Put &#8230; <a href="https://eiriktsarpalis.wordpress.com/2018/02/05/property-testing-generic-programs/" class="more-link">Continue reading <span class="screen-reader-text">Property Testing Generic&#160;Programs</span> <span class="meta-nav">&#8594;</span></a>]]></description>
+										<content:encoded><![CDATA[<p>One of the interesting challenges when dealing with <a href="https://eiriktsarpalis.wordpress.com/2016/08/05/typeshape-practical-generic-programming-in-f/">generic programming</a> is testing. How could you possibly achieve extensive test coverage for a piece of code that works with <em>arbitrary types</em>? Suppose for instance that we have implemented a <a href="https://github.com/eiriktsarpalis/TypeShape/blob/79131f4b2f86f8f0198ad03798409901c71463f4/samples/equality-comparer.fsx">generic equality</a> function:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+val equals : 'T -&gt; 'T -&gt; bool
+</pre>
+<p>One of the properties we would expect this function to satisfy is <a href="https://en.wikipedia.org/wiki/Reflexive_relation">reflexivity</a>.<br />
+Put formally, the predicate</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let reflexivity (t:'T) = equals t t
+</pre>
+<p>should return true for any value of any type.</p>
+<h3>The Standard Approach</h3>
+<p>Using a random testing tool like FsCheck, a common strategy to validate this would unfold as follows:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+[&lt;Property&gt;]
+let ``Int Reflexivity`` (x : int) = reflexivity x
+[&lt;Property&gt;]
+let ``String Reflexivity`` (x : string) = reflexivity x
+[&lt;Property&gt;]
+let ``2-Tuple Reflexivity`` (x : string * int) = reflexivity x
+[&lt;Property&gt;]
+let ``List Reflexivity`` (x : (string * int) list) = reflexivity x
+[&lt;Property&gt;]
+let ``List of List Reflexivity`` (x : (string * int) list list) = 
+    reflexivity x
+...
+</pre>
+<p>Expanding on tested types ad nauseam, until we finally convince ourselves that coverage is sufficient. But is it? How can we be sure that <code>(string * int) list</code> correctness implies correctness for <code>(int * string) list</code>? What about large tuple arities? We will always be forgetting something.</p>
+<h3>Generic Property Tests</h3>
+<p>I have been toying with the idea of generic property tests for quite a while now, but only the recent performance improvements in <a href="https://www.nuget.org/packages/FsCheck">FsCheck 3</a> (currently in prerelease) have made this approach feasible. For starters, we will need to provide a rank-2 encoding for predicates:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Predicate =
+   abstract Invoke : 'T -&gt; bool
+</pre>
+<p>Which permits declaration of generic predicate values (currently not a possibility with F# lambdas, which must be fixed on their argument types)</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let reflexivity = 
+    { new Predicate with
+        member __.Invoke t = equals t t }
+</pre>
+<p>The goal is to use FsCheck in a way where generic predicates can be tested against <em>random values of random types</em>.</p>
+<h3>Defining a Type Algebra</h3>
+<p>Let&#8217;s start by defining the kind of types we would like to be testing. To do this we define a type algebra, or a &#8220;type of types&#8221;:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type TypeAlg =
+    | BaseType of BaseType
+    | List of TypeAlg 
+    | Array of TypeAlg 
+    | Option of TypeAlg 
+    | Tuple of TypeAlg list
+
+and BaseType = Bool | Byte | Int | String
+</pre>
+<p>Each instance of type <code>TypeAlg</code> represents an actual F# type. For instance, the value <code>Tuple [BaseType Int; Option(BaseType String)]</code> represents the type <code>int * string option</code>. As a first exercice, let&#8217;s try implementing a pretty-printer for the algebra:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let rec prettyprint ta =
+    match ta with
+    | BaseType Bool -&gt; &quot;bool&quot;
+    | BaseType Byte -&gt; &quot;byte&quot;
+    | BaseType Int  -&gt; &quot;int&quot;
+    | BaseType String -&gt; &quot;string&quot;
+    | List element -&gt; sprintf &quot;(%s) list&quot; (prettyprint element)
+    | Array element -&gt; sprintf &quot;(%s) []&quot; (prettyprint element)
+    | Option element -&gt; sprintf &quot;(%s) option&quot; (prettyprint element)
+    | Tuple elements -&gt; 
+        elements 
+        |&gt; Seq.map prettyprint 
+        |&gt; String.concat &quot; * &quot; 
+        |&gt; sprintf &quot;(%s)&quot;
+</pre>
+<p>Importantly, it is possible to map any TypeAlg representation to its corresponding <code>System.Type</code> runtime instance like so:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let rec meaning ta : System.Type =
+    match ta with
+    | BaseType Bool -&gt; typeof&lt;bool&gt;
+    | BaseType Byte -&gt; typeof&lt;byte&gt;
+    | BaseType Int  -&gt; typeof&lt;int&gt;
+    | BaseType String -&gt; typeof&lt;string&gt;
+    | List element -&gt; typedefof&lt;_ list&gt;.MakeGenericType(meaning element)
+    | Array element -&gt; (meaning element).MakeArrayType()
+    | Option element -&gt; typedefof&lt;_ option&gt;.MakeGenericType(meaning element)
+    | Tuple [] -&gt; typeof&lt;unit&gt;
+    | Tuple elements -&gt; 
+        elements 
+        |&gt; Seq.map meaning 
+        |&gt; Seq.toArray 
+        |&gt; FSharp.Reflection.FSharpType.MakeTupleType
+</pre>
+<p>We can use <a href="https://github.com/eiriktsarpalis/TypeShape/">TypeShape</a> to take that semantic mapping one step further: bring the type into scope as a generic argument.</p>
+<pre class="brush: fsharp; title: ; notranslate">
+open TypeShape.Core
+
+let visitTAlg (visitor : ITypeShapeVisitor&lt;'R&gt;) (tAlg : TypeAlg) : 'R =
+    let sysType : Type = meaning tAlg
+    let shape : TypeShape = TypeShape.Create sysType
+    shape.Accept visitor
+</pre>
+<p>We can verify the behaviour by running</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let getType = 
+    { new ITypeShapeVisitor&lt;System.Type&gt; with 
+        member __.Visit&lt;'T&gt;() = typeof&lt;'T&gt; }
+    |&gt; visitTAlg
+
+getType (BaseType Int) // typeof&lt;int&gt;
+getType (Option (BaseType (String)) // typeof&lt;string option&gt;
+</pre>
+<h3>Putting it all Together</h3>
+<p>Let&#8217;s now see how we can use this technique to obtain a random tester for generic predicates. Consider the following function:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+open FsCheck
+
+let checkTAlg (predicate : Predicate) (tAlg : TypeAlg) : bool =
+    printfn &quot;Testing %s&quot; (prettyprint tAlg)
+    let checker = 
+        { new ITypeShapeVisitor&lt;bool&gt; with 
+            member __.Visit&lt;'T&gt;() =
+                Check.QuickThrowOnFailure&lt;'T -&gt; bool&gt; predicate.Invoke 
+                true }
+    
+    visitTAlg checker tAlg
+</pre>
+<p>The implementation accepts a generic predicate and a type representation, uses TypeShape to bring the type into scope as a type variable, then calls FsCheck with the predicate instantiated to the reified type.</p>
+<p>The key observation for converting this function into a generic property test is that <code>TypeAlg</code> is an algebraic data type, and FsCheck is capable of generating random instances for type out of the box:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let checkGeneric (predicate : Predicate) =
+    Check.QuickThrowOnFailure&lt;TypeAlg -&gt; bool&gt;(checkTAlg predicate)
+</pre>
+<p>We are now ready to random test our <code>reflexivity</code> property:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+checkGeneric reflexivity
+</pre>
+<p>which yields the following output:</p>
+<pre class="brush: plain; title: ; notranslate">
+Testing (bool) []
+Ok, passed 100 tests.
+Testing byte
+Ok, passed 100 tests.
+Testing ((bool) option) list
+Ok, passed 100 tests.
+Testing bool
+Ok, passed 100 tests.
+Testing (string * byte)
+Ok, passed 100 tests.
+Testing ((string) option) option
+Ok, passed 100 tests.
+Testing ((bool * ((((((()) []) []) option) option) list) [] * byte * int * string * string * int * bool * int * int * int * byte)) option
+Ok, passed 100 tests.
+...
+</pre>
+<p>In effect this call will test 100 randomly generated types with 100 randomly generated values each.</p>
+<h3>Conclusions</h3>
+<p>Applying the above technique when testing generic programs code has proven to be extremely effective. It has allowed me to discover both implementation bugs of the generic programs themselves, as well as obscure bugs of the core TypeShape library. My previous, handwritten test suite had failed to catch any of those issues. If interested, have a look at <a href="https://github.com/eiriktsarpalis/TypeShape/blob/18d2d4a4ff5ffe1c17cfaa420f6a139afa37a16b/tests/TypeShape.Tests/GenericTester.fs">this source file</a> for an example of a more complete implementation of the technique.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://eiriktsarpalis.wordpress.com/2018/02/05/property-testing-generic-programs/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		
+		
+		<media:content url="https://2.gravatar.com/avatar/8f4d9242545461f6ae5f1fde759d3d67?s=96&amp;d=identicon&amp;r=G" medium="image">
+			<media:title type="html">eiriktsarpalis</media:title>
+		</media:content>
+	</item>
+		<item>
+		<title>On the Significance of Recursion</title>
+		<link>https://eiriktsarpalis.wordpress.com/2017/08/20/on-the-significance-of-recursion/</link>
+					<comments>https://eiriktsarpalis.wordpress.com/2017/08/20/on-the-significance-of-recursion/#comments</comments>
+		
+		<dc:creator><![CDATA[eirik]]></dc:creator>
+		<pubDate>Sun, 20 Aug 2017 22:54:47 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">http://eiriktsarpalis.wordpress.com/?p=4154</guid>
+
+					<description><![CDATA[During a recent conversation with a group of F# developers, I started making the case for recursion and its importance in day-to-day programming. My peers reacted with surprise to this opinion of mine, responding that they thought that recursion is an inherently inefficient way of defining programs. We are taught this rule when studying procedural &#8230; <a href="https://eiriktsarpalis.wordpress.com/2017/08/20/on-the-significance-of-recursion/" class="more-link">Continue reading <span class="screen-reader-text">On the Significance of&#160;Recursion</span> <span class="meta-nav">&#8594;</span></a>]]></description>
+										<content:encoded><![CDATA[<p>During a recent conversation with a group of F# developers, I started making the case for recursion and its importance in day-to-day programming. My peers reacted with surprise to this opinion of mine, responding that they thought that recursion is an inherently inefficient way of defining programs.</p>
+<p>We are taught this rule when studying procedural languages: <em>&#8220;for optimal results, just use iteration&#8221;</em>. In functional languages however, this is not necessarily true: tail-recursive functions are optimized into imperative loops at compile time and most recursive functions can be readily transformed into tail-recursive workflows by applying accumulators or CPS. These <a href="https://blogs.msdn.microsoft.com/chrsmith/2008/08/07/understanding-tail-recursion/">FP fundamentals</a> are what make the functional paradigm a feasible alternative to the imperative style.</p>
+<p>I was thus legitimately surprised to discover that working F# programmers carried this attitude towards recursion, which made me wonder whether this could be an artifact of how the language is being taught to FP newcomers. I researched some of the popular online material and did a bit of asking around which seemed to confirm my suspicion: <em>there exists a tendency for de-emphasizing recursion in beginner F# educational material</em>. An important reason is that the topic of recursion itself can appear puzzling and counter-intuitive to beginners: quoting <a href="http://www.cs.nott.ac.uk/~pszgmh/pih.html">Graham Hutton</a></p>
+<blockquote><p>
+Defining recursive functions is like riding a bicycle: it looks easy when someone else is doing it, may seem impossible when you first try to do it yourself, but becomes simple and natural with practice.
+</p></blockquote>
+<p>Omitting recursion can also be justified by a desire to appear pragmatic; recursion has a reputation for being too academic, a mathematical trivium that is only useful when defining Fibonacci numbers but not relevant in real code. Algorithms should be declared by composing available combinators, and if everything fails we can always fall back to the imperative style. Recursion is relegated to the &#8220;Advanced&#8221; chapters, bundled together with other academic curiosities such as <code>call/cc</code> and catamorphisms.</p>
+<h3>An Example</h3>
+<p>While there are merits in this stance, I claim that avoiding recursion entirely in expression-based languages comes with some very important limitations. I will try to illustrate why using an example. Consider the core combinator</p>
+<pre class="brush: fsharp; title: ; notranslate">
+val List.tryFind : ('T -&gt; bool) -&gt; 'T list -&gt; 'T option
+</pre>
+<p>which performs linear searches on its supplied list, returning the first element that happens to satisfy the supplied predicate. This is a simple yet extremely useful combinator that is often finding use in F# codebases. It works very well for most applications, assuming our predicate is a regular lambda.</p>
+<p>But what happens if the predicate is of type <code>'T -&gt; Async</code>, in other words asynchronous? We would probably require a variation of <code>tryFind</code>, namely</p>
+<pre class="brush: fsharp; title: ; notranslate">
+val tryFindAsync : ('T -&gt; Async&lt;bool&gt;) -&gt; 'T list -&gt; Async&lt;'T option&gt;
+</pre>
+<p>which however is not available the core library. In such circumstances, F# developers will have to improvise.</p>
+<p>As an exercise, let&#8217;s attempt to provide a good implementation that avoids recursion. A novice user would quickly end up with the following solution:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let tryFindAsync (pred : 'T -&gt; Async&lt;bool&gt;) (inputs : 'T list) =
+    async { return List.tryFind (pred &gt;&gt; Async.RunSynchronously) inputs }
+</pre>
+<p>which is evidently a misguided solution, since it invalidates the purpose of asynchrony.</p>
+<p>The requirement for asynchrony could still be satisfied using smarter manipulation of generic combinators, as seen in the following example:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let tryFind (f : 'T -&gt; Async&lt;bool&gt;) (ts : 'T list) =
+    let folder acc t = async {
+        let! result = acc
+        match result with
+        | Some _ -&gt; return result
+        | None -&gt;
+            let! success = f t
+            return if success then Some t else None
+    }
+
+    List.fold folder (async.Return None) ts
+</pre>
+<p>In this case, we are folding over asynchronous computations, so the final result is a non-blocking asynchronous workflow that can be consumed accordingly. There are however two problems with this approach:</p>
+<ol>
+<li>The solution is too smart for its own good. Sure, folding over functions feels good to the person that came up with it, however there is a nontrivial cognitive overhead associated with what should be a very simple task. In the context of a bigger team, such heroics aren&#8217;t appreciated.</li>
+<li>More importantly, fold operations always traverse the entire input list. The point of <code>tryFind</code> is that it should stop as soon as a result is found. By delegating iteration to other combinators, we lose the ability to tune aspects of control flow. Assuming our input type allowed for infinite lists (for instance IEnumerable), this approach would necessarily result in non-terminating computation.
+</ol>
+<h3>An Imperative Solution</h3>
+<p>Let us now try addressing the same problem using the imperative style. First, here&#8217;s how it could be defined elegantly using C#:</p>
+<pre class="brush: csharp; title: ; notranslate">
+async Task&lt;Option&lt;T&gt;&gt; TryFindAsync&lt;T&gt;(Func&lt;T, Task&lt;bool&gt;&gt; predicate, IEnumerable&lt;T&gt; inputs)
+{
+    foreach (var t in inputs)
+        if (await predicate(t)) return Option.Some(t);
+    
+    return Option.None&lt;T&gt;();
+}
+</pre>
+<p>What happens if we attempt to port this implementation to F#? First of all, F# is an expression-based language, which means that <code>return</code> keywords (in the imperative sense) are not permitted. Rather, we need to introduce additional variables to simulate breaks:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let tryFindAsync (predicate : 'T -&gt; Async&lt;bool&gt;) (ts : 'T list) = async {
+    let mutable result = None
+    let mutable ts = ts
+    while Option.isNone result &amp;&amp; not (List.isEmpty ts) do
+        let head :: tail = ts
+        let! r = predicate head
+        if r then result &lt;- Some head
+        else ts &lt;- tail
+
+    return result
+}
+</pre>
+<p>Few would disagree with the conclusion that this solution is ugly and easy to get wrong. The lack of <code>return</code>, <code>break</code> and <code>continue</code> constructs in expression-based languages is the primary reason why an imperative approach is awkward here.</p>
+<h3>Real-Word Recursion</h3>
+<p>This is precisely where recursion comes in handy. It can be used to effectively emulate any sort of imperative break in expression-based programs:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let rec tryFind (f : 'T -&gt; Async&lt;bool&gt;) (ts : 'T list) = async {
+    match ts with
+    | [] -&gt; return None
+    | head :: tail -&gt;
+        let! r = f head
+        if r then return Some head
+        else return! tryFind f tail
+}
+</pre>
+<p>Similar examples can be provided that illustrate how <code>break</code> and <code>continue</code> constructs can be emulated using recursion.</p>
+<h3>Conclusion</h3>
+<p>When working with expression based languages, recursion is an essential tool for achieving control flow patterns typically only attainable via imperative constructs. In the context of F#, working programmers can only benefit from acquainting themselves with the standard syllabus of common recursion patterns commonly used in FP languages.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://eiriktsarpalis.wordpress.com/2017/08/20/on-the-significance-of-recursion/feed/</wfw:commentRss>
+			<slash:comments>7</slash:comments>
+		
+		
+		
+		<media:content url="https://2.gravatar.com/avatar/8f4d9242545461f6ae5f1fde759d3d67?s=96&amp;d=identicon&amp;r=G" medium="image">
+			<media:title type="html">eiriktsarpalis</media:title>
+		</media:content>
+	</item>
+		<item>
+		<title>Programming in the Point-Free Style</title>
+		<link>https://eiriktsarpalis.wordpress.com/2017/04/02/programming-in-the-point-free-style/</link>
+					<comments>https://eiriktsarpalis.wordpress.com/2017/04/02/programming-in-the-point-free-style/#comments</comments>
+		
+		<dc:creator><![CDATA[eirik]]></dc:creator>
+		<pubDate>Sun, 02 Apr 2017 16:21:12 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">http://eiriktsarpalis.wordpress.com/?p=3402</guid>
+
+					<description><![CDATA[Point-free programming (or point-less programming, for the more cynically inclined) is a paradigm that advocates the formulation of programs by means of function composition. In the point-free style programs avoid explicitly nominating function arguments (or &#8220;points&#8221;), deriving instead complex function definitions by means of applying higher-order combinators on simpler functions. To give an F# example, &#8230; <a href="https://eiriktsarpalis.wordpress.com/2017/04/02/programming-in-the-point-free-style/" class="more-link">Continue reading <span class="screen-reader-text">Programming in the Point-Free&#160;Style</span> <span class="meta-nav">&#8594;</span></a>]]></description>
+										<content:encoded><![CDATA[<p>Point-free programming (or point-less programming, for the more cynically inclined) is a paradigm that advocates the formulation of programs by means of function composition. In the point-free style programs avoid explicitly nominating function arguments (or &#8220;points&#8221;), deriving instead complex function definitions by means of applying higher-order combinators on simpler functions.</p>
+<p>To give an F# example, the code</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let f xOpt =
+    match xOpt with
+    | Some x when x &gt;= 0. -&gt; Some(sqrt x)
+    | _ -&gt; None
+</pre>
+<p>can be refactored into the following one-liner:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let f = Option.map sqrt &lt;&lt; Option.filter ((&lt;=) 0.)
+</pre>
+<p>This is an extremely powerful technique, deeply rooted in concepts that are foundational to mathematics and logic. It fully embraces the realization that most meaningful concepts can be defined in terms of functions and function composition.</p>
+<h2>A Taste of Category Theory</h2>
+<p>If we were trace the influence (and indeed, sexiness) of the point-free style to a single origin, then that would undoubtedly be category theory. Category theory is the field of mathematics that (roughly) deals with the the study of function composition in the abstract.</p>
+<p>A category consists of abstract functions (or morphisms, or &#8220;arrows&#8221;) that have an origin and destination (or domain and codomain, or &#8220;argument type&#8221; and &#8220;return type&#8221;). Morphisms can be composed in a way that certain laws are satisfied. Importantly, categories carry a notion of function equality. Ultimately, all meaningful properties of a category are expressed in terms of that equality. Category theory allows for the study of entities that are not functions in the strict sense, but which nevertheless behave like functions.</p>
+<p>This idea is powerful enough to serve as a <a href="http://math.ucr.edu/home/baez/topos.html">foundation for the whole of mathematics, and then some</a>. Its application has also been fruitful in logic and computer science, particularly in the field of denotational semantics, where it has been used to define domains not attainable using regular set theory.</p>
+<p>Thus the point-free style isn&#8217;t just the natural way of working with categories, it is really the only way (which is kind of the point). Whereas sets have elements and types have terms, there is no corresponding concept baked into categories in the general case (thunks being the next best thing). This has interesting ramifications in terms of expressivity. To illustrate, consider the following expression from the typed lambda calculus:</p>
+<p><img src="https://s0.wp.com/latex.php?latex=f%2C+g+%5Cvdash+%5Clambda+%28x%2Cy%29.%5C+g%28x%2C+f%28x%2Cy%29%29+%3A+A%5Ctimes+B+%5Cto+C&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="f, g &#92;vdash &#92;lambda (x,y).&#92; g(x, f(x,y)) : A&#92;times B &#92;to C" class="latex" /></p>
+<p>This otherwise simple expression is defined in category theory as follows:</p>
+<p><img src="https://s0.wp.com/latex.php?latex=A%5Ctimes+B+%5Cxrightarrow%7B%5CDelta%5Ctimes+1_B%7D+%28A%5Ctimes+A%29%5Ctimes+B+%5Cxrightarrow%7B%5Calpha_%7BA%2CA%2CB%7D%7D+A%5Ctimes+%28A%5Ctimes+B%29%5Cxrightarrow%7B1_A%5Ctimes+f%7D+A%5Ctimes+D%5Cxrightarrow%7B%5Censpace+g%5Censpace+%7DC&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="A&#92;times B &#92;xrightarrow{&#92;Delta&#92;times 1_B} (A&#92;times A)&#92;times B &#92;xrightarrow{&#92;alpha_{A,A,B}} A&#92;times (A&#92;times B)&#92;xrightarrow{1_A&#92;times f} A&#92;times D&#92;xrightarrow{&#92;enspace g&#92;enspace }C" class="latex" /></p>
+<p>rendered as the expression</p>
+<p><img src="https://s0.wp.com/latex.php?latex=g+%5Ccdot%7B%7D+%281_A%5Ctimes+f%29+%5Ccdot%7B%7D+%5Calpha_%7BA%2CA%2CB%7D+%5Ccdot%7B%7D+%28%5CDelta%5Ctimes+1_B%29&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="g &#92;cdot{} (1_A&#92;times f) &#92;cdot{} &#92;alpha_{A,A,B} &#92;cdot{} (&#92;Delta&#92;times 1_B)" class="latex" /></p>
+<p>where</p>
+<ul>
+<li><img src="https://s0.wp.com/latex.php?latex=1_A&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="1_A" class="latex" /> denotes the <a href="https://ncatlab.org/nlab/show/identity+morphism">identity morphism</a> on <img src="https://s0.wp.com/latex.php?latex=A&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="A" class="latex" />.
+<li><img src="https://s0.wp.com/latex.php?latex=%5CDelta&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="&#92;Delta" class="latex" /> denotes the <a href="https://ncatlab.org/nlab/show/diagonal+morphism">diagonal morphism</a>.</li>
+<li><img src="https://s0.wp.com/latex.php?latex=%5Ctimes&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="&#92;times" class="latex" /> denotes the <a href="https://ncatlab.org/nlab/show/bifunctor">product bifunctor</a>.</li>
+<li><img src="https://s0.wp.com/latex.php?latex=%5Calpha_%7BA%2CA%2CB%7D&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="&#92;alpha_{A,A,B}" class="latex" /> denotes the <a href="https://ncatlab.org/nlab/show/monoidal+category">associativity isomorphism on products</a>.</li>
+</ul>
+<p>If the above definition seems abstruse, it&#8217;s because it is. Two points particularly add to the complexity of the point-free definition:</p>
+<ul>
+<li>The requirement that <img src="https://s0.wp.com/latex.php?latex=x&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="x" class="latex" /> is passed as an argument twice: we are forced to simulate this duplication by precomposing with the diagonal (rendered <img src="https://s0.wp.com/latex.php?latex=%5Clambda+x+.+%28x%2Cx%29&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="&#92;lambda x . (x,x)" class="latex" /> using the lambda calculus).</li>
+<li>Our inability to pattern match and rearrange inputs: arguments have to be meticulously juggled around using associativity transformations.
+</ul>
+<p>Ultimately, what was a lambda expression that could be read and understood in seconds has been turned into an expression that takes minutes to grasp.</p>
+<p>The point of this exercise is to illustrate how the lambda calculus with pattern matching (or set theory for that matter) is superior to the point-free style in terms of expressive efficiency. Not only does it naturally incorporate the point-free style, but it extends far beyond its capacity to concisely express complex definitions. It goes on to show that unless your work requires reasoning about large categories, you are potentially better off steering clear from an exclusively point-free style.</p>
+<h2>Programming Take-Aways</h2>
+<p>So how does this all translate to our coding practices? Let us bring back that F# example referenced at the beginning of the article:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let f xOpt =
+    match xOpt with
+    | Some x when x &gt;= 0. -&gt; Some(sqrt x)
+    | _ -&gt; None
+</pre>
+<p>versus</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let f = Option.map sqrt &lt;&lt; Option.filter ((&lt;=) 0.)
+</pre>
+<p>I claim that the first implementation provides the simpler and more idiomatic solution, for many reasons:</p>
+<ul>
+<li>it&#8217;s easiest to read and understand.</li>
+<li>it assigns a name to the argument, which is exposed as part of the type signature.</li>
+<li>it provides the most efficient implementation, avoiding gratuitous allocations/invocations of lambda objects.</li>
+<li>it allows setting of breakpoints, a crucial ability when debugging large codebases.</li>
+</ul>
+<p>The central thesis of this article then is more-or-less a reflection of the conclusions drawn from the previous section: <em>ML affords a style of programming that both incorporates and is more expressively efficient than strict function composition</em>. Point-free implementations also tend to be brittle, with slight alterations to either implementation or type signature often prompting substantial rewrites and introduction of new classes of combinators.</p>
+<p>These observations can be extended to function usage patterns that are <em>not point-free in the strict sense</em>. Let&#8217;s consider a very simple example:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let x = pair |&gt; fst
+</pre>
+<p>This is a very common way for deconstructing tuples. It works well, as long as our tuple is indeed a pair. When different arities come into play, it often is necessary to introduce non-standard projection functions:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let proj1Of3 (x,_,_) = x
+let proj2Of3 (_,y,_) = y
+let proj3Of3 (_,_,z) = z
+
+List.exists (proj2Of3 &gt;&gt; (=) 3)
+</pre>
+<p>This approach has a few problems: each tuple type requires its own set of projector definitions, and the introduction of non-standard combinators adds comprehension overhead. The idiomatic solution afforded by ML does not suffer from either problem:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let x,_ = pair
+List.exists (fun (_,y,_) -&gt; y = 3)
+</pre>
+<p>The same can be said about non-standard combinators like <a href="https://github.com/fsprojects/FSharpx.Extras/blob/0c34475e5e0a0217bae7c5e65271f4410e6c8bf4/src/FSharpx.Extras/Prelude.fs#L12"><code>flip</code>, <code>curry</code> and <code>uncurry</code></a>. For example</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let flip f = fun x y -&gt; f y x
+</pre>
+<p>Is a combinator commonly used in functional pipelines like the following:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+List.filter ((=) 0 &lt;&lt; flip (%) 2)
+</pre>
+<p>Again, this implementation suffers from similar problems: it is hard to comprehend; it relies on a non-standard combinator; supporting combinators for every permutation of curried parameters is intractable, with <img src="https://s0.wp.com/latex.php?latex=n%21&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="n!" class="latex" /> possible combinators for functions accepting <img src="https://s0.wp.com/latex.php?latex=n&#038;bg=ffffff&#038;fg=000000&#038;s=0&#038;c=20201002" alt="n" class="latex" /> curried arguments. I contend that code can be greatly simplified in the general case by employing a lambda literal:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+List.filter (fun n -&gt; n % 2 = 0)
+</pre>
+<h2>The Value of Computation Expressions</h2>
+<p>&#8220;Monad&#8221; in the context of programming is a term that carries multiple meanings. First and foremost, a monad denotes a type augmented with a set of functions that satisfy the <a href="https://en.wikipedia.org/wiki/Monad_(functional_programming)#Monad_laws">monad laws</a>. Secondarily, it refers to the capacity of a programming language to provide syntactic sugar for monad instances. A language <a href="http://www.cs.utah.edu/~arichard/monad.c">can have monadic types without syntactic sugar support</a> and conversely, <a href="http://fssnip.net/qR/title/A-bindreturn-computation-expression-that-does-not-satisfy-any-of-the-monad-laws">a syntactic monad does not necessarily satisfy the monad laws</a>.</p>
+<p>The importance of the latter kind of monad cannot be overstated. It provides a mechanism for lifting user-defined combinators into language-integrated expressions. The impact on readability is dramatic. Consider for instance an expression using the option monad:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+option {
+   let! x = Some 1
+   let! y = Some 2
+   let! z = Some 3
+   return (x,y,z)
+}
+</pre>
+<p>which desugars into</p>
+<pre class="brush: plain; title: ; notranslate">
+Some 1
+|&gt; Option.bind (fun x -&gt;
+    Some 2
+    |&gt; Option.bind (fun y -&gt; 
+        Some 3
+        |&gt; Option.bind (fun z -&gt; Some(x,y,z))))
+</pre>
+<p>Notice that the nesting of the bind operations is essential due to scoping considerations: the final operation depends on all three bindings, thus converting this to a flattened pipeline is not possible unless we somehow accumulate the arguments:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+Some 1
+|&gt; Option.bind (fun x -&gt; Some (x,2))
+|&gt; Option.bind (fun (x,y) -&gt; Some (x,y,3))
+</pre>
+<p>These examples serve to demonstrate that extended usage of monadic combinators without syntactic sugar support becomes intractable as complexity of workflows increases.</p>
+<p>F# computation expressions embrace the significance of syntax, by design: rather than being tied to monads in particular, they provide a general-purpose mechanism for overloading almost every language keyword. Computation expressions can be monads, sequence builders, imperative DSLs, query languages or anything in between. Their goal is to abstract away the noise of combinators and enable DSLs that can be written using human-readable expressions. We can write</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let f xs =
+    [ for x in xs do
+        let y = x + 1
+        if y % 5 = 0 then 
+          yield string y ]
+</pre>
+<p>instead of</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let f =
+    List.map ((+) 1)
+    &gt;&gt; List.filter (flip (%) 5 &gt;&gt; (=) 0)
+    &gt;&gt; List.map string
+</pre>
+<p>It is this pragmatic design that explains the resounding success of F# async. Computation expressions liberate us from the burden of doing asynchronous programming using callbacks and rather let us write it as if it were synchronous. In that sense, I must say that I am puzzled by a certain tendency within the F# community to use Kleisli-style combinators on top of async:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let (&gt;=&gt;) (f : 'a -&gt; Async&lt;'b&gt;) (g : 'b -&gt; Async&lt;'c&gt;) =
+    fun a -&gt; async.Bind(f a, g)
+
+let catch (h : exn -&gt; Async&lt;'b&gt;) (f : 'a -&gt; Async&lt;'b&gt;) =
+    fun a -&gt; async.TryWith(f a, h)
+
+async.Return &lt;&lt; serialize
+&gt;=&gt; sendRequest Post &quot;/foo&quot;
+&gt;=&gt; async.Return &lt;&lt; deserialize
+|&gt; catch (function :? IOException -&gt; return None 
+                   | _ -&gt; failwith &quot;unexpected error&quot;)
+</pre>
+<p>I contend that this technique is a regression, in fact just a fancy way of doing async programming using explicit callbacks. Compare for instance with a slightly similar snippet using TPL:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+Task.FromResult(x)
+    .ContinueWith(fun x -&gt; serialize x.Result)
+    .ContinueWith(fun req -&gt; sendReqAsync Post &quot;/foo&quot; req.Result)
+    .ContinueWith(fun res -&gt; deserialize res.Result)
+    .ContinueWith(fun res -&gt;
+        if res.IsFaulted &amp;&amp; res.Exception :? IOException then None
+        else res.Result)
+</pre>
+<p>The power of async workflows lies in their simplicity. Compare the samples above with idiomatic async:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+async {
+    try
+        let request = serialize x
+        let! response = sendRequest Post &quot;/foo&quot; request
+        return deserialize response 
+    with :? IOException -&gt; return None }
+</pre>
+<p>By relying on the compiler to tuck away the visual noise of callbacks, we obtain clean, readable, flexible, composable and debuggable code. Embedded pattern matching, nested expressions, lexical scoping and recursion provide a mix of tools that is strictly more expressive and concise than any ad-hoc forest of point-free monadic combinators.</p>
+<h2>Conclusion</h2>
+<p>It is not the case that the point-free style is useless. In fact, libraries often adopt the point-free style out of performance considerations. Good examples are <a href="http://www.quanttec.com/fparsec/users-guide/where-is-the-monad.html">parser combinators</a> and <a href="http://mbraceproject.github.io/FsPickler/tutorial.html#Picklers-and-Pickler-combinators">pickler combinators</a>, and there are more. These typically make the informed trade-off of sacrificing readability in the interest of eliminating allocations typically associated with expression builders. In rare cases there can even be point-free DSLs that are actually legible in the large. However the utility of adopting this approach always carries a big burden of proof, and should not be motivated merely out of stylistic considerations.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://eiriktsarpalis.wordpress.com/2017/04/02/programming-in-the-point-free-style/feed/</wfw:commentRss>
+			<slash:comments>11</slash:comments>
+		
+		
+		
+		<media:content url="https://2.gravatar.com/avatar/8f4d9242545461f6ae5f1fde759d3d67?s=96&amp;d=identicon&amp;r=G" medium="image">
+			<media:title type="html">eiriktsarpalis</media:title>
+		</media:content>
+	</item>
+		<item>
+		<title>Why OO Matters (in F#)</title>
+		<link>https://eiriktsarpalis.wordpress.com/2017/03/20/why-oo-matters-in-f/</link>
+					<comments>https://eiriktsarpalis.wordpress.com/2017/03/20/why-oo-matters-in-f/#comments</comments>
+		
+		<dc:creator><![CDATA[eirik]]></dc:creator>
+		<pubDate>Mon, 20 Mar 2017 10:20:38 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">http://eiriktsarpalis.wordpress.com/?p=2669</guid>
+
+					<description><![CDATA[F# is a functional-first programming language that comes with a substantial object-oriented feature set. It is so feature-complete in fact, that almost any C# class can be ported over to F# code with little substantial alteration. However significant, this subset of the language is seeing limited appreciation from the community, which I suspect is partly &#8230; <a href="https://eiriktsarpalis.wordpress.com/2017/03/20/why-oo-matters-in-f/" class="more-link">Continue reading <span class="screen-reader-text">Why OO Matters (in&#160;F#)</span> <span class="meta-nav">&#8594;</span></a>]]></description>
+										<content:encoded><![CDATA[<p>F# is a functional-first programming language that comes with a substantial object-oriented feature set. It is so feature-complete in fact, that almost any C# class can be ported over to F# code with little substantial alteration.</p>
+<p>However significant, this subset of the language is seeing limited appreciation from the community, which I suspect is partly fuelled by the <a href="https://en.wikipedia.org/wiki/Object-oriented_programming#Criticism">known criticisms of OOP</a> and partly by a desire to be different than C#. After all, this <em>is</em> a functional-first language so we can just replace all our classes with functions. There is also the opinion that OOP in F# merely serves as a compatibility layer for .NET, so it&#8217;s really only there to cover those unfortunate scenarios of having to use a library that accepts interfaces.</p>
+<h3>Enabling Abstraction</h3>
+<p>One of the most important aspects of maintaining a nontrivial codebase is controlling complexity. Complexity can be contained by partitioning code into logically standalone components whose implementation details are hidden behind appropriately designed abstractions. In his excellent <a href="https://github.com/polytypic/blog/blob/master/posts/2014-08-18-solid.md">Solid and Functional</a> article, Vesa Karvonen argues that selecting the correct abstraction is a hard problem, and that functional programming is no silver bullet in dealing with that. This resonates a lot with me, and I strongly encourage everyone to read the full article.</p>
+<p>That said, Vesa is framing the article in Standard ML which supports a full-blown module system. Modules can be abstracted using signatures or they can be parameterized by other modules using functors. Modules are the predominant means of abstraction in the ML ecosystem. In Haskell, it is type classes and higher-kinded types. In F#, modules are intentionally stripped of any complicated features, effectively functioning as a mere namespacing construct.</p>
+<p>My claim is that there are inherent limits to what can be expressed using just F# modules and functions, in terms of enabling good abstraction. Luckily, we can always make use of the next best thing, which is F# OO. The thesis of this article is that strategically admitting elements of OO in an F# codebase significantly improves quality and maintainability. While I cannot conclusively prove this within the confines of a single blog post, I will try to provide hints as to why this is.</p>
+<h3>Classes as Value Parametric Modules</h3>
+<p>It is often the case that an API exposed through a module must be context aware. Typically F# developers address this by adding extra parameters in every function:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+module MyApi =
+    let function1 dep1 dep2 dep3 arg1 = doStuffWith dep1 dep2 dep3 arg1
+    let function2 dep1 dep2 dep3 arg2 = doStuffWith' dep1 dep2 dep3 arg2
+</pre>
+<p>While this does work well in simple cases, it does not scale nicely as dependencies increase. It would typically prompt the developer to group arguments in context records:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type MyApiContext = { Dep1 : Dep1 ; Dep2 : Dep2 ; Dep3 : Dep3 }
+
+module MyApi =
+    let function1 (ctx : MyApiContext) arg1 = doStuffWith ctx.Dep1 ctx.Dep2 ctx.Dep3 arg1
+    let function2 (ctx : MyApiContext) arg2 = doStuffWith' ctx.Dep1 ctx.Dep2 ctx.Dep3 arg2
+</pre>
+<p>This complicates the implementation even more both in the definition site and in the consumption site. In practice, you either end up with one context type per component or one God context for the entire application. Even more importantly, this approach often violates encapsulation concerns, pushing the burden of gathering dependencies to the consumers of the API, every single time they do consume the API. Partial application also does little to address any of these concerns in nontrivial contexts.</p>
+<p>Less experienced developers might be prompted to do something even worse: lift dependencies to module values.</p>
+<pre class="brush: fsharp; title: ; notranslate">
+module MyApi =
+    let dep1 = File.ReadAllText &quot;/Users/eirik/connectionstring.txt&quot;
+    let dep2 = Environment.GetEnvironmentVariable &quot;DEP_2&quot;
+    let dep3 = Random().Next()
+
+    let function1 arg = doStuffWith dep1 dep2 dep3 arg
+    let function2 arg = doSutffWith dep1 dep2 dep3 arg
+</pre>
+<p>This is bad for many reasons: it makes the API reliant on global state, introduces unneeded side-effects, and pushes app configuration concerns deep inside the guts of our codebase. What&#8217;s more, module value initialization compiles to a static constructor for the entire compilation unit so the exact moment of execution is largely unpredictable. Initialization errors manifest as <code>TypeInitializationExceptions</code> which are difficult to debug.</p>
+<p>Contrast the situation above with the elegance afforded by a plain old class:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type MyParametricApi(dep1, dep2, dep3) =
+    member __.Function1 arg1 = doStuffWith dep1 dep2 dep3 arg1
+    member __.Function2 arg2 = doStuffWith' dep1 dep2 dep3 arg2
+</pre>
+<p>An API object could be created once at application initialization, or as many times required depending on context. It&#8217;s also more amenable to testing. I should add that this approach is essentially just as &#8220;functional&#8221; as the approaches above, since it&#8217;s merely composing dependencies to expose a context-sensitive API. Importantly, it achieves this in a much simpler way both in the definition site and consumption site, which pays great dividends if realized in big codebases.</p>
+<h3>Expressive APIs</h3>
+<p>An important attribute of method-based APIs is that they allow for greater expressive power, in two important ways:</p>
+<ol>
+<li><em>Named/Optional parameters</em>: unlike OCaml, whose functions support out-of-order named argument passing and omitted optional arguments, F# functions support neither. Luckily, we can do this using F# methods. I find this to be an immensely powerful tool when exposing non-trivially parameterizable functionality. A function that explicitly accepts 10 optional parameters is not acceptable; a method that accepts 10 optional arguments works like a charm.</li>
+<li><em>Method overloading</em>: because function names like <code>connect'</code> and <code>bind2</code> are simply not good enough when exposed in a public API.</li>
+</ol>
+<h3>More Powerful Types</h3>
+<p>The type system afforded by .NET is strictly more powerful than what can be expressed using modules and functions. For example, the interface</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Scheduler =
+    abstract Run&lt;'T&gt; : Async&lt;'T&gt; -&gt; 'T
+</pre>
+<p>encodes a kind of function that cannot be expressed in terms of proper F# lambdas. When combined with subtyping, it is possible to effectively encode existential types and Rank-N polymorphism. Even <a href="https://www.microsoft.com/en-us/research/publication/generalized-algebraic-data-types-and-object-oriented-programming/">GADTs are possible</a>, with minimal augmentations of the type system.</p>
+<p>In practice, it is possible to leverage that additional power very effectively. In fact, F# makes it easy to define generic function literals using object expressions. This is also how the <a href="https://github.com/eiriktsarpalis/TypeShape">TypeShape</a> library has been made possible.</p>
+<h3>Abstracting Modules</h3>
+<p>Functions are the unit of abstraction in F#, but that unit is often insufficient when abstracting APIs. This prompts developers to adopt an approach where abstract APIs are surfaced as either records or tuples of functions:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Serializer =
+    {
+        Serialize : bool -&gt; obj -&gt; string
+        Deserialize : bool -&gt; string -&gt; obj
+    }
+</pre>
+<p>According to the <a href="http://fsharp.org/specs/component-design-guidelines/#-consider-using-interface-types-to-represent-related-groups-of-operations-that-may-be-implemented-in-multiple-ways">F# design guidelines</a>, use of records for building APIs is discouraged and recommends using regular interfaces instead.</p>
+<p>I strongly agree with this recommendation for a multitude of reasons: interfaces are more powerful since they support generic methods, named arguments and optional arguments. An interface is less likely to be defined in terms of closures, making it easier to reason about when viewing from a debugger.</p>
+<p>So the example above could be rendered as an interface like so:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Serializer =
+    abstract Serialize&lt;'T&gt; : preserveRefEq:bool -&gt; value:'T -&gt; string
+    abstract Deserialize&lt;'T&gt; : preserveRefEq:bool -&gt; pickle:string -&gt; 'T
+</pre>
+<p>The most important aspect of this approach is <em>readability</em>. It is easier for a consumer of this interface to anticipate what the purpose of each argument is, in the same way that it is easier to understand a record of functions over a tuple of functions.</p>
+<h3>Representing Illegal State</h3>
+<p>A lot of proverbial ink has been spent describing how we should strive to make illegal states unrepresentable. However, I do fail to see how this could be fully realized given that the functional core of F# only consists of algebraic data types. Take for example an oft-quoted email type:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Email = Email of string
+</pre>
+<p>The following values are valid instaces of type <code>Email</code>:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+Email null
+Email &quot;John Smith&quot;
+Email &quot;eirik@foo.bar'; DROP TABLE dbo.Users&quot;
+</pre>
+<p>If we truly care about illegal states, the obvious alteration to the type above ought to be the following</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Email = private | Email of string
+with
+    member this.Address = let (Email addr) = this in addr
+    static member TryParse(address : string) =
+        if isValidEmail address then Some(Email address)
+        else None
+</pre>
+<p>But really, this is a just a class encoded by a union. The implementation below is simpler:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Email private (address : string) =
+    member __.Address = address
+    static member TryParse(address : string) =
+        if isValidEmail address then Some(Email address)
+        else None
+</pre>
+<p>NB the previous implementation might in fact be warranted in cases where free structural equality or comparison are needed. But for all intents and purposes, both approaches effectively subscribe to OO-style encapsulation.</p>
+<h3>OO And Purity</h3>
+<p>The relationship between OO and purity can be a frequent avenue for misconception. Occasionally someone will claim that by admitting objects we are ipso facto forsaking purity. On the contrary, I do claim that these really are orthogonal concerns. Just as a lambda is capable of producing side-effects, objects <em>can</em> be designed for purity. Good examples of this are <a href="https://github.com/Microsoft/visualfsharp/blob/f78fee326d6adf9c9f20ed50c20b56baa027c851/src/fsharp/FSharp.Core/map.fs#L426"><code>Map</code></a> and <a href="https://github.com/Microsoft/visualfsharp/blob/f78fee326d6adf9c9f20ed50c20b56baa027c851/src/fsharp/FSharp.Core/set.fs#L522"><code>Set</code></a> in the core library. The lambda is really just an abstract class with a single virtual method and lots of syntactic sugar. There is nothing fundamentally setting it apart from objects once you exclude the syntactic aspect.</p>
+<h3>Conclusions</h3>
+<p>So, is this a call to go full-blown OO in F# projects? Should we be digging up our old GoF copies? Are design patterns up there in the functional curriculum together with profunctor optics? Are inheritance and class hierarchies sexy again? No!</p>
+<p>I am in fact proposing that there is a third way, where functional and OO components coexist, with one paradigm complementing the other. This is hardly a new idea. Quoting from the <a href="http://fsharp.org/specs/component-design-guidelines/#1-overview">F# design guidelines</a>:</p>
+<blockquote><p>
+F# is commonly called a functional-first language: object, functional and imperative paradigms are all well supported, but functional programming tends to be the first technique used. Many of the defaults of F# are set up to encourage functional programming, but programming in the other paradigms is effective and efficient, and a combination is often best of all. It is a common misconception that the functional and object programming methodologies are competing. In fact, they are generally orthogonal and largely complementary. Often, functional programming plays a stronger role “in the small” (e.g. at the implementation level of functions/method and the code contained therein) and object programming playe a bigger role “in the large” (e.g. at the structural level of classes, interfaces, and namespaces, and the organization of APIs for frameworks).
+</p></blockquote>
+<p>In my 6 years of working with F#, my style has gradually shifted towards embracing this approach. A few examples:</p>
+<ul>
+<li>I typically write the implementation of a large component in the functional style behind a private module, then expose its public API as part of a standalone class. I find that method-based APIs are friendlier to consumers unfamiliar with the implementation.</li>
+<li>I use records and unions for encoding internal representations and classes for encapsulating publicly visible instances. A very good example of this is the <a href="https://github.com/Microsoft/visualfsharp/blob/ac3e0ccc29f13191f38824b2fdf877d783475a22/src/fsharp/FSharp.Core/map.fs#L13">F# map implementation</a>.</li>
+<li>I rarely expose records and unions as part of a public API unless it is abundantly evident that all possible instances for the given types are valid in their context of use. This does not happen often in my experience.</li>
+<li>If a module is exposed as part of a public API, care must be taken so that the number of arguments is small and behaviour can be predicted by reading the type signature of the function alone. The core <code>List</code> and <code>Array</code> modules are a good example. Avoid using modules to expose complex functionality like the <code>Async</code> API.</li>
+</ul>
+<p>I remember reading a few years back Simon Cousins&#8217; <a href="https://web.archive.org/web/20140517191635/http://notonlyoo.org/">NOOO manifesto</a>, which stands for Not Only Object-Oriented development. In retrospect I find this to be an excellent name for a manifesto, if only because &#8220;Not Only OO&#8221; is not the same thing as &#8220;No OO&#8221;. So here&#8217;s a proposal to revive that manifesto, perhaps with the understanding that &#8220;Not Only OO&#8221; also implies &#8220;Not Only FP&#8221; in the context of F#.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://eiriktsarpalis.wordpress.com/2017/03/20/why-oo-matters-in-f/feed/</wfw:commentRss>
+			<slash:comments>56</slash:comments>
+		
+		
+		
+		<media:content url="https://2.gravatar.com/avatar/8f4d9242545461f6ae5f1fde759d3d67?s=96&amp;d=identicon&amp;r=G" medium="image">
+			<media:title type="html">eiriktsarpalis</media:title>
+		</media:content>
+	</item>
+		<item>
+		<title>F# and Purity</title>
+		<link>https://eiriktsarpalis.wordpress.com/2017/03/06/f-and-purity/</link>
+					<comments>https://eiriktsarpalis.wordpress.com/2017/03/06/f-and-purity/#comments</comments>
+		
+		<dc:creator><![CDATA[eirik]]></dc:creator>
+		<pubDate>Mon, 06 Mar 2017 10:19:29 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">http://eiriktsarpalis.wordpress.com/?p=2022</guid>
+
+					<description><![CDATA[Purely functional programming according to wikipedia designates a programming paradigm that treats all computation as the evaluation of mathematical functions. Purely functional programing may also be defined by forbidding changing state and mutable data. The importance of the purely functional approach cannot be overstated: it eliminates entire classes of mutation-related bugs; encourages composable abstraction; pure &#8230; <a href="https://eiriktsarpalis.wordpress.com/2017/03/06/f-and-purity/" class="more-link">Continue reading <span class="screen-reader-text">F# and Purity</span> <span class="meta-nav">&#8594;</span></a>]]></description>
+										<content:encoded><![CDATA[<p>Purely functional programming according to <a href="https://en.wikipedia.org/wiki/Purely_functional_programming">wikipedia</a></p>
+<blockquote><p>
+designates a programming paradigm that treats all computation as the evaluation of mathematical functions. Purely functional programing may also be defined by forbidding changing state and mutable data.
+</p></blockquote>
+<p>The importance of the purely functional approach cannot be overstated: it eliminates entire classes of mutation-related bugs; encourages composable abstraction; pure code can be reasoned about equationally; the explicit segregation of side-effects acts as a forcing function for better abstraction. At the same time, immutable persistent data structures can be cheaply incremented while shared safely across multiple threads. Pure programs also admit compile-time optimizations that would be tricky to achieve in the presence of state.</p>
+<p>Benefits aside, purity is an attribute of expressions and their formal semantics. A pure program would still end up executing on regular computer hardware, where it could demonstrate the following effects: high CPU utilization, excessive heap allocations, stack overflows, divizion by zero errors, etc. Thus the connection of pure code to functions of the mathematical variety should not be considered a literal one, otherwise all correct <a href="http://adamesterline.com/haskell/2015/01/03/Fibonacci-in-Haskell/">Fibonacci implementations</a> would be equal by virtue of extensionality. Being able to reason how code —pure or otherwise— executes on the underlying hardware is critically important for the working programmer.</p>
+<h3>An ML Tradition</h3>
+<p>Transforming purely functional declarations into equivalent, optimal imperative code is a holy grail, still very much a topic of <a href="https://strymonas.github.io/">active research</a>. In the general case though, performance can only be attained by forsaking purity. This is very much compatible with the ML philosophy, which has traditionally embraced imperative features in its language core. Quoting from <a href="https://realworldocaml.org/v1/en/html/imperative-programming-1.html">Real World OCaml</a></p>
+<blockquote><p>
+Pure code is the default in OCaml, and for good reason—it&#8217;s generally easier to reason about, less error prone and more composable. But imperative code is of fundamental importance to any practical programming language, because real-world tasks require that you interact with the outside world, which is by its nature imperative. Imperative programming can also be important for performance. While pure code is quite efficient in OCaml, there are many algorithms that can only be implemented efficiently using imperative techniques.</p>
+<p>OCaml offers a happy compromise here, making it easy and natural to program in a pure style, but also providing great support for imperative programming.
+</p></blockquote>
+<p>This also applies particularly well to F#, an OCaml dialect for the .NET framework. In my personal experience, performance gains when switching from purely functional to imperative code in F# can be particularly dramatic. Strategically adopting imperative implementations in performance-critical components is often vital to ensuring sustainability of a system.</p>
+<h3>Imperative Programming done right</h3>
+<p>So what does this all mean? Should we just give up on purely functional code in the interest of performance? Is F# really just a way to write C# programs in ML-style syntax?</p>
+<p>Well, not really. I do claim though that there is a sweet spot where impure features can be utilized to combine the benefits of pure FP with a lot of the efficiency of procedural code. Defining that sweet spot is hard, however I cannot think of a more concise example than <a href="http://trelford.com/blog/post/SeqVsStream.aspx">Nessos Streams</a>, which provides a highly efficient functional streams implementation in just over 40 lines of code. Other examples could include <a href="https://github.com/stephan-tolksdorf/fparsec/">FParsec</a> and <a href="https://github.com/Hopac/Hopac">Hopac</a>, whose core implementations have been written in C# out of performance considerations.</p>
+<p>If one had to nominate a key guiding priciple for using imperative features in F# code, then surely we would single out <a href="https://en.wikipedia.org/wiki/Referential_transparency">referential transparency</a>. Very roughly, a function is referentially transparent if it behaves like a pure function, even if its implementation might use imperative constructs. For example, the function</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let incr (cell : int ref) : unit = cell := !cell + 1
+</pre>
+<p>is <em>not</em> referentially transparent because substituting a call to <code>incr</code> with the the result of the computation is not a behaviour-preserving transformation, in general.</p>
+<p>We can still use imperative features to define functions that are in fact referentially transparent. A good example is implementing <code>groupBy</code> for lists. A purely functional <code>groupBy</code> could be written as follows:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let groupBy (proj : 'T -&gt; 'Key) (ts : 'T list) : ('Key * 'T list) list =
+    let folder (map : Map&lt;'Key, 'T list&gt;) (t : 'T) =
+        let key = proj t
+        let grouped = defaultArg (Map.tryFind key map) []
+        Map.add key (t :: grouped) map
+
+    ts
+    |&gt; List.fold folder Map.empty
+    |&gt; Map.toList
+    |&gt; List.map (fun (k,v) -&gt; k, List.rev v)
+</pre>
+<p>This implementation may be pure, however performance-wise it is not ideal. We can still produce a more efficient, imperative equivalent of the same function:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let groupBy' (proj : 'T -&gt; 'Key) (ts : 'T list) : ('Key * 'T list) list =
+    let dict = new Dictionary&lt;'Key, ResizeArray&lt;'T&gt;&gt;()
+    for t in ts do
+        let key = proj t
+        let mutable array = null
+        if not &lt;| dict.TryGetValue(key, &amp;array) then
+            array &lt;- new ResizeArray&lt;'T&gt;()
+            dict.Add(key, array)
+        array.Add t
+
+    dict
+    |&gt; Seq.map (function KeyValue(k,v) -&gt; k, Seq.toList v)
+    |&gt; Seq.toList
+</pre>
+<p>The second function provides order-of-magnitude performance gains, but is also referentially transparent: it can be substituted with the pure implementation or the resulting value without affecting behaviour of the overall program. In fact, this approach very much reflects how the <a href="https://github.com/fsharp/fsharp/blob/84b6da1bfcdc748ba1a79444f70e04708c6d3324/src/fsharp/FSharp.Core/local.fs#L202">core library</a> implements its own functions.</p>
+<h3>Conclusion</h3>
+<p>Purely functional programming in F# provides a very effective means of reasoning about code, however in the interest of efficiency it is often preferable to leverage the imperative aspects of the language. When done carefully, it can result in better performing code that sacrifices few if any of the benefits of the purely functional approach.</p>
+<p>In fact, my claim is that this is very much the idiomatic way of using ML in general and F# in particular. Pretending that F# is a purely functional language à la Haskell is highly counterproductive, particularly when authoring production-grade projects.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://eiriktsarpalis.wordpress.com/2017/03/06/f-and-purity/feed/</wfw:commentRss>
+			<slash:comments>9</slash:comments>
+		
+		
+		
+		<media:content url="https://2.gravatar.com/avatar/8f4d9242545461f6ae5f1fde759d3d67?s=96&amp;d=identicon&amp;r=G" medium="image">
+			<media:title type="html">eiriktsarpalis</media:title>
+		</media:content>
+	</item>
+		<item>
+		<title>You’re better off using Exceptions</title>
+		<link>https://eiriktsarpalis.wordpress.com/2017/02/19/youre-better-off-using-exceptions/</link>
+					<comments>https://eiriktsarpalis.wordpress.com/2017/02/19/youre-better-off-using-exceptions/#comments</comments>
+		
+		<dc:creator><![CDATA[eirik]]></dc:creator>
+		<pubDate>Sun, 19 Feb 2017 23:39:38 +0000</pubDate>
+				<category><![CDATA[F#]]></category>
+		<guid isPermaLink="false">http://eiriktsarpalis.wordpress.com/?p=1386</guid>
+
+					<description><![CDATA[Exception handling is an error management paradigm that has often been met with criticism. Such criticisms typically revolve around scoping considerations, exceptions-as-control-flow abuse or even the assertion that exceptions are really just a type safe version of goto. To an extent, these seem like valid concerns but it is not within the scope of this &#8230; <a href="https://eiriktsarpalis.wordpress.com/2017/02/19/youre-better-off-using-exceptions/" class="more-link">Continue reading <span class="screen-reader-text">You&#8217;re better off using&#160;Exceptions</span> <span class="meta-nav">&#8594;</span></a>]]></description>
+										<content:encoded><![CDATA[<p>Exception handling is an error management paradigm that has often been met with criticism. Such criticisms typically revolve around scoping considerations, exceptions-as-control-flow abuse or even the assertion that exceptions are really just a type safe version of goto. To an extent, these seem like valid concerns but it is not within the scope of this article to address those per se.</p>
+<p>Such concerns resonate particularly well within FP communities, often taken to the extreme: we should reject exceptions altogether, since code that throws is necessarily impure. In the F# community, this opinion is in part realized by advocating alternatives like <a href="https://github.com/fsharp/fslang-design/blob/master/FSharp-4.1/FS-1004-result-type.md">result types</a> and <a href="http://fsharpforfunandprofit.com/posts/recipe-part2/">railway-oriented programming</a>. In essence, these approaches follow the <a href="https://hackage.haskell.org/package/category-extras-0.52.0/docs/Control-Monad-Either.html">Either monad</a> found in Haskell, but often intentionally avoiding the use of do notation/computation expressions (since that&#8217;s just interpreted exception semantics).</p>
+<p>The TL;DR version of the approach is that we define a union type for results that looks like this:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Result&lt;'TSuccess, 'TError&gt; =
+    | Ok of 'TSuccess
+    | Error of 'TError
+</pre>
+<p>then require that any function which admits the possibility of error should return a <code>Result</code> value. This way we are forcing the type system acknowledge error cases and makes our error handling logic more explicit and predictable. We can also use combinators like <code>bind</code> to encode common error handling flows.</p>
+<p>I would like to illustrate in this article why I believe that this often causes a lot of problems — while simultaneously not achieving the advertised benefits, particularly in the context of maintaining large codebases. It also gives rise to a multitude of anti-patterns, particularly when used by people new to F#.</p>
+<h3>An issue of Runtime</h3>
+<p>Most programming languages out there carry the concept of a runtime error. Such errors sometimes stem from unexpected locations, in code otherwise considered pure. In Haskell for instance, consider what the pure expressions &#8220;<code>2 `div` 0</code>&#8221; or &#8220;<code>head []</code>&#8221; evaluate to. In the case of the CLR, runtime errors are manifested in the form of thrown exceptions, which arguably happens more often than Haskell.</p>
+<p>Because runtime errors are difficult to anticipate, I claim that using result types as a holistic replacement for error handling in an application is a leaky abstraction. Consider the following example:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type Customer = { Id : string; Credit : decimal option }
+
+let average (customers : Customer list) =
+    match customers with
+    | [] -&gt; Error &quot;list was empty&quot;
+    | _ -&gt;
+        customers
+        |&gt; List.averageBy (fun c -&gt; c.Credit.Value)
+        |&gt; Ok
+</pre>
+<p>Notice that the above snippet now admits two possible classes of errors, <code>string</code> and the potential <code>NullReferenceException</code> admitted by careless access of the optional field in the customer record. This eventually delivers an unpleasant surprise to consumers of the function, since the type signature communicates an exception-free implementation.</p>
+<h3>An Awkward Reconciliation</h3>
+<p>It&#8217;s by such misadventure that the working F# programmer soon realizes that any function could still potentially throw. This is an awkward realization, which has to be addressed by catching as soon as possible. This of course is the purely functional equivalent of the Pokemon anti-pattern:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let avg : Result&lt;decimal, string&gt; =
+    try average customers
+    with e -&gt; Error e.Message // gotta catch em all!
+</pre>
+<h3>Boilerplate</h3>
+<p>In the majority of codebases using result types that I&#8217;ve been reviewing, people typically just end up re-implementing exception semantics on an ad-hoc basis. This can result in extremely noisy code, as illustrated in the following example:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let combine x y z =
+    match x, y, z with
+    | Ok x, Ok y, Ok z -&gt; Ok (x,y,z)
+    | Error e, _, _ | _, Error e, _ | _, _, Error e -&gt; Error e
+</pre>
+<p>or in using pre-baked combinators</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let combine x y z =
+    x |&gt; bind (fun x -&gt; y |&gt; bind (fun y -&gt; z |&gt; bind (fun z -&gt; Ok(x,y,z))))
+</pre>
+<p>We really shouldn&#8217;t be doing this. It is essentially the type equivalent of using a linter that demands inserting catch-alls and rethrows in every method body.</p>
+<p>Given sufficient implementation complexity, things can get really ugly: binding on results of differing error types and other incidental complexities require substantial refactoring to get things right. Often, this will prompt developers to cut corners by doing unexpected things, like inserting a throw just to get rid of an annoying error branch or returning nested result types like</p>
+<pre class="brush: fsharp; title: ; notranslate">
+Result&lt;Result&lt;string, string&gt;, string list&gt;
+</pre>
+<h3>Where&#8217;s my Stacktrace?</h3>
+<p>An important property of exceptions -which cannot be stressed enough- is that they are entities managed and understood by the underlying runtime, endowed with metadata critical to diagnosing bugs in complex systems. They can also be tracked and highlighted by tooling such as debuggers and profilers, providing invaluable insight when probing a large system.</p>
+<p>By lifting all of our error handling to passing result values, we are essentially discarding all that functionality. There is nothing worse than having to deal with a production issue which comes up in the logs simply as <code>"list was empty"</code>.</p>
+<h3>The Problem with IO</h3>
+<p>The points discussed thus far have typically focused on applications that might as well have been purely functional. As might be expected, these become even more pronounced when bringing in IO or when interfacing with third-party .NET libraries. Consider the following example:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let tryReadAllText (path : string) : string option =
+    try System.IO.File.ReadAllText path |&gt; Some
+    with _ -&gt; None
+</pre>
+<p>I have spotted this approach and variations in many production-grade F# codebases, and have been responsible for some of these myself back when I was younger and more naive. This adapter is motivated by the desire to have an exception-free file reader, however it is deeply flawed precisely because of that.</p>
+<p>While it is fairly unambiguous what a <code>Some</code> result means, the <code>None</code> bit hardly conveys any information other than the obvious. Here is an <a href="https://msdn.microsoft.com/en-us/library/ms143368(v=vs.110).aspx#Anchor_1">official list of possible errors</a> that can be raised by that particular call. By discarding the exception, it becomes impossible to diagnose what could have gone wrong.</p>
+<h3>Stringly-typed error handling</h3>
+<p>One could quickly point out that the snippet above can be amended so that data loss is minimized.</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let readAllText (path : string) : Result&lt;string, string&gt; =
+    try System.IO.File.ReadAllText path |&gt; Ok
+    with e -&gt; Error e.Message
+</pre>
+<p>This alteration still makes error handling awkward and unsafe</p>
+<pre class="brush: fsharp; title: ; notranslate">
+match readAllText &quot;foo.txt&quot; with
+| Error e when e.Contains &quot;Could not find file&quot; -&gt; // ...
+</pre>
+<p>particularly when compared to how the idiomatic approach works</p>
+<pre class="brush: fsharp; title: ; notranslate">
+try File.ReadAllText path
+with :? FileNotFoundException -&gt; // ...
+</pre>
+<h3>Interop issues</h3>
+<p>It is often easy to forget that <code>Result</code> values are plain objects, with no particular bearing when used in the context of other frameworks/libraries. The following example illustrates an innocent mistake when working with TPL:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let task =
+    Task.StartNew(fun () -&gt;
+        if Random.Next() % 2 = 0
+        then Ok ()
+        else Error ())
+
+task.Wait()
+if task.IsFaulted then printfn &quot;Task failed&quot;
+else printfn &quot;Task succeeded&quot;
+</pre>
+<p>Or perhaps it could be mistakenly believed that F# Async somehow recognizes result types</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let job1 = async { return Ok () }
+let job2 = async { return Error () }
+
+let! result =
+    [job1 ; job2]
+    |&gt; Async.Parallel
+    |&gt; Async.map Ok
+
+match result with
+| Ok _ -&gt; printfn &quot;All jobs completed successfully&quot;
+| Error _ -&gt; printfn &quot;Some of the jobs failed&quot;
+</pre>
+<h2>Conclusions</h2>
+<p>It is not in the intentions of this article to argue that result types shouldn&#8217;t be used at all. I have written DSLs and interpreters using result types. MBrace uses result types internally. In most cases though, the benefit is only maximized by writing custom result types that model a particular domain. Rather than having a general-purpose error branch that encodes infinite classes of failures, assign each class of errors to an individual branch in that result type:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+type MoneyWithdrawalResult =
+    | Success of amount:decimal
+    | InsufficientFunds of balance:decimal
+    | CardExpired of DateTime
+    | UndisclosedFailure
+</pre>
+<p>This approach constrains error classes in a finite domain, which also allows for more effective testing of our code.</p>
+<p>That said, I strongly believe that using result types as a general-purpose error handling mechanism for F# applications should be considered harmful. Exceptions should remain the dominant mechanism for error propagation when programming in the large. The F# language has been designed with exceptions in mind, and has achieved that goal <a href="http://www.fssnip.net/9A/title/Active-pattern-to-extract-HttpStatusCode-from-WebException">very effectively</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://eiriktsarpalis.wordpress.com/2017/02/19/youre-better-off-using-exceptions/feed/</wfw:commentRss>
+			<slash:comments>35</slash:comments>
+		
+		
+		
+		<media:content url="https://2.gravatar.com/avatar/8f4d9242545461f6ae5f1fde759d3d67?s=96&amp;d=identicon&amp;r=G" medium="image">
+			<media:title type="html">eiriktsarpalis</media:title>
+		</media:content>
+	</item>
+		<item>
+		<title>Reconciling Stacktraces with Computation Expressions, Revisited.</title>
+		<link>https://eiriktsarpalis.wordpress.com/2016/11/19/reconciling-stacktraces-with-computation-expressions-revisited/</link>
+					<comments>https://eiriktsarpalis.wordpress.com/2016/11/19/reconciling-stacktraces-with-computation-expressions-revisited/#respond</comments>
+		
+		<dc:creator><![CDATA[eirik]]></dc:creator>
+		<pubDate>Sat, 19 Nov 2016 02:05:57 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">http://eiriktsarpalis.wordpress.com/?p=977</guid>
+
+					<description><![CDATA[About a year ago, I wrote an article arguing for adding stacktrace support to F# computation expressions. Thanks to work by Lincoln Atkinson and Avi Avni, the upcoming F# 4.1 will be providing this functionality. On the occasion of the release of VS2017 RC, I decided to spend some time adapting my continuation monad implementation &#8230; <a href="https://eiriktsarpalis.wordpress.com/2016/11/19/reconciling-stacktraces-with-computation-expressions-revisited/" class="more-link">Continue reading <span class="screen-reader-text">Reconciling Stacktraces with Computation Expressions,&#160;Revisited.</span> <span class="meta-nav">&#8594;</span></a>]]></description>
+										<content:encoded><![CDATA[<p>About a year ago, I wrote an <a href="https://eiriktsarpalis.wordpress.com/2015/12/27/reconciling-stacktraces-with-computation-expressions/">article</a> arguing for adding stacktrace support to F# computation expressions. Thanks to <a href="https://github.com/Microsoft/visualfsharp/pull/1114">work by Lincoln Atkinson and Avi Avni</a>, the upcoming F# 4.1 will be providing this <a href="https://github.com/fsharp/fslang-design/blob/master/FSharp-4.1/FS-1012-caller-info-attributes.md">functionality</a>.</p>
+<p>On the occasion of the release of VS2017 RC, I decided to spend some time adapting my continuation monad implementation to the new feature. The Bind implementation now looks as follows:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+member __.Bind(f : Cont&lt;'T&gt;, g : 'T -&gt; Cont&lt;'S&gt;,
+                [&lt;CallerMemberName&gt;]?callerName : string,
+                [&lt;CallerFilePath&gt;]?callerFilePath : string,
+                [&lt;CallerLineNumber&gt;]?callerLineNumber : int) : Cont&lt;'S&gt; =
+
+    fun sc ec -&gt;
+        let sc' (t : 'T) =
+            match (try Ok(g t) with e -&gt; Error e) with
+            | Ok g -&gt; g sc ec
+            | Error e -&gt; ec (SymbolicException.capture e)
+
+        let ec' (se : SymbolicException) =
+            let stackMsg =
+                sprintf &quot;   at %s in %s:line %d&quot; 
+                    callerName.Value 
+                    callerFilePath.Value
+                    callerLineNumber.Value
+
+            ec (SymbolicException.append stackMsg se)
+
+        f sc' ec'
+</pre>
+<p>and ReturnFrom:</p>
+<pre class="brush: fsharp; title: ; notranslate">
+member __.ReturnFrom(f : Cont&lt;'T&gt;,
+                        [&lt;CallerMemberName&gt;]?callerName : string,
+                        [&lt;CallerFilePath&gt;]?callerFilePath : string,
+                        [&lt;CallerLineNumber&gt;]?callerLineNumber : int) : Cont&lt;'T&gt; =
+    fun sc ec -&gt;
+        let ec' (se : SymbolicException) =
+            let stackMsg =
+                sprintf &quot;   at %s in %s:line %d&quot; 
+                    callerName.Value 
+                    callerFilePath.Value
+                    callerLineNumber.Value
+
+            ec (SymbolicException.append stackMsg se)
+
+        f sc ec'
+</pre>
+<p>Running the odd/even example</p>
+<pre class="brush: fsharp; title: ; notranslate">
+let rec odd (n : int) = 
+    cont {
+        if n = 0 then return false
+        else
+            return! even (n - 1)
+    }
+ 
+and even (n : int) =
+    cont {
+        if n = 0 then return failwith &quot;bug!&quot;
+        else
+            return! odd (n - 1)
+    }
+
+odd 5 |&gt; Cont.run
+</pre>
+<p>Now generates the stacktrace:</p>
+<pre class="brush: plain; title: ; notranslate">
+System.Exception: bug!
+   at Program.even@119.Invoke(Unit unitVar) in C:\Users\eirik\devel\public\cont\Program.fs:line 119
+   at Program.sc'@54-1.Invoke(a t) in C:\Users\eirik\devel\public\cont\Program.fs:line 54
+   at odd in C:\Users\eirik\devel\public\cont\Program.fs:line 114
+   at even in C:\Users\eirik\devel\public\cont\Program.fs:line 121
+   at odd in C:\Users\eirik\devel\public\cont\Program.fs:line 114
+   at even in C:\Users\eirik\devel\public\cont\Program.fs:line 121
+   at odd in C:\Users\eirik\devel\public\cont\Program.fs:line 114
+   at Program.ContModule.ec@102-1.Invoke(SymbolicException se) in C:\Users\eirik\devel\public\cont\Program.fs:line 102
+   at Program.ContModule.run[T](FSharpFunc`2 cont) in C:\Users\eirik\devel\public\cont\Program.fs:line 103
+   at &lt;StartupCode$ConsoleApplication3&gt;.$Program.main@() in C:\Users\eirik\devel\public\cont\Program.fs:line 106
+</pre>
+<p>The results look pretty promising. Looking forward to apply this technique to async and cloud builders!</p>
+<p>You can find the full implementation <a href="https://gist.github.com/eiriktsarpalis/a97aed20a08bd7b575fda9701209306c">here</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://eiriktsarpalis.wordpress.com/2016/11/19/reconciling-stacktraces-with-computation-expressions-revisited/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		
+		<media:content url="https://2.gravatar.com/avatar/8f4d9242545461f6ae5f1fde759d3d67?s=96&amp;d=identicon&amp;r=G" medium="image">
+			<media:title type="html">eiriktsarpalis</media:title>
+		</media:content>
+	</item>
+	</channel>
+</rss>

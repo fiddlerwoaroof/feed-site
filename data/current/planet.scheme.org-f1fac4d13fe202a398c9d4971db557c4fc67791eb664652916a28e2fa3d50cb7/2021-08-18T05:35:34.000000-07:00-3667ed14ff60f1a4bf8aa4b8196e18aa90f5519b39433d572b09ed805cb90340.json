@@ -1,0 +1,8 @@
+{
+  "title":"Fold right",
+  "date":"2021-08-18T05:35:34.000000-07:00",
+  "author":"Joe Marshall",
+  "id":"tag:blogger.com,1999:blog-8288194986820249216.post-8045083318505598872",
+  "link":"https://funcall.blogspot.com/2021/08/fold-right.html",
+  "content":"fold-left takes arguments like\nthis:(fold-left function init list)and\n  computes* (fold-left (lambda (l r) `(f ,l ,r)) 'init '(a b c))\n(F (F (F INIT A) B) C)Notice how init is the leftmost\nof all the arguments to the function, and each argument appears left\n  to right as it is folded in.\nNow look at the usual way fold-right is\n  defined:(fold-right function init list)It\n  computes * (fold-right (lambda (l r) `(f ,l ,r)) 'init '(a b c))\n(F A (F B (F C INIT)))although init appears first\n  and to the left of '(a b c) in the arguments\n  to fold-right, it is actually used as the rightmost\n  argument to the last application.\nIt seems to me that the arguments to fold-right should\n  be in this order:; (fold-right function list final)\n* (fold-right (lambda (l r) `(f ,l ,r)) '(a b c) 'final)\n(F A (F B (F C FINAL)))\nThe argument lists to fold-left\nand fold-right would no longer match, but I think\n  switching things around so that the anti-symmetry of the arguments\n  matches the anti-symmetry of the folding makes things clearer.\n    "
+}

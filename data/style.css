@@ -1,0 +1,384 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:400&subset=latin,latin-ext");
+:root {
+    --zenburn-fg-plus-2: #FFFFEF;
+    --zenburn-fg-plus-1: #F5F5D6;
+    --zenburn-fg: #DCDCCC;
+    --zenburn-fg-1: #A6A689;
+    --zenburn-fg-2: #656555;
+    --zenburn-black: #000000;
+    --zenburn-bg-2: #000000;
+    --zenburn-bg-1: #2B2B2B;
+    --zenburn-bg-05: #383838;
+    --zenburn-bg: #3F3F3F;
+    --zenburn-bg-plus-05: #494949;
+    --zenburn-bg-plus-1: #4F4F4F;
+    --zenburn-bg-plus-2: #5F5F5F;
+    --zenburn-bg-plus-3: #6F6F6F;
+    --zenburn-red-plus-2: #ECB3B3;
+    --zenburn-red-plus-1: #DCA3A3;
+    --zenburn-red: #CC9393;
+    --zenburn-red-1: #BC8383;
+    --zenburn-red-2: #AC7373;
+    --zenburn-red-3: #9C6363;
+    --zenburn-red-4: #8C5353;
+    --zenburn-red-5: #7C4343;
+    --zenburn-red-6: #6C3333;
+    --zenburn-orange: #DFAF8F;
+    --zenburn-yellow: #F0DFAF;
+    --zenburn-yellow-1: #E0CF9F;
+    --zenburn-yellow-2: #D0BF8F;
+    --zenburn-green-5: #2F4F2F;
+    --zenburn-green-4: #3F5F3F;
+    --zenburn-green-3: #4F6F4F;
+    --zenburn-green-2: #5F7F5F;
+    --zenburn-green-1: #6F8F6F;
+    --zenburn-green: #7F9F7F;
+    --zenburn-green-plus-1: #8FB28F;
+    --zenburn-green-plus-2: #9FC59F;
+    --zenburn-green-plus-3: #AFD8AF;
+    --zenburn-green-plus-4: #BFEBBF;
+    --zenburn-cyan: #93E0E3;
+    --zenburn-blue-plus-3: #BDE0F3;
+    --zenburn-blue-plus-2: #ACE0E3;
+    --zenburn-blue-plus-1: #94BFF3;
+    --zenburn-blue: #8CD0D3;
+    --zenburn-blue-1: #7CB8BB;
+    --zenburn-blue-2: #6CA0A3;
+    --zenburn-blue-3: #5C888B;
+    --zenburn-blue-4: #4C7073;
+    --zenburn-blue-5: #366060;
+    --zenburn-magenta: #DC8CC3;
+}
+
+* {
+  box-sizing: border-box;
+  transition: font-size 0.2s ease;
+}
+
+body {
+  margin: 0px;
+  font-family: "Lato", "Alegreya Sans", sans-serif;
+  background: var(--zenburn-bg);
+  color: var(--zenburn-fg);
+  font-weight: 300;
+}
+
+.current {
+  background-color: var(--zenburn-bg-plus-1);
+  color: var(--zenburn-fg-plus-1);
+}
+
+#container {
+  opacity: 1;
+  transition: 0.1s ease opacity;
+}
+
+#container[v-cloak] {
+  opacity: 0;
+}
+
+a {
+  color: var(--zenburn-fg);
+  border: thin solid transparent;
+  cursor: pointer;
+}
+
+.current_feed a,
+.feeds a {
+  display: inline-block;
+  vertical-align: middle;
+  text-decoration: none;
+  cursor: pointer;
+  margin-right: 1em;
+  width: 100%;
+}
+
+a:hover {
+  border-color: var(--zenburn-blue-1);
+  background-color: var(--zenburn-fg-1);
+}
+
+a:focus {
+  text-decoration: underline;
+}
+
+header * {
+  padding: 0;
+  margin: 0;
+}
+
+#container > .left,
+#container > .right {
+  top: 7em;
+}
+
+#container > .left.collapsed,
+#container > .right.v-expand {
+  top: 3em;
+}
+
+#container > .right.v-expand .article-title {
+  font-size: 0.75rem;
+}
+
+#container > header {
+  height: 7em;
+}
+
+#container > header.v-collapse {
+  height: 3em;
+}
+
+#container > header.v-collapse .general-info {
+  line-height: 3em;
+}
+
+#container > header {
+  width: 100vw;
+  background: var(--zenburn-bg);
+  border-bottom: 4px double var(--zenburn-green);
+  box-sizing: border-box;
+  position: absolute;
+  display: block;
+  right: 0;
+  font-size: 16px;
+  line-height: 1.25;
+  transition: height 0.2s ease, line-height 0.2s ease;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+#container > header > * {
+  vertical-align: middle;
+}
+
+#container > header > .general-info {
+  width: 24vw;
+  height: 100%;
+  line-height: 6rem;
+  display: block;
+  float: left;
+  text-align: right;
+  padding-right: 1em;
+  border-right: 3px var(--zenburn-green) double;
+  transition: width 0.2s ease, padding 0.2s ease;
+  overflow: hidden;
+}
+
+.collapsed + .right > .article-container {
+  width: 38em;
+}
+
+#container > header > .general-info.collapsed {
+  padding-right: 0em;
+}
+
+#container > header > .feed-info {
+  width: 75vw;
+  height: 100%;
+  line-height: 2rem;
+  display: block;
+  float: right;
+}
+
+header h1,
+header h2,
+header h3,
+header h4,
+header h5,
+header h6 {
+  max-height: 1.2em;
+  width: auto;
+  border: none;
+  margin: 0.1em 0;
+}
+
+#container > header > .general-info.collapsed + .feed-info .description {
+  display: none;
+}
+
+#container > header.v-collapse > .feed-info h2,
+#container > header.v-collapse > .feed-info h3 {
+  display: inline-block;
+  font-size: 1rem;
+}
+
+#container > .right {
+  overflow-y: auto;
+  width: 50vw;
+  box-sizing: border-box;
+  position: absolute;
+  display: block;
+  bottom: 0;
+  right: 0;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  border-bottom: 3px #28b0b1 double;
+}
+
+#container > *,
+#container > .left > * {
+  transition: width 0.2s ease, top 0.2s ease;
+}
+
+.article-container {
+  width: 30em;
+  margin: auto;
+  transition: width 0.2s ease;
+  letter-spacing: +0.25px;
+  line-height: 1.5;
+}
+
+.article-title {
+  padding: 0.5em 1em;
+  position: relative;
+}
+
+.article-title a {
+  display: block;
+}
+
+.article-title button {
+  font-family: "Source Code Pro", "Courier New", monospace;
+  position: absolute;
+  right: 1em;
+  bottom: 0.5em;
+}
+
+.like_button {
+    padding: 0.3em;
+}
+
+#container > .left {
+  border-right: 4px var(--zenburn-blue) double;
+  width: 50vw;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: absolute;
+  display: block;
+  left: 0;
+  bottom: 0;
+}
+
+div.description {
+  line-height: 1em;
+  margin-top: 0.5em;
+}
+
+#container > .right img {
+  max-width: 95%;
+  height: auto;
+  display: block;
+  margin: auto;
+}
+
+.current_feed,
+.feeds {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.current_feed {
+  height: 100%;
+  width: 25vw;
+  float: right;
+}
+
+.feeds {
+  height: 100%;
+  width: 24vw;
+  float: left;
+  padding: 1em;
+  border-right: 3px var(--zenburn-blue) double;
+}
+
+.feeds .title,
+.feeds .url {
+  white-space: nowrap;
+}
+
+.feeds .title {
+  font-size: 120%;
+}
+
+.feeds .url {
+  font-size: 75%;
+  padding-left: 2.5em;
+  margin-bottom: 0.5em;
+}
+
+.collapsed {
+  width: 0vw !important;
+  overflow: hidden;
+}
+
+.collapsed > * {
+  width: 0vw !important;
+  overflow: hidden;
+}
+
+.collapsed + .right,
+.collapsed + .top {
+  width: 100vw !important;
+}
+
+.collapse-toggle {
+    position: absolute;
+    right: 1em;
+    top: 30%;
+    transform: translateY(-50%);
+    padding: 0.3em;
+    border-radius: 0.3em;
+}
+
+.code,
+code,
+pre {
+  white-space: pre;
+  background: var(--zenburn-bg-2);
+  border: 1px solid var(--zenburn-fg);
+  font-family: "Source Code Pro", monospace;
+  font-size: 10px;
+}
+
+code {
+  padding: 0 0.5em;
+}
+
+pre {
+  padding: 1em;
+}
+
+.code pre,
+code .code,
+pre code,
+.code .code,
+code code,
+pre pre,
+.code code,
+code pre,
+pre .code {
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+
+.current_feed ul {
+  padding: 0;
+  list-style: none;
+}
+
+.current_feed ul > li {
+  padding: 0.25em 0.25em;
+}
+.current_feed ul a {
+  padding: 0.1em 0.25em;
+}

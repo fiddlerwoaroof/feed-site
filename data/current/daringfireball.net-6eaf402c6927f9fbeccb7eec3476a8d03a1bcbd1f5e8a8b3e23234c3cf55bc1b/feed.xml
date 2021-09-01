@@ -1,0 +1,2054 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>Daring Fireball</title>
+<subtitle>By John Gruber</subtitle>
+<link rel="alternate" type="text/html" href="https://daringfireball.net/">
+<link rel="self" type="application/atom+xml" href="https://daringfireball.net/feeds/main">
+<id>https://daringfireball.net/feeds/main</id>
+
+
+<updated>2021-09-01T04:06:03Z</updated><rights>Copyright © 2021, John Gruber</rights><entry>
+    
+    <link rel="alternate" type="text/html" href="https://daringfireball.net/2021/08/implications_of_third-party_payment_processing_for_iap">
+	<link rel="shorturl" href="http://df4.us/tm6">
+	<id>tag:daringfireball.net,2021://1.38382</id>
+	<published>2021-09-01T01:24:06Z</published>
+	<updated>2021-09-01T04:06:03Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<summary type="text">Adding support for third-party payment processing for in-app purchases in no way prevents Apple and Google from providing robust parental controls to approve their kids’ in-app purchases. But there are trade-offs that aren’t being considered by legislators.</summary>
+	<content type="html" xml:base="https://daringfireball.net/" xml:lang="en"><![CDATA[
+<p>Apple, <a href="https://www.macrumors.com/2021/08/31/south-korea-passes-app-store-bill/" title="MacRumors: “South Korea Passes Bill Banning Apple From Requiring Developers to Use App Store In-App Purchase System”">in a statement to MacRumors</a> (and other media outlets), regarding <a href="https://daringfireball.net/linked/2021/08/31/south-korea-app-store-payment-law" title="Daring Fireball: “South Korea Passes Law Requiring App Stores to Allow Third-Party Payment Processing for In-App Purchases”">South Korea’s just-passed “Google power-abuse-prevention law”</a> which will forbid Apple and Google from requiring the use of their respective in-app purchasing systems:</p>
+
+<blockquote>
+  <p>The Telecommunications Business Act will put users who purchase
+digital goods from other sources at risk of fraud, undermine
+their privacy protections, make it difficult to manage their
+purchases, and features like “Ask to Buy” and Parental Controls
+will become less effective. We believe user trust in App Store
+purchases will decrease as a result of this legislation — leading to fewer opportunities for the over 482,000 registered
+developers in Korea who have earned more than KRW8.55 trillion
+to date with Apple.</p>
+</blockquote>
+
+<p>Apple defines in-app purchases as “App Store purchases”, which I disagree with. I see a clear difference between purchasing an app or game from the App Store and making an in-app purchase within an app or game after having installed it. My understanding of the new South Korean law is that it only pertains to in-app purchases, so the distinction, I believe, is more than just semantics.</p>
+
+<p>I think the latter half of Apple’s statement is true — user trust in in-app purchases will decline. The gist of these legislative proposals — like this month’s “<a href="https://www.blumenthal.senate.gov/download/81121_-open-app-markets-act---bill-text">Open App Markets Act</a>” from U.S. Senators Richard Blumenthal (D-CT), Marsha Blackburn (R-TN), and Amy Klobuchar (D-MN) — is, effectively, to require iOS and Android to be, to some degree, more like Mac and Windows. Put aside the specific details, that’s what these laws are saying: phones should work like PCs in terms of loosening the control of the platform owners (Apple and Google) over what software can be installed, and what that software can do.</p>
+
+<p>You may like the sound of that, or you may not. But there’s no denying that the result of any of these laws will be to make iOS and Google’s Android more like Macs and PCs. There’s also no denying that people make far more digital purchases and install far more apps on their mobile devices (iOS or Android) than their PCs (Mac or Windows).</p>
+
+<p>In my experience, it’s only two specific types of people who want their phones to work significantly more like PCs, permission-wise. The first group is comprised of the technically-savvy — like many of you reading this — who feel confident in their own ability to gauge the trustworthiness of third-party software. The second group is business-minded people, who are thinking only about what percentage of purchases goes to whom, and are only thinking about the money. (I believe the legislators behind these proposals are swayed entirely by the business arguments, and do not understand the technical implications at all.)</p>
+
+<p>But I am confident that the overwhelming majority of typical users are more comfortable installing apps and making in-app purchases on their iOS and Android devices than on their Mac and Windows PCs not <em>despite</em> Apple and Google’s console-like control over iOS and Android, but <em>because of</em> it. And if these measures come to pass and iOS and Android devices are forced by law to become pocket PCs, I think there’s a high chance it’ll prove unpopular with the mass market. The masses are not clamoring for the app stores to be opened up. These arguments over app stores are entirely inside baseball for the technical and business classes. I’ve had non-technical friends and relatives complain to me about all sorts of things related to their iPhones over the last 10 years, but never once have any of them said to me, “<em>Boy, I sure wish iPhone apps and games could ask me for my credit card number to make purchases, and that the overall experience of using apps was more like the anything-goes nature of using the web or my desktop computer.</em>” Never. It doesn’t just seem that the unintended consequences of such legislation is being under-considered; it seems as though it’s not being considered or acknowledged <em>at all</em>.</p>
+
+<p>Perhaps I’m wrong, and it’ll all work out just fine. Anyone who claims to <em>know</em> how such a scenario will turn out is full of shit.</p>
+
+<p>But from what I’ve seen over the last few decades, the quality of the user experience of <em>every</em> computing platform is directly correlated to the amount of control exerted by its platform owner. The current state of the ownerless world wide web speaks for itself.</p>
+
+<hr />
+
+<p>The part of Apple’s statement about “Ask to Buy” and parental controls, though, I think is sophistry. It’s certainly true that the “Ask to Buy” feature <em>currently</em> wouldn’t work with third-party in-app payment processing, but that’s because nothing in iOS is built to support outside payment processing for in-app purchases. If required to support third-party payment processing, Apple could and should create APIs to support them through the existing “Ask to Buy” process, and the App Store guidelines could and should be expanded to require supporting all parental control APIs regardless of how payments are processed.</p>
+
+<p>Most kids don’t have credit cards, either, when you think about it. I suppose a workaround for a wily kid could be to use cash to purchase a prepaid debit card, then use that debit card to make in-app purchases. Keep in mind too that apps which act as stores for physical goods <em>only</em> use third-party payment processing. When you sell physical goods through an app, not only <em>can</em> you process credit cards without going through Apple and Google’s in-app processing, you <em>have</em> to. Neither Apple nor Google allow in-app purchasing to be used for purchasing physical goods, because it wouldn’t even make sense for any retailer to pay a 30 percent processing fee for physical goods. This state of affairs for purchasing physical goods through apps doesn’t seem to have caused any problems for parents different from what kids can do purchasing physical goods on the web.</p>
+
+<p>But the main thing to keep in mind about the South Korean legislation is that it has nothing to do with sideloading or third-party app stores, which <em>would</em> enable the sidestepping not just of all parental controls, but of all privacy controls — for children and adults alike — system-wide.</p>
+
+<p>Adding support for third-party payment processing for in-app purchases in no way prevents Apple and Google from providing robust parental controls to approve kids’ in-app purchases. The rules that are enforced by policy matter, and in large part have worked.</p>
+
+<hr />
+
+<p>My biggest concern regarding third-party payment processing for IAP is subscriptions, which I think Apple’s statement hints at only obliquely, with the phrase “[will] make it difficult to manage their purchases”.</p>
+
+<p><em>The</em> best feature of Apple’s in-app subscription system is that subscriptions are easy for users to manage, and impossible for developers to hide. In iOS, go to Settings → <em>Your iCloud Account</em> → Subscriptions. On the Mac, it’s somewhat less obvious. From the Music (née iTunes) app, go to Account → View My Account, and scroll down. Subscriptions is listed under Settings on the Account Information page. Or, in the App Store app, go to Store → View My Account, then click “View Information” in the window header. That gets you to the same Account Information page as in Music.</p>
+
+<p>On either iOS or Mac, you can also get to the subscription management page by going to <a href="https://support.apple.com/en-us/HT202039">this Apple support document</a> and tapping/clicking the prominent “See or cancel subscriptions” button at the top, which is currently just a link to <a href="https://apple.co/2Th4vqI">https://apple.co/2Th4vqI</a> — but I’m not sure how permanent that URL is. Apple has had several such URLs to bounce you to the subscription management page on your current device over the years.</p>
+
+<p>Once on this page, you get a comprehensive list of every active subscription you’ve made through Apple. You can manage each subscription (switching, say, from monthly to yearly), or, most essentially, <em>easily cancel any of them without one iota of undue hassle</em>.</p>
+
+<p>My go-to counterexample is The New York Times. To cancel a subscription to The New York Times, <a href="https://help.nytimes.com/hc/en-us/articles/360003499613-Cancel-your-subscription">you need to call them on the phone or engage in an online chat</a> with a “customer service representative” whose full-time job is convincing people <em>not</em> to cancel their subscription. And the Times makes it <em>easier</em> to cancel a subscription than many other publications and services do.</p>
+
+<p>Apple’s subscription system makes it easy to track all of your subscriptions in a single list that isn’t hard to find, and makes it easy to cancel any of them. (Google Play offers something similar: in the Play Store app, tap your account avatar → Payments &amp; Subscriptions → Subscriptions.) I can think of ways to improve this list for the benefit of users,<sup id="fnr1-2021-08-31"><a href="#fn1-2021-08-31">1</a></sup> but even as it stands it is exemplary compared to the alternative of managing each and every subscription — each publication, each streaming service, each subscription-based app — on a provider-by-provider basis, wherein each subscription provider can make cancellation or downgrading as hidden, obfuscated, and <a href="https://www.wired.com/story/lawmakers-take-aim-insidious-digital-dark-patterns/">dark-patterned</a> as they choose.</p>
+
+<p>Apple’s subscription system is so useful, so trustworthy, and so beneficial to my peace of mind that as a general rule I <em>only</em> subscribe to anything through it. Of course I make exceptions, but only for subscription providers whom I inherently trust.<sup id="fnr2-2021-08-31"><a href="#fn2-2021-08-31">2</a></sup> I just pored through my list, and of 27 active subscriptions from third-party services (i.e. not counting Apple’s own service like Apple One), I would <em>at most</em> have subscribed to only 9 of them. And I’m being generous; there are a few of those 9 that I’d have thought long and hard about subscribing to outside the App Store. In many cases it’s not about trusting the app developer, per se, but simply my reluctance to subscribe to something I’m likely to lose track of and forget about.</p>
+
+<p>If<sup id="fnr3-2021-08-31"><a href="#fn3-2021-08-31">3</a></sup> Apple winds up acceding to these demands for third-party in-app payment providers — whether nation-by-nation as legislation passes, or by washing their hands of the entire controversy and making a worldwide policy change — I <em>really</em> hope they add APIs and mandate the use of them such that <em>however</em> you pay in-app, any subscription made in-app must show up in this list, and the provider must support no-hassle cancellation from within the system interface. Renewal receipts and upcoming renewal reminders should be mandatory, too.</p>
+
+<p>Otherwise, this would be a huge loss for users — and one that never seems to be considered in debates over legislation such as South Korea’s.</p>
+
+<div class="footnotes">
+<hr />
+<ol>
+
+<li id="fn1-2021-08-31">
+<p>To name a few: (1) the list of subscriptions should display how much you’re paying — as it stands you have to tap into each subscription to see the amount; (2) <a href="https://twitter.com/gruber/status/1432802433017815045">the sort order varies by device</a> — on some of my devices the list is sorted by renewal/expiration date, but on others, the order is seemingly random; (3) <a href="https://twitter.com/rzara/status/1432829680218955777">there are some really weird bugs</a> in how the list is displayed; (4) the list is <em>really</em> slow to load.&nbsp;<a href="#fnr1-2021-08-31"  class="footnoteBackLink"  title="Jump back to footnote 1 in the text.">&#x21A9;&#xFE0E;</a></p>
+</li>
+
+<li id="fn2-2021-08-31">
+<p>I can’t <em>not</em> mention my own <a href="https://dithering.fm/">Dithering</a> podcast, cohosted with Ben Thompson, and Thompson’s own <a href="https://stratechery.com/">Stratechery</a> newsletter. We only sell subscriptions directly. To name one reason: because we don’t have (or want to have) apps through which to sell in-app subscriptions. Unsubscribing from Dithering (and/or Stratechery) is very easy (but, admittedly, I don’t recommend it). <a href="https://substack.com/">Substack</a>, too, makes managing subscriptions easy and obvious. In general, the larger and more corporate a publication, the harder they tend to make it to unsubscribe.&nbsp;<a href="#fnr2-2021-08-31"  class="footnoteBackLink"  title="Jump back to footnote 2 in the text.">&#x21A9;&#xFE0E;︎</a></p>
+</li>
+
+<li id="fn3-2021-08-31">
+<p>I still say it’s a big <em>if</em> as to whether Apple and Google wind up acceding to this law in South Korea, at least as it seems to be intended. Just spitballing ideas, I think they’d be compliant if they made “Allow third-party payment processing for in-app purchases” an off-by-default preference in the system-wide security settings, with warnings that must be OK’d when enabled, <em>a la</em> the options on MacOS and Android to allow installing apps from outside the platforms’ respective app stores. That’s actually not a bad middle ground, in my opinion, but it sure as shit is not what, say, Epic is looking for.&nbsp;<a href="#fnr3-2021-08-31"  class="footnoteBackLink"  title="Jump back to footnote 3 in the text.">&#x21A9;&#xFE0E;︎</a></p>
+</li>
+
+
+</ol>
+</div>
+
+
+
+    ]]></content>
+  <title>★ Let’s Consider Some of the Implications of Third-Party Payment Processing for In-App Purchasing on iOS and Android</title></entry><entry>
+	<title>South Korea Passes Law Requiring App Stores to Allow Third-Party Payment Processing for In-App Purchases</title>
+	<link rel="alternate" type="text/html" href="https://www.wsj.com/articles/google-apple-hit-in-south-korea-by-worlds-first-law-ending-their-dominance-over-app-store-payments-11630403335">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tm5">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/31/south-korea-app-store-payment-law">
+	<id>tag:daringfireball.net,2021:/linked//6.38381</id>
+	<published>2021-08-31T18:13:40Z</published>
+	<updated>2021-09-01T02:43:35Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Jiyoung Sohn, reporting for The Wall Street Journal from Seoul (<a href="https://apple.news/Ah7urLdYqQsup5v3A9tc-qg">News+</a>):</p>
+
+<blockquote>
+  <p>Google and Apple Inc. will have to open their app stores to
+alternative payment systems in South Korea, threatening their
+lucrative commissions on digital sales.</p>
+</blockquote>
+
+<p>There’s some counting of unhatched chickens in the above sentence, but that’s certainly the intention of the law.</p>
+
+<blockquote>
+  <p>A bill passed Tuesday by South Korea’s National Assembly is the
+first in the world to dent the tech giants’ dominance over how
+apps on their platforms sell their digital goods. It will become
+law once signed by President Moon Jae-in, whose party strongly
+endorsed the legislation.</p>
+
+<p>The law amends South Korea’s Telecommunications Business Act to
+prevent large app-market operators from requiring the use of their
+in-app purchasing systems. It also bans operators from
+unreasonably delaying the approval of apps or deleting them from
+the marketplace — provisions meant to head off retaliation
+against app makers.</p>
+
+<p>Companies that fail to comply could be fined up to 3% of their
+South Korea revenue by the Korea Communications Commission, the
+country’s media regulator.</p>
+</blockquote>
+
+<p>I have a rough English translation of the law, and my understanding is that the above ban on “delaying” or “deleting” apps is specifically related to retaliation for using their own payment processing. It’s not a ban on removing apps from the stores for just cause. The law even requires app store operators to take precautions against harm to users from content and <em>to protect the rights and interests of users</em>. (I italicized rather than quoted that because, as I said, it’s a loose and very much unofficial English translation.)</p>
+
+<blockquote>
+  <p>The bill — which in Korean has been nicknamed the “Google
+power-abuse-prevention law” by some lawmakers and media — was
+welcomed by groups representing South Korea’s internet-technology
+companies and startups, as well as local content developers and
+app makers.</p>
+</blockquote>
+
+<p>Fascinating to me that the bill is nicknamed the “Google power-abuse-prevention law” in Korea, but U.S. news coverage is focused on Apple at least as much, if not more so. <a href="https://gs.statcounter.com/os-market-share/mobile/south-korea">StatCounter pegs Korean mobile market share at 71% Android, 28% iOS</a>. <strong>Update 1:</strong> Makes me wonder how much this bill is anti-Google and how much it’s pro-Samsung. It may not be coincidence that it’s from South Korea, of all countries.</p>
+
+<p><strong>Update 2:</strong> A very good question to which I do not know the answer: How long does this South Korean law give Apple and Google to comply? Supposedly it’s expected to be signed into law in two weeks — does it apply <em>immediately</em>?</p>
+
+<div>
+<a  title="Permanent link to ‘South Korea Passes Law Requiring App Stores to Allow Third-Party Payment Processing for In-App Purchases’"  href="https://daringfireball.net/linked/2021/08/31/south-korea-app-store-payment-law">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>‘When Charlie Watts Finally Made It to New York City’</title>
+	<link rel="alternate" type="text/html" href="https://www.nytimes.com/2021/08/30/nyregion/charlie-watts-birdland-nyc.html">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tm3">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/30/watts-made-it-to-nyc">
+	<id>tag:daringfireball.net,2021:/linked//6.38379</id>
+	<published>2021-08-30T17:51:49Z</published>
+	<updated>2021-08-30T17:51:49Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Michiko Kakutani, writing for The New York Times:</p>
+
+<blockquote>
+  <p>In 1960, while working as an artist and graphic designer, and some
+years before the Rolling Stones were born, Charlie Watts began
+work on “Ode to a High-Flying Bird,” a <a href="https://www.udiscovermusic.com/stories/charlie-watts-tribute-to-bird/">captivating children’s
+book about his hero, the jazz great Charlie Parker</a>. The book
+featured charming drawings of a bird named Charlie who realized he
+didn’t sound like most of the other birds, and who left home to
+fly to New York City, where he played “from his heart” and made a
+new nest for himself in “Birdland.”</p>
+
+<p>Charlie Parker made a 14-year-old Charlie Watts dream the
+impossible dream of visiting New York and playing at a jazz club.
+And while he thought at the time that “the only way to get to New
+York was in a band on a cruise ship,” he would actually get there
+in 1964 with the Rolling Stones. While Keith Richards and Mick
+Jagger hung out at <a href="https://www.nytimes.com/2006/12/28/nyregion/28apollo.html">the Apollo</a>, where James Brown was doing
+five — five! — shows a day, Mr. Watts spent his free time
+haunting the jazz clubs he’d dreamed about as a boy: He saw
+Charles Mingus at Birdland, Gene Krupa at the Metropole, and Sonny
+Rollins, Earl Hines and Miles Davis.</p>
+</blockquote>
+
+<p>Lovely memorial, with some great quotes from his bandmates.</p>
+
+<div>
+<a  title="Permanent link to ‘‘When Charlie Watts Finally Made It to New York City’’"  href="https://daringfireball.net/linked/2021/08/30/watts-made-it-to-nyc">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	
+	<link rel="alternate" type="text/html" href="https://www.morningbrew.com/daily/subscribe?utm_campaign=daringfireball_083021&amp;utm_medium=newsletter&amp;utm_source=daringfireball">
+	<link rel="shorturl" href="http://df4.us/tm4">
+	<link rel="related" type="text/html" href="https://daringfireball.net/feeds/sponsors/2021/08/morning_brew_9">
+	<id>tag:daringfireball.net,2021:/feeds/sponsors//11.38380</id>
+	<author><name>Daring Fireball Department of Commerce</name></author>
+	<published>2021-08-30T17:26:06-05:00</published>
+	<updated>2021-08-30T17:26:07-05:00</updated>
+	<content type="html" xml:base="https://daringfireball.net/feeds/sponsors/" xml:lang="en"><![CDATA[
+<p>There’s a reason over 3 million people start their day with Morning Brew — the daily email that delivers the latest news from Wall Street to Silicon Valley. Unlike traditional news, Morning Brew knows how to keep you informed and entertained. Check it out.</p>
+
+<div>
+<a  title="Permanent link to ‘Morning Brew’"  href="https://daringfireball.net/feeds/sponsors/2021/08/morning_brew_9">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+	<title>[Sponsor] Morning Brew</title></entry><entry>
+	<title>Stacker</title>
+	<link rel="alternate" type="text/html" href="https://www.stackerhq.com/?ref=df">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tm2">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/29/stacker">
+	<id>tag:daringfireball.net,2021:/linked//6.38378</id>
+	<published>2021-08-29T17:54:23Z</published>
+	<updated>2021-08-29T17:54:23Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>My thanks to Stacker for sponsoring last week at DF. Build business apps without code: Stacker lets you create custom software that perfectly fits the way your business works.</p>
+
+<p>Companies like Adobe, TED, Samsung, and Mozilla use Stacker to create customer portals, collaboration tools, and workflow apps. Connect your existing data, from Airtable, Google Sheets, or Salesforce, and get a working app in minutes. No coding required.</p>
+
+<p>Sign up today to see for yourself, <em>and</em> get a 30-day free trial.</p>
+
+<div>
+<a  title="Permanent link to ‘Stacker’"  href="https://daringfireball.net/linked/2021/08/29/stacker">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Google’s Circle Jerk</title>
+	<link rel="alternate" type="text/html" href="https://www.youtube.com/watch?v=oJZuSVl5wjM">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tm1">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/29/google-circle-jerk">
+	<id>tag:daringfireball.net,2021:/linked//6.38377</id>
+	<published>2021-08-29T17:51:51Z</published>
+	<updated>2021-08-29T23:02:44Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Keep in mind as you watch this that <a href="https://daringfireball.net/2019/06/jony_ive_leaves_apple">Jony Ive left Apple two years ago</a>, and <a href="https://daringfireball.net/2016/09/all_work_and_no_headphone_jack">Apple dropped headphone jacks from new iPhones <em>five years ago</em></a> starting with <a href="https://daringfireball.net/2016/09/the_iphones_7">the iPhones 7</a>. Google’s own high-end Pixels <a href="https://techcrunch.com/2017/10/04/google-dropped-the-pixels-headphone-jack-to-lay-the-groundwork-for-a-bezel-free-phone/">dropped headphone jacks in 2017</a>. As of next month, 40 percent of all iPhone model years will have been headphone-jack-free. This feels about as relevant as mocking the original iMac for not having a floppy drive.</p>
+
+<div>
+<a  title="Permanent link to ‘Google’s Circle Jerk’"  href="https://daringfireball.net/linked/2021/08/29/google-circle-jerk">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>TSMC to Raise Chip Prices by 10–20 Percent</title>
+	<link rel="alternate" type="text/html" href="https://www.wsj.com/articles/worlds-largest-chip-maker-to-raise-prices-threatening-costlier-electronics-11629978308">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tm0">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/29/tsmc-prices">
+	<id>tag:daringfireball.net,2021:/linked//6.38376</id>
+	<published>2021-08-29T17:21:05Z</published>
+	<updated>2021-08-29T23:04:57Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Yang Jie, Stephanie Yang, and Yoko Kubota, reporting for The Wall Street Journal (<a href="https://apple.news/AwRLL4bWeQLWljV6PVVxUww">News+</a>):</p>
+
+<blockquote>
+  <p>Taiwan Semiconductor Manufacturing Co. plans to increase the prices of its most advanced chips by roughly 10%, while less advanced chips used by customers like auto makers will cost about 20% more, these people said. The higher prices will generally take effect late this year or next year, the people said.</p>
+
+<p>Apple Inc. is one of TSMC’s largest customers and its iPhones use advanced microprocessors made in TSMC foundries. It couldn’t be determined how much more Apple would pay.</p>
+</blockquote>
+
+<p>Not just iPhones: TSMC manufactures all “Apple silicon”. And no one else can make them. Really, this is just Econ 101: demand for TSMC chips is high, supply is constrained, so prices are going up.</p>
+
+<p><strong>Update:</strong> <a href="https://mobile.twitter.com/mikeysan/status/1431356011508494337">Compelling alternative theory</a>.</p>
+
+<div>
+<a  title="Permanent link to ‘TSMC to Raise Chip Prices by 10–20 Percent’"  href="https://daringfireball.net/linked/2021/08/29/tsmc-prices">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+    
+    <link rel="alternate" type="text/html" href="https://daringfireball.net/2021/08/charlie_watts">
+	<link rel="shorturl" href="http://df4.us/tlz">
+	<id>tag:daringfireball.net,2021://1.38375</id>
+	<published>2021-08-28T20:49:30Z</published>
+	<updated>2021-08-30T04:01:53Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<summary type="text">Some sad news this week: Rolling Stones drummer Charlie Woods died at age 80.</summary>
+	<content type="html" xml:base="https://daringfireball.net/" xml:lang="en"><![CDATA[
+<p>Some sad news this week: Rolling Stones drummer Charlie Watts died at age 80. I don’t know much about how music is made but I know what I like, and I’ve loved the Stones ever since I can remember. The first time I can remember being asked my favorite band, my answer was The Stones. 40-some years later, my answer is unchanged. In all those years, I’ve never heard a musician who <em>does</em> understand the mechanics of playing rock-and-roll do anything but positively rave about Charlie Watts’s talent, and his central role in the Stones’ sound and success. And by all accounts, he was a good person and a dear and loyal friend. He was also the best-dressed man in all of rock and roll.</p>
+
+<p>Mick Jagger — one of the most poetic, eloquent writers the world has known — <a href="https://www.instagram.com/p/CS-UlpDKe_N/">had no words</a>. <a href="https://www.instagram.com/p/CS-U-z6rEyO/">Nor did Keith Richards</a> (whose photo I cribbed, below). <a href="https://www.instagram.com/p/CS_PhICMo-C/">Ronnie Wood had but a few</a>. The band’s homepage <a href="https://rollingstones.com/">is just a lovely portrait</a> — reminiscent of what Apple did a decade ago when Steve Jobs died. I slag on social media frequently, and though Instagram has its problems, when it works, it works, and of all the major social platforms, it remains the one that’s primarily about sharing good thoughts and good feelings. It’s a mere token, but it feels good to press Like on posts like these, just to express, in some small way, that we miss Charlie too.</p>
+
+<p>Yesterday <a href="https://twitter.com/RollingStones/status/1431274250984427525">the band posted this lovely short video tribute</a> — set to, of course, the perfect song.</p>
+
+<!--
+![Charlie Watts’s drum kit, on stage, with a “closed” sign hanging from it.](/misc/2021/08/keef-to-charlie.jpeg)
+-->
+
+<div>
+<img
+    src = "/misc/2021/08/keef-to-charlie.jpeg"
+    alt = "Charlie Watts’s drum kit, on stage, with a “closed” sign hanging from it."
+/>
+</div>
+
+
+
+    ]]></content>
+  <title>★ Charlie Watts</title></entry><entry>
+	<title>TikTok, Reddit, and Facebook Are Killing People by Publishing Ivermectin Disinformation</title>
+	<link rel="alternate" type="text/html" href="https://www.theverge.com/2021/8/27/22644579/tiktok-reddit-facebook-ivermectin-covid-19-misinformation">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlx">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/27/ivermectin-disinfo">
+	<id>tag:daringfireball.net,2021:/linked//6.38373</id>
+	<published>2021-08-27T20:42:53Z</published>
+	<updated>2021-08-28T23:26:40Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Kait Sanchez, writing for The Verge:</p>
+
+<blockquote>
+  <p>On TikTok, <a href="https://www.rollingstone.com/culture/culture-news/tiktok-covid-cures-ivermectin-horse-deworming-medication-1216268/">Rolling Stone</a> found videos, some of which had more than a million views, promoting ivermectin as a COVID-19 treatment under tags like #ivermectin4covid and #ivermectinworks. TikTok has since removed the videos for violating community guidelines and blocked the tags, and a spokesperson says TikTok will continue removing related videos and hashtags. The #ivermectin tag is still up, though many of the most popular videos in the tag are of healthcare professionals debunking misinformation. </p>
+
+<p>On Reddit this week, moderators of several hundred subreddits <a href="https://www.vice.com/en/article/xgx3gw/reddit-responds-to-calls-from-moderators-to-fight-disinformation">called on the platform</a> to take action against COVID-19 misinformation, including banning subreddits that spread medical disinformation. </p>
+
+<p>Disagreeing with the requests for outright bans, Reddit CEO Steve Huffman <a href="https://www.reddit.com/r/announcements/comments/pbmy5y/debate_dissent_and_protest_on_reddit/">shared a response</a> in r/announcements, saying “Reddit is a place for open and authentic discussion and debate. This includes conversations that question or disagree with popular consensus.” The post goes on to say that Reddit will take action when people promote fraud or encourage harm, as well as quarantine certain subreddits so that they don’t appear in searches and can’t be accessed without logging in.</p>
+</blockquote>
+
+<p>This ivermectin lunacy is like hydroxychloroquine 2.0. The people pushing this are doing evil, and I don’t use that word lightly. Steve Huffman has talked himself into a circle if he believes a single word of his own defense for allowing this. Reddit doesn’t allow for “open and authentic discussion and debate” regarding all sorts of toxic, evil topics. You can’t go on Reddit (or TikTok, or Facebook, or Twitter…) and openly call for racial genocide, or beating up LGBT folks, or mutilating the genitals of girls. The N-word is rightfully banned everywhere, and this ivermectin bullshit — along with all the rest of the anti-vax nutjob liturgy — clearly and obviously should be considered in the same “beyond the pale” territory. Anti-vax cultism is literally <a href="https://twitter.com/TheTNHoller/status/1431320431064195075">killing people</a>, including innocent kids with susceptible parents. There is no legitimate debate: everyone who can get vaccinated should get vaccinated, and dummies should not be self-medicating with horse de-wormers.</p>
+
+<p>Put your big boy pants on, Huffman, and be a real leader for once.</p>
+
+<div>
+<a  title="Permanent link to ‘TikTok, Reddit, and Facebook Are Killing People by Publishing Ivermectin Disinformation’"  href="https://daringfireball.net/linked/2021/08/27/ivermectin-disinfo">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>iCloud Private Relay Will Launch as a Public Beta</title>
+	<link rel="alternate" type="text/html" href="https://sixcolors.com/link/2021/08/icloud-private-relay-will-launch-as-optional-beta/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlw">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/25/icloud-public-beta-will-launch-as-beta">
+	<id>tag:daringfireball.net,2021:/linked//6.38372</id>
+	<published>2021-08-25T21:21:23Z</published>
+	<updated>2021-08-25T22:31:29Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Jason Snell, writing at Six Colors:</p>
+
+<blockquote>
+  <p>Apple, in its <a href="https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-15-beta-release-notes">iOS 15 beta 7 release notes</a>:</p>
+
+<blockquote>
+  <p>iCloud Private Relay will be released as a public beta to gather additional feedback and improve website compatibility.</p>
+</blockquote>
+
+<p>[…] It seems like Apple’s slowing this roll-out down, at least in part, because there are lingering compatibility issues with some websites—most notably sites that are displaying the wrong region-specific content, or getting confused when signing in a user. There are some fairly easy remedies web developers can do to make these issues go away, but getting the web to adjust to any new feature takes time, and Apple appears to have erred on the side of caution.</p>
+</blockquote>
+
+<p>This is what happens in mid-to-late August each year: some features announced at WWDC get postponed for subsequent dot releases throughout the year (15.1, 15.2, etc.), and occasionally something will ship with the .0 public release, but with the “beta” label. My personal experience with iCloud Private Relay echoes Snell’s description above. It’s good and useful and is worth giving everyone access to, but the current level of web-wide site compatibility feels <em>beta</em>. (Mail Privacy Protection — a new feature in Apple Mail that loads email images privately, is not affected by this announcement. That feature (though not quite perfect yet) is ready to ship.)</p>
+
+<p>Here’s my concern about iCloud Private Relay compatibility, though: if web publishers want to make sure their sites are compatible with iCloud Private Relay, they can make it work. They might just need more time. But everyone knows there are sites that aren’t interested in your privacy. That’s the whole reason Apple even made this feature. For a lot of websites, if the answer to an iCloud Private Relay compatibility issue is “Disable iCloud Private Relay”, that’s fine by them. For a lot of privacy-invasive web publishers, their goal, I suspect, is to break iCloud Private Relay, not fix their shit-ass websites to work with it. Think about how most websites you visit try to detect privacy-protecting content blockers. They’re not on our side. The problem isn’t that such web publishers need to update their technology to work with iCloud Private Relay, it’s that Apple needs to improve iCloud Private Relay to work around their roadblocks.</p>
+
+<p>The relationship between most ad-funded websites and their visitors is adversarial. These jerkoff web publishers claim otherwise, but that’s the truth. And iCloud Private Relay is a feature that is entirely on the user’s side. (Daring Fireball and Six Colors, of course, work just fine with iCloud Private Relay.)</p>
+
+<div>
+<a  title="Permanent link to ‘iCloud Private Relay Will Launch as a Public Beta’"  href="https://daringfireball.net/linked/2021/08/25/icloud-public-beta-will-launch-as-beta">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Flight to Seattle Evacuated After Passenger’s Samsung Galaxy A21 Ignites and Burns Beyond Recognition</title>
+	<link rel="alternate" type="text/html" href="https://www.seattletimes.com/seattle-news/flight-to-seattle-evacuated-after-passengers-cellphone-catches-fire/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlv">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/25/samsung-galaxy-a21-fire">
+	<id>tag:daringfireball.net,2021:/linked//6.38371</id>
+	<published>2021-08-25T20:25:13Z</published>
+	<updated>2021-08-25T20:36:19Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Christine Clarridge, reporting for The Seattle Times:</p>
+
+<blockquote>
+  <p>A passenger’s cellphone caught on fire inside the cabin of an Alaska Airlines flight from New Orleans to Seattle that had landed at Seattle-Tacoma International Airport Monday evening. It was a Samsung Galaxy A21, according to Perry Cooper, a spokesman for the Port of Seattle.</p>
+
+<p>“After much digging, I can tell you that the phone was burned beyond recognition,” Cooper said in an email. “However, during an interview with one of our Port of Seattle Police officers, the passenger volunteered the phone was a Samsung Galaxy A21. Again, we could not confirm it by looking at the remains of the device.”</p>
+
+<p>The crew on Flight 751 extinguished the fire with a battery containment bag, but smoke forced the deployment of evacuation slides, a spokesperson for Alaska Airlines told KOMO-TV.</p>
+</blockquote>
+
+<p>Good thing no one was hurt. Bad day for Samsung PR. Hope we find out more about exactly how this happened.</p>
+
+<div>
+<a  title="Permanent link to ‘Flight to Seattle Evacuated After Passenger’s Samsung Galaxy A21 Ignites and Burns Beyond Recognition’"  href="https://daringfireball.net/linked/2021/08/25/samsung-galaxy-a21-fire">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	
+	<link rel="alternate" type="text/html" href="https://www.stackerhq.com/?ref=df">
+	<link rel="shorturl" href="http://df4.us/tlu">
+	<link rel="related" type="text/html" href="https://daringfireball.net/feeds/sponsors/2021/08/stacker">
+	<id>tag:daringfireball.net,2021:/feeds/sponsors//11.38370</id>
+	<author><name>Daring Fireball Department of Commerce</name></author>
+	<published>2021-08-23T21:12:20-05:00</published>
+	<updated>2021-08-23T21:12:20-05:00</updated>
+	<content type="html" xml:base="https://daringfireball.net/feeds/sponsors/" xml:lang="en"><![CDATA[
+<p>Build business apps without code: Stacker lets you create custom software that perfectly fits the way your business works.</p>
+
+<p>Companies like Adobe, TED, Samsung and Mozilla use Stacker to create customer portals, collaboration tools and workflow apps.</p>
+
+<p>Connect your existing data, from Airtable, Google Sheets or Salesforce, and get a working app in minutes. No coding required.</p>
+
+<p>Sign up for a 30-day free trial today!</p>
+
+<div>
+<a  title="Permanent link to ‘Stacker’"  href="https://daringfireball.net/feeds/sponsors/2021/08/stacker">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+	<title>[Sponsor] Stacker</title></entry><entry>
+	<title>The Talk Show: ‘Paper Floor Mats’</title>
+	<link rel="alternate" type="text/html" href="https://daringfireball.net/thetalkshow/2021/08/23/ep-320">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlt">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/23/the-talk-show-320">
+	<id>tag:daringfireball.net,2021:/linked//6.38369</id>
+	<published>2021-08-23T19:29:20Z</published>
+	<updated>2021-08-28T20:49:49Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Christina Warren returns to the show to discuss Apple’s controversial child safety initiatives, the tumultuous summer of Safari 15 beta UI designs, and a bit more on MagSafe battery packs.</p>
+
+<p>Brought to you by these fine sponsors:</p>
+
+<ul>
+<li><a href="https://squarespace.com/talkshow">Squarespace</a>: Make your next move. Use code <strong>talkshow</strong> for 10% off your first order.</li>
+<li><a href="https://memberful.com/talkshow">Memberful</a>: Monetize your passion with membership.</li>
+<li><a href="https://awaytravel.com/talkshow">Away</a>: Because this season, everyone wants to get Away.</li>
+<li><a href="https://hover.com/talkshow">Hover</a>: Find a domain name for your passion. Get 10% off your first purchase.</li>
+</ul>
+
+<div>
+<a  title="Permanent link to ‘The Talk Show: ‘Paper Floor Mats’’"  href="https://daringfireball.net/linked/2021/08/23/the-talk-show-320">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Pfizer/BioNTech COVID-19 Vaccine Gets Full Approval From FDA, Opening Door to More Vaccine Mandates</title>
+	<link rel="alternate" type="text/html" href="https://www.cnn.com/2021/08/23/health/fda-approval-pfizer-covid-vaccine/index.html">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tls">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/23/pfizer-vaccine-approval">
+	<id>tag:daringfireball.net,2021:/linked//6.38368</id>
+	<published>2021-08-23T18:20:38Z</published>
+	<updated>2021-08-23T18:28:11Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Jacqueline Howard, reporting for CNN:</p>
+
+<blockquote>
+  <p>The US Food and Drug Administration on Monday granted full approval to the Pfizer/BioNTech Covid-19 vaccine for people age 16 and older. This is the first coronavirus vaccine approved by the FDA, and is expected to open the door to more vaccine mandates.</p>
+</blockquote>
+
+<p><em>Way</em> more mandates. Mandate vaccinated status for everything. School, air travel, train travel, restaurants, stores. Everything. Get vaccinated or stay home.</p>
+
+<blockquote>
+  <p>The vaccine will be marketed as Comirnaty, the FDA said in its announcement on Monday.</p>
+</blockquote>
+
+<p>I don’t care what they call it, but that’s a bad name. Looks like someone spilled a drink on the keyboard while trying to type “Cormac McCarthy”.</p>
+
+<p>(<a href="https://www.fiercepharma.com/marketing/moderna-secures-spikevax-name-europe-joins-pfizer-s-comirnaty-awaiting-official-name-and">Moderna has secured “Spikevax”</a> for their vaccine, an excellent name.)</p>
+
+<div>
+<a  title="Permanent link to ‘Pfizer/BioNTech COVID-19 Vaccine Gets Full Approval From FDA, Opening Door to More Vaccine Mandates’"  href="https://daringfireball.net/linked/2021/08/23/pfizer-vaccine-approval">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Mux Video</title>
+	<link rel="alternate" type="text/html" href="https://get.mux.com/3iQ1KLK">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlr">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/22/mux-video">
+	<id>tag:daringfireball.net,2021:/linked//6.38367</id>
+	<published>2021-08-22T20:22:55Z</published>
+	<updated>2021-08-22T20:22:56Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>My thanks to Mux for sponsoring last week at DF. Mux Video is an API to powerful video streaming (think of it like Stripe for video), built by the founders of Zencoder and creators of Video.js, and a team of ex-YouTube and Twitch engineers. Take any video file or live stream and make it play beautifully, at scale, on any device, powered by magical-feeling features like automatic thumbnails, animated GIFs, and data-driven encoding decisions.</p>
+
+<p>Spend your time building what people want, not drudging through <code>ffmpeg</code> documentation.</p>
+
+<div>
+<a  title="Permanent link to ‘Mux Video’"  href="https://daringfireball.net/linked/2021/08/22/mux-video">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Our Long National iOS 15 Safari Beta Nightmare Is Over</title>
+	<link rel="alternate" type="text/html" href="https://www.macrumors.com/2021/08/17/everything-new-in-ios-15-beta-6/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlq">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/18/ios-15-safari-beta-6">
+	<id>tag:daringfireball.net,2021:/linked//6.38366</id>
+	<published>2021-08-18T23:08:49Z</published>
+	<updated>2021-08-18T23:08:50Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Juli Clover, again:</p>
+
+<blockquote>
+  <p>Apple in iOS 15 beta 6 has added a toggle to move the Safari
+address bar to the top of the interface, which returns Safari to
+an iOS 14-like design and mitigates all of the Safari changes
+introduced in earlier betas.</p>
+
+<p>Those who prefer the bottom bar can still opt to have that toggled
+on with the Tab Bar view, but Apple has also changed the look and
+the url bar at the bottom has been merged with a dedicated control
+panel that does away with trying to merge all page management
+options into a single address bar view.</p>
+</blockquote>
+
+<p>I was a little worried when beta 5 shipped last week and Safari’s interface was unchanged, but beta 6’s changes are very good.</p>
+
+<p>The initial iOS Safari 15 design failed in two big ways. First and foremost, Apple tried to squeeze <a href="https://daringfireball.net/linked/2021/07/27/safari-15b4-toolbar-viticci">two horizontal bars’ worth of controls into a single bar</a>. Safari needs two toolbars. Second, the whole “floating toolbar” thing looked cool but wasn’t usable.</p>
+
+<p>But they didn’t have to give up moving the address bar to the bottom of the screen. By default, that’s where it’s going to be on iOS 15. They also kept the side-to-side swiping for switching between tabs, if you keep the tab bar at the bottom of the screen.</p>
+
+<p>In a very real sense, the system worked. It’s <em>good</em> that Apple tried something ambitious and original with the layout for Safari on iPhone. The reason for the trend toward moving more navigation controls to the bottom of the screen is obvious: our phones are bigger than ever (iPhone 12 Mini aside), and our hands aren’t growing. It’s also good that Apple was receptive to the feedback from those using the developer and public betas. They listened, they fixed the design to address the problems, and here we are, with a layout for Mobile Safari that I think is better than ever. (I hedge with “I think” only because it just shipped — my opinions aren’t fully formed.)</p>
+
+<p>The unusual part is that we got to see Apple’s design process play out in public. The Safari team has been kept busy this summer. (There <em>has</em> to be one hell of backstory here, right?) There was a certain pessimism amongst some who perceived the problems with the original iOS 15 Safari design, simply because Apple seldom makes drastic UI changes between their unveiling at WWDC in June, and when they officially ship in the fall. But seldom isn’t never.</p>
+
+<div>
+<a  title="Permanent link to ‘Our Long National iOS 15 Safari Beta Nightmare Is Over’"  href="https://daringfireball.net/linked/2021/08/18/ios-15-safari-beta-6">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Netflix Is Rolling Out Spatial Audio Support</title>
+	<link rel="alternate" type="text/html" href="https://www.macrumors.com/2021/08/18/netflix-rolling-out-spatial-audio-support/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlp">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/18/netflix-spatial-audio">
+	<id>tag:daringfireball.net,2021:/linked//6.38365</id>
+	<published>2021-08-18T22:36:18Z</published>
+	<updated>2021-08-18T22:36:18Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Juli Clover, writing for MacRumors:</p>
+
+<blockquote>
+  <p>Netflix is rolling out support for Spatial Audio on the iPhone and
+the iPad, based on reports <a href="https://twitter.com/pyogo_Pilz/status/1428028819575767050">shared by</a> MacRumors <a href="https://forums.macrumors.com/threads/netflix-spatial-audio-is-working.2307737/">readers</a>
+and <a href="https://www.reddit.com/r/Airpodsmax/comments/p6oiss/spatial_audio_is_now_working_on_the_netflix_app/">on Reddit</a>. A Netflix spokesperson also confirmed to
+<em>MacRumors</em> that the rollout is underway.</p>
+</blockquote>
+
+<p>When you’re watching a movie on an iPhone or iPad, spatial audio is a  game changer for degree of immersiveness. Henceforth when preloading a movie or two for a plane trip, I’ll favor titles with spatial audio support. It really helps make up for the small screen by having big immersive sound.</p>
+
+<p>Not surprised that Netflix is adding support sooner rather than later — one thing Netflix gets right is they want viewers to be happy. Spatial audio makes me happy.</p>
+
+<div>
+<a  title="Permanent link to ‘Netflix Is Rolling Out Spatial Audio Support’"  href="https://daringfireball.net/linked/2021/08/18/netflix-spatial-audio">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>T-Mobile Customer Database Stolen</title>
+	<link rel="alternate" type="text/html" href="https://www.vice.com/en/article/y3d4dw/t-mobile-confirms-it-was-hacked">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlo">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/17/t-mobile-hacked">
+	<id>tag:daringfireball.net,2021:/linked//6.38364</id>
+	<published>2021-08-17T16:51:11Z</published>
+	<updated>2021-08-17T16:51:11Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Joseph Cox, reporting for Motherboard:</p>
+
+<blockquote>
+  <p>“We have determined that unauthorized access to some T-Mobile data
+occurred, however we have not yet determined that there is any
+personal customer data involved,” <a href="https://www.t-mobile.com/news/network/cybersecurity-incident-update-august-2021">T-Mobile wrote in its new
+announcement</a>. “This investigation will take some time but we are
+working with the highest degree of urgency. Until we have
+completed this assessment we cannot confirm the reported number of
+records affected or the validity of statements made by others,”
+the announcement added.</p>
+
+<p>The seller told Motherboard that 100 million people had their data
+compromised in the breach. In the forum post, they were offering
+data on 30 million people for 6 bitcoin, or around $270,000.</p>
+</blockquote>
+
+<p><strong>See also:</strong> <a href="https://krebsonsecurity.com/2021/08/t-mobile-investigating-claims-of-massive-data-breach/">Brian Krebs</a> and <a href="https://www.bleepingcomputer.com/news/security/hacker-claims-to-steal-data-of-100-million-t-mobile-customers/">BleepingComputer</a>.</p>
+
+<div>
+<a  title="Permanent link to ‘T-Mobile Customer Database Stolen’"  href="https://daringfireball.net/linked/2021/08/17/t-mobile-hacked">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Retool</title>
+	<link rel="alternate" type="text/html" href="https://retool.com/?utm_source=sponsor&amp;utm_medium=newsletter&amp;utm_campaign=daringfireball">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlm">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/15/retool">
+	<id>tag:daringfireball.net,2021:/linked//6.38362</id>
+	<published>2021-08-15T17:11:31Z</published>
+	<updated>2021-08-15T17:11:31Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>My thanks to Retool for sponsoring last week at DF. Retool is a new approach to programming for the modern web: they’ve unified the ease of visual programming with the power and flexibility of real code. Drag and drop a form together, and have it <code>POST</code> back to your API in minutes. Deploy instantly with access controls and audit logs. It’s akin to a HyperCard or Visual Basic for the modern web.</p>
+
+<p>Allbirds uses Retool to measure billboard efficacy. Amazon uses Retool to handle GDPR requests. You, too, can use it to build business-critical applications fast.</p>
+
+<p>Check out their demo video to see how easy it is to build something serious and useful, quickly and intuitively. <a href="https://retool.com/?utm_source=sponsor&amp;utm_medium=newsletter&amp;utm_campaign=daringfireball">Start building for free today</a>.</p>
+
+<div>
+<a  title="Permanent link to ‘Retool’"  href="https://daringfireball.net/linked/2021/08/15/retool">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Chicago Public School Teachers and Staff Must Be Vaccinated by October 15 or Stay Home</title>
+	<link rel="alternate" type="text/html" href="https://blockclubchicago.org/2021/08/13/all-cps-teachers-and-staff-must-be-vaccinated-by-oct-15-or-stay-home-chicago-public-schools-announces/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tll">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/13/chicago-teacher-mandate">
+	<id>tag:daringfireball.net,2021:/linked//6.38361</id>
+	<published>2021-08-14T02:12:14Z</published>
+	<updated>2021-08-14T02:15:46Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Maia Spoto, Chalkbeat Chicago:</p>
+
+<blockquote>
+  <p>School-based teachers and staff, central office, regular vendors and network employees who aren’t fully vaccinated or can’t provide documentation of an exemption by the deadline will be ineligible to work for the district until they submit proof of inoculation or exemption.</p>
+
+<p>Until the Oct. 15 cutoff, staff who aren’t vaccinated will be required to take a COVID-19 test at least once a week, the district said. As of August, 68 percent of district employees have been fully vaccinated, according to self-reported district data. Among teachers, that rate is higher, with 82 percent reporting that they are fully vaccinated.</p>
+</blockquote>
+
+<p>More like this, please.</p>
+
+<div>
+<a  title="Permanent link to ‘Chicago Public School Teachers and Staff Must Be Vaccinated by October 15 or Stay Home’"  href="https://daringfireball.net/linked/2021/08/13/chicago-teacher-mandate">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Om Malik Interviews Glass Co-Founder Tom Watson</title>
+	<link rel="alternate" type="text/html" href="https://om.co/2021/08/10/glass/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlk">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/13/om-malik-glass-tom-watson">
+	<id>tag:daringfireball.net,2021:/linked//6.38360</id>
+	<published>2021-08-13T23:09:51Z</published>
+	<updated>2021-08-13T23:09:52Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>More on the thinking behind Glass:</p>
+
+<blockquote>
+  <p><strong>Om:</strong> <em>Tom, tell us a bit about yourself and what prompted you to
+start Glass.</em></p>
+
+<p><strong>Tom Watson:</strong> I’ve been designing digital products for over 20
+years now. I was an early Product Designer at Facebook (2009-2013)
+and Pinterest (2013-2018). I saw the tradeoffs firsthand around
+having to design for engagement versus people using the product.
+That experience made me want to build something different. […]</p>
+
+<p>We intentionally didn’t raise venture capital. We didn’t want to
+make the compromises that I saw earlier in my career. With no
+outside capital and subscriptions, we’re able to forgo
+advertising, engagement algorithms, pivots to video, and several
+other things we feel would compromise the product and community
+we’re trying to build.</p>
+
+<p><strong>Om:</strong> <em>Who are you focused on as a primary customer — a professional
+photographer? A pro-am photographer? Or amateurs?</em></p>
+
+<p><strong>TW:</strong> It’s for photographers — amateur or professional. That can be
+anything from someone just starting with their iPhone or someone
+with tens of thousands of dollars worth of equipment. We believe
+great photography can come from anywhere and anyone. We hope to
+build a community for all levels of photographers to learn, grow,
+and generally nerd out about photography.</p>
+</blockquote>
+
+<div>
+<a  title="Permanent link to ‘Om Malik Interviews Glass Co-Founder Tom Watson’"  href="https://daringfireball.net/linked/2021/08/13/om-malik-glass-tom-watson">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Glass</title>
+	<link rel="alternate" type="text/html" href="https://glass.photo/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlj">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/13/glass">
+	<id>tag:daringfireball.net,2021:/linked//6.38359</id>
+	<published>2021-08-13T22:54:07Z</published>
+	<updated>2021-08-13T22:56:39Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Glass is a new photo sharing app/community:</p>
+
+<blockquote>
+  <p>We want you to adore Glass, not become addicted to it. We’ve
+created a distraction-free app focused on one thing — your
+photos. […] All the social network features you’d expect with
+none of the dark patterns driving engagement. Build relationships
+with and learn from other photographers while enjoying a
+chronological feed and no public counts. […]</p>
+
+<p>Glass is subscription-based, which means we won’t sell your data
+or pollute your feed with ads. We don’t answer to outside
+investors or advertisers, just members of our community.</p>
+
+<p>$4.99 monthly or <s>$49.99 yearly</s> $29.99 yearly (at launch)
+keeps Glass rolling.</p>
+</blockquote>
+
+<p>Is it just like OG Instagram? No. Glass is doing its own thing in a bunch of subtle ways. But it’s certainly a lot more like Instagram circa 2010 than Instagram is today. In spirit, it feels a lot like the early days of Flickr. I’ve been beta testing Glass for a few months and it’s an absolutely lovely, exquisitely-designed app. It’s downright serene scrolling through my Glass timeline, something that I haven’t been able to say about Instagram in many years.</p>
+
+<p>Currently iOS only — in fact, I believe the only way to sign in is through Sign In With Apple. There’s a wait list to get in now that they’re out of beta; if Glass intrigues you, I encourage you to sign up now.</p>
+
+<div>
+<a  title="Permanent link to ‘Glass’"  href="https://daringfireball.net/linked/2021/08/13/glass">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Joanna Stern Interviews Craig Federighi Regarding Apple’s Controversial New Child Safety Features</title>
+	<link rel="alternate" type="text/html" href="https://www.youtube.com/watch?v=OQUO1DSwYN0">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tli">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/13/stern-federighi-interview">
+	<id>tag:daringfireball.net,2021:/linked//6.38358</id>
+	<published>2021-08-13T17:41:08Z</published>
+	<updated>2021-08-13T17:48:49Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Clarifying interview, with at least one bit of news: Federighi says the heretofore unspecified “threshold” for CSAM fingerprint matches that must be reached before an iCloud account is flagged (or even <em>can</em> be flagged, thanks to how the shared-key cryptography is implemented) is “on the order of 30 known child pornographic images”. Right around the 3:00 mark:</p>
+
+<blockquote>
+  <p>“And if, and only if you meet a threshold of something on the order
+of 30 known child pornographic images matching, only then does
+Apple know anything about your account and know anything about
+those images.”</p>
+</blockquote>
+
+<p><a href="https://www.wsj.com/articles/apple-executive-defends-tools-to-fight-child-porn-acknowledges-privacy-backlash-11628859600">There’s also a WSJ news story</a> (<a href="https://apple.news/AMZjSJNYnTHOW54WgegR5KA">News+ link</a>), co-bylined by Stern and Tim Higgins, in which Federighi emphasizes that the database of CSAM fingerprints is auditable:</p>
+
+<blockquote>
+  <p>Beyond creating a system that isn’t scanning through all of a
+user’s photos in the cloud, Mr. Federighi pointed to another
+benefit of placing the matching process on the phone directly.
+“Because it’s on the [phone], security researchers are constantly
+able to introspect what’s happening in Apple’s [phone] software,”
+he said. “So if any changes were made that were to expand the
+scope of this in some way — in a way that we had committed to not
+doing — there’s verifiability, they can spot that that’s
+happening.”</p>
+
+<p>Critics have said the database of images could be corrupted, such
+as political material being inserted. Apple has pushed back
+against that idea. During the interview, Mr. Federighi said the
+database of images is constructed through the intersection of
+images from multiple child-safety organizations — not just the
+National Center for Missing and Exploited Children. He added that
+at least two “are in distinct jurisdictions.” Such groups and an
+independent auditor will be able to verify that the database
+consists only of images provided by those entities, he said.</p>
+</blockquote>
+
+<div>
+<a  title="Permanent link to ‘Joanna Stern Interviews Craig Federighi Regarding Apple’s Controversial New Child Safety Features’"  href="https://daringfireball.net/linked/2021/08/13/stern-federighi-interview">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Dithering</title>
+	<link rel="alternate" type="text/html" href="https://dithering.fm/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlh">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/13/dithering">
+	<id>tag:daringfireball.net,2021:/linked//6.38357</id>
+	<published>2021-08-13T16:46:21Z</published>
+	<updated>2021-08-13T16:46:21Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p><a href="https://dithering.fm/" class="noborder">
+<img
+    src = "/misc/2021/08/dithering-cover-aug-2021.jpeg"
+    alt = "August 2021 cover art for Dithering, depicting Yankees legend Babe Ruth fishing."
+    width = "500"
+/></a></p>
+
+<p>Good episode of Dithering this morning, with Ben Thompson and yours truly arguing about the privacy of Apple’s upcoming CSAM detection for iCloud Photos and the new “Open App Markets Act” App Store legislation in the U.S. Senate.</p>
+
+<p>Best $5/month you’ll ever spend, trust me.</p>
+
+<div>
+<a  title="Permanent link to ‘Dithering’"  href="https://daringfireball.net/linked/2021/08/13/dithering">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>San Francisco Announces Strict Indoor Vaccine Mandate</title>
+	<link rel="alternate" type="text/html" href="https://www.nytimes.com/live/2021/08/12/world/covid-delta-variant-vaccine/san-francisco-announces-strict-requirements-barring-the-unvaccinated-from-indoor-spaces">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlg">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/12/san-fran-mandate">
+	<id>tag:daringfireball.net,2021:/linked//6.38356</id>
+	<published>2021-08-12T22:22:06Z</published>
+	<updated>2021-08-13T12:01:03Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>The New York Times:</p>
+
+<blockquote>
+  <p>San Francisco leaders on Thursday unveiled some of the nation’s
+toughest restrictions on unvaccinated people, barring them from
+indoor dining, bars, nightclubs, gyms, large concerts, theaters
+and other events held inside. The new rules, which take effect on
+Aug. 20, would apply even to people who can show they have tested
+negative for the coronavirus.</p>
+
+<p>“This is an important step towards our recovery,” Mayor London
+Breed said during a briefing announcing the new requirements. “We
+all have to do our part. We need to get vaccinated.”</p>
+</blockquote>
+
+<p>More like this, please.</p>
+
+<p>Philadelphia re-instituted an indoor mask mandate starting today; I hope we follow New York and San Fran with a full-on “vaccinated or stay the fuck home” mandate.</p>
+
+<div>
+<a  title="Permanent link to ‘San Francisco Announces Strict Indoor Vaccine Mandate’"  href="https://daringfireball.net/linked/2021/08/12/san-fran-mandate">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Supreme Court Allows Indiana University to Mandate Vaccination</title>
+	<link rel="alternate" type="text/html" href="https://www.nytimes.com/2021/08/12/us/supreme-court-indiana-university-covid-vaccine-mandate.html">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlf">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/12/scotus-hoosiers">
+	<id>tag:daringfireball.net,2021:/linked//6.38355</id>
+	<published>2021-08-12T22:18:25Z</published>
+	<updated>2021-08-12T22:18:25Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Adam Liptak, reporting for The New York Times:</p>
+
+<blockquote>
+  <p>Eight students had sued the university, saying the requirement
+violated their constitutional rights to “bodily integrity,
+autonomy and medical choice.” But they conceded that exemptions to
+the requirement — for religious, ethical and medical reasons — “virtually guaranteed” that anyone who sought an exemption would
+be granted one.</p>
+
+<p>Justice Amy Coney Barrett, who oversees the federal appeals court
+in question, turned down the student’s request for emergency
+relief without comment. She acted on her own, without referring
+the application to the full court, which was an indication that
+the application was not on solid legal footing.</p>
+</blockquote>
+
+<p>More like this, please.</p>
+
+<div>
+<a  title="Permanent link to ‘Supreme Court Allows Indiana University to Mandate Vaccination’"  href="https://daringfireball.net/linked/2021/08/12/scotus-hoosiers">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>U.S. COVID-19 Vaccination Levels by County Over Time</title>
+	<link rel="alternate" type="text/html" href="https://acasignups.net/21/08/11/us-covid19-vaccination-levels-county-over-time">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tle">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/12/gaba-vaccinations-by-county-over-time">
+	<id>tag:daringfireball.net,2021:/linked//6.38354</id>
+	<published>2021-08-12T18:52:06Z</published>
+	<updated>2021-08-12T18:52:07Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Charles Gaba:</p>
+
+<blockquote>
+  <p>One thing I’ve been noting is that the R-squared (coefficient of
+determination) for the graphs at both the state &amp; county levels
+seems to have been inching up higher over the past month or two
+… that is, the outlier counties seem to be gradually moving
+closer to the graph’s trend line.</p>
+
+<p>Furthermore, the slope of the trend line seemed to be moving
+upwards as well over time. Both of these mean that not only is
+there a clear correlation between a county’s 2020 partisan lean
+and how quickly their residents are getting vaccinated, that
+correlation is only increasing over time.</p>
+
+<p>I decided to check to see whether this was an anomaly (just a
+temporary thing) or not by going back to the county-level
+vaccination data all the way back to February 1st, 2021. At that
+point supplies of both the Pfizer and Moderna vaccines were
+ramping up, but getting vaccinated was still limited mostly to
+senior citizens 65 and older in the United States.</p>
+</blockquote>
+
+<p>The whole series of charts is telling, but the last one — the animated one that shows how the partisan divide is <em>increasing</em> over time — is startling. The vaccinated aren’t going to forget this.</p>
+
+<div>
+<a  title="Permanent link to ‘U.S. COVID-19 Vaccination Levels by County Over Time’"  href="https://daringfireball.net/linked/2021/08/12/gaba-vaccinations-by-county-over-time">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>The U.S.’s Deep Partisan Divide on COVID Vaccinations</title>
+	<link rel="alternate" type="text/html" href="https://thehill.com/homenews/campaign/567549-poll-nearly-third-of-trump-voters-dont-plan-to-get-vaccinated">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tld">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/12/partisanship-and-vaccinations">
+	<id>tag:daringfireball.net,2021:/linked//6.38353</id>
+	<published>2021-08-12T18:40:56Z</published>
+	<updated>2021-08-12T18:46:42Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>The Hill, reporting on <a href="https://static.foxnews.com/foxnews.com/content/uploads/2021/08/Fox_August-7-10-2021_National_Topline_August-11-Release.pdf">a new Fox News poll</a>:</p>
+
+<blockquote>
+  <p>32 percent of Trump voters say they have no plans to receive one
+of the three coronavirus vaccines available in the U.S., compared
+to only 3 percent of Biden voters, the poll found.</p>
+
+<p>86 percent of Biden voters say they’ve already been vaccinated,
+while 54 percent of Trump voters said the same.</p>
+</blockquote>
+
+<p>The Republican Party is a death cult. There’s no other way to put it.</p>
+
+<p>And the one person who could most affect this — a man who himself was vaccinated as soon as possible — <a href="https://www.thedailybeast.com/donald-trump-keeps-rejecting-pleas-from-allies-for-pro-vax-campaign">refuses to say a word</a>.</p>
+
+<div>
+<a  title="Permanent link to ‘The U.S.’s Deep Partisan Divide on COVID Vaccinations’"  href="https://daringfireball.net/linked/2021/08/12/partisanship-and-vaccinations">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Matthew Panzarino Interviews Erik Neuenschwander, Apple’s Chief Privacy Engineer</title>
+	<link rel="alternate" type="text/html" href="https://techcrunch.com/2021/08/10/interview-apples-head-of-privacy-details-child-abuse-detection-and-messages-safety-features/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlc">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/11/panzarino-neuenschwander-interview">
+	<id>tag:daringfireball.net,2021:/linked//6.38352</id>
+	<published>2021-08-11T23:17:43Z</published>
+	<updated>2021-08-12T22:32:57Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Terrific interview — great questions, asked in the right order:</p>
+
+<blockquote>
+  <p><strong>Panzarino:</strong> <em>One of the bigger queries about this system is
+that Apple has said that it will just refuse action if it is asked
+by a government or other agency to compromise by adding things
+that are not CSAM to the database to check for them on-device.
+There are some examples where Apple has had to comply with local
+law at the highest levels if it wants to operate there, China
+being an example. So how do we trust that Apple is going to hew to
+this rejection of interference if pressured or asked by a
+government to compromise the system?</em></p>
+
+<p><strong>Neuenschwander:</strong> Well first, that is launching only for U.S.,
+iCloud accounts, and so the hypotheticals seem to bring up generic
+countries or other countries that aren’t the U.S. when they speak
+in that way, and therefore it seems to be the case that people
+agree U.S. law doesn’t offer these kinds of capabilities to our
+government.</p>
+
+<p>But even in the case where we’re talking about some attempt to
+change the system, it has a number of protections built in that
+make it not very useful for trying to identify individuals holding
+specifically objectionable images. The hash list is built into the
+operating system, we have one global operating system and don’t
+have the ability to target updates to individual users and so hash
+lists will be shared by all users when the system is enabled. And
+secondly, the system requires the threshold of images to be
+exceeded so trying to seek out even a single image from a person’s
+device or set of people’s devices won’t work because the system
+simply does not provide any knowledge to Apple for single photos
+stored in our service. And then, thirdly, the system has built
+into it a stage of manual review where, if an account is flagged
+with a collection of illegal CSAM material, an Apple team will
+review that to make sure that it is a correct match of illegal
+CSAM material prior to making any referral to any external entity.
+And so the hypothetical requires jumping over a lot of hoops,
+including having Apple change its internal process to refer
+material that is not illegal, like known CSAM and that we don’t
+believe that there’s a basis on which people will be able to make
+that request in the U.S. And the last point that I would just add
+is that it does still preserve user choice, if a user does not
+like this kind of functionality, they can choose not to use iCloud
+Photos and if iCloud Photos is not enabled no part of the system
+is functional.</p>
+</blockquote>
+
+<p>Neuenschwander also confirms that if you’re not using iCloud Photos, none of the system operates:</p>
+
+<blockquote>
+  <p>If users are not using iCloud Photos, NeuralHash will not run and
+will not generate any vouchers. CSAM detection is a neural hash
+being compared against a database of the known CSAM hashes that
+are part of the operating system image. None of that piece, nor
+any of the additional parts including the creation of the safety
+vouchers or the uploading of vouchers to iCloud Photos, is
+functioning if you’re not using iCloud Photos.</p>
+</blockquote>
+
+<div>
+<a  title="Permanent link to ‘Matthew Panzarino Interviews Erik Neuenschwander, Apple’s Chief Privacy Engineer’"  href="https://daringfireball.net/linked/2021/08/11/panzarino-neuenschwander-interview">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Tracking a Stolen E-Scooter With AirTags</title>
+	<link rel="alternate" type="text/html" href="https://twitter.com/dguido/status/1424921645483966466">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tlb">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/11/guido-tracking-scooter-with-airtags">
+	<id>tag:daringfireball.net,2021:/linked//6.38351</id>
+	<published>2021-08-11T22:56:02Z</published>
+	<updated>2021-08-12T18:42:29Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Dan Guido, in an interesting Twitter thread:</p>
+
+<blockquote>
+  <p>My scooter was stolen last week. Unknown to the thief, I hid two
+AirTags inside it. I was able to use the Apple Find My network and
+UWB direction finding to recover the scooter today. Here’s how it
+all went down.</p>
+</blockquote>
+
+<div>
+<a  title="Permanent link to ‘Tracking a Stolen E-Scooter With AirTags’"  href="https://daringfireball.net/linked/2021/08/11/guido-tracking-scooter-with-airtags">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Tokyo 2020 Olympics Medal Count</title>
+	<link rel="alternate" type="text/html" href="https://olympics.com/tokyo-2020/olympic-games/en/results/all-sports/medal-standings.htm">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tla">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/11/olympics-medal-count">
+	<id>tag:daringfireball.net,2021:/linked//6.38350</id>
+	<published>2021-08-11T18:06:05Z</published>
+	<updated>2021-08-12T23:50:28Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>It pleases me greatly that the U.S. finished with the most gold medals and the most total medals. That’s how it ought to be.</p>
+
+<p><strong>Update:</strong> <a href="https://www.nytimes.com/interactive/2021/07/27/upshot/which-country-leads-in-the-olympic-medal-count.html">Here’s an interactive tool from the NYT</a> that lets you adjust how much weight should be given to each type of medal, gold/silver/bronze. (No matter how you weight them, the U.S. comes out on top.)</p>
+
+<div>
+<a  title="Permanent link to ‘Tokyo 2020 Olympics Medal Count’"  href="https://daringfireball.net/linked/2021/08/11/olympics-medal-count">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Yours Truly on CNBC Talking About Apple’s Child Safety Initiatives and Privacy</title>
+	<link rel="alternate" type="text/html" href="https://www.cnbc.com/video/2021/08/10/what-apples-child-safety-measures-mean-for-the-company.html">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tl9">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/10/cnbc-apple-child-safety">
+	<id>tag:daringfireball.net,2021:/linked//6.38349</id>
+	<published>2021-08-10T23:55:47Z</published>
+	<updated>2021-08-11T01:03:49Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Hard to cover a lot of ground in just a few minutes — I find <a href="https://dithering.fm/">Dithering</a>’s 15 minutes to be short — but this turned out well, I think.</p>
+
+<div>
+<a  title="Permanent link to ‘Yours Truly on CNBC Talking About Apple’s Child Safety Initiatives and Privacy’"  href="https://daringfireball.net/linked/2021/08/10/cnbc-apple-child-safety">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>What’s the Point of Apple TV Hardware?</title>
+	<link rel="alternate" type="text/html" href="https://www.bloomberg.com/news/newsletters/2021-08-08/why-should-i-buy-an-apple-aapl-tv-instead-of-amazon-fire-google-chromecast-ks3ihfcz">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tl8">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/10/apple-tv-point">
+	<id>tag:daringfireball.net,2021:/linked//6.38348</id>
+	<published>2021-08-10T19:32:13Z</published>
+	<updated>2021-08-10T20:07:31Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p><a href="https://daringfireball.net/linked/2021/08/10/gurman-iphone-camera-features">Speaking of Mark Gurman</a>, his Power On newsletter continues to be an excellent read. His main topic this week argues that Apple TV (hardware) is “mostly pointless”:</p>
+
+<blockquote>
+  <p>Most importantly, buying an Apple TV no longer gives users a
+content advantage. We are in the age of streaming services like
+Netflix, Amazon Prime Video and Hulu, and business models have
+shifted so that every service is available on every device — phones, tablets, TV sets, streaming sticks and game consoles.</p>
+
+<p>Apple, known for its closed ecosystem, is even embracing the shift
+by offering many services on smart TVs and boxes made by
+competitors. […] That made the Apple TV a mostly pointless
+accessory, and consumers seem to agree: <a href="https://news.strategyanalytics.com/press-releases/press-release-details/2020/Strategy-Analytics-Samsung-Leads-As-Global-TV-Streaming-Device-Population-Reaches-1.1-Billion/default.aspx">2020 data from Strategy
+Analytics</a> found that the Apple TV holds 2% of the streaming
+device market.</p>
+
+<p>The product isn’t without its benefits, though, for the Apple
+ecosystem’s most loyal users. Integration with HomeKit, Fitness+,
+AirPods and the iOS remote app is useful. The new remote control
+and faster chip in this year’s version are definite improvements,
+and the box is getting SharePlay and Spatial Audio support later
+this year. Still, I don’t see these enhancements moving the needle
+for most people.</p>
+</blockquote>
+
+<p>I’d argue that Apple TV is a quintessential Apple product: its primary point is to deliver a superior user experience for those who care and are willing to pay a premium for it. If you look only at “content” there’s little reason to buy an iPhone or Mac or iPad, either. The Mac in particular seems an apt comparison. The reason to buy a Mac instead of a PC isn’t that the Mac can do things PCs can’t, but that what you do on a Mac is delivered through a superior experience. That’s Apple TV, too — especially now that Apple is shipping a good remote control. For a lot of us, it clearly delivers a superior and more private user experience that is worth paying a premium for.</p>
+
+<p>2 percent market share is really low, no question about it, but if you look at those market share numbers from Strategy Analytics, no TV platform has a dominant position. It’s a remarkably diverse market, with no platform over 12 percent share. And Apple’s market share isn’t just any random 2 percent of the market, it’s 2 percent at the very high end of the market. It’s a premium product for Apple’s core customer base.</p>
+
+<p><strong>Update:</strong> An alternative response to Gurman’s “What’s the point of Apple TV?” question is just one word: <em>privacy</em>. Here’s a note I just got from an Apple TV devotee friend:</p>
+
+<blockquote>
+  <p>Remarkable that Gurman never even mentions the privacy benefits of
+Apple TV hardware. There are no circumstances in which I’d feel OK
+connecting a TV to the internet, or buying a streaming box from a
+company monetizing it with user tracking, so his “<em>content is
+available everywhere, shrug emoji</em>” outlook looks myopic. What’s
+the second-best option supposed to be?</p>
+</blockquote>
+
+<p>That’s a great point and a good question. If Apple were to get out of the streaming hardware game, what’s the next best choice?</p>
+
+<div>
+<a  title="Permanent link to ‘What’s the Point of Apple TV Hardware?’"  href="https://daringfireball.net/linked/2021/08/10/apple-tv-point">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Gurman on New iPhone Camera Features: Portrait Mode for Video, Machine-Learning-Based Filters</title>
+	<link rel="alternate" type="text/html" href="https://www.bloomberg.com/news/articles/2021-08-10/apple-readies-new-iphones-with-pro-focused-camera-video-updates">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tl7">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/10/gurman-iphone-camera-features">
+	<id>tag:daringfireball.net,2021:/linked//6.38347</id>
+	<published>2021-08-10T16:25:27Z</published>
+	<updated>2021-08-10T18:50:57Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Mark Gurman, with a few scoops on the upcoming new iPhones:</p>
+
+<blockquote>
+  <p>Apple first added Portrait mode to the iPhone 7 Plus in 2016, and
+it quickly become a fan favorite. The feature can put a person in
+sharp focus while blurring the background in what is known as a
+bokeh effect. For the new iPhones, Apple plans to add this same
+technique to video with a feature internally dubbed Cinematic
+Video. Like with still photos, the iPhone’s depth sensor will
+create the effect and allow users to change the amount of blur
+after recording. […]</p>
+
+<p>Another feature will let users better control the look of colors
+and highlights in their pictures. Users will be able to choose
+from several styles to apply to their photos, including one for
+showing colors at either a warmer or cooler temperature while
+keeping whites neutral. Another option will add a more dramatic
+look with deeper shadows and more contrast, and the company is
+planning a more balanced style for showing shadows and
+true-to-life colors with a brighter appearance. The feature will
+differ from standard filters, available in the iPhone’s Camera app
+since 2013, by precisely applying changes to objects and people
+across the photos using artificial intelligence, rather than
+applying a single filter across the entire picture.</p>
+</blockquote>
+
+<p>Computational photography is easily one of the most exciting, fast-moving areas in computing today. You can literally see it getting better year-over-year. I’ve noticed in recent weeks that Portrait Mode on the iPhone 12 has gotten better than ever at separating subjects from the background.</p>
+
+<p><strong>Sidenote, but the sort of thing I spend way too much time thinking about around this time every year:</strong> Are they going to be the iPhones 13 or iPhones 12S? I’m thinking that since — by all reports — the new iPhones are the same sizes and shapes as last year’s lineup, it might be an “S” year. Also, now that I’m thinking about it, is this numbering ever going to stop? Will we be speculating about the iPhone 23 in 10 years? I’m not even saying it should stop, but it is an unusual naming scheme. The reason, I think, Apple sticks with it is that iPhone models are sold for years to come. Apple’s mid-range iPhones are years-old models that were once top-of-the-line. They need names that make that clear.</p>
+
+<div>
+<a  title="Permanent link to ‘Gurman on New iPhone Camera Features: Portrait Mode for Video, Machine-Learning-Based Filters’"  href="https://daringfireball.net/linked/2021/08/10/gurman-iphone-camera-features">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Alex Stamos on Apple’s New Child Safety Measures</title>
+	<link rel="alternate" type="text/html" href="https://twitter.com/alexstamos/status/1424054544556646407">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tl5">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/09/stamos-apple-child-safety">
+	<id>tag:daringfireball.net,2021:/linked//6.38345</id>
+	<published>2021-08-10T00:02:25Z</published>
+	<updated>2021-08-10T00:02:25Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Alex Stamos — former head of security at Facebook, currently at Stanford Internet Observatory, in a thread on Twitter:</p>
+
+<blockquote>
+  <p>In my opinion, there are no easy answers here. I find myself
+constantly torn between wanting everybody to have access to
+cryptographic privacy and the reality of the scale and depth of
+harm that has been enabled by modern comms technologies.</p>
+
+<p>Nuanced opinions are OK on this.</p>
+</blockquote>
+
+<p>Good thread with much to consider.</p>
+
+<div>
+<a  title="Permanent link to ‘Alex Stamos on Apple’s New Child Safety Measures’"  href="https://daringfireball.net/linked/2021/08/09/stamos-apple-child-safety">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Apple Publishes FAQ for Their New Child Safety Features (PDF)</title>
+	<link rel="alternate" type="text/html" href="https://www.apple.com/child-safety/pdf/Expanded_Protections_for_Children_Frequently_Asked_Questions.pdf">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tl4">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/09/apple-csam-faq">
+	<id>tag:daringfireball.net,2021:/linked//6.38344</id>
+	<published>2021-08-09T23:48:00Z</published>
+	<updated>2021-08-09T23:48:00Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Apple:</p>
+
+<blockquote>
+  <p><em>Could governments force Apple to add non-CSAM images to the
+hash list?</em></p>
+
+<p>Apple will refuse any such demands. Apple’s CSAM detection
+capability is built solely to detect known CSAM images stored in
+iCloud Photos that have been identified by experts at NCMEC and
+other child safety groups. We have faced demands to build and
+deploy government-mandated changes that degrade the privacy of
+users before, and have steadfastly refused those demands. We will
+continue to refuse them in the future. Let us be clear, this
+technology is limited to detecting CSAM stored in iCloud and we
+will not accede to any government’s request to expand it.
+Furthermore, Apple conducts human review before making a report to
+NCMEC. In a case where the system flags photos that do not match
+known CSAM images, the account would not be disabled and no report
+would be filed to NCMEC.</p>
+
+<p><em>Can non-CSAM images be “injected” into the system to flag ac-
+counts for things other than CSAM?</em></p>
+
+<p>Our process is designed to prevent that from happening. The set of
+image hashes used for matching are from known, existing images of
+CSAM that have been acquired and validated by child safety
+organizations. Apple does not add to the set of known CSAM image
+hashes. The same set of hashes is stored in the operating system
+of every iPhone and iPad user, so targeted attacks against only
+specific individuals are not possible under our design. Finally,
+there is no automated reporting to law enforcement, and Apple
+conducts human review before making a report to NCMEC. In the
+unlikely event of the system flagging images that do not match
+known CSAM images, the account would not be disabled and no report
+would be filed to NCMEC.</p>
+</blockquote>
+
+<p>This FAQ is good, and addresses most of the misconceptions I’ve seen. The human review step for flagged accounts is key to the trustworthiness of the system.</p>
+
+<p>I do wonder though, how prepared Apple is for manually reviewing a potentially staggering number of accounts being correctly flagged. Because Apple doesn’t examine the contents of iCloud Photo Library (or local on-device libraries), I don’t think anyone knows how prevalent CSAM is on iCloud Photos. We know <a href="https://www.missingkids.org/gethelpnow/cybertipline#bythenumbers">Facebook reported 20 million instances of CSAM to NCMEC last year, and Google reported 546,000</a>. For Facebook, that’s about 55,000 per day; for Google, 1,500 per day. I think it’s a genuine “we’ll soon find out” mystery how many iCloud Photo users are going to be accurately flagged for exceeding the threshold for CSAM matches when this goes live. If the number is large, it seems like one innocent needle in a veritable haystack of actual CSAM collections might be harder for Apple’s human reviewers to notice.</p>
+
+<div>
+<a  title="Permanent link to ‘Apple Publishes FAQ for Their New Child Safety Features (PDF)’"  href="https://daringfireball.net/linked/2021/08/09/apple-csam-faq">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Tara AI</title>
+	<link rel="alternate" type="text/html" href="https://tara.ai/?ref=daringfireball">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tl3">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/09/tara-ai">
+	<id>tag:daringfireball.net,2021:/linked//6.38343</id>
+	<published>2021-08-09T13:50:34Z</published>
+	<updated>2021-08-09T13:50:34Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>My thanks to Tara for sponsoring last week at DF. Tara helps developers make great software as quickly as possible. Here are three blockers they hear often from developers:</p>
+
+<ul>
+<li><p><em>Getting everyone aligned</em> — Get ideas across clearly with a clear problem statement and requirements. Use a tool like Tara to get sign-off before you start.</p></li>
+<li><p><em>Visibility into actual progress</em> — Code changes are the best indicators of progress. Use tools that enable transparency. With Tara, everyone can see commits, blocks, and merges for a sense of true progress.</p></li>
+<li><p><em>Manual status updates</em> — Manual updates are the achilles heel of every project. Use tools that automate tedious, low-value actions — like Tara’s auto-status that marks tasks as done when a PR merges.</p></li>
+</ul>
+
+<p>One workspace for your team’s docs, sprints, and tasks synced to code. Plus an API for custom workflows. <a href="https://tara.ai/?ref=daringfireball">Get started on Tara for free</a>.</p>
+
+<div>
+<a  title="Permanent link to ‘Tara AI’"  href="https://daringfireball.net/linked/2021/08/09/tara-ai">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>BBEdit 14</title>
+	<link rel="alternate" type="text/html" href="https://www.barebones.com/support/bbedit/notes-14.0.html">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tl2">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/09/bbedit-14">
+	<id>tag:daringfireball.net,2021:/linked//6.38342</id>
+	<published>2021-08-09T13:47:34Z</published>
+	<updated>2021-08-09T13:47:34Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>To me, version 14 feels like the biggest major release of BBEdit in many years. For programmers, there’s a major new feature: <a href="https://www.barebones.com/support/bbedit/lsp-notes.html">Language Server Protocol (LSP) support</a>, that, basically, adds a slew of IDE-style functionality for code completion, refactoring, and linting. There are also new language modules for R, Go, Lisp, and Rust.</p>
+
+<p>For everyone, there’s a new “notes” feature. From the release notes:</p>
+
+<blockquote>
+  <p>You know that thing where you have a whole bunch of untitled
+documents open, because it’s so easy to make one and type some
+notes, and then just leave it open? And you rely on BBEdit’s
+amazing crash recovery and document restoration to not lose
+your carefully kept notes? You can keep doing that if you want,
+but we have a new feature to make the whole thing faster and
+easier: Notes.</p>
+
+<p>Notes are mostly like ordinary text documents, except that you
+don’t have to remember to save them or even make up a name if you
+don’t want to. BBEdit keeps notes all together in a “notebook”.
+Notes exist on disk as text files; there’s no secret file format
+involved. […]</p>
+
+<p>There are many ways to make a note, so you can use whatever fits
+your workflow and style.</p>
+</blockquote>
+
+<p>Notes default to Markdown, but you can change that to whatever you want (of course).</p>
+
+<p>See also:</p>
+
+<ul>
+<li><p><a href="https://sixcolors.com/post/2021/07/bbedit-14-0-arrives-with-notes-and-lsp-support/">Jason Snell</a>, who wrote a nifty AppleScript that lets him drag an image into a Markdown file in BBEdit 14, and have it (a) upload that file to his server in the background, and (b) insert the Markdown syntax to reference that just-uploaded file.</p></li>
+<li><p><a href="https://micro.coyotetracks.org/2021/07/19/bbedit-and-why.html">Watts Martin</a>, who has a good overview of where BBEdit 14 stands compared to several popular competing programming text editors.</p></li>
+</ul>
+
+<div>
+<a  title="Permanent link to ‘BBEdit 14’"  href="https://daringfireball.net/linked/2021/08/09/bbedit-14">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+    
+    <link rel="alternate" type="text/html" href="https://daringfireball.net/2021/08/apple_child_safety_initiatives_slippery_slope">
+	<link rel="shorturl" href="http://df4.us/tl1">
+	<id>tag:daringfireball.net,2021://1.38341</id>
+	<published>2021-08-07T02:12:45Z</published>
+	<updated>2021-08-13T16:15:04Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<summary type="text">The stakes are incredibly high, and Apple knows it. Whatever you think of Apple’s decision to implement these features, they’re not doing so lightly.</summary>
+	<content type="html" xml:base="https://daringfireball.net/" xml:lang="en"><![CDATA[
+<p><a href="https://www.apple.com/child-safety/">Apple yesterday announced three new “Child Safety” initiatives</a>:</p>
+
+<blockquote>
+  <p>First, new communication tools will enable parents to play a more
+informed role in helping their children navigate communication
+online. The Messages app will use on-device machine learning to
+warn about sensitive content, while keeping private communications
+unreadable by Apple.</p>
+
+<p>Next, iOS and iPadOS will use new applications of cryptography
+to help limit the spread of CSAM online, while designing for
+user privacy. CSAM detection will help Apple provide valuable
+information to law enforcement on collections of CSAM in
+iCloud Photos.</p>
+
+<p>Finally, updates to Siri and Search provide parents and children
+expanded information and help if they encounter unsafe situations.
+Siri and Search will also intervene when users try to search for
+CSAM-related topics.</p>
+</blockquote>
+
+<p>(CSAM stands for <a href="https://www.inhope.org/EN/articles/child-sexual-abuse-material">Child Sexual Abuse Material</a> — a.k.a. child pornography. People familiar with the lingo seem to pronounce it <em>see-sam</em>. Another acronym to know: NCMEC — <em>nick-meck</em> — the <a href="https://www.missingkids.org/">National Center for Missing and Exploited Children</a>. That’s the nonprofit organization, founded and funded by the U.S. government, that maintains the database of known CSAM.)</p>
+
+<p>The third initiative — updates to Siri and Search — is the easiest to understand and, I think, uncontroversial. The first two, however, seem not well-understood, and are, justifiably, receiving intense scrutiny from privacy advocates.</p>
+
+<p>My first advice is to read <a href="https://www.apple.com/child-safety/">Apple’s own high-level description of the features</a>, which ends with links to detailed technical documentation regarding the encryption and techniques Apple is employing in the implementations, and “technical assessments” from three leading researchers in cryptography and computer vision.</p>
+
+<p>The Messages feature is specifically only for children in a shared iCloud family account. If you’re an adult, nothing is changing with regard to any photos you send or receive through Messages. And if you’re a parent with children whom the feature <em>could</em> apply to, you’ll need to explicitly opt in to enable the feature. It will not turn on automatically when your devices are updated to iOS 15. If a child sends or receives (and chooses to view) an image that triggers a warning, the notification is sent from the child’s device to the parents’ devices — Apple itself is not notified, nor is law enforcement. These parental notifications are only for children 12 or younger in a family iCloud account; parents do not have the option of receiving notifications for teenagers, although teenagers can receive the content warnings on their devices.</p>
+
+<p>It’s also worth pointing out that it’s a feature of the Messages <em>app</em>, not the iMessage <em>service</em>. For one thing, this means it applies to images sent or received via SMS, not just iMessage. But more importantly, it changes nothing about the end-to-end encryption inherent to the iMessage protocol. The image processing to detect sexually explicit images happens before (for sending) or after (for receiving) the endpoints. It seems like a good feature with few downsides. (<a href="https://www.eff.org/deeplinks/2021/08/apples-plan-think-different-about-encryption-opens-backdoor-your-private-life">The EFF disagrees</a>.)</p>
+
+<p>The CSAM detection for iCloud Photo Library is more complicated, delicate, and controversial. But it only applies to images being sent to iCloud Photo Library. If you don’t use iCloud Photo Library, no images on your devices are fingerprinted. But, of course, most of us <em>do</em> use iCloud Photo Library.</p>
+
+<p>I mentioned above that Apple’s “Child Safety” page for these new features has links to technical assessments from outside experts. In particular, I thought <a href="https://www.apple.com/child-safety/pdf/Technical_Assessment_of_CSAM_Detection_Benny_Pinkas.pdf">the description of Apple’s CSAM detection from Benny Pinkas</a> — a cryptography researcher at Bar-Ilan University in Israel — was instructive:</p>
+
+<blockquote>
+  <p>My research in cryptography has spanned more than 25 years. I
+initiated the applied research on privacy preserving computation,
+an area of cryptography that makes it possible for multiple
+participants to run computations while concealing their private
+inputs. In particular, I pioneered research on private set
+intersection (PSI).</p>
+
+<p>The Apple PSI system solves a very challenging problem of
+detecting photos with CSAM content while keeping the contents of
+all non-CSAM photos encrypted and private. Photos are only
+analyzed on users’ devices. Each photo is accompanied by a safety
+voucher that includes information about the photo, protected by
+two layers of encryption. This information includes a NeuralHash
+and a visual derivative of the photo. Only if the Apple cloud
+identifies that a user is trying to upload a significant number of
+photos with CSAM content, the information associated with these
+specific photos can be opened by the cloud. If a user uploads less
+than a predefined threshold number of photos containing CSAM
+content then the information associated with all of photos of this
+user is kept encrypted, even if some of these photos contain CSAM
+content. It is important to note that no information about non-CSAM
+content can be revealed by the Apple PSI system. […]</p>
+
+<p>The design is accompanied by security proofs that I have evaluated
+and confirmed.</p>
+</blockquote>
+
+<p>For obvious reasons, this feature is <em>not</em> optional. If you use iCloud Photo Library, the images in your library will go through this fingerprinting. (This includes the images already in your iCloud Photo Library, not just newly-uploaded images after the feature ships later this year.) To opt out of this fingerprint matching, you’ll need to disable iCloud Photo Library.</p>
+
+<p>A big source of confusion seems to be what <em>fingerprinting</em> entails. Fingerprinting is not content analysis. It’s not determining <em>what</em> is in a photo. It’s just a way of assigning unique identifiers — essentially long numbers — to photos, in a way that will generate the same fingerprint identifier if the same image is cropped, resized, or even changed from color to grayscale. It’s not a way of determining whether two photos (the user’s local photo, and an image in the CSAM database from NCMEC) are of the same subject — it’s a way of determining whether they are two versions of the <em>same image</em>. If I take a photo of, say, my car, and you take a photo of my car, the images should not produce the same fingerprint even though they’re photos of the same car in the same location. And, in the same way that real-world fingerprints can’t be backwards engineered to determine what the person they belong to looks like, these fingerprints cannot be backwards engineered to determine anything at all about the subject matter of the photographs.</p>
+
+<p>The Messages features for children in iCloud family accounts <em>is</em> doing content analysis to try to identify sexually explicit photos, but is <em>not</em> checking image fingerprint hashes against the database of CSAM fingerprints.</p>
+
+<p>The CSAM detection for images uploaded to iCloud Photo Library is <em>not</em> doing content analysis, and is only checking fingerprint hashes against the database of known CSAM fingerprints. So, to name one common innocent example, if you have photos of your kids in the bathtub, or otherwise frolicking in a state of undress, no content analysis is performed that tries to detect that, hey, this is a picture of an undressed child. Fingerprints from images of similar content are not themselves similar. Two photographs of the same subject should produce entirely dissimilar fingerprints. The fingerprints of your own photos of your kids are no more likely to match the fingerprint of an image in NCMEC’s CSAM database than is a photo of a sunset or a fish.</p>
+
+<p>The database will be part of iOS 15, and is a database of fingerprints, <em>not</em> images. Apple does not have the images in NCMEC’s library of known CSAM, and in fact <em>cannot</em> — NCMEC is the only organization in the U.S. that is legally permitted to possess these photos.</p>
+
+<p>If you don’t use iCloud Photo Library, none of this applies to you. If you do use iCloud Photo Library, this detection is only applied to the images in your photo library that are synced to iCloud.</p>
+
+<p>Furthermore, one match isn’t enough to trigger any action. There’s a “threshold” — some number of matches against the CSAM database — that must be met. Apple isn’t saying what this threshold number is, but, for the sake of argument, let’s say that threshold is 10. With 10 or fewer matches, nothing happens, and nothing <em>can</em> happen on Apple’s end. Only after 11 matches (threshold + 1) will Apple be alerted. Even then, someone at Apple will investigate, by examining the contents of the <em>safety vouchers</em> that will accompany each photo in iCloud Photo Library. These vouchers are encrypted such that they can only be decrypted on the server side if threshold + 1 matches have been identified. From <a href="https://www.apple.com/child-safety/">Apple’s own description</a>:</p>
+
+<blockquote>
+  <p>Using another technology called threshold secret sharing, the
+system ensures the contents of the safety vouchers cannot be
+interpreted by Apple unless the iCloud Photos account crosses a
+threshold of known CSAM content. The threshold is set to provide
+an extremely high level of accuracy and ensures less than a one in
+one trillion chance per year of incorrectly flagging a given
+account.</p>
+</blockquote>
+
+<p>Even if your account is — against those one in a trillion odds, if Apple’s math is correct — <em>incorrectly</em> flagged for exceeding the threshold, someone at Apple will examine the contents of the safety vouchers for those flagged images before reporting the incident to law enforcement. Apple is cryptographically only able to examine the safety vouchers for those images whose fingerprints matched items in the CSAM database. The vouchers include a “visual derivative” of the image — basically a low-res version of the image. If innocent photos are somehow wrongly flagged, Apple’s reviewers should notice.</p>
+
+<hr />
+
+<p>All of these features are fairly grouped together under a “child safety” umbrella, but I can’t help but wonder if it was a mistake to announce them together. Many people are clearly conflating them, including those reporting on the initiative for the news media. E.g. The Washington Post’s “<em>never met an Apple story that couldn’t be painted in the worst possible light</em>” <a href="https://www.washingtonpost.com/technology/2021/08/05/apple-child-pornography-iphone/">Reed Albergotti’s report</a>, the first three paragraphs of which are simply wrong<sup id="fnr1-2021-08-06"><a href="#fn1-2021-08-06">1</a></sup> and the headline for which is grossly misleading (“Apple Is Prying Into iPhones to Find Sexual Predators, but Privacy Activists Worry Governments Could Weaponize the Feature”).</p>
+
+<p>It’s also worth noting that fingerprint hash matching against NCMEC’s database is already happening on other major cloud hosting services and social networks. <a href="https://www.nytimes.com/2021/08/05/technology/apple-iphones-privacy.html">From The New York Times’s report on Apple’s initiative</a>:</p>
+
+<blockquote>
+  <p>U.S. law requires tech companies to flag cases of child sexual
+abuse to the authorities. Apple has historically flagged fewer
+cases than other companies. Last year, for instance, Apple
+reported 265 cases to the National Center for Missing &amp;
+Exploited Children, while Facebook reported 20.3 million,
+according to the center’s statistics. That enormous gap is due
+in part to Apple’s decision not to scan for such material,
+citing the privacy of its users.</p>
+</blockquote>
+
+<p>The difference going forward is that Apple will be matching fingerprints against NCMEC’s database client-side, not server-side. But I suspect others will follow suit, including Facebook and Google, with client-side fingerprint matching for end-to-end encrypted services. There is no way to perform this matching server-side with any E2EE service — between the sender and receiver endpoints, the server has no way to decrypt the images with end-to-end encryption.</p>
+
+<p>Which in turn makes me wonder if Apple sees this initiative as a necessary first step toward providing end-to-end encryption for iCloud Photo Library and iCloud device backups. <a href="https://support.apple.com/en-us/HT202303">Apple has long encrypted all iCloud data that can be encrypted</a>,<sup id="fnr2-2021-08-06"><a href="#fn2-2021-08-06">2</a></sup> both in transit and on server, but device backups, photos, and iCloud Drive are among the things that are not <em>end-to-end</em> encrypted. Apple has the keys to decrypt them, and can be compelled to do so by law enforcement.</p>
+
+<p>In January 2020, <a href="https://www.reuters.com/article/us-apple-fbi-icloud-exclusive-idUSKBN1ZK1CT">Reuters reported that Apple in 2018 dropped plans to use end-to-end encryption for iCloud backups at the behest of the FBI</a>:</p>
+
+<blockquote>
+  <p>Apple Inc. dropped plans to let iPhone users fully encrypt
+backups of their devices in the company’s iCloud service after the
+FBI complained that the move would harm investigations, six
+sources familiar with the matter told Reuters.</p>
+
+<p>The tech giant’s reversal, about two years ago, has not previously
+been reported. It shows how much Apple has been willing to help
+U.S. law enforcement and intelligence agencies, despite taking a
+harder line in high-profile legal disputes with the government and
+casting itself as a defender of its customers’ information.</p>
+</blockquote>
+
+<p>Whether Reuters’s report that Apple caved to FBI pressure on E2EE iCloud backups is accurate or not, I don’t know, but I do know that privacy advocates (including myself) would love to see Apple enable E2EE for <em>everything</em> in iCloud, and that law enforcement agencies around the world would not. This fingerprint matching for CSAM could pave the way for a middle ground, if Apple unveils end-to-end encryption for iCloud photos and backups in the future. In such a scenario, Apple would have no cryptographic ability to turn your backups or entire photo library over to anyone, but they would be able to flag and report iCloud accounts whose photo libraries exceed the threshold for CSAM database fingerprint matches, including the “visual derivatives” of the matching photos — all without Apple ever seeing or being able to see your original photos on iCloud.</p>
+
+<p>It’s also possible Apple has simply permanently shelved plans to use end-to-end encryption for all iCloud data. No surprise: they’re not saying. But it feels very plausible to me that Apple views this privacy-protecting CSAM detection as a necessary first step to broadening the use of end-to-end encryption.</p>
+
+<hr />
+
+<p>In short, if these features work as described and <em>only</em> as described, there’s almost no cause for concern. In an interview with The New York Times for <a href="https://www.nytimes.com/2021/08/05/technology/apple-iphones-privacy.html">its aforelinked report on this initiative</a>, Erik Neuenschwander, Apple’s chief privacy engineer, said, “If you’re storing a collection of CSAM material, yes, this is bad for you. But for the rest of you, this is no different.” By all accounts, that is fair and true.</p>
+
+<p>But the “if” in “if these features work as described and <em>only</em> as described” is the rub. That “if” is the whole ballgame. If you discard alarmism from critics of this initiative who clearly do not understand how the features work, you’re still left with completely legitimate concerns from trustworthy experts about how the features could be abused or misused in the future.</p>
+
+<p>What happens, for example, if China demands that it provide its own database of image fingerprints for use with this system — a database that would likely include images related to political dissent. <a href="https://www.bbc.com/news/av/world-asia-48476879">Tank man</a>, say, or any of the remarkable litany of comparisons <a href="https://www.google.com/search?tbm=isch&amp;q=xi+jinping+looks+like+winnie+the+pooh">showing the striking resemblance of Xi Jinping to Winnie the Pooh</a>.</p>
+
+<p>This slippery-slope argument is a legitimate concern. Apple’s response is simply that they’ll refuse. Again, from <a href="https://www.nytimes.com/2021/08/05/technology/apple-iphones-privacy.html">Jack Nicas’s report for The Times</a>:</p>
+
+<blockquote>
+  <p>Mr. Green said he worried that such a system could be abused
+because it showed law enforcement and governments that Apple now
+had a way to flag certain content on a phone while maintaining its
+encryption. Apple has previously argued to the authorities that
+encryption prevents it from retrieving certain data.</p>
+
+<p>“What happens when other governments ask Apple to use this for
+other purposes?” Mr. Green asked. “What’s Apple going to say?”</p>
+
+<p>Mr. Neuenschwander dismissed those concerns, saying that
+safeguards are in place to prevent abuse of the system and that
+Apple would reject any such demands from a government.</p>
+
+<p>“We will inform them that we did not build the thing they’re
+thinking of,” he said.</p>
+</blockquote>
+
+<p>Will Apple actually flatly refuse any and all such demands? If they do, it’s all good. If they don’t, and these features creep into surveillance for things like political dissent, copyright infringement, LGBT imagery, or adult pornography — anything at all beyond irrefutable CSAM — it’ll prove disastrous to Apple’s reputation for privacy protection. <a href="https://www.eff.org/deeplinks/2021/08/apples-plan-think-different-about-encryption-opens-backdoor-your-private-life">The EFF seems to see such slipping down the slope as inevitable</a>.</p>
+
+<p>We shall see. The stakes are incredibly high, and Apple knows it. Whatever you think of Apple’s decision to implement these features, they’re not doing so lightly.</p>
+
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1-2021-08-06">
+<p><p>Albergotti’s opening, verbatim:</p>
+
+<blockquote>
+  <p>Apple unveiled a sweeping new set of software tools Thursday that
+will scan iPhones and other devices for child pornography and text
+messages with explicit content and report users suspected of
+storing illegal pictures on their phones to authorities.</p>
+</blockquote>
+
+<p>Wrong. The only photos that might be reported to authorities are those being sent to iCloud. “Scan” is a misleading verb. And the entire “text messages” feature is only for children in shared iCloud family accounts. Albergotti’s alarmist lede makes it sound like all content for all users in Messages will be “scanned”, whereas in fact nothing sent to or from an adult user in Messages will ever be “scanned” — unless an image is saved from Messages to Photos and iCloud Photo Library is enabled.</p>
+
+<blockquote>
+  <p>The aggressive plan to thwart child predators and pedophiles and
+prohibit them from utilizing Apple’s services for illegal activity
+pitted the tech giant against civil liberties activists and
+appeared to contradict some of its own long-held assertions about
+privacy and the way the company interacts with law enforcement.</p>
+</blockquote>
+
+<p>As announced, none of these features contradict any of Apple’s “long-held assertions”.</p>
+
+<blockquote>
+  <p>The move also raises new questions about the nature of smartphones
+and who really owns the computers in their pockets. The new
+software will perform scans on its users’ devices without their
+knowledge or explicit consent, and potentially put innocent users
+in legal jeopardy.</p>
+</blockquote>
+
+<p>None of this raises any questions about who owns your iPhone. It does assert that Apple owns iCloud’s servers, but no images on an iPhone that isn’t syncing to iCloud Photo Library will ever be fingerprinted. The Messages content warnings for children are explicitly opt in, as is syncing to iCloud Photo Library. Unless Apple’s cryptographic math is catastrophically wrong, it is exceedingly unlikely that innocent users’ photos will ever be flagged, and even if they are flagged for exceeding the threshold for CSAM fingerprint matches, there’s a manual review by Apple before anything is reported to law enforcement.</p>
+
+<p>It’s hard to imagine a three-paragraph lede that is more histrionically misleading than Albergotti’s in this report.</p>&nbsp;<a href="#fnr1-2021-08-06"  class="footnoteBackLink"  title="Jump back to footnote 1 in the text.">&#x21A9;&#xFE0E;</a></p>
+</li>
+
+<li id="fn2-2021-08-06">
+<p>The exception is IMAP email, which is encrypted in transit between client and server but is not stored encrypted on the server, because that’s how IMAP was designed. Long story short, email is probably the least secure messaging service you use. If you wouldn’t put it on paper and send via postal mail, don’t send it via email.&nbsp;<a href="#fnr2-2021-08-06"  class="footnoteBackLink"  title="Jump back to footnote 2 in the text.">&#x21A9;&#xFE0E;︎</a></p>
+</li>
+
+</ol>
+</div>
+
+
+
+    ]]></content>
+  <title>★ Apple’s New ‘Child Safety’ Initiatives, and the Slippery Slope</title></entry><entry>
+	<title>CNN Fires Three Employees for Going Into Office Without Vaccinations</title>
+	<link rel="alternate" type="text/html" href="https://deadline.com/2021/08/cnn-fires-employees-vaccinations-covid-1234810040/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tl0">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/05/cnn-fires-three-unvaccinated-employees">
+	<id>tag:daringfireball.net,2021:/linked//6.38340</id>
+	<published>2021-08-05T21:57:23Z</published>
+	<updated>2021-08-05T21:57:23Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Ted Johnson, reporting for Deadline:</p>
+
+<blockquote>
+  <p>CNN head Jeff Zucker said that the network has fired three
+employees for going into the office without being vaccinated
+against Covid-19, and that parent WarnerMedia may ultimately
+require proof of the shots. […]</p>
+
+<p>“In the past week, we have been made aware of three employees who
+were coming to the office unvaccinated,” Zucker wrote in an email
+to staff. “All three have been terminated. Let me be clear — we
+have a zero-tolerance policy on this. You need to be vaccinated to
+come to the office. And you need to be vaccinated to work in the
+field, with other employees, regardless of whether you enter an
+office or not. Period. We expect that in the weeks ahead, showing
+proof of vaccination may become a formal part of the WarnerMedia
+Passcard process. Regardless, our expectations remain in place.”</p>
+</blockquote>
+
+<p>More like this, please.</p>
+
+<div>
+<a  title="Permanent link to ‘CNN Fires Three Employees for Going Into Office Without Vaccinations’"  href="https://daringfireball.net/linked/2021/08/05/cnn-fires-three-unvaccinated-employees">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>The Case for Requiring Vaccinations for Domestic Flights</title>
+	<link rel="alternate" type="text/html" href="https://www.theatlantic.com/ideas/archive/2021/08/unvaccinated-flight-vaccine-tsa-mandate/619643/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tkz">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/05/kayyem-vaccinations-for-air-travel">
+	<id>tag:daringfireball.net,2021:/linked//6.38339</id>
+	<published>2021-08-05T16:41:07Z</published>
+	<updated>2021-08-05T16:45:42Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Juliette Kayyem, assistant secretary for homeland security under President Obama, writing for The Atlantic:</p>
+
+<blockquote>
+  <p>The White House has <a href="https://twitter.com/Yamiche/status/1422281785719857152?s=20">rejected a nationwide vaccine mandate</a>—a sweeping suggestion that the Biden administration could not easily enact if it wanted to—but a no-fly list for unvaccinated adults is an obvious step that the federal government should take. It will help limit the risk of transmission at destinations where unvaccinated people travel—and, by setting norms that restrict certain privileges to vaccinated people, will also help raise the stagnant vaccination rates that are keeping both the economy and society from fully recovering.</p>
+
+<p>Flying is not a right, and the case for restricting it to vaccinated people is straightforward: The federal government is the sole entity that can regulate the terms and conditions of airline safety. And although air-filtration systems and mask requirements make transmission of the coronavirus unlikely during any given passenger flight, infected people can spread it when they leave the airport and take off their mask.</p>
+</blockquote>
+
+<div>
+<a  title="Permanent link to ‘The Case for Requiring Vaccinations for Domestic Flights’"  href="https://daringfireball.net/linked/2021/08/05/kayyem-vaccinations-for-air-travel">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Jim Cramer Explains the ‘Metaverse’ and What It Means for Facebook</title>
+	<link rel="alternate" type="text/html" href="https://www.cnbc.com/video/2021/07/29/jim-cramer-explains-the-metaverse-and-what-it-means-for-facebook.html">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tky">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/04/cramerverse">
+	<id>tag:daringfireball.net,2021:/linked//6.38338</id>
+	<published>2021-08-04T16:42:36Z</published>
+	<updated>2021-08-04T16:46:00Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Sure, OK, that makes a lot of sense.</p>
+
+<div>
+<a  title="Permanent link to ‘Jim Cramer Explains the ‘Metaverse’ and What It Means for Facebook’"  href="https://daringfireball.net/linked/2021/08/04/cramerverse">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Google Teases Upcoming Pixel 6 and 6 Pro Phones</title>
+	<link rel="alternate" type="text/html" href="https://www.theverge.com/2021/8/2/22605094/google-pixel-6-pro-tensor-processor-specs-ai-ml">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tkx">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/03/pixel-6-teaser">
+	<id>tag:daringfireball.net,2021:/linked//6.38337</id>
+	<published>2021-08-03T18:36:34Z</published>
+	<updated>2021-08-04T23:34:45Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Dieter Bohn, writing for The Verge:</p>
+
+<blockquote>
+  <p>Tensor is an SoC, not a single processor. And so while it’s fair
+to call it Google-designed, it’s also still unclear which
+components are Google-made and which are licensed from others. Two
+things are definitely coming from Google: a mobile TPU for AI
+operations and a new Titan M2 chip for security. The rest,
+including the CPU, GPU, and 5G modem, are all still a mystery.</p>
+
+<p>Less mysterious: the phones themselves. I spent about an hour at
+Google’s Mountain View campus last week looking at the phone
+hardware and talking with Google’s hardware chief Rick Osterloh
+about Tensor. After all that, my main takeaway about the new Pixel
+6 phones is simple.</p>
+
+<p>Google is actually, finally trying to make a competitive
+flagship phone.</p>
+</blockquote>
+
+<p>“This is the year Google gets serious about Pixel (née Nexus) phones” is right up there with “the next version of Bluetooth is going to be reliable” and “this is the year of desktop Linux” on the list of perennial letdowns. But like Charlie Brown trying to kick Lucy’s football, hope springs eternal, and I’m hopeful Google actually pulls it off this time. The iPhone needs better rivals.</p>
+
+<div>
+<a  title="Permanent link to ‘Google Teases Upcoming Pixel 6 and 6 Pro Phones’"  href="https://daringfireball.net/linked/2021/08/03/pixel-6-teaser">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Emojipedia Acquired by Zedge</title>
+	<link rel="alternate" type="text/html" href="https://blog.emojipedia.org/emojipedia-joins-zedge/">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tkw">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/03/emojipedia-acquired-by-zedge-">
+	<id>tag:daringfireball.net,2021:/linked//6.38336</id>
+	<published>2021-08-03T14:45:18Z</published>
+	<updated>2021-08-03T14:47:43Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>🤔</p>
+
+<div>
+<a  title="Permanent link to ‘Emojipedia Acquired by Zedge’"  href="https://daringfireball.net/linked/2021/08/03/emojipedia-acquired-by-zedge-">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Follow the Islamic State on Gettr</title>
+	<link rel="alternate" type="text/html" href="https://www.politico.com/news/2021/08/02/trump-gettr-social-media-isis-502078">
+	<link rel="shorturl" type="text/html" href="http://df4.us/tku">
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2021/08/03/gettr-while-the-gettring-is-good">
+	<id>tag:daringfireball.net,2021:/linked//6.38334</id>
+	<published>2021-08-03T14:09:31Z</published>
+	<updated>2021-08-03T14:28:37Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Mark Scott and Tina Nguyen, reporting for Politico:</p>
+
+<blockquote>
+  <p>Just weeks after its launch, the pro-Trump social network GETTR is inundated with terrorist propaganda spread by supporters of Islamic State, according to a POLITICO review of online activity on the fledgling platform.</p>
+
+<p>The social network — started a month ago by members of former President Donald Trump’s inner circle — features reams of jihadi-related material, including graphic videos of beheadings, viral memes that promote violence against the West and even memes of a militant executing Trump in an orange jumpsuit similar to those used in Guantanamo Bay.</p>
+</blockquote>
+
+<div>
+<a  title="Permanent link to ‘Follow the Islamic State on Gettr’"  href="https://daringfireball.net/linked/2021/08/03/gettr-while-the-gettring-is-good">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+    
+    <link rel="alternate" type="text/html" href="https://daringfireball.net/2021/07/document_proxy_icons_macos_11_and_12">
+	<link rel="shorturl" href="http://df4.us/tjf">
+	<id>tag:daringfireball.net,2021://1.38283</id>
+	<published>2021-07-20T01:54:00Z</published>
+	<updated>2021-07-22T16:34:45Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<summary type="text">The Mac’s breakthrough was establishing an interface where you could see — and thus discover through visual exploration — not just what you *had* done, but what you *could* do.</summary>
+	<content type="html" xml:base="https://daringfireball.net/" xml:lang="en"><![CDATA[
+<p>“<a href="https://daringfireball.net/linked/2021/07/19/kirvin-safari-15-defense">You should only see a button when you need it</a>” seems to explain many of Apple’s recent UI directions. File proxy icons in MacOS document windows, for example, disappeared last year in MacOS 11 Big Sur — or rather, were hidden until you moused over them. <a href="https://mjtsai.com/blog/2020/10/05/big-surs-hidden-document-proxy-icon/">This post from Michael Tsai</a> has documented reactions and tips regarding this change over the last year — including the fact that in the MacOS 12 Monterey betas, proxy icons can be turned back on using an Accessibility setting in System Preferences. (If you think Accessibility is just for people with vision or motor skill problems, you’ve been missing out on some great system-wide settings for tweaking both MacOS and iOS.)</p>
+
+<p>Does removing proxy icons from document window title bars reduce “clutter”? I can only assume that’s what Apple’s HI team was thinking. But I’d argue strenuously that proxy icons aren’t needless clutter — they’re <a href="http://hints.macworld.com/article.php?story=2010031117415674">useful</a>, and showing them by default made them discoverable. Keeping them visible reminds you that they’re there. There’s a one-to-one relationship between a document icon in the Finder and the open application window for that document; showing the document icon in the window title bar reinforced that concept. <a href="https://twitter.com/chucker/status/1395843084383043584">This hidden Finder preference for MacOS 11 Big Sur</a> delights me, because in addition to showing proxy icons, it also restores grabbable title bars in MacOS 11.</p>
+
+<p>In a sense, no personal computer interface can out-minimalize an old terminal command line — just a blinking cursor on a black screen, awaiting your commands. The Mac’s breakthrough was establishing an interface where you could see — and thus discover through visual exploration — not just what you <em>had</em> done, but what you <em>could</em> do. Proxy icons in title bars weren’t added to classic Mac OS until version 8.5 in 1998, but they exemplified that philosophy. They said: <em>Even though this document is open in an editing window, you can still do things with the file — here it is.</em></p>
+
+<p>It’s devilishly hard work deciding what to expose at the top level of a user interface. Microsoft went overboard <a href="https://docs.microsoft.com/en-us/windows/win32/uxguide/cmd-ribbons">for decades of versions of Windows</a> with <a href="http://www.newdesignfile.com/post_microsoft-office-toolbar-icons_80811/">way too many</a> inscrutable <a href="http://drops.caseyliss.com/VC9qbu">tiny toolbar icons</a>. But like almost every design challenge, it’s a Goldilocks problem — you can go too far in the other direction, and there is no “just right” that will please everyone.</p>
+
+
+
+    ]]></content>
+  <title>★ Document Proxy Icons in MacOS 11 and 12 as a — Ahem — Proxy for Apple’s Current UI Design Sensibilities</title></entry><entry>
+    
+    <link rel="alternate" type="text/html" href="https://daringfireball.net/2021/07/69_dudes">
+	<link rel="shorturl" href="http://df4.us/tj5">
+	<id>tag:daringfireball.net,2021://1.38273</id>
+	<published>2021-07-13T22:28:52Z</published>
+	<updated>2021-07-13T22:28:53Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<summary type="text">Sometimes a cigar is just an integer math conversion glitch.</summary>
+	<content type="html" xml:base="https://daringfireball.net/" xml:lang="en"><![CDATA[
+<p>A good mid-summer silly story from earlier today. Chaim Gartenberg, writing at The Verge, “<a href="https://www.theverge.com/tldr/2021/7/13/22575368/apple-ios-14-weather-app-69-rounding-error-15">Apple’s Weather App Won’t Say It’s 69 Degrees</a>”:</p>
+
+<blockquote>
+  <p>If you’re an iPhone user, the weather is always a particularly
+nice 70 degrees. Or 68 degrees. Any temperature but 69 degrees,
+actually, because it turns out that the built-in weather app on
+some versions of iOS — including the current version, iOS 14.6 — will refuse to display <a href="https://nymag.com/intelligencer/2016/06/why-69-is-the-internets-coolest-number-sex.html">the internet’s favorite number</a>, even
+if the actual temperature in a given location is, in fact, 69
+degrees, along with several other (less meme-able) numerals like
+65 and 71 degrees.</p>
+
+<p>It’s not clear if this is a bug or an intentional attempt from
+Apple to cut down on 69-related humor. The rounding is only
+visible in the weather app itself: clicking through to Apple’s
+source data from Weather.com will show the proper temperature, as
+do Apple’s home screen widgets. But the iOS weather app will
+refuse to show 69 degrees anywhere in the forecast, whether it’s
+for the current temperature, the hourly forecast for the day, or
+the extended forecast.</p>
+</blockquote>
+
+<p>Marques Brownlee followed with <a href="https://twitter.com/MKBHD/status/1414974137332867072">a quick side-by-side demo</a> with an Android phone. But it was soon pointed out by commenters on Twitter that while true for the Weather app in iOS 14.6, it’s not the case in the current betas for iOS 15. (It’s also not the case for iOS 13, which I still have running on a spare phone.) Gartenberg soon updated his story at The Verge with the following:</p>
+
+<blockquote>
+  <p>A possible explanation for the issue (as <a href="https://twitter.com/theMarcDufresne/status/1414981789052030987">pointed out by
+several</a> <a href="https://twitter.com/nannerb/status/1414981582318878722">people on Twitter</a>) is that Apple may be
+sourcing data for its iOS Weather app in Celsius and then
+converting it to Fahrenheit. For example, 20 degrees Celsius
+converts to 68 degrees Fahrenheit, while 21 degrees Celsius
+converts to 69.8 degrees Fahrenheit — which rounds up to 70
+degrees Fahrenheit. The app appears to have similar issues with
+temperatures like 65 degrees (where 18 degrees Celsius converts to
+64.4 degrees Fahrenheit, while 19 degrees Celsius is 66.2 degrees
+Fahrenheit).</p>
+</blockquote>
+
+<p>This theory that it’s a side effect of converting Celsius integer values to Fahrenheit integer values strikes me as almost certainly correct — especially considering that it affects un-notable values like “65”. Or that even in iOS 14.6, <em>negative</em> 69°F <a href="https://twitter.com/largent_connor/status/1414976667219542016">displays just fine</a>. But it’s amusing to me that so many people bought into the possibility that someone at Apple thought it was a good idea to avoid showing 69° as a temperature.</p>
+
+<p>Apple’s Compass app will show you 69°. The Finder will tell you if you have 69 files in a folder. Once you start down this path it’s hard to find an app from Apple that <em>won’t</em> display “69” some how, some way, if that’s the value that ought to be displayed. Apple even has <a href="https://www.techspot.com/news/67429-apple-replace-single-lost-or-broken-airpod-69.html">products that cost $69</a>.</p>
+
+<p>But Apple’s reputation for prudishness precedes it.</p>
+
+<p>What didn’t pass the sniff test for me with this “won’t show 69°F” idea is that it would cross the line into losing integrity, or at least losing <em>accuracy</em>. Can I imagine a third-party weather app being rejected from the App Store because its screenshots show a big “69°F” current temperature? Yes. But to program the iPhone Weather app to avoid displaying 69°F when it really is 69°F? (Or to demand a third-party weather app not show “69°F” in the app?) No.</p>
+
+<p>Sometimes a cigar is just an integer math conversion glitch.</p>
+
+<hr />
+
+<p>I’m reminded of the spate of articles a few years ago, when Apple’s original TV+ titles were ramping up production, that Apple executives were squeamish about R-rated content. E.g. <a href="https://www.wsj.com/articles/no-sex-please-were-apple-iphone-giant-seeks-tv-success-on-its-own-terms-1537588880">this widely-cited report</a> by Tripp Mickle and Joe Flint for The Wall Street Journal in September 2018, which claimed, “The tech giant wants to make scripted shows for streaming, only without violence, politics and risqué story lines.” It didn’t seem preposterous in the least that Apple might have been looking for a Disney-esque “family-friendly only” image for its original content.</p>
+
+<p>Problem is: <a href="https://daringfireball.net/linked/2020/02/04/cue-ny-post">it wasn’t true</a>. <em>Ted Lasso</em> sure is a feel-good show, but Apple’s acclaimed <em>The Morning Show</em> is just as surely not. <em>Servant</em> is R-rated horror (or pretty close to R-rated). <em>See</em> was a show about a future world <a href="https://www.esquire.com/entertainment/tv/a29637626/see-apple-tv-masturbation-scene-queen-kane/">where everyone is blind and they pray to their god by masturbating</a>. Disney+ probably wasn’t bidding on that.</p>
+
+
+
+    ]]></content>
+  <title>★ If You Guys Are Really Us, What Number Are We Thinking Of?</title></entry><entry>
+    
+    <link rel="alternate" type="text/html" href="https://daringfireball.net/2021/07/safari_15_public_betas_for_mac_and_ios">
+	<link rel="shorturl" href="http://df4.us/tio">
+	<id>tag:daringfireball.net,2021://1.38256</id>
+	<published>2021-07-02T19:09:39Z</published>
+	<updated>2021-07-19T18:40:04Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<summary type="text">One can only presume that Apple’s HI team thinks they’re reducing needless “clutter”, but what they’re doing is systematically removing the coherence between what apps look like and the functionality they offer.</summary>
+	<content type="html" xml:base="https://daringfireball.net/" xml:lang="en"><![CDATA[
+<p><a href="https://mjtsai.com/blog/2021/06/17/safari-15/">Michael Tsai</a>:</p>
+
+<blockquote>
+  <p>I think I like the changes for iPhone. The controls are easier to
+reach at the bottom of the screen, and it’s quicker to switch
+between tabs.</p>
+</blockquote>
+
+<p>I get the move to the bottom, in theory — clearly this is about reachability. But I use Safari on my iPhone <em>a lot</em> and I have never minded using a second hand to get to the controls that, heretofore, were at the top: the “ᴀA” menu, the location field, and the reload/stop button. </p>
+
+<p>Here are screenshots from Safari on iOS 14.6:</p>
+
+<p><a href="/misc/2021/06/ios-safari-14-6.png" class="noborder">
+  <img
+    src = "/misc/2021/06/ios-safari-14-6.png"
+    alt = "Screenshot of mjtsai.com in Safari on iOS 14.6."
+    width = 450
+  /></a></p>
+
+<p>and iOS 15 beta 2:</p>
+
+<p><a href="/misc/2021/06/ios-safari-15b2.png" class="noborder">
+  <img
+    src = "/misc/2021/06/ios-safari-15b2.png"
+    alt = "Screenshot of mjtsai.com in Safari on iOS 14.6."
+    width = 450
+  /></a></p>
+
+<p>Both the old and new designs put these controls one tap away: back/forward, location field, and the tabs button.</p>
+
+<p>The only other one-tap control in the new design is the “···” <s>junk drawer</s> menu button, which can be long-pressed to toggle Reader Mode. All the other controls are inside the “···” popover menu.</p>
+
+<p>The old design has no “···” menu because it doesn’t need one. It has an “ᴀA” button at the top which can be long-pressed to toggle Reader Mode and when tapped shows a popover menu of site-specific viewing options. At the bottom it has one-tap buttons for Share and Bookmarks. I use the Share and Bookmarks buttons <em>all the time</em> on my iPhone.</p>
+
+<p>The system-wide standard iOS/iPadOS Share popover menu is one of the best UIs Apple has come up with in the last decade. It is extremely useful, very well supported by both first- and third-party apps, and extraordinarily <em>consistent</em> across the entire system. Because it is widely supported and very consistent, it is well understood by users. I realize that the nature of my work is such that I deal with URLs more frequently than most people, but sharing URLs is really common.</p>
+
+<p>I also think the “ᴀA” button is a much better idea than putting all the options previously contained therein in the catch-all “···” menu. Long-pressing “ᴀA” to toggle Reader Mode feels intuitive; long-pressing “···” to toggle Reader Mode feels like they <a href="https://twitter.com/viticci/status/1402746553060806659">just didn’t know where else to put it</a>. The new iOS Safari “···” menu <a href="https://pxlnv.com/linklog/wwdc-discoverable-design/">could have been a “here’s what <em>not</em> to do” example</a> from Apple’s own <a href="https://developer.apple.com/videos/play/wwdc2021/10126/?time=287">WWDC session this year on “Discoverable Design</a>”.</p>
+
+<p>Bookmarks are almost completely lost in the new design, and unless I’m missing something, there’s no longer any way to run bookmarklets. I know bookmarklets are an old-school web nerd thing, but I have a few I use frequently, which, if Apple sticks with this design for the next year, I guess I’ll have to rewrite as Shortcuts shortcuts or something.<sup id="fnr1-2021-07-02"><a href="#fn1-2021-07-02">1</a></sup></p>
+
+<p>The only new thing the new iOS Safari design has going for it is that you can swipe side-to-side on the floating browser chrome at the bottom to switch between tabs. I don’t think that is significantly more convenient than tapping the Tabs buttons to switch tabs. How often you want to swipe through tabs one at a time rather than <em>see</em> your tabs and select one in particular? And if you swipe just a little bit too low, you wind up switching between <em>apps</em>, not tabs.</p>
+
+<p>All that said, I agree with Tsai that the new Safari for Mac is even worse:</p>
+
+<blockquote>
+  <p>For Mac, the new design makes no sense to me, and I’ll likely
+switch to Chrome if it can’t be disabled:</p>
+
+<ul>
+<li>Not only does the location bar <a href="https://twitter.com/mattbirchler/status/1405348487546429448">move</a> when you change tabs,
+but, because it changes width, all the other tabs move, too. It
+feels disorienting.</li>
+<li>With everything on one line, there’s less space for tab text
+than before.</li>
+<li>It’s harder to get at buttons and extensions <a href="https://twitter.com/viticci/status/1402743028536819718">hidden</a> under
+the <a href="https://twitter.com/siracusa/status/1402715575449686016">… menu</a>.</li>
+<li>There’s less empty space where it’s safe for me to click in
+order to drag the window.</li>
+<li>Having the page background color bleed into the tab area makes
+it harder to read, and it feels weird for the current page’s
+color to affect the way <em>other</em> tabs look. It also works
+inconsistently, even on the same pages on Apple’s site. At least
+there’s a preference to turn it off.</li>
+</ul>
+</blockquote>
+
+<p>You don’t have to install MacOS 12 Monterey to use the new Safari design; the latest versions of <a href="https://developer.apple.com/safari/technology-preview/">Safari Technology Preview</a> have it too, and Safari Technology Preview is installed as a separate app, not a replacement for the current version of Safari.</p>
+
+<p>Tabs in Safari on Mac (and, in my opinion, iPad) were a solved problem. The new Safari tab UI strikes me as being different for the sake of being different, not different for the sake of being better. The new design certainly makes Safari look distinctive. But is it more usable or discoverable in <em>any</em> way? I honestly can’t think of a single problem the new design solves other than saving about 30 points (60 @2× pixels) of vertical screen space by omitting a dedicated tab bar. But I think the tab bar was space put to good, obvious use with traditional tabs.
+<a href="https://birchtree.me/blog/safari-15-what-you-gain-and-at-what-cost/">Matt Birchler points out</a> that horizontally, the new tab design uses space <em>less</em> efficiently. Good luck convincing Chrome users to switch to Safari with this design. Not to mention that every other tabbed app in MacOS 12 still uses a traditional tab bar. It’s consistent neither with other popular web browsers nor with the rest of MacOS 12.</p>
+
+<p><a href="https://pxlnv.com/blog/safari-15-chickenshit-minimalism/">Nick Heer, writing at Pixel Envy</a>:</p>
+
+<blockquote>
+  <p>Over the past several releases of MacOS and iOS, Apple has
+experimented with hiding controls until users hover their cursor
+overtop, click, tap, or swipe. I see it as an extension of what
+<a href="https://idlewords.com/talks/website_obesity.htm#minimalism">Maciej Cegłowski memorably called</a> “chickenshit minimalism”.
+He defined it as “the illusion of simplicity backed by megabytes
+of cruft”; I see parallels in a “junk drawer” approach that
+prioritizes the appearance of simplicity over functional clarity.
+It adds complexity because it reduces clutter, and it allows UI
+designers to avoid making choices about interface hierarchy by
+burying everything but the most critical elements behind vague
+controls.</p>
+
+<p>If UI density is a continuum, the other side of chickenshit
+minimalism might be something like Microsoft’s <a href="https://en.wikipedia.org/wiki/Ribbon_(computing)#Microsoft_software">“ribbon”
+toolbar</a>. Dozens of controls of various sizes and types,
+loosely grouped by function, and separated by a tabbed UI
+creates a confusing mess. But being unnecessarily reductionist
+with onscreen controls also creates confusion. I do not want
+every web browser control available at all times, but I cannot
+see what users gain by making it harder to find the reload
+button in Safari.</p>
+</blockquote>
+
+<hr />
+
+<p>There’s an axiom widely (but alas, probably <a href="https://quoteinvestigator.com/2011/05/13/einstein-simple/">spuriously</a>) attributed to Albert Einstein: “Everything should be as simple as possible, but not simpler.” But I don’t even think that applies to this new Safari design. It’s worse. It just <em>looks</em> simpler. All the old functionality remains — it’s just harder to access, harder to discover intuitively, and more distracting. One can only presume that Apple’s HI team thinks they’re reducing needless “clutter”, but what they’re doing is systematically removing the coherence between what apps look like and the functionality they offer.</p>
+
+<p>Here’s another axiom, <a href="https://daringfireball.net/linked/2007/01/23/how-it-works">whose attribution is certain</a>: “Most people make the mistake of thinking design is what it looks like. People think it’s this veneer — that the designers are handed this box and told, ‘Make it look good!’ That’s not what we think design is. It’s not just what it looks like and feels like. Design is how it works.”</p>
+
+<div class="footnotes">
+<hr />
+<ol>
+
+<li id="fn1-2021-07-02">
+<p>“AppleScript scripts” has always felt a little repetitively awkward, but talking about shortcuts in Shortcuts is worse. I wish Apple had called them “workflows” or something instead. I might use that here at DF when I’d otherwise write “Shortcuts shortcuts” though.&nbsp;<a href="#fnr1-2021-07-02"  class="footnoteBackLink"  title="Jump back to footnote 1 in the text.">&#x21A9;&#xFE0E;</a></p>
+</li>
+
+</ol>
+</div>
+
+
+
+    ]]></content>
+  <title>★ Regarding the Safari 15 Public Betas for Mac and iOS</title></entry></feed><!-- THE END -->

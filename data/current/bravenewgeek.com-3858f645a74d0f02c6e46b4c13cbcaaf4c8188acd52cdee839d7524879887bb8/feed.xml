@@ -1,0 +1,1691 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:georss="http://www.georss.org/georss" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+
+<channel>
+	<title>Brave New Geek</title>
+	<atom:link href="https://bravenewgeek.com/feed/" rel="self" type="application/rss+xml"/>
+	<link>https://bravenewgeek.com</link>
+	<description>Introspections of a software engineer</description>
+	<lastBuildDate>Mon, 07 Dec 2020 17:24:42 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+<site xmlns="com-wordpress:feed-additions:1">11575147</site>	<item>
+		<title>Structuring a Cloud Infrastructure Organization</title>
+		<link>https://bravenewgeek.com/structuring-a-cloud-infrastructure-organization/</link>
+					<comments>https://bravenewgeek.com/structuring-a-cloud-infrastructure-organization/#comments</comments>
+		
+		<dc:creator><![CDATA[Tyler Treat]]></dc:creator>
+		<pubDate>Mon, 07 Dec 2020 17:21:46 +0000</pubDate>
+				<category><![CDATA[Cloud]]></category>
+		<category><![CDATA[Consulting]]></category>
+		<category><![CDATA[Culture]]></category>
+		<category><![CDATA[DevOps]]></category>
+		<category><![CDATA[Operations]]></category>
+		<category><![CDATA[Real Kinetic]]></category>
+		<category><![CDATA[Software Engineering]]></category>
+		<category><![CDATA[cloud]]></category>
+		<category><![CDATA[culture]]></category>
+		<category><![CDATA[developer enablement]]></category>
+		<category><![CDATA[devops]]></category>
+		<category><![CDATA[engineering culture]]></category>
+		<category><![CDATA[infrastructure engineering]]></category>
+		<category><![CDATA[ops]]></category>
+		<category><![CDATA[product development]]></category>
+		<category><![CDATA[product mindset]]></category>
+		<guid isPermaLink="false">https://bravenewgeek.com/?p=3837</guid>
+
+					<description><![CDATA[Real Kinetic often works with companies just beginning their cloud journey. Many come from a conventional on-prem IT organization, which typically looks like separate development and IT operations groups. One of the main challenges we help these clients with is how to structure their engineering organizations effectively as they make this transition. While we approach &#8230; <p class="link-more"><a href="https://bravenewgeek.com/structuring-a-cloud-infrastructure-organization/" class="more-link">Continue reading<span class="screen-reader-text"> "Structuring a Cloud Infrastructure Organization"</span></a></p><hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/structuring-a-cloud-infrastructure-organization/">Structuring a Cloud Infrastructure Organization</a> was first posted on December 7, 2020 at 11:21 am.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></description>
+										<content:encoded><![CDATA[
+<p>Real Kinetic often works with companies just beginning their cloud journey. Many come from a conventional on-prem IT organization, which typically looks like separate development and IT operations groups. One of the main challenges we help these clients with is how to structure their engineering organizations effectively as they make this transition. While we approach this problem holistically, it can generally be looked at as two components: product development and infrastructure. One might wonder if this is still the case with the shift to DevOps and cloud, but as we’ll see, these two groups still play important and distinct roles.</p>
+
+
+
+<p>We help clients understand and embrace the notion of a <em>product mindset</em> as it relates to software development. This is a fundamental shift from how many of these companies have traditionally developed software, in which development was viewed as an IT partner beholden to the business. This transformation is <a href="https://blog.realkinetic.com/digitally-transformed-becoming-a-technology-product-company-2e7978fbcc81">something I’ve discussed at length</a> and will not be the subject of this conversation. Rather, I want to spend some time talking about the other side of the coin: operations.</p>
+
+
+
+<h2>Operations in the Cloud</h2>
+
+
+
+<p>While I’ve <a href="https://blog.realkinetic.com/scaling-devops-and-the-revival-of-operations-d647ba6e2374">talked</a> about operations in the context of cloud before, it’s only been in broad strokes and not from a concrete, organizational perspective. Those discussions don’t really get to the heart of the matter and the question that so many IT leaders ask: what does an operations organization look like in the cloud?</p>
+
+
+
+<p>This, of course, is a highly subjective question to which there is no “right” answer. This is doubly so considering that every company and culture is different. I can only humbly offer my opinion and answer with what I’ve seen work in the context of particular companies with particular cultures. Bear this in mind as you think about your own company. More often than not, the cultural transformation is more arduous than the technology transformation.</p>
+
+
+
+<p>I should also caveat that—outside of being a strategic instrument—Real Kinetic is not in the business of simply helping companies lift-and-shift to the cloud. When we do, it’s always with the intention of modernizing and adapting to more cloud-native architectures. Consequently, our clients are not usually looking to merely replicate their current org structure in the cloud. Instead, they’re looking to tailor it appropriately.</p>
+
+
+
+<h2>Defining Lines of Responsibility</h2>
+
+
+
+<p>What should developers need to understand and be responsible for? There tend to be two schools of thought at two different extremes when it comes to this depending on peoples’ backgrounds and experiences. Oftentimes, developers will want more control over infrastructure and operations, having come from the constraints of a more siloed organization. On the flip side, operations folks and managers will likely be more in favor of having a separate group retain control over production environments and infrastructure for various reasons—efficiency, stability, and security to name a few. Not to mention, there are a lot of operational concerns that many developers are likely not even aware of—the sort of unsung, unglamorous bits of running software.</p>
+
+
+
+<p>Ironically, both models can be used as an argument for “DevOps.” There are also cases to be made for either. The developer argument is better delivery velocity and innovation at a <em>team</em> level. The operations argument is better stability, risk management, and cost control. There’s also likely more potential for better consistency and throughput at an <em>organization</em> level.</p>
+
+
+
+<p>The answer, unsurprisingly, is a combination of both.</p>
+
+
+
+<p>There is an inherent tension between empowering developers and running an efficient organization. We want to give developers the flexibility and autonomy they need to develop good solutions and innovate. At the same time, we also need to realize the operational efficiencies that common solutions and standardization provide in order to benefit from economies of scale. Should every developer be a generalist or should there be specialists?</p>
+
+
+
+<p>Real Kinetic helps clients adopt a model we refer to as “<a href="https://blog.realkinetic.com/operations-in-the-world-of-developer-enablement-6a54f5b8d4f5">Developer Enablement</a>.” The idea of Developer Enablement is shifting the focus of ops teams from being “masters” of production to “enablers” of production by applying a product lens to operations. In practical terms, this means less running production workloads on behalf of developers and more providing tools and products that allow developers to run workloads themselves. It also means thinking of operations less as a task-driven service model and more as a strategic enabler. However, Developer Enablement is <em>not</em> about giving full autonomy to developers to do as they please, it’s about providing the abstractions they need to be successful on the platform while realizing the operational efficiencies possible in a larger organization. This means providing common tooling, products, and patterns. These are developed in partnership with product teams so that they meet the needs of the organization. Some companies might refer to this as a “platform” team, though I think this has a slightly different meaning. So how does this map to an actual organization?</p>
+
+
+
+<h2>Mapping Out an Engineering Organization</h2>
+
+
+
+<p>First, let’s mentally model our engineering organization as two groups: Product Development and Infrastructure and Reliability. The first is charged with developing products for end users and customers. This is the stuff that makes the business money. The second is responsible for supporting the first. This is where the notion of “developer enablement” comes into play. And while this group isn’t necessarily doing work that is directly strategic to the business, it is work that is critical to providing efficiencies and keeping the lights on just the same. This would traditionally be referred to as Operations.</p>
+
+
+
+<figure class="wp-block-image size-large is-resized"><img loading="lazy" src="https://bravenewgeek.com/wp-content/uploads/2020/12/engineering_organization.jpg" alt="" class="wp-image-3838" width="674" height="446" srcset="https://bravenewgeek.com/wp-content/uploads/2020/12/engineering_organization.jpg 710w, https://bravenewgeek.com/wp-content/uploads/2020/12/engineering_organization-300x199.jpg 300w" sizes="(max-width: 674px) 100vw, 674px" /></figure>
+
+
+
+<p>As mentioned above, the focus of this discussion is the green box. And as you might infer from the name, this group is itself composed of two subgroups. Infrastructure is about enabling product teams, and Reliability is about providing a first line of defense when it comes to triaging production incidents. This latter subgroup is, in and of itself, its own post and worthy of a separate discussion, so we’ll set that aside for another day. We are really focused on what a cloud <em>infrastructure</em> organization might look like. Let’s drill down on that piece of the green box.</p>
+
+
+
+<h2>An Infrastructure Organization Model</h2>
+
+
+
+<p>When thinking about organization structure, I find that it helps to consider <em>layers of operational concern</em> while mapping the ownership of those concerns. The below diagram is an example of this. Note that these do not necessarily map to specific team boundaries. Some areas may have overlap, and responsibilities may also shift over time. This is mostly an exercise to identify key organizational needs and concerns.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="798" height="612" src="https://bravenewgeek.com/wp-content/uploads/2020/12/layers_of_operational_concern.jpg" alt="" class="wp-image-3839" srcset="https://bravenewgeek.com/wp-content/uploads/2020/12/layers_of_operational_concern.jpg 798w, https://bravenewgeek.com/wp-content/uploads/2020/12/layers_of_operational_concern-300x230.jpg 300w, https://bravenewgeek.com/wp-content/uploads/2020/12/layers_of_operational_concern-768x589.jpg 768w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /></figure>
+
+
+
+<p>We like to model the infrastructure organization as three teams: Developer Productivity, Infrastructure Engineering, and Cloud Engineering. Each team has its own charter and mission, but they are all in support of the overarching objective of enabling product development efficiently and at scale. In some cases, these teams consist of just a handful of engineers, and in other cases, they consist of dozens or hundreds of engineers depending on the size of the organization and its needs. These team sizes also <em>change</em> as the priorities and needs of the company evolve over time.</p>
+
+
+
+<h3>Developer Productivity</h3>
+
+
+
+<p>Developer Productivity is tasked with getting ideas from an engineer’s brain to a deployable artifact as efficiently as possible. This involves building or providing solutions for things like CI/CD, artifact repositories, documentation portals, developer onboarding, and general developer tooling. This team is primarily an <em>engineering spend multiplier</em>. Often a small Developer Productivity team can create a great deal of leverage by providing these different tools and products to the organization. Their core mandate is reducing friction in the delivery process.</p>
+
+
+
+<h3>Infrastructure Engineering</h3>
+
+
+
+<p>The Infrastructure Engineering team is responsible for making the process of getting a deployable artifact to production and managing it as painless as possible for product teams. Often this looks like providing an “opinionated platform” on top of the cloud provider. Completely opening up a platform such as AWS for developers to freely use can be problematic for larger organizations because of cost and time inefficiencies. It also makes security and compliance teams’ jobs much more difficult. Therefore, this group must walk the fine line between providing developers with enough flexibility to be productive and move fast while ensuring aggregate efficiencies to maintain organization-wide throughput as well as manage costs and risk. This can look like providing a Kubernetes cluster as a service with opinions around components like load balancing, logging, monitoring, deployments, and intra-service communication patterns. Infrastructure Engineering should also provide tooling for teams to manage production services in a way that meets the organization’s regulatory requirements.</p>
+
+
+
+<p>The question of ownership is important. In some organizations, the Infrastructure Engineering team may own and operate infrastructure services, such as common compute clusters, databases, or message queues. In others, they might simply provide opinionated guard rails around these things. Most commonly, it is a combination of both. Without this, it’s easy to end up with every team running their own unique messaging system, database, cache, or other piece of infrastructure. You’ll have lots of <a href="https://www.joelonsoftware.com/2001/04/21/dont-let-architecture-astronauts-scare-you/">architecture astronauts</a> on your hands, and they will need to be able to answer questions around things like high availability and disaster recovery. This leads to significant inefficiencies and operational issues. Even if there isn’t shared infrastructure, it’s valuable to have an opinionated set of technologies to consolidate institutional knowledge, tooling, patterns, and practices. This doesn’t have to act as a hard-and-fast rule, but it means teams should be able to make a good case for operating outside of the guard rails provided.</p>
+
+
+
+<p>This model is different from traditional operations in that it takes a product-mindset approach to providing solutions to internal customers. This means it’s important that the group is able to understand and empathize with the product teams they serve in order to identify areas for improvement. It also means productizing and automating traditional operations tasks while encouraging good patterns and practices. This is a radical departure from the way in which most operations teams normally operate. It’s closer to how a product development team should work.</p>
+
+
+
+<p>This group should also own standards around things like logging and instrumentation. These standards allow the team to develop tools and services that deal with this data across the entire organization. I’ve talked about this notion with the <a href="https://blog.realkinetic.com/the-observability-pipeline-3010484eb931">Observability Pipeline</a>.</p>
+
+
+
+<h3>Cloud Engineering</h3>
+
+
+
+<p>Cloud Engineering might be closest to what most would consider a conventional operations team. In fact, we used to refer to this group as Cloud Operations but have since moved away from that vernacular due to the connotation the word “operations” carries. This group is responsible for handling common low-level concerns, underlying subsystems management, and realizing efficiencies at an aggregate level. Let’s break down what that means in practice by looking at some examples. We’ll continue using AWS to demonstrate, but the same applies across any cloud provider.</p>
+
+
+
+<p>One of the low-level concerns this group is responsible for is AMI and base container image maintenance. This might be the AMIs used for Kubernetes nodes and the base images used by application pods running in the cluster. These are critical components as they directly relate to the organization’s security and compliance posture. They are also pieces most developers in a large organization are not well-equipped to—or interested in—dealing with. Patch management is a fundamental concern that often takes a back seat to feature development. Other examples of this include network configuration, certificate management, logging agents, intrusion detection, and SIEM. These are all important aspects of keeping the lights on and the company’s name out of the news headlines. Having a group that specializes in these shared operational concerns is vital.</p>
+
+
+
+<p>In terms of realizing efficiencies, this mostly consists of managing AWS accounts, organization policies (another important security facet), and billing. This group owns cloud spend across the organization and, as a result, is able to monitor cumulative usage and identify areas for optimization. This might look like implementing resource-tagging policies, managing Reserved Instances, or negotiating with AWS on committed spend agreements. Spend is one of the reasons large companies standardize on a single cloud platform, so it’s essential to have good visibility and ownership over this. Note that this team is not responsible for the spend itself, rather they are responsible for visibility into the spend and cost allocations to hold teams accountable.</p>
+
+
+
+<p>The unfortunate reality is that if the Cloud Engineering team does their job well, no one really thinks about them. That’s just the nature of this kind of work, but it has a <em>massive</em> impact on the company’s bottom line.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="665" src="https://bravenewgeek.com/wp-content/uploads/2020/12/infrastructure_organization-1024x665.jpg" alt="" class="wp-image-3840" srcset="https://bravenewgeek.com/wp-content/uploads/2020/12/infrastructure_organization-1024x665.jpg 1024w, https://bravenewgeek.com/wp-content/uploads/2020/12/infrastructure_organization-300x195.jpg 300w, https://bravenewgeek.com/wp-content/uploads/2020/12/infrastructure_organization-768x499.jpg 768w, https://bravenewgeek.com/wp-content/uploads/2020/12/infrastructure_organization.jpg 1027w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /></figure>
+
+
+
+<h2>Summary</h2>
+
+
+
+<p>Depending on the company culture, words like “standards” and “opinionated” might be considered taboo. These can be especially unsettling for developers who have worked in rigid or siloed environments. However, it doesn’t have to be all or nothing. These opinions are more meant to serve as a beaten path which makes it easier and faster for teams to deliver products and focus on business value. In fact, opinionation will accelerate cloud adoption for many organizations, enable creativity on the <em>value</em> rather than solution architecture, and improve efficiency and consistency at a number of levels like skills, knowledge, operations, and security. The key is in understanding how to balance this with flexibility so as to not overly constrain developers.</p>
+
+
+
+<p>We like taking a product approach to operations because it moves away from the “ticket-driven” and gatekeeper model that plagues so many organizations. By thinking like a product team, infrastructure and operations groups are better able to serve developers. They are also better able to <em>scale</em>—something that is consistently difficult for more interrupt-driven ops teams who so often find themselves becoming the bottleneck.</p>
+
+
+
+<p>Notice that I’ve entirely sidestepped terms like “DevOps” and “SRE” in this discussion. That is intentional as these concepts frequently serve as a distraction for companies who are just beginning their journey to the cloud. There are ideas encapsulated by these philosophies which provide important direction and practices, but it’s imperative to not get too caught up in the dogma. Otherwise, it’s easy to spin your wheels and chase things that, at least early on, are not particularly meaningful. It’s more impactful to focus on fundamentals and finding some success early on versus trying to approach things as <a href="https://blog.gardeviance.org/2015/03/on-pioneers-settlers-town-planners-and.html">town planners</a>.</p>
+
+
+
+<p>Moreover, for many companies, the organization model I walked through above was the result of evolving and adapting as needs changed and less of a wholesale reorg. In the spirit of product mindset, we encourage starting small and iterating as opposed to boiling the ocean. The model above can hopefully act as a framework to help you identify needs and areas of ownership within your own organization. Keep in mind that these areas of responsibility might shift over time as capabilities are implemented and added.</p>
+
+
+
+<p>Lastly, do not mistake this framework as something that might preclude exploration, learning, and innovation on the part of development teams. Again, opinionation and standards are not binding but rather act as a path of least resistance to facilitate efficiency. It’s important teams have a safe playground for exploratory work. Ideally, new ideas and discoveries that are shown to add value can be standardized over time and become part of that beaten path. This way we can make them more repeatable and scale their benefits rather than keeping them as one-off solutions.</p>
+
+
+
+<p>How has your organization approached cloud development? What’s worked? What hasn’t? I’d love to hear from you.</p>
+<hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/structuring-a-cloud-infrastructure-organization/">Structuring a Cloud Infrastructure Organization</a> was first posted on December 7, 2020 at 11:21 am.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></content:encoded>
+					
+					<wfw:commentRss>https://bravenewgeek.com/structuring-a-cloud-infrastructure-organization/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">3837</post-id>	</item>
+		<item>
+		<title>We suck at meetings</title>
+		<link>https://bravenewgeek.com/we-suck-at-meetings/</link>
+					<comments>https://bravenewgeek.com/we-suck-at-meetings/#comments</comments>
+		
+		<dc:creator><![CDATA[Tyler Treat]]></dc:creator>
+		<pubDate>Tue, 10 Nov 2020 19:16:18 +0000</pubDate>
+				<category><![CDATA[Consulting]]></category>
+		<category><![CDATA[Culture]]></category>
+		<category><![CDATA[Real Kinetic]]></category>
+		<category><![CDATA[consulting]]></category>
+		<category><![CDATA[culture]]></category>
+		<category><![CDATA[product development]]></category>
+		<category><![CDATA[productivity]]></category>
+		<category><![CDATA[real kinetic]]></category>
+		<category><![CDATA[witful]]></category>
+		<guid isPermaLink="false">https://bravenewgeek.com/?p=3832</guid>
+
+					<description><![CDATA[I’ve worked as a software engineer, manager, consultant, and business owner. All of these jobs have involved meetings. What those meetings look like has varied greatly. As an engineer, meetings typically entailed technical conversations with peers, one-on-ones with managers, and planning meetings or demos with stakeholders. As a manager, these looked more like quarterly goal-setting &#8230; <p class="link-more"><a href="https://bravenewgeek.com/we-suck-at-meetings/" class="more-link">Continue reading<span class="screen-reader-text"> "We suck at meetings"</span></a></p><hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/we-suck-at-meetings/">We suck at meetings</a> was first posted on November 10, 2020 at 1:16 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></description>
+										<content:encoded><![CDATA[
+<figure class="wp-block-image size-large"><img loading="lazy" width="900" height="280" src="https://bravenewgeek.com/wp-content/uploads/2020/11/dilbert.gif" alt="" class="wp-image-3833"/></figure>
+
+
+
+<p>I’ve worked as a software engineer, manager, consultant, and business owner. All of these jobs have involved meetings. What those meetings look like has varied greatly.</p>
+
+
+
+<p>As an engineer, meetings typically entailed technical conversations with peers, one-on-ones with managers, and planning meetings or demos with stakeholders.</p>
+
+
+
+<p>As a manager, these looked more like quarterly goal-setting with engineering leadership, one-on-ones with direct reports, and decision-making discussions with the team.</p>
+
+
+
+<p>As a consultant, my day often consists of talking to clients to provide input and guidance, communicating with partners to develop leads and strategize on accounts, and meeting with sales prospects to land new deals.</p>
+
+
+
+<p>As a business owner, I am in conversations with attorneys and accountants regarding legal and financial matters, with advisors and brokers for things like employee benefits and health insurance, and with my co-owner Robert to discuss items relating to business operations.</p>
+
+
+
+<p>What I’ve come to realize is this: <em>we suck at meetings</em>. We’re really bad at them. After starting my first job out of college, I quickly discovered that everyone’s just winging it when it comes to meetings. We’re winging it in a way the likes of which Dilbert himself would envy. We’re so bad at it that it’s become a meme in the corporate world. Whether it’s joking about your lack of productivity due to the number of meetings you have or <em>that one meeting that could have been an email</em>, we’ve basically come to terms with the fact that most meetings are just not very good.</p>
+
+
+
+<p>And who’s to blame? There’s no science to meetings. It’s not something they teach you in school. Everyone just shows up and sort of finds a system that works—or <em>doesn’t</em> work—for them. What’s most shocking to me, however, is that meetings are one of the most <em>expensive</em> things a business can do—like <a href="https://meeting-report.com/financial-impact-of-meetings/0">billions-of-dollars expensive</a>. If you’re going to pay a bunch of people a lot of money to talk to other people who you’re similarly paying a lot of money, you probably want that talking to be worthwhile, right? And yet here we are, jumping from one meeting to the next, unable to even process what was said in the last one. It’s become an inside joke that every company is in on.</p>
+
+
+
+<p>But meetings are also <em>important</em>. They’re where collaboration happens, where ideas are born, where decisions are made. Is being “good at meetings” a legitimate hiring criteria? <em>Should it be?</em></p>
+
+
+
+<p>From all of the meetings I’ve had across these different jobs, I’ve learned that the biggest difference throughout is that of the <em>role</em> played in the meeting. In some cases, it’s The Spectator—there mostly to listen and maybe ask questions. In other cases, it’s playing the role of The Advisor—actively participating in the meeting but mostly in the form of offering advice and guidance. Sometimes it’s The Facilitator, who helps move the agenda along, captures notes, and keeps track of action items or decisions. It might be the Decision Maker, who’s there to decide which way to go and be the tie breaker.</p>
+
+
+
+<p>Whatever the role, I’ve consistently struggled with how to insert the most value <em>into</em> meetings and extract the most value <em>out of</em> them. This is doubly so when your job revolves around people, which I didn’t recognize until I became a manager and, later, consultant. In these roles, your calendar is usually stacked with meetings, often with different groups of people across many different contexts. A software engineer’s work happens outside of meetings, but for a manager or consultant, it revolves around what gets done <em>during</em> and <em>after</em> meetings. This is true of a lot of other roles as well.</p>
+
+
+
+<p>I’ve always had a vague sense for how to do meetings effectively—have a clear purpose or desired outcome, gather necessary context and background information, include an agenda, invite only the people you need, be present and engaged in the discussion, document the action items and decisions, follow up. The problem is I’ve never had a system for doing it that wasn’t just ad hoc and scattered. Also, most of these things happen <em>outside</em> of the conference room or Zoom call, and who has the time to do all of that when your schedule looks like a Dilbert calendar? All of it culminates in a feeling of severe meeting fatigue.</p>
+
+
+
+<p>That’s when it occurred to us: <a href="https://www.linkedin.com/pulse/what-meetings-could-good-mike-taylor/"><em>what if meetings could be good?</em></a> Shortly after starting <a href="https://realkinetic.com/">Real Kinetic</a>, we began to explore this question, but the idea had been rattling around our heads long before that. And so <a href="https://witful.com/our-story/">we started to develop a solution</a>, first by building a prototype on nights and weekends, then later by investing in it as a full-fledged product. We call it <a href="https://witful.com">Witful</a>—a note-taking app that connects to your calendar. It’s deceptively simple, but its mission is not: <em>make meetings suck less.</em></p>
+
+
+
+<p>Most calendar and note-taking apps focus on time. After all, what’s the first thing we do when we create a meeting? We <em>schedule</em> it. When it comes to meetings, time is important for logistical purposes—it’s how we know when we need to be somewhere. But the real value of meetings is not time, it’s the people and discussion, decisions, and action items that result. This is what Witful emphasizes by creating a network of all these relationships. It’s less an extension of your notebook and calendar and—forgive the cliche—more like an extension of your <em>brain</em>. It’s a more natural way to organize the information around your work.</p>
+
+
+
+<p>We’re still early on this journey, but the product is evolving quickly. We’ve also been clear from the start: Witful isn’t for everyone. If your day is not run by your calendar, it might not be for you. If your role doesn&#8217;t center around managing people or maintaining relationships, it might not be for you. Our focus right now is to make you better at meetings. We want to give you the tools and resources you need to conquer your calendar and look good doing it. We use Witful every day to make our consulting work more manageable at Real Kinetic. And while we’re focused on empowering the individual today, our eyes are set towards making <em>teams</em> better at meetings too.</p>
+
+
+
+<p>We don’t want to change the way people work, we want to help them do their <em>best</em> work. We want to make meetings suck less. Come join us.</p>
+<hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/we-suck-at-meetings/">We suck at meetings</a> was first posted on November 10, 2020 at 1:16 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></content:encoded>
+					
+					<wfw:commentRss>https://bravenewgeek.com/we-suck-at-meetings/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">3832</post-id>	</item>
+		<item>
+		<title>Getting big wins with small teams on tight deadlines</title>
+		<link>https://bravenewgeek.com/getting-big-wins-with-small-teams-on-tight-deadlines/</link>
+					<comments>https://bravenewgeek.com/getting-big-wins-with-small-teams-on-tight-deadlines/#comments</comments>
+		
+		<dc:creator><![CDATA[Tyler Treat]]></dc:creator>
+		<pubDate>Mon, 02 Nov 2020 21:52:40 +0000</pubDate>
+				<category><![CDATA[Cloud]]></category>
+		<category><![CDATA[Operations]]></category>
+		<category><![CDATA[Software Architecture]]></category>
+		<category><![CDATA[architecture]]></category>
+		<category><![CDATA[cloud]]></category>
+		<category><![CDATA[managed services]]></category>
+		<category><![CDATA[serverless]]></category>
+		<category><![CDATA[vendor lock-in]]></category>
+		<guid isPermaLink="false">https://bravenewgeek.com/?p=3825</guid>
+
+					<description><![CDATA[Part of what we do at Real Kinetic is give companies confidence to ship software in the cloud. Many of our clients are large organizations that have been around for a long time but who don’t always have much experience when it comes to cloud. Others are startups and mid-sized companies who may have some &#8230; <p class="link-more"><a href="https://bravenewgeek.com/getting-big-wins-with-small-teams-on-tight-deadlines/" class="more-link">Continue reading<span class="screen-reader-text"> "Getting big wins with small teams on tight deadlines"</span></a></p><hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/getting-big-wins-with-small-teams-on-tight-deadlines/">Getting big wins with small teams on tight deadlines</a> was first posted on November 2, 2020 at 3:52 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></description>
+										<content:encoded><![CDATA[
+<p>Part of what we do at Real Kinetic is give companies confidence to ship software in the cloud. Many of our clients are large organizations that have been around for a long time but who don’t always have much experience when it comes to cloud. Others are startups and mid-sized companies who may have some experience, but might just want another set of eyes or are looking to mature some of their practices. Whatever the case, one of the things we frequently talk to our clients about is the value of both serverless and managed services. We have found that these are critical to getting big wins with small teams on tight deadlines in the cloud. Serverless in particular has been key to helping clients get some big wins in ways others didn’t think possible.</p>
+
+
+
+<p>We often get pulled into a company to help them develop and launch new products in the cloud. These are typically high-profile projects with tight deadlines. These deadlines are almost always in terms of <em>months</em>, usually less than six. As a result, many of the executives and managers we talk to in these situations are skeptical of their team’s ability to execute on these types of timeframes. Whether it’s lack of cloud experience, operations and security concerns, compliance issues, staffing constraints, or some combination thereof, there’s always a reason as to why it can’t be done.</p>
+
+
+
+<p>And then, some months later, it gets done.</p>
+
+
+
+<h1>Mental Model of the Cloud</h1>
+
+
+
+<p>The skepticism is valid. Often people’s mental model of the cloud is something like this:</p>
+
+
+
+<figure class="wp-block-image size-large is-resized"><img loading="lazy" src="https://bravenewgeek.com/wp-content/uploads/2020/11/cloud_infrastructure-1024x590.png" alt="" class="wp-image-3826" width="674" height="388" srcset="https://bravenewgeek.com/wp-content/uploads/2020/11/cloud_infrastructure-1024x590.png 1024w, https://bravenewgeek.com/wp-content/uploads/2020/11/cloud_infrastructure-300x173.png 300w, https://bravenewgeek.com/wp-content/uploads/2020/11/cloud_infrastructure-768x442.png 768w, https://bravenewgeek.com/wp-content/uploads/2020/11/cloud_infrastructure.png 1333w" sizes="(max-width: 674px) 100vw, 674px" /><figcaption>A subset of typical cloud infrastructure concerns</figcaption></figure>
+
+
+
+<p>More often than not, this is what cloud infrastructure looks like. In addition to what’s shown, there are other concerns. These include things like managing backups and disaster recovery, multi-zone or regional deployments, VM images, and reserved instances. It can be deceiving because simply getting an app <em>running</em> in this environment isn’t terribly difficult, and most engineers will tell you that—these are the “day-one” costs. But engineers don’t tend to be the best at giving estimates while still <a href="https://blog.realkinetic.com/stop-wasting-your-beer-money-12c3fe5e4d54">undervaluing their own time</a>. The minds of most seasoned managers, however, will usually go to the “day-two” costs—what are the ongoing maintenance and operations costs, the security and compliance considerations, and the staffing requirements? This is why we consistently see so much skepticism. If this is also your initial foray into the cloud, that’s a lot of uncertainty! A manager’s job, after all, is to <a href="https://blog.realkinetic.com/trust-uncertainty-and-being-a-great-manager-28bc10f5d25a">reduce uncertainty</a>.</p>
+
+
+
+<p>We’ve been there. We’ve also had to <em>manage</em> those day-two costs. I’ve personally gone through the phases of building a complex piece of software in the cloud, having to maintain one, having to manage a team responsible for one, and having to help a team go through the same process as an outside consultant. Getting that perspective has helped me develop an appreciation for what it really means to ship software. It’s why we like to take a different tack at Real Kinetic when it comes to cloud.</p>
+
+
+
+<p>We are big on picking a cloud platform and going all-in on it. Whether it’s AWS, GCP, or Azure—pick your platform, embrace its capabilities, and move on. That doesn’t mean there isn’t room to use multiple clouds. Some platforms are better than others in different areas, such as data analytics or machine learning, so it’s wise to leverage the strengths of each platform where it makes sense. This is especially true for larger organizations who will inevitably span multiple clouds. What we mean by going “all-in” on a platform, particularly as it relates to application development, is sidestepping <a href="https://bravenewgeek.com/multi-cloud-is-a-trap/">the trap that so many organizations fall into</a>—<em>hedging their bets</em>. For a variety of reasons, many companies will take a half measure when adopting a cloud platform by avoiding things like managed services and serverless. Vendor lock-in is usually at the top of their list of concerns. Instead, they end up with something akin to the diagram above, and in doing so, lose out on the differentiated benefits of the platform. They also incur significantly more day-two costs.</p>
+
+
+
+<h1>The Value and Cost of Serverless</h1>
+
+
+
+<p>We spend a lot of time talking to our clients about this trade-off. With managers, it usually resonates when we ask if they want their people focusing on shipping business value or doing commodity work. With engineers, architects, or operations folks, it can be more contentious. On more than a few occasions, we’ve talked clients <em>out</em> of using Kubernetes for things that were well-suited to serverless platforms. Serverless is not the right fit for everything, but the reality is many of the workloads we encounter are primarily CRUD-based microservices. These can be a good fit for platforms like AWS Lambda, Google App Engine, or Google Cloud Run. The organizations we’ve seen that have adopted these services for the correct use cases have found reduced operations investment, increased focus on shipping things that matter to the business, accelerated delivery of new products, and better cost efficiency in terms of infrastructure utilization.</p>
+
+
+
+<p>If vendor lock-in is your concern, it’s important to understand both the constraints and the trade-offs. Not all serverless platforms are created equal. Some are highly opinionated, others are not. In the early days, Google App Engine was highly opinionated, requiring you to use its own APIs to build your application. This meant moving an application built on App Engine was no small feat. Today, that is no longer the case; the new App Engine runtimes allow you to run just about any application. Cloud Run, a serverless container platform, allows you to deploy a container that can run <em>anywhere</em>. The costs are even less. On the other hand, using a serverless database like Cloud Firestore or DynamoDB requires using a proprietary API, but APIs can be abstracted.</p>
+
+
+
+<p>In order to decide if the trade-off makes sense, you need to determine three things:</p>
+
+
+
+<ol><li>What is the honest likelihood you’ll need to move in the future?</li><li>What are the switching costs—the amount of time and effort needed to move?</li><li>What is the value you get using the solution?</li></ol>
+
+
+
+<p>These are not always easy things to determine, but the general rule is this: if the value you’re getting offsets the switching costs times the probability of switching—and it often does—then it’s not worth trying to hedge your bet. There can be a lot of hidden considerations, namely operations and development overhead and opportunity costs. It can be easy to forget about these when making a decision. In practice, vendor lock-in tends to be less about code portability and more about <em>capability lock-in</em>—think things like user management, Identity and Access Management, data management, cloud-specific features and services, and so forth. These are what make switching hard, not code.</p>
+
+
+
+<p>Another concern we commonly hear with serverless is cost. In our experience, however, this is rarely an issue for appropriate use cases. While serverless can be more expensive in terms of cloud spend for some situations, this cost is normally offset by the reduced engineering and ongoing operations costs. Using serverless and managed services for the right things can be quite cost-effective. This may not always hold true, such as for large organizations who can negotiate with providers for committed cloud spend, but for many cases it makes sense.</p>
+
+
+
+<p>Serverless isn’t just about compute. While people typically associate serverless with things like Lambda or Cloud Functions, it actually extends far beyond this. For example, in addition to its serverless compute offerings (Cloud Run, Cloud Functions, and App Engine), GCP has serverless storage (Cloud Storage, Firestore, and Datastore), serverless integration components (Cloud Tasks, Pub/Sub, and Scheduler), and serverless data and machine learning services (BigQuery, AutoML, and Dataflow). While each of these services individually offers a lot of value, it’s not until we start to <em>compose</em> them together in different ways where we really see the value of serverless appear.</p>
+
+
+
+<h1>Serverless vs. Managed Services</h1>
+
+
+
+<p>Some might consider the services I mentioned above “managed services”, so let me clarify that. We generally talk about “serverless” being the idea that the cloud provider fully manages and maintains the server infrastructure. This means the notion of “managed services” and “serverless” are closely related, but they are also distinct.</p>
+
+
+
+<p>A serverless product is also <em>managed</em>, but not all managed services are <em>serverless</em>. That is to say, serverless is a <em>subset</em> of managed services.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="898" height="568" src="https://bravenewgeek.com/wp-content/uploads/2020/11/serverless_vs_managed_service.png" alt="" class="wp-image-3827" srcset="https://bravenewgeek.com/wp-content/uploads/2020/11/serverless_vs_managed_service.png 898w, https://bravenewgeek.com/wp-content/uploads/2020/11/serverless_vs_managed_service-300x190.png 300w, https://bravenewgeek.com/wp-content/uploads/2020/11/serverless_vs_managed_service-768x486.png 768w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /></figure>
+
+
+
+<p>Serverless means you stop thinking about the concept of servers in your architecture. This broadly encompasses words like “servers”, “instances”, “nodes”, and “clusters.” Continuing with our GCP example, these words would be associated with products like GKE, Dataproc, Bigtable, Cloud SQL, and Spanner. These services are decidedly <em>not</em> serverless because they entail some degree of managing and configuring servers or clusters, even though they are managed services.</p>
+
+
+
+<p>Instead, you start thinking in terms of <em>APIs and services</em>. This would be things like Cloud Functions, Dataflow, BigQuery, Cloud Run, and Firestore. These have no servers or clusters. They are simply APIs that you interact with to build your applications. They are more specialized managed services.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="567" src="https://bravenewgeek.com/wp-content/uploads/2020/11/serverless_vs_managed_service_gcp-1024x567.png" alt="" class="wp-image-3828" srcset="https://bravenewgeek.com/wp-content/uploads/2020/11/serverless_vs_managed_service_gcp-1024x567.png 1024w, https://bravenewgeek.com/wp-content/uploads/2020/11/serverless_vs_managed_service_gcp-300x166.png 300w, https://bravenewgeek.com/wp-content/uploads/2020/11/serverless_vs_managed_service_gcp-768x425.png 768w, https://bravenewgeek.com/wp-content/uploads/2020/11/serverless_vs_managed_service_gcp.png 1040w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /></figure>
+
+
+
+<p>Why does this distinction matter? It matters because of the ramifications it has for where we invest our time. Managing servers and clusters is going to involve a lot more operations effort, even if the base infrastructure is managed by the cloud provider. Much of this work can be considered “commodity.” It is not work that differentiates the business. This is the trade-off of getting more control—we take on more responsibility. In rough terms, the managed services that live outside of the serverless circle are going to be more in the direction of “DevOps”, meaning they will involve more operations overhead. The managed services inside the serverless circle are going to be more in the direction of “NoOps”. There is still work involved in <em>using</em> them, but the line of responsibility has moved upwards with the cloud provider responsible for more. We get less control over the infrastructure, but that means we can focus more on the business outcomes we develop on top of that infrastructure.</p>
+
+
+
+<p>In fairness, it’s not always a black-and-white determination. Things can get a little blurry since serverless might still provide some degree of control over runtime parameters like memory or CPU, but this tends to be limited in comparison to managing a full server. There might also be some notion of “instances”, as in the case of App Engine, but that notion is much more abstract. Finally, some services appear to straddle the line between managed service and serverless. App Engine Flex, for instance, allows you to SSH into its VMs, but you have no real control over them. It’s a heavily sandboxed environment.</p>
+
+
+
+<h1>Why Serverless?</h1>
+
+
+
+<p>Serverless enables focusing on business outcomes. By leveraging serverless offerings across cloud platforms, we’ve seen product launches go from years to months (and often single-digit months). We’ve seen release cycles go from weeks to hours. We’ve seen development team sizes go from double digits to a few people. We’ve seen ops teams go from dozens of people to just one or two. It’s allowed these people to focus on more differentiated work. It’s given small teams of people a significant amount of leverage.</p>
+
+
+
+<p>It’s no secret. Serverless is how we’ve helped many of our clients at Real Kinetic get big wins with small teams on tight deadlines. It’s not always the right fit and there are always trade-offs to consider. But if you’re not at least considering serverless—and more broadly, managed services—then you’re not getting the value you should be getting out of your cloud platform. Keep in mind that it doesn’t have to be all or nothing. Find the places where you can leverage serverless in combination with managed services or more traditional infrastructure. You too will be surprising and impressing your managers and leadership.</p>
+<hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/getting-big-wins-with-small-teams-on-tight-deadlines/">Getting big wins with small teams on tight deadlines</a> was first posted on November 2, 2020 at 3:52 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></content:encoded>
+					
+					<wfw:commentRss>https://bravenewgeek.com/getting-big-wins-with-small-teams-on-tight-deadlines/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">3825</post-id>	</item>
+		<item>
+		<title>Continuous Deployment for AWS Glue</title>
+		<link>https://bravenewgeek.com/continuous-deployment-for-aws-glue/</link>
+					<comments>https://bravenewgeek.com/continuous-deployment-for-aws-glue/#comments</comments>
+		
+		<dc:creator><![CDATA[Tyler Treat]]></dc:creator>
+		<pubDate>Thu, 15 Oct 2020 15:51:25 +0000</pubDate>
+				<category><![CDATA[Analytics]]></category>
+		<category><![CDATA[AWS]]></category>
+		<category><![CDATA[Cloud]]></category>
+		<category><![CDATA[analytics]]></category>
+		<category><![CDATA[analytics pipeline]]></category>
+		<category><![CDATA[aws]]></category>
+		<category><![CDATA[aws glue]]></category>
+		<category><![CDATA[ci/cd]]></category>
+		<category><![CDATA[continuous delivery]]></category>
+		<category><![CDATA[etl]]></category>
+		<category><![CDATA[github]]></category>
+		<category><![CDATA[github actions]]></category>
+		<category><![CDATA[jupyter]]></category>
+		<category><![CDATA[serverless]]></category>
+		<guid isPermaLink="false">https://bravenewgeek.com/?p=3813</guid>
+
+					<description><![CDATA[AWS Glue is a managed service for building ETL (Extract-Transform-Load) jobs. It’s a useful tool for implementing analytics pipelines in AWS without having to manage server infrastructure. Jobs are implemented using Apache Spark and, with the help of Development Endpoints, can be built using Jupyter notebooks. This makes it reasonably easy to write ETL processes &#8230; <p class="link-more"><a href="https://bravenewgeek.com/continuous-deployment-for-aws-glue/" class="more-link">Continue reading<span class="screen-reader-text"> "Continuous Deployment for AWS Glue"</span></a></p><hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/continuous-deployment-for-aws-glue/">Continuous Deployment for AWS Glue</a> was first posted on October 15, 2020 at 10:51 am.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></description>
+										<content:encoded><![CDATA[
+<p><a href="https://aws.amazon.com/glue">AWS Glue</a> is a managed service for building ETL (Extract-Transform-Load) jobs. It’s a useful tool for implementing analytics pipelines in AWS without having to manage server infrastructure. Jobs are implemented using Apache Spark and, with the help of <a href="https://docs.aws.amazon.com/glue/latest/dg/dev-endpoints.html">Development Endpoints</a>, can be built using Jupyter notebooks. This makes it reasonably easy to write ETL processes in an interactive, iterative fashion. Once finished, the Jupyter notebook is converted into a Python script, uploaded to S3, and then run as a Glue job.</p>
+
+
+
+<p>There are a number of steps involved in doing this, so it can be worthwhile to automate the process into a CI/CD pipeline. In this post, I’ll show you how you can build an automated pipeline using GitHub Actions to do continuous deployment of Glue jobs built on PySpark and Jupyter notebooks. The <a href="https://github.com/RealKinetic/aws-glue-pipeline-example">full code</a> for this demo is available on GitHub.</p>
+
+
+
+<h2>The Abstract Workflow</h2>
+
+
+
+<p>First, I’m going to assume you already have a notebook for which you’d like to set up continuous deployment. If you don’t, you can take a look at my <a href="https://github.com/RealKinetic/aws-glue-pipeline-example/blob/master/traffic.ipynb">example</a>, but keep in mind you’ll need to have the appropriate data sources and connections set up in Glue for it to work. This post won’t be focusing on the ETL script itself but rather the build and deployment pipeline for it.</p>
+
+
+
+<p>I recommend treating your Jupyter notebooks as the “source code” for your ETL jobs and treating the resulting Python script as the “build artifact.” Though this can present challenges for diffing, I find providing the notebook from which the code was derived makes the development process easier, particularly when collaborating with other developers. Additionally, GitHub has good support for rendering Jupyter notebooks, and there is tooling available for diffing notebooks, such as <a href="https://github.com/jupyter/nbdime">nbdime</a>.</p>
+
+
+
+<p>With that in mind, the general flow of our deployment pipeline looks something like this:</p>
+
+
+
+<ol><li>Upon new commits to master, generate a Python script from the Jupyter notebook.</li><li>Copy the generated Python script to an S3 bucket.</li><li>Update a Glue job to use the new script.</li></ol>
+
+
+
+<p>You might choose to run some unit or integration tests for your script as well, but I’ve omitted this for brevity.</p>
+
+
+
+<h2>The Implementation</h2>
+
+
+
+<p>As I mentioned earlier, I’m going to use <a href="https://github.com/features/actions">GitHub Actions</a> to implement my CI/CD pipeline, but you could just as well use another tool or service to implement it. Actions makes it easy to automate workflows and it’s built right into GitHub. If you’re already familiar with it, some of this will be review.</p>
+
+
+
+<p>In our notebook repository, we’ll create a .github/workflows directory. This is where GitHub Actions looks for workflows to run. Inside that directory, we’ll create a main.yml file for defining our CI/CD workflow.</p>
+
+
+
+<p>First, we need to give our workflow a name. Our pipeline will simply consist of two jobs, one for producing the Python script and another for deploying it, so I’ll name the workflow “build-and-deploy.”</p>
+
+
+
+<pre class="wp-block-preformatted">name: build-and-deploy</pre>
+
+
+
+<p>Next, we’ll configure when the workflow runs. This could be on push to a branch, when a pull request is created, on release, or a number of other events. In our case, we’ll just run it on pushes to the master branch.</p>
+
+
+
+<pre class="wp-block-preformatted">on:
+  push:
+    branches: [ master ]</pre>
+
+
+
+<p>Now we’re ready to define our “build” job. We will use a tool called <a href="https://github.com/jupyter/nbconvert">nbconvert</a> to convert our .ipynb notebook file into an executable Python script. This means our build job will have some setup. Specifically, we’ll need to install Python and then install nbconvert using Python’s pip. Before we define our job, we need to add the “jobs” section to our workflow file:</p>
+
+
+
+<pre class="wp-block-preformatted"># A workflow run is made up of one or more jobs that can run
+# sequentially or in parallel.
+jobs:</pre>
+
+
+
+<p>Here we define the jobs that we want our workflow to run as well as their order. Our build job looks like the following:</p>
+
+
+
+<pre class="wp-block-preformatted">build:
+  runs-on: ubuntu-latest
+
+  steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your
+    # job can access it
+    - uses: actions/checkout@v2
+        
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+          
+    - name: Install nbconvert
+      run: |
+        python -m pip install --upgrade pip
+        pip install nbconvert
+
+    - name: Convert notebook
+      run: jupyter nbconvert --to python traffic.ipynb
+
+    - name: Upload python script
+      uses: actions/upload-artifact@v2
+      with:
+        name: traffic.py
+        path: traffic.py</pre>
+
+
+
+<p>The “runs-on” directive determines the base container image used to run our job. In this case, we’re using “ubuntu-latest.” The available base images to use are listed <a href="https://github.com/actions/virtual-environments#available-environments">here</a>, or you can create your own <a href="https://docs.github.com/en/free-pro-team@latest/actions/hosting-your-own-runners">self-hosted runners</a> with Docker. After that, we define the steps to run in our job. This consists of first checking out the code in our repository and setting up Python using built-in actions.</p>
+
+
+
+<p>Once Python is set up, we pip install nbconvert. We then use nbconvert, which works as a subcommand of Jupyter, to convert our notebook file to a Python file. Note that you’ll need to specify the correct .ipynb file in your repository—mine is called traffic.ipynb. The file produced by nbconvert will have the same name as the notebook file but with the .py extension.</p>
+
+
+
+<p>Finally, we upload the generated Python file so that it can be shared between jobs and stored once the workflow completes. This is necessary because we’ll need to access the script from our “deploy” job. It’s also useful because the artifact is now available to view and download from the workflow run, including historical runs.</p>
+
+
+
+<p>Now that we have our Python script generated, we need to implement a job to deploy it to AWS. This happens in two steps: upload the script to an S3 bucket and update a Glue job to use the new script. To do this, we’ll need to install the AWS CLI tool and configure credentials in our job. Here is the full deploy job definition, which I’ll talk through below:</p>
+
+
+
+<pre class="wp-block-preformatted">deploy:
+  needs: build
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: Download python script from build
+      uses: actions/download-artifact@v2
+      with:
+        name: traffic.py
+          
+    - name: Install AWS CLI
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+          
+    - name: Set up AWS credentials
+      shell: bash
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        mkdir -p ~/.aws
+        touch ~/.aws/credentials
+        echo "[default]
+        aws_access_key_id = $AWS_ACCESS_KEY_ID
+        aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" > ~/.aws/credentials
+          
+    - name: Upload to S3
+      run: aws s3 cp traffic.py s3://${{secrets.S3_BUCKET}}/traffic_${GITHUB_SHA}.py --region us-east-1
+      
+    - name: Update Glue job
+      run: |
+        aws glue update-job --job-name "Traffic ETL" --job-update \
+"Role=AWSGlueServiceRole-TrafficCrawler,Command={Name=glueetl,ScriptLocation=s3://${{secrets.S3_BUCKET}}/traffic_${GITHUB_SHA}.py},Connections={Connections=redshift}" \
+--region us-east-1
+      
+    - name: Cleanup
+      run: rm -rf ~/.aws</pre>
+
+
+
+<p>We use “needs: build” to specify that this job depends on the “build” job. This determines the order in which jobs are run. The first step is to download the Python script we generated in the previous job.</p>
+
+
+
+<p>Next, we install the AWS CLI using the <a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html">steps recommended by Amazon</a>. The AWS CLI relies on credentials in order to make API calls, so we need to set those up. For this, we use GitHub’s <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets">encrypted secrets</a> which allow you to store sensitive information within your repository or organization. This prevents our credentials from leaking into code or workflow logs. In particular, we’ll use an <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html">AWS access key</a> to authenticate the CLI. In our notebook repository, we’ll create two new secrets, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY, which contain the respective access key tokens. Our workflow then injects these into an ~/.aws/credentials file, which is where the AWS CLI looks for credentials.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="746" height="180" src="https://bravenewgeek.com/wp-content/uploads/2020/10/github_glue_secrets.png" alt="" class="wp-image-3816" srcset="https://bravenewgeek.com/wp-content/uploads/2020/10/github_glue_secrets.png 746w, https://bravenewgeek.com/wp-content/uploads/2020/10/github_glue_secrets-300x72.png 300w" sizes="(max-width: 706px) 89vw, (max-width: 767px) 82vw, 740px" /></figure></div>
+
+
+
+<p>With our credentials set up, we can now use the CLI to make API calls to AWS. The first thing we need to do is copy the Python script to an S3 bucket. In the workflow above, I’ve parameterized this using a secret called S3_BUCKET, but you could also just hardcode this or parameterize it using a configuration file. This bucket acts as a staging directory for our Glue scripts. You’ll also notice that I append the Git commit SHA to the name of the file uploaded to S3. This way, you’ll know exactly what version of the code the script contains and the bucket will retain a history of each script. This is useful when you need to debug a job or revert to a previous version.</p>
+
+
+
+<p>Once the script is uploaded, we need to update the Glue job. This requires the job to be already bootstrapped in Glue, but you could modify the workflow to update the job or create it if it doesn’t yet exist. For simplicity, we’ll just assume the job is already created. Our update command specifies the name of the job to update and a long &#8211;job-update string argument that looks like the following:</p>
+
+
+
+<pre class="wp-block-preformatted">Role=AWSGlueServiceRole-TrafficCrawler,Command={Name=glueetl,ScriptLocation=s3://${{secrets.S3_BUCKET}}/traffic_${GITHUB_SHA}.py},Connections={Connections=redshift}</pre>
+
+
+
+<p>This configures a few different settings on the job, two of which are required. “Role” sets the IAM role associated with the job. This is important since it determines what resources your Glue job can access. “Command” sets the job command to execute, which is basically whether it’s a Spark ETL job (“glueetl”), Spark Streaming job (“gluestreaming”), or a Python shell job (“pythonshell”). Since we are running a PySpark job, we set the command name to “glueetl” and then specify the script location, which is the path to our newly uploaded script. Lastly, we set a connection used by the job. This isn’t a required parameter but is important if your job accesses any Glue data catalog connections. In my case, that’s a Redshift database connection I’ve created in Glue, so update this accordingly for your job. The Glue update-job command is definitely the most unwieldy part of our workflow, so refer to the <a href="https://awscli.amazonaws.com/v2/documentation/api/latest/reference/glue/update-job.html">documentation</a> for more details.</p>
+
+
+
+<p>The last step is to remove the stored credentials file that we created. This step isn’t strictly necessary since the job container is destroyed once the workflow is complete, but in my opinion is a good security hygiene practice.</p>
+
+
+
+<p>Now, all that’s left to do is see if it works. To do this, simply commit the workflow file which should kick off the GitHub Action. In the Actions tab of your repository, you should see a running workflow. Upon completion, the build job output should look something like this:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="683" height="409" src="https://bravenewgeek.com/wp-content/uploads/2020/10/github_glue_build.png" alt="" class="wp-image-3817" srcset="https://bravenewgeek.com/wp-content/uploads/2020/10/github_glue_build.png 683w, https://bravenewgeek.com/wp-content/uploads/2020/10/github_glue_build-300x180.png 300w" sizes="(max-width: 683px) 100vw, 683px" /></figure></div>
+
+
+
+<p>And the deploy output should look something like this:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="682" height="410" src="https://bravenewgeek.com/wp-content/uploads/2020/10/github_glue_deploy.png" alt="" class="wp-image-3818" srcset="https://bravenewgeek.com/wp-content/uploads/2020/10/github_glue_deploy.png 682w, https://bravenewgeek.com/wp-content/uploads/2020/10/github_glue_deploy-300x180.png 300w" sizes="(max-width: 682px) 100vw, 682px" /></figure></div>
+
+
+
+<p>At this point, you should see your Python script in the S3 bucket you configured, and your Glue job should be pointing to the new script. You’ve successfully deployed your Glue job and have automated the process so that each new commit will deploy a new version! If you wanted, you could also extend this workflow to <a href="https://awscli.amazonaws.com/v2/documentation/api/latest/reference/glue/start-job-run.html">start</a><em> </em>the new job or create a separate workflow that runs on a <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#scheduled-events">set schedule</a>, e.g. to kick off a nightly batch ETL process.</p>
+
+
+
+<p>Hopefully you’ve found this useful for automating your own processes around AWS Glue or Jupyter notebooks. GitHub Actions provides a convenient and integrated solution for implementing CI/CD pipelines. With it, we can build a nice development workflow for getting Glue ETL code to production with continuous deployment.</p>
+<hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/continuous-deployment-for-aws-glue/">Continuous Deployment for AWS Glue</a> was first posted on October 15, 2020 at 10:51 am.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></content:encoded>
+					
+					<wfw:commentRss>https://bravenewgeek.com/continuous-deployment-for-aws-glue/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">3813</post-id>	</item>
+		<item>
+		<title>Implementing ETL on GCP</title>
+		<link>https://bravenewgeek.com/implementing-etl-on-gcp/</link>
+					<comments>https://bravenewgeek.com/implementing-etl-on-gcp/#comments</comments>
+		
+		<dc:creator><![CDATA[Tyler Treat]]></dc:creator>
+		<pubDate>Wed, 15 Jul 2020 20:53:17 +0000</pubDate>
+				<category><![CDATA[Analytics]]></category>
+		<category><![CDATA[Cloud]]></category>
+		<category><![CDATA[GCP]]></category>
+		<category><![CDATA[analytics]]></category>
+		<category><![CDATA[analytics pipeline]]></category>
+		<category><![CDATA[bigquery]]></category>
+		<category><![CDATA[cdap]]></category>
+		<category><![CDATA[cloud data loss prevention]]></category>
+		<category><![CDATA[cloud dataflow]]></category>
+		<category><![CDATA[cloud dataprep]]></category>
+		<category><![CDATA[cloud dataproc]]></category>
+		<category><![CDATA[cloud pub/sub]]></category>
+		<category><![CDATA[cloud storage]]></category>
+		<category><![CDATA[cloud tasks]]></category>
+		<category><![CDATA[data fusion]]></category>
+		<category><![CDATA[elt]]></category>
+		<category><![CDATA[etl]]></category>
+		<category><![CDATA[gcp]]></category>
+		<category><![CDATA[serverless]]></category>
+		<category><![CDATA[sql]]></category>
+		<guid isPermaLink="false">https://bravenewgeek.com/?p=3795</guid>
+
+					<description><![CDATA[ETL (Extract-Transform-Load) processes are an essential component of any data analytics program. This typically involves loading data from disparate sources, transforming or enriching it, and storing the curated data in a data warehouse for consumption by different users or systems. An example of this would be taking customer data from operational databases, joining it with &#8230; <p class="link-more"><a href="https://bravenewgeek.com/implementing-etl-on-gcp/" class="more-link">Continue reading<span class="screen-reader-text"> "Implementing ETL on GCP"</span></a></p><hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/implementing-etl-on-gcp/">Implementing ETL on GCP</a> was first posted on July 15, 2020 at 3:53 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></description>
+										<content:encoded><![CDATA[
+<p>ETL (Extract-Transform-Load) processes are an essential component of any data analytics program. This typically involves loading data from disparate sources, transforming or enriching it, and storing the curated data in a data warehouse for consumption by different users or systems. An example of this would be taking customer data from operational databases, joining it with data from Salesforce and Google Analytics, and writing it to an OLAP database or BI engine.</p>
+
+
+
+<p>In this post, we’ll take an honest look at building an ETL pipeline on GCP using Google-managed services. This will primarily be geared towards people who may be familiar with SQL but may feel less comfortable writing code or building a solution that requires a significant amount of engineering effort. This might include data analysts, data scientists, or perhaps more technical-oriented business roles. That is to say, we’re mainly looking at low-code/no-code solutions, but we’ll also touch briefly on more code-heavy options towards the end. Specifically, we’ll compare and contrast Data Fusion and Cloud Dataprep. As part of this, we will walk through the high-level architecture of an ETL pipeline and discuss common patterns like data lakes and data warehouses.</p>
+
+
+
+<h2>General Architecture</h2>
+
+
+
+<p>It makes sense to approach ETL in two phases. First, we need a place to land raw, unprocessed data. This is commonly referred to as a <em>data lake</em>. The data lake’s job is to serve as a landing zone for all of our business data, even if the purpose of some of that data is not yet clear. The data lake is also where we can de-identify or redact sensitive data before it moves further downstream.</p>
+
+
+
+<p>The second phase is processing the raw data and storing it for particular use cases. This is referred to as a <em>data warehouse</em>. The data here feeds end-user queries and reports for business analysts, BI tools, dashboards, spreadsheets, ML models, and other business activities. The data warehouse structures the data in a way suitable for these specific needs.</p>
+
+
+
+<p>On GCP, our data lake is implemented using <a href="https://cloud.google.com/storage">Cloud Storage</a>, a low-cost, exabyte-scale object store. This is an ideal place to land massive amounts of raw data. We can also use <a href="https://cloud.google.com/dlp">Cloud Data Loss Prevention</a> (DLP) to alert on or redact any sensitive data such as PII or PHI. Once use cases have been identified for the data, we then transform it and move it into our curated data warehouse implemented with <a href="https://cloud.google.com/bigquery">BigQuery</a>.</p>
+
+
+
+<p>At a high level, our analytics pipeline architecture looks something like the following. The components in green are pieces implemented on GCP.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="1024" height="314" src="https://bravenewgeek.com/wp-content/uploads/2020/07/etl_pipeline-1024x314.jpg" alt="" class="wp-image-3799" srcset="https://bravenewgeek.com/wp-content/uploads/2020/07/etl_pipeline-1024x314.jpg 1024w, https://bravenewgeek.com/wp-content/uploads/2020/07/etl_pipeline-300x92.jpg 300w, https://bravenewgeek.com/wp-content/uploads/2020/07/etl_pipeline-768x235.jpg 768w, https://bravenewgeek.com/wp-content/uploads/2020/07/etl_pipeline.jpg 1135w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /></figure></div>
+
+
+
+<p>We won’t cover <em>how</em> data gets ingested into the data warehouse. This might be a data-integration tool like Mulesoft or Informatica if we’re moving data from on-prem. It might be an automated batch process using <a href="https://cloud.google.com/storage/docs/gsutil">gsutil</a>, a Python script, or <a href="https://cloud.google.com/storage-transfer-service">Transfer Service</a>. Alternatively, it might be a more real-time push process that streams data in via Cloud Pub/Sub. Either way, we’ll assume we have some kind of mechanism to load our data into Cloud Storage.</p>
+
+
+
+<p>We will focus our time discussing the “Transform Process” step in the diagram above. This is where Data Fusion and Cloud Dataprep fit in.</p>
+
+
+
+<h2>Data Fusion</h2>
+
+
+
+<p><a href="https://cloud.google.com/data-fusion">Data Fusion</a> is a code-free data integration tool that runs on top of Hadoop. The user is intended to define ETL pipelines using a graphical plug-and-play UI with preconfigured connectors and transformations. Data Fusion is actually a managed version of an open source system called <a href="https://cdap.io">Cask Data Analytics Platform</a> (CDAP) which Google acquired in 2018. It’s a relatively new product in GCP, and it shows. The UX is rough and there are a lot of sharp edges. For example, when an instance starts up, you can occasionally hit cryptic errors because the instance has not actually initialized fully. Case in point, try deciphering what this error means:</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="704" height="93" src="https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_error-e1594845085536.png" alt="" class="wp-image-3802" srcset="https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_error-e1594845085536.png 704w, https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_error-e1594845085536-300x40.png 300w" sizes="(max-width: 704px) 100vw, 704px" /></figure>
+
+
+
+<p>The theory of letting users with no programming experience implement and run ETL pipelines is appealing. However, the reality is that you will end up trying to understand Hadoop debug logs and opaque error messages when things go wrong, which happens frequently.</p>
+
+
+
+<p>The pipelines created in Data Fusion run on <a href="https://cloud.google.com/dataproc">Cloud Dataproc</a>. This means every time you run a pipeline, you first need to wait for a Dataproc cluster to spin up—which is <em>slow</em>. Google’s recommendation to speed this up is to configure a runtime profile that uses a pre-existing Dataproc cluster. This has several downsides, one of which is simply the cost of keeping a Dataproc cluster running <em>in addition to</em> your Data Fusion instance. But what is the point of keeping a cluster running that only gets used for nightly batch processes or ad hoc pipeline development? The other is the technical and operations overhead required to configure and manage a cluster. This requires provisioning an appropriately sized cluster, creating an SSH key for it, and adding the key to the cluster so that Data Fusion can connect to it. For a product designed to allow relatively non-technical people to build out pipelines, this is a tall order. You’ll also quickly see how rough the UX is when walking through these steps.</p>
+
+
+
+<p>The other downside of Data Fusion is that it’s actually <a href="https://cloud.google.com/data-fusion/pricing">pretty expensive</a>. CDAP consists of a whole bunch of components. When you start a Data Fusion instance, it creates an internal GKE cluster to run all of these components. In addition to this, it relies on Cloud Storage, Cloud SQL, Persistent Disks, Elasticsearch, and Cloud KMS. The net result is that instances take approximately 10-20 minutes to start (now closer to 10 with recent improvements) and, for many, they’re not something you run and forget about.</p>
+
+
+
+<p>A Basic Edition instance costs about $1,100 per month, while an Enterprise Edition instance costs $3,000 per month. For larger organizations, that might be a nominal cost, but it stings a bit when you realize that is just the cost to run the pipeline <em>editor</em>. The pipelines themselves run on Dataproc, which is an entirely separate—and significant—line item. What’s worse is that you have to keep the Data Fusion instance running in order to actually execute the ETL pipelines you develop in it. Additionally, the Basic Edition will only let you run pipelines on demand. In order to schedule pipelines or trigger them in a more streaming fashion, you have to use the Enterprise Edition. As a result, I often encounter teams wanting to schedule startup and shutdown for both the Dataproc clusters and Data Fusion instances to avoid unnecessary spend. This has to be done with code.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="1024" height="463" src="https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_pipeline-e1594845255356-1024x463.png" alt="" class="wp-image-3803" srcset="https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_pipeline-e1594845255356-1024x463.png 1024w, https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_pipeline-e1594845255356-300x136.png 300w, https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_pipeline-e1594845255356-768x347.png 768w, https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_pipeline-e1594845255356-1536x695.png 1536w, https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_pipeline-e1594845255356.png 1716w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /><figcaption>Data Fusion Pipeline Editor</figcaption></figure></div>
+
+
+
+<p>Pipelines are immutable, which means every time you need to tweak a pipeline, you first have to make a copy of it. Immutability sounds nice in theory, but in practice it means you end up with dozens of pipeline iterations as you build out your process. And in order to save your pipeline when a Data Fusion instance is deleted—say because you’re shutting it down nightly to save on costs—you have to export it to a file and then import it to the new instance. Recycling instances will still lose the job information for previous pipeline runs, however. There is no way to “pause” an instance, which makes pipeline management a pain.</p>
+
+
+
+<p>Data Fusion itself is fairly robust in what you can do with it. It can extract data from a broad set of sources, including Cloud Storage, perform a variety of transformations, and load results into an assortment of destinations such as BigQuery. That said, I’m still a bit skeptical about no-code solutions for non-technical users. I still often find myself dropping in a JavaScript transform in order to actually do the manipulations on the data that I need versus trying to do it with a combination of preconfigured drag-and-drop widgets. Most of the analysts I’ve seen using it also just want to use SQL to do their transformations. Trying to join two data sources using a UI is frankly just more difficult than writing a SQL join. The <a href="https://github.com/data-integrations/wrangler">data wrangler</a> uses a goofy scripting language called <a href="https://commons.apache.org/proper/commons-jexl/reference/syntax.html">JEXL</a> that is poorly documented and inconsistently implemented. To put it bluntly, the UI and UX in Data Fusion (technically CDAP) is painful, and I often find myself wishing I could just write some Python. It just <em>feels</em> like an open source product that doesn’t see much investment.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="1024" height="363" src="https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_wrangler-e1594845358934-1024x363.png" alt="" class="wp-image-3804" srcset="https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_wrangler-e1594845358934-1024x363.png 1024w, https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_wrangler-e1594845358934-300x106.png 300w, https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_wrangler-e1594845358934-768x273.png 768w, https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_wrangler-e1594845358934-1536x545.png 1536w, https://bravenewgeek.com/wp-content/uploads/2020/07/data_fusion_wrangler-e1594845358934.png 1716w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /><figcaption>Data Fusion Wrangler</figcaption></figure></div>
+
+
+
+<p>Data Fusion is a bit of an oddball when viewed in the context of how GCP normally approaches services until you realize it was an acquisition of a company built around an open source framework. In that light, it feels very similar to <a href="https://cloud.google.com/composer">Cloud Composer</a>, another product built around an open source framework, Apache Airflow, which feels equally kludgy. Most of Google’s data products are highly refined with an emphasis on serverless and developer experience. Services like BigQuery, Dataflow, and Cloud Pub/Sub come to mind here. Data Fusion is the polar opposite. It’s clunky, the CDAP infrastructure is heavy and expensive, and it still requires low-level operations like when you’re configuring a Dataproc cluster.</p>
+
+
+
+<p>Dataproc itself feels like a service for handling legacy Hadoop workloads since it has a lot of operations overhead. For newer workloads, I would target Dataflow which is closer to a “serverless” experience like BigQuery and is evidently on the roadmap as a runtime target for Data Fusion.</p>
+
+
+
+<p>The CDAP UX is quirky, confusing, inconsistent, and generally unpleasant. The moment anything goes awry, which is often and unwittingly the case, you’re thrust into the world of Hadoop to divine what went wrong. I’m a raving fan of much of GCP’s managed services. On the whole, I find them to be better engineered, better thought-out, and better from a developer experience perspective compared to other cloud platforms. Data Fusion ain’t it.</p>
+
+
+
+<h2>Cloud Dataprep</h2>
+
+
+
+<p><a href="https://cloud.google.com/dataprep">Cloud Dataprep</a> is actually a third-party application offered by Trifacta through GCP. In fact, it’s really just a GCP-specific SKU of Trifacta’s <a href="https://www.trifacta.com/products/wrangler-editions/">Wrangler</a> product. The downside of this is that you have to agree to a third-party vendor’s terms and conditions. For some, this will likely trigger a whole separate sourcing process. This is a challenge for a lot of enterprise organizations.</p>
+
+
+
+<p>If you can get past the procurement conundrum, you’ll find Dataprep to be a highly polished and refined product. In comparison to Data Fusion, it’s a breath of fresh air and is superior in nearly every aspect. The UI is pleasant, the UX is—for the most part—coherent and intuitive, it’s cheaper, and it’s a proper serverless product. Dataprep <em>feels</em> like what I would expect from a first-class managed service on GCP.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="1024" height="320" src="https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_pipeline-1024x320.png" alt="" class="wp-image-3805" srcset="https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_pipeline-1024x320.png 1024w, https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_pipeline-300x94.png 300w, https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_pipeline-768x240.png 768w, https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_pipeline-1536x481.png 1536w, https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_pipeline.png 1707w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /><figcaption>Dataprep Flow Editor</figcaption></figure></div>
+
+
+
+<p>Dataprep is similar to Data Fusion in the sense that it allows you to build out pipelines with a graphical interface which then target an underlying runtime. In the case of Dataprep, it targets Dataflow rather than Dataproc. This means we benefit from the features of Dataflow, namely auto-provisioning and scaling of infrastructure. Jobs tend to run much more quickly and reliably than with Data Fusion. Another key difference is that, unlike Data Fusion, Dataprep doesn’t require an “instance” to develop pipelines. It is more like a SaaS application that relies on Dataflow. Today, using the app to develop pipelines is <a href="https://cloud.google.com/dataprep/pricing">free of charge</a>. You only incur charges from Dataflow resource usage. Unfortunately, this is changing as Trifacta is switching to a <a href="https://www.trifacta.com/products/pricing/cloud-dataprep/">tiered monthly subscription model</a> later this year. This will put base costs more in-line with Data Fusion, but I suspect the reliance on Dataflow will bring overall costs down.</p>
+
+
+
+<p>The pipeline management in Dataprep is simpler than in Data Fusion. Pipelines in Dataprep are called “flows.” These are mutable and private by default but can be shared with other users. Because Dataprep is a SaaS product, you don’t need to worry about exporting and persisting your pipelines, and job data from previous flow executions is retained.</p>
+
+
+
+<p>Dataprep has some drawbacks though. Broadly speaking, it’s not as feature-rich as Data Fusion. It can only integrate with Cloud Storage and BigQuery, while Data Fusion supports a wide array of data sources and sinks. You can do more with Data Fusion, while with Dataprep, you’re more or less confined to the wrangler. Because of this, Dataprep is well-suited to lighter weight processes and data cleansing—joining data sources, standardizing formats, identifying missing or mismatched values, deduplicating rows, and other things like that. It also works well for data exploration and slicing and dicing.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="1024" height="443" src="https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_wrangler-e1594845629106-1024x443.png" alt="" class="wp-image-3806" srcset="https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_wrangler-e1594845629106-1024x443.png 1024w, https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_wrangler-e1594845629106-300x130.png 300w, https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_wrangler-e1594845629106-768x332.png 768w, https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_wrangler-e1594845629106-1536x664.png 1536w, https://bravenewgeek.com/wp-content/uploads/2020/07/dataprep_wrangler-e1594845629106.png 1716w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /><figcaption>Dataprep Wrangler</figcaption></figure></div>
+
+
+
+<p>I often find teams using both Data Fusion and Dataprep. Data Fusion gets used for more advanced ETL processes and Dataprep for, well, data preparation. If it’s available to them, teams usually start with Dataprep and then switch to Data Fusion if they hit a wall with what it can do.</p>
+
+
+
+<h2>Alternatives</h2>
+
+
+
+<p>Data Fusion and Dataprep attempt to provide a managed solution that lets users with little-to-no programming experience build out ETL pipelines. Dataprep definitely comes closer to realizing that goal due to its more refined UX and reliance on Dataflow rather than Dataproc. However, I tend to dislike managed “workflow engines” like these. Cloud Composer and <a href="https://aws.amazon.com/glue">AWS Glue</a>, which is Amazon’s managed ETL service, are other examples that fall under this category.</p>
+
+
+
+<p>These types of services usually sit in a weird in-between position of trying to provide low-code solutions with GUIs but needing to understand how to debug complex and sophisticated distributed computing systems. It seems like every time you try something to make building systems easier, you wind up needing to understand the “easier” thing <em>plus</em> the “hard” stuff it was trying to make easy. This is what Joel Spolsky refers to as the <a href="https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/">Law of Leaky Abstractions</a>. It’s why I prefer to write code to solve problems versus relying on low-code interfaces. The abstractions can work okay in some cases, but it’s when things go wrong or you need a little bit more flexibility where you run into problems. It can be a touchy subject, but I’ve found that the most effective data programs within organizations are the ones that have software engineers or significant programming and systems development skill sets. This is especially true if you’re on AWS where there’s more operations and networking knowledge required.</p>
+
+
+
+<p>With that said, there are some alternative approaches to implementing ETL processes on GCP that move away from the more low/no-code options. If your team consists mostly of software engineers or folks with a development background, these might be a better option.</p>
+
+
+
+<p>My go-to for building data processing pipelines is <a href="https://cloud.google.com/dataflow">Cloud Dataflow</a>, which is a serverless system for implementing stream and batch pipelines. With Dataflow, you don’t need to think about capacity and resource provisioning and, unlike Data Fusion and Dataproc, you don’t need to keep a standby cluster running as there is no “cluster.” The compute is automatically provisioned and autoscaled for you based on the job. You can use code to do your transformations or use SQL to join different data sources.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="918" height="358" src="https://bravenewgeek.com/wp-content/uploads/2020/07/etl_dataflow.png" alt="" class="wp-image-3807" srcset="https://bravenewgeek.com/wp-content/uploads/2020/07/etl_dataflow.png 918w, https://bravenewgeek.com/wp-content/uploads/2020/07/etl_dataflow-300x117.png 300w, https://bravenewgeek.com/wp-content/uploads/2020/07/etl_dataflow-768x300.png 768w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /><figcaption>ETL Pipeline with Dataflow</figcaption></figure></div>
+
+
+
+<p>For batch ETL, I like a combination of Cloud Scheduler, Cloud Functions, and Dataflow. Cloud Scheduler can kick off the ETL process by hitting a Cloud Function which can then trigger your Dataflow template. Alternatively, you could use a streaming Dataflow pipeline in combination with Cloud Scheduler and Pub/Sub to launch your batch ETL pipelines. Google has an example of this <a href="https://cloud.google.com/blog/products/gcp/designing-etl-architecture-for-a-cloud-native-data-warehouse-on-google-cloud-platform">here</a>.</p>
+
+
+
+<p>For streaming ETL, data can be fed into a streaming Dataflow pipeline from Cloud Pub/Sub and processed as usual. This data can even be joined with files in Cloud Storage or tables in BigQuery using SQL. This is what I found myself and many of the clients I’ve worked with wanting to do in Data Fusion and Dataprep. Sometimes you just want to write SQL, which leads to another solution.</p>
+
+
+
+<p>BigQuery provides a good mechanism for <em>ELT</em>—that is extracting the data from its sources, loading it into BigQuery, and <em>then</em> performing the transformations on it. This is a good option if you’re dealing with primarily batch-driven processes and you have a SQL-heavy team as the transformations are expressed purely through SQL. The transformation queries can either be scheduled directly in BigQuery or triggered in an automated way using the API, such as running the transformations after data loading completes.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="729" height="257" src="https://bravenewgeek.com/wp-content/uploads/2020/07/elt_bigquery.png" alt="" class="wp-image-3808" srcset="https://bravenewgeek.com/wp-content/uploads/2020/07/elt_bigquery.png 729w, https://bravenewgeek.com/wp-content/uploads/2020/07/elt_bigquery-300x106.png 300w" sizes="(max-width: 729px) 100vw, 729px" /><figcaption>ELT Pipeline with BigQuery</figcaption></figure>
+
+
+
+<p>I mentioned earlier that I’m not a huge fan of managed workflow engines. This is speaking to high-level abstractions and heavy, monolithic frameworks specifically. However, I <em>am</em> a fan of lightweight, composable abstractions that make it easy to build scalable and fault-tolerant workflows. Examples of this include <a href="https://aws.amazon.com/step-functions/">AWS Step Functions</a> and <a href="https://cloud.google.com/tasks">Google Cloud Tasks</a>. On GCP, Cloud Tasks can be a great alternative to Dataflow for building more code-heavy ETL processes if you’re not tied in to Apache Beam. In combination with <a href="https://cloud.google.com/run">Cloud Run</a>, you can build out highly elastic workflows that are entirely serverless. While it’s not the obvious choice for implementing ETL on GCP, it’s definitely worth a mention.</p>
+
+
+
+<h2>Conclusion</h2>
+
+
+
+<p>There are several options when it comes to implementing ETL processes on GCP. What the right fit is depends on your team’s skill set, the use cases, and your affinity for certain tools. Cost and operational complexity are also important considerations. In practice, however, it’s likely you’ll end up using a <em>combination</em> of different solutions.</p>
+
+
+
+<p>For low/no-code solutions, Data Fusion and Cloud Dataprep are your only real options. While Data Fusion is rough from a usability perspective and generally more expensive, it’s likely where Google is putting significant investment. Dataprep is more refined and cost-effective but limited in capability, and it brings a third-party vendor into the mix. Using BigQuery itself for ELT is also an option for SQL-minded teams. But for teams with a strong engineering background, my recommended starting point is Cloud Dataflow or even Cloud Tasks for certain types of processing work.</p>
+
+
+
+<p>Together with Cloud Pub/Sub, Cloud Data Loss Prevention, Cloud Storage, BigQuery, and GCP’s other managed services, these solutions provide a great way to implement analytics pipelines that require minimal operations investment.</p>
+<hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/implementing-etl-on-gcp/">Implementing ETL on GCP</a> was first posted on July 15, 2020 at 3:53 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></content:encoded>
+					
+					<wfw:commentRss>https://bravenewgeek.com/implementing-etl-on-gcp/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">3795</post-id>	</item>
+		<item>
+		<title>Using Google-Managed Certificates and Identity-Aware Proxy With GKE</title>
+		<link>https://bravenewgeek.com/using-google-managed-certificates-and-identity-aware-proxy-with-gke/</link>
+					<comments>https://bravenewgeek.com/using-google-managed-certificates-and-identity-aware-proxy-with-gke/#comments</comments>
+		
+		<dc:creator><![CDATA[Tyler Treat]]></dc:creator>
+		<pubDate>Wed, 24 Jun 2020 16:31:44 +0000</pubDate>
+				<category><![CDATA[Cloud]]></category>
+		<category><![CDATA[GCP]]></category>
+		<category><![CDATA[Kubernetes]]></category>
+		<category><![CDATA[Security]]></category>
+		<category><![CDATA[authentication]]></category>
+		<category><![CDATA[authorization]]></category>
+		<category><![CDATA[cloud-native]]></category>
+		<category><![CDATA[gclb]]></category>
+		<category><![CDATA[gcp]]></category>
+		<category><![CDATA[gke]]></category>
+		<category><![CDATA[identity-aware proxy]]></category>
+		<category><![CDATA[kubernetes]]></category>
+		<category><![CDATA[security]]></category>
+		<category><![CDATA[zero-trust]]></category>
+		<guid isPermaLink="false">https://bravenewgeek.com/?p=3784</guid>
+
+					<description><![CDATA[Ingress on Google Kubernetes Engine (GKE) uses a Google Cloud Load Balancer (GCLB). GCLB provides a single anycast IP that fronts all of your backend compute instances along with a lot of other rich features. In order to create a GCLB that uses HTTPS, an SSL certificate needs to be associated with the ingress resource. &#8230; <p class="link-more"><a href="https://bravenewgeek.com/using-google-managed-certificates-and-identity-aware-proxy-with-gke/" class="more-link">Continue reading<span class="screen-reader-text"> "Using Google-Managed Certificates and Identity-Aware Proxy With GKE"</span></a></p><hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/using-google-managed-certificates-and-identity-aware-proxy-with-gke/">Using Google-Managed Certificates and Identity-Aware Proxy With GKE</a> was first posted on June 24, 2020 at 11:31 am.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></description>
+										<content:encoded><![CDATA[
+<p>Ingress on Google Kubernetes Engine (GKE) uses a Google Cloud Load Balancer (GCLB). GCLB provides a single anycast IP that fronts all of your backend compute instances along with a lot of other <a href="https://cloud.google.com/load-balancing">rich features</a>. In order to create a GCLB that uses HTTPS, an SSL certificate needs to be associated with the ingress resource. This certificate can either be <a href="https://cloud.google.com/load-balancing/docs/ssl-certificates/self-managed-certs">self-managed</a> or <a href="https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs">Google-managed</a>. The benefit of using a Google-managed certificate is that they are provisioned, renewed, and managed for your domain names by Google. These managed certificates can also be configured directly with GKE, meaning we can configure our certificates the same way we declaratively configure our other Kubernetes resources such as deployments, services, and ingresses.</p>
+
+
+
+<p>GKE also supports <a href="https://cloud.google.com/iap">Identity-Aware Proxy</a> (IAP), which is a fully managed solution for implementing a zero-trust security model for applications and VMs. With IAP, we can secure workloads in GCP using identity and context. For example, this might be based on attributes like user identity, device security status, region, or IP address. This <a href="https://bravenewgeek.com/zero-trust-security-on-gcp-with-context-aware-access">allows users to access applications securely from untrusted networks</a> without the need for a VPN. IAP is a powerful way to implement authentication and authorization for corporate applications that are run internally on GKE, Google Compute Engine (GCE), or App Engine. This might be applications such as Jira, GitLab, Jenkins, or <a href="https://blog.realkinetic.com/admin-portals-314d7f56b9b9">production-support portals</a>.</p>
+
+
+
+<p>IAP works in relation to GCLB in order to secure GKE workloads. In this tutorial, I’ll walk through deploying a workload to a GKE cluster, setting up GCLB ingress for it with a global static IP address, configuring a Google-managed SSL certificate to support HTTPS traffic, and enabling IAP to secure access to the application. In order to follow along, you’ll need a GKE cluster and domain name to use for the application. In case you want to skip ahead, all of the Kubernetes configuration for this tutorial is available <a href="https://github.com/RealKinetic/iap-gke">here</a>.</p>
+
+
+
+<h2>Deploying an Application Behind GCLB With a Managed Certificate</h2>
+
+
+
+<p>First, let’s deploy our application to GKE. We’ll use a <a href="https://github.com/GoogleCloudPlatform/kubernetes-engine-samples/tree/master/hello-app">Hello World application</a> to test this out. Our application will consist of a Kubernetes deployment and service. Below is the configuration for these:</p>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+View the code on <a href="https://gist.github.com/tylertreat/42376a257dab55e13e7320e9f607587c">Gist</a>.
+</div></figure>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+View the code on <a href="https://gist.github.com/tylertreat/e43e6f64023c8eeb6472210c9d978488">Gist</a>.
+</div></figure>
+
+
+
+<p>Apply these with kubectl:</p>
+
+
+
+<pre class="wp-block-preformatted">$ kubectl apply -f .</pre>
+
+
+
+<p>At this point, our application is not yet accessible from outside the cluster since we haven’t set up an ingress. Before we do that, we need to create a static IP address using the following command:</p>
+
+
+
+<pre class="wp-block-preformatted">$ gcloud compute addresses create web-static-ip --global</pre>
+
+
+
+<p>The above will reserve a static external IP called “web-static-ip.” We now can create an ingress resource using this IP address. Note the “kubernetes.io/ingress.global-static-ip-name” annotation in the configuration:</p>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+View the code on <a href="https://gist.github.com/tylertreat/372d30dbba97f650349f027987b52388">Gist</a>.
+</div></figure>
+
+
+
+<p>Applying this with kubectl will provision a GCLB that will route traffic into our service. It can take a few minutes for the load balancer to become active and health checks to begin working. Traffic won’t be served until that happens, so use the following command to check that traffic is healthy:</p>
+
+
+
+<pre class="wp-block-preformatted">$ curl -i http://&lt;web-static-ip></pre>
+
+
+
+<p>You can find &lt;web-static-ip> with:</p>
+
+
+
+<pre class="wp-block-preformatted">$ gcloud compute addresses describe web-static-ip --global</pre>
+
+
+
+<p>Once you start getting a successful response, update your DNS to point your domain name to the static IP address. Wait until the DNS change is propagated and your domain name now points to the application running in GKE. This could take 30 minutes or so.</p>
+
+
+
+<p>After DNS has been updated, we’ll configure HTTPS. To do this, we need to create a Google-managed SSL certificate. This can be managed by GKE using the following configuration:</p>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+View the code on <a href="https://gist.github.com/tylertreat/6cdbafd9bfdd0fbbb8d06203403936ae">Gist</a>.
+</div></figure>
+
+
+
+<p>Ensure that “example.com” is replaced with the domain name you’re using.</p>
+
+
+
+<p>We now need to update our ingress to use the new managed certificate. This is done using the “networking.gke.io/managed-certificates” annotation.</p>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+View the code on <a href="https://gist.github.com/tylertreat/d6a8fd131d3451f660446fba99a672e5">Gist</a>.
+</div></figure>
+
+
+
+<p>We’ll need to wait a bit for the certificate to finish provisioning. This can take up to 15 minutes. Once it’s done, we should see HTTPS traffic flowing correctly:</p>
+
+
+
+<pre class="wp-block-preformatted">$ curl -i https://example.com</pre>
+
+
+
+<p>We now have a working example of an application running in GKE behind a GCLB with a static IP address and domain name secured with TLS. Now we’ll finish up by enabling IAP to control access to the application.</p>
+
+
+
+<h2>Securing the Application With Identity-Aware Proxy</h2>
+
+
+
+<p>If you’re enabling IAP for the first time, you’ll need to configure your project’s OAuth consent screen. The steps <a href="https://cloud.google.com/iap/docs/enabling-kubernetes-howto#oauth-configure">here</a> will walk through how to do that. This consent screen is what users will see when they attempt to access the application before logging in.</p>
+
+
+
+<p>Once IAP is enabled and the OAuth consent screen has been configured, there should be an OAuth 2 client ID created in your GCP project. You can find this under “OAuth 2.0 Client IDs” in the “APIs &amp; Services” > “Credentials” section of the cloud console. When you click on this credential, you’ll find a client ID and client secret. These need to be provided to Kubernetes as secrets so they can be used by a <a href="https://cloud.google.com/kubernetes-engine/docs/concepts/backendconfig">BackendConfig</a> for configuring IAP. Apply the secrets to Kubernetes with the following command, replacing “xxx” with the respective credentials:</p>
+
+
+
+<pre class="wp-block-preformatted">$ kubectl create secret generic iap-oauth-client-id \
+--from-literal=client_id=xxx \
+--from-literal=client_secret=xxx</pre>
+
+
+
+<p>BackendConfig is a Kubernetes custom resource used to configure ingress in GKE. This includes features such as IAP, Cloud CDN, Cloud Armor, and others. Apply the following BackendConfig configuration using kubectl, which will enable IAP and associate it with your OAuth client credentials:</p>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+View the code on <a href="https://gist.github.com/tylertreat/98d37d03d9bd1e6f4b24271fc2824e61">Gist</a>.
+</div></figure>
+
+
+
+<p>We also need to ensure there are service ports associated with the BackendConfig in order to trigger turning on IAP. One way to do this is to make all ports for the service default to the BackendConfig, which is done by setting the “beta.cloud.google.com/backend-config” annotation to “{&#8220;default&#8221;: &#8220;config-default&#8221;}” in the service resource. See below for the updated service configuration.</p>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+View the code on <a href="https://gist.github.com/tylertreat/8293014f66e3679294f9528f3336a7d7">Gist</a>.
+</div></figure>
+
+
+
+<p>Once you’ve applied the annotation to the service, wait a couple minutes for the infrastructure to settle. IAP should now be working. You’ll need to assign the “IAP-secured Web App User” role in IAP to any users or groups who should have access to the application. Upon accessing the application, you should now be greeted with a login screen.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="473" height="533" src="https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-19-at-4.11.09-PM.png" alt="" class="wp-image-3790" srcset="https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-19-at-4.11.09-PM.png 473w, https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-19-at-4.11.09-PM-266x300.png 266w" sizes="(max-width: 473px) 100vw, 473px" /></figure></div>
+
+
+
+<p>Your Kubernetes workload is now secured by IAP! Do note that VPC firewall rules can be configured to <em>bypass</em> IAP, such as rules that allow traffic internal to your VPC or GKE cluster. IAP will provide a warning indicating which firewall rules allow bypassing it.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="1024" height="893" src="https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-19-at-4.37.13-PM-1024x893.png" alt="" class="wp-image-3791" srcset="https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-19-at-4.37.13-PM-1024x893.png 1024w, https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-19-at-4.37.13-PM-300x262.png 300w, https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-19-at-4.37.13-PM-768x670.png 768w, https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-19-at-4.37.13-PM.png 1126w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /></figure></div>
+
+
+
+<p>For an extra layer of security, IAP sets <a href="https://cloud.google.com/iap/docs/signed-headers-howto">signed headers</a> on inbound requests which can be verified by the application. This is helpful in the event that IAP is accidentally disabled or misconfigured or if firewall rules are improperly set.</p>
+
+
+
+<p>Together with GCLB and GCP-managed certificates, IAP provides a great solution for serving and securing internal applications that can be accessed anywhere without the need for a VPN.</p>
+<hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/using-google-managed-certificates-and-identity-aware-proxy-with-gke/">Using Google-Managed Certificates and Identity-Aware Proxy With GKE</a> was first posted on June 24, 2020 at 11:31 am.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></content:encoded>
+					
+					<wfw:commentRss>https://bravenewgeek.com/using-google-managed-certificates-and-identity-aware-proxy-with-gke/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">3784</post-id>	</item>
+		<item>
+		<title>Zero-Trust Security on GCP With Context-Aware Access</title>
+		<link>https://bravenewgeek.com/zero-trust-security-on-gcp-with-context-aware-access/</link>
+					<comments>https://bravenewgeek.com/zero-trust-security-on-gcp-with-context-aware-access/#comments</comments>
+		
+		<dc:creator><![CDATA[Tyler Treat]]></dc:creator>
+		<pubDate>Mon, 22 Jun 2020 19:54:15 +0000</pubDate>
+				<category><![CDATA[Cloud]]></category>
+		<category><![CDATA[GCP]]></category>
+		<category><![CDATA[Security]]></category>
+		<category><![CDATA[access context manager]]></category>
+		<category><![CDATA[app engine]]></category>
+		<category><![CDATA[authentication]]></category>
+		<category><![CDATA[authorization]]></category>
+		<category><![CDATA[cloud-native]]></category>
+		<category><![CDATA[context-aware access]]></category>
+		<category><![CDATA[gcp]]></category>
+		<category><![CDATA[identity-aware proxy]]></category>
+		<category><![CDATA[security]]></category>
+		<category><![CDATA[serverless]]></category>
+		<category><![CDATA[zero-trust]]></category>
+		<guid isPermaLink="false">https://bravenewgeek.com/?p=3777</guid>
+
+					<description><![CDATA[A lot of our clients at Real Kinetic leverage serverless on GCP to quickly build applications with minimal operations overhead. Serverless is one of the things that truly differentiates GCP from other cloud providers, and App Engine is a big component of this. Many of these companies come from an on-prem world and, as a &#8230; <p class="link-more"><a href="https://bravenewgeek.com/zero-trust-security-on-gcp-with-context-aware-access/" class="more-link">Continue reading<span class="screen-reader-text"> "Zero-Trust Security on GCP With Context-Aware Access"</span></a></p><hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/zero-trust-security-on-gcp-with-context-aware-access/">Zero-Trust Security on GCP With Context-Aware Access</a> was first posted on June 22, 2020 at 2:54 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></description>
+										<content:encoded><![CDATA[
+<p>A lot of our clients at Real Kinetic leverage <a href="https://blog.realkinetic.com/serverless-on-gcp-183fd811a706">serverless on GCP</a> to quickly build applications with minimal operations overhead. Serverless is one of the things that truly <a href="https://blog.realkinetic.com/gcp-and-aws-whats-the-difference-3b1329f0ffb3">differentiates GCP</a> from other cloud providers, and <a href="https://blog.realkinetic.com/why-google-app-engine-9c3d2f75dd02">App Engine</a> is a big component of this. Many of these companies come from an on-prem world and, as a result, tend to favor perimeter-based security models. They rely heavily on things like IP and network restrictions, VPNs, corporate intranets, and so forth. Unfortunately, this type of security model doesn’t always fit nicely with serverless due to the elastic and dynamic nature of serverless systems.</p>
+
+
+
+<p>Recently, I worked with a client who was building an application for internal support staff on App Engine. They were using <a href="https://cloud.google.com/iap">Identity-Aware Proxy</a> (IAP) to authenticate users and authorize access to the application. IAP provides a fully managed solution for implementing a <a href="https://www.cloudflare.com/learning/security/glossary/what-is-zero-trust/">zero-trust</a> access model for App Engine and Compute Engine. In this case, their G Suite user directory was backed by Active Directory, which allowed them to manage access to the application using Single Sign-On and AD groups.</p>
+
+
+
+<p>Everything was great until the team hit a bit of a snag when they went through their application vulnerability assessment. Because it was for internal users, the security team requested the application be restricted to the corporate network. While I’m deeply skeptical of the value this adds in terms of security—the application was already protected by SSO and two-factor authentication and IAP cannot be bypassed with App Engine—I shared my concerns and started evaluating options. Sometimes that’s just the way things go in a larger, older organization. Culture shifts are hard and take time.</p>
+
+
+
+<p>App Engine has <a href="https://cloud.google.com/appengine/docs/standard/nodejs/creating-firewalls">firewall rules</a> built in which allow you to secure incoming traffic to your application with allow/deny rules based on IP, so it seemed like an easy fix. The team would be in production in no time!</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="681" height="303" src="https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-22-at-12.12.49-PM.png" alt="" class="wp-image-3778" srcset="https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-22-at-12.12.49-PM.png 681w, https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-22-at-12.12.49-PM-300x133.png 300w" sizes="(max-width: 681px) 100vw, 681px" /><figcaption>App Engine firewall rules</figcaption></figure></div>
+
+
+
+<p>Unfortunately, there are some issues with how these firewall rules work depending on the application architecture. <em>All</em> traffic to App Engine goes through Google Front End (GFE) servers. This provides numerous benefits including TLS termination, DDoS protection, DNS, load balancing, firewall, and integration with IAP. It can present problems, however, if you have multiple App Engine services that communicate with each other internally. For example, imagine you have a frontend service which talks to a backend service.</p>
+
+
+
+<p>App Engine <a href="https://cloud.google.com/appengine/kb#static-ip">does not provide a static IP address</a> and instead relies on a large, dynamic pool of IP addresses. Two sequential outbound calls from the same application can appear to originate from two different IP addresses. One option is to allow <em>all</em> possible App Engine IPs, but this is <em>riddled</em> with issues. For one, Google uses netblocks that dynamically change and are encoded in Sender Policy Framework (SPF) records. To determine all of the IPs App Engine is currently using, you need to recursively perform DNS lookups by fetching the current set of netblocks and then doing a DNS lookup for each netblock. These results are not static, meaning you would need to do the lookups and update firewall rules <em>continually</em>. Worse yet, allowing all possible App Engine IPs would be self-defeating since it would be trivial for an attacker to work around by setting up their own App Engine application to gain access, assuming there isn’t any additional security beyond the firewall.</p>
+
+
+
+<p>Another, slightly better option is to set up a proxy on Compute Engine in the same region as your App Engine application. With this, you get a static IP address. The downside here is that it’s an additional piece of infrastructure that must be managed, which isn’t great when you’re shooting for a serverless architecture.</p>
+
+
+
+<p>Luckily, there is a better solution—one that fits our serverless model <em>and</em> enables us to control external traffic while allowing App Engine services to securely communicate internally. IAP supports <a href="https://cloud.google.com/context-aware-access">context-aware access</a>, which allows enforcing granular access controls for web applications, VMs, and GCP APIs based on an end-user’s identity and request context. Essentially, context-aware access brings a richer zero-trust model to App Engine and other GCP services.</p>
+
+
+
+<p>To set up a network firewall in IAP, we first need to create an Access Level in the Access Context Manager. Access Levels are a way to add an extra level of security based on request attributes such as IP address, region, time of day, or device. In the client’s case, they can create an Access Level to only allow access from their corporate network.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="557" height="746" src="https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-22-at-12.15.06-PM.png" alt="" class="wp-image-3779" srcset="https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-22-at-12.15.06-PM.png 557w, https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-22-at-12.15.06-PM-224x300.png 224w" sizes="(max-width: 557px) 100vw, 557px" /><figcaption>GCP Access Context Manager</figcaption></figure></div>
+
+
+
+<p>We can then add the Access Level to roles that are assigned to users or groups in IAP. This means even if users are authenticated, they must be on the corporate network to access the application.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="553" height="451" src="https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-18-at-2.50.35-PM.png" alt="" class="wp-image-3780" srcset="https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-18-at-2.50.35-PM.png 553w, https://bravenewgeek.com/wp-content/uploads/2020/06/Screen-Shot-2020-06-18-at-2.50.35-PM-300x245.png 300w" sizes="(max-width: 553px) 100vw, 553px" /><figcaption>Cloud Identity-Aware Proxy roles</figcaption></figure></div>
+
+
+
+<p>To allow App Engine services to communicate freely, we simply need to assign the IAP-secured Web App User role <em>without</em> the Access Level to the App Engine default service account. Services will then <a href="https://bravenewgeek.com/api-authentication-with-gcp-identity-aware-proxy/">authenticate as usual using OpenID Connect</a> without the added network restriction. The default service account is managed by GCP and there are no associated credentials, so this provides a solid security posture.</p>
+
+
+
+<p>Now, at this point, we’ve solved the IP firewall problem, but that’s not really in the spirit of zero-trust, right? <em>Zero-trust</em> is a security principle believing that organizations should not inherently trust anything inside or outside of their perimeters and instead should verify anything trying to connect to their systems. Having to connect to a VPN in order to access an application in the cloud is kind of a bummer, especially when the corporate VPN goes down. COVID-19 has made a lot of organizations feel this pain. Fortunately, Access Levels can be a lot smarter than providing simple lists of approved IP addresses. With the <a href="https://cloud.google.com/iam/docs/conditions-overview">Cloud IAM Conditions Framework</a>, we can even write custom rules to allow access based on URL path, resource type, or other request attributes.</p>
+
+
+
+<p>At this point, I talked the client through the <a href="https://cloud.google.com/endpoint-verification/docs/overview">Endpoint Verification</a> process and how we can shift away from a perimeter-based security model to a defense-in-depth, zero-trust model. Rather than requiring the end-user to be signed in from the corporate network, we can require them to be signed in from a trusted, corporate-owned device from <em>anywhere</em>. We can require that the device has a screen lock and is encrypted or has a minimum OS version.</p>
+
+
+
+<p>With IAP and context-aware access, we can build <em>layered</em> security on top of applications and resources without the need for a VPN, while still centrally managing access. This can even extend <em>beyond</em> GCP to applications hosted on-prem or in other cloud platforms like AWS and Azure. Enterprises don’t have to move away from more traditional security models all at once. This pattern allows you to <em>gradually</em> shift by adding and removing Access Levels and attributes over time. Zero-trust becomes much easier to implement within large organizations when they don’t have to flip a switch.</p>
+<hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/zero-trust-security-on-gcp-with-context-aware-access/">Zero-Trust Security on GCP With Context-Aware Access</a> was first posted on June 22, 2020 at 2:54 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></content:encoded>
+					
+					<wfw:commentRss>https://bravenewgeek.com/zero-trust-security-on-gcp-with-context-aware-access/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">3777</post-id>	</item>
+		<item>
+		<title>Liftbridge 1.0</title>
+		<link>https://bravenewgeek.com/liftbridge-1-0/</link>
+					<comments>https://bravenewgeek.com/liftbridge-1-0/#comments</comments>
+		
+		<dc:creator><![CDATA[Tyler Treat]]></dc:creator>
+		<pubDate>Tue, 28 Apr 2020 18:12:21 +0000</pubDate>
+				<category><![CDATA[Distributed Systems]]></category>
+		<category><![CDATA[Liftbridge]]></category>
+		<category><![CDATA[Messaging]]></category>
+		<category><![CDATA[cloud-native]]></category>
+		<category><![CDATA[distributed log]]></category>
+		<category><![CDATA[distributed systems]]></category>
+		<category><![CDATA[liftbridge]]></category>
+		<category><![CDATA[message queues]]></category>
+		<category><![CDATA[message-oriented middleware]]></category>
+		<category><![CDATA[messaging]]></category>
+		<category><![CDATA[nats]]></category>
+		<category><![CDATA[open source]]></category>
+		<guid isPermaLink="false">https://bravenewgeek.com/?p=3772</guid>
+
+					<description><![CDATA[Liftbridge has evolved a lot since making the first commit in October 2017, but the vision has remained the same: provide a message-streaming solution with a focus on simplicity and usability. This is demonstrated through many of the design and implementation decisions. A few examples include the use of NATS as the messaging backbone, avoiding &#8230; <p class="link-more"><a href="https://bravenewgeek.com/liftbridge-1-0/" class="more-link">Continue reading<span class="screen-reader-text"> "Liftbridge 1.0"</span></a></p><hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/liftbridge-1-0/">Liftbridge 1.0</a> was first posted on April 28, 2020 at 1:12 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></description>
+										<content:encoded><![CDATA[
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="1024" height="228" src="https://bravenewgeek.com/wp-content/uploads/2020/04/liftbridge_full-1024x228.png" alt="" class="wp-image-3774" srcset="https://bravenewgeek.com/wp-content/uploads/2020/04/liftbridge_full-1024x228.png 1024w, https://bravenewgeek.com/wp-content/uploads/2020/04/liftbridge_full-300x67.png 300w, https://bravenewgeek.com/wp-content/uploads/2020/04/liftbridge_full-768x171.png 768w, https://bravenewgeek.com/wp-content/uploads/2020/04/liftbridge_full-1536x343.png 1536w, https://bravenewgeek.com/wp-content/uploads/2020/04/liftbridge_full.png 1704w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /></figure></div>
+
+
+
+<p><a href="https://liftbridge.io">Liftbridge</a> has evolved a lot since making the first commit in October 2017, but the vision has remained the same: provide a message-streaming solution with a focus on simplicity and usability. This is demonstrated through many of the design and implementation decisions. A few examples include the use of NATS as the messaging backbone, avoiding heavy dependencies on runtimes like the JVM and external coordination systems like ZooKeeper, compiling down to a small, single static binary, opting for a gRPC-based API, and relying on plain YAML configuration. Liftbridge is written in Go, and the code is structured with the hopes that it’s relatively easy for someone to hop in and contribute to the project.</p>
+
+
+
+<p>The goal of Liftbridge is to bridge the gap between sophisticated but complex log-based messaging systems like Apache Kafka and Apache Pulsar and simpler, cloud-native solutions. If you’re not familiar with the project, the <a href="https://bravenewgeek.com/introducing-liftbridge-lightweight-fault-tolerant-message-streams/">introduction post</a> sheds some light. It’s been nearly two years since I open-sourced Liftbridge, and I’m pleased to announce the project has now reached a 1.0 release. In practical terms, what this means is that the API has reached a point of stability suitable for production use and will provide a backward-compatibility commitment going forward. Liftbridge will continue to follow a semantic versioning scheme.</p>
+
+
+
+<p>A lot of great features have landed since the project was first conceived in 2016 and started in 2017—replication, log compaction and retention rules, stream partitioning, activity events, and stream pausing to name a few. An official <a href="https://github.com/liftbridge-io/java-liftbridge">Java client</a> has been implemented and is quickly evolving. Python will follow shortly after. There’s also a lot of exciting stuff on the roadmap ahead including auto-pausing of sparsely used partitions, durable and fault-tolerant consumer groups, a better stream re-partitioning story, and broader client support.</p>
+
+
+
+<p>If you’re already using Liftbridge today or are thinking about using it, I’d love to hear from you. Be sure to <a href="https://twitter.com/liftbridge_io">follow Liftbridge on Twitter</a> and <a href="https://liftbridge.io/help.html">join the community Slack channel</a> to stay up-to-date on the latest developments.</p>
+<hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/liftbridge-1-0/">Liftbridge 1.0</a> was first posted on April 28, 2020 at 1:12 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></content:encoded>
+					
+					<wfw:commentRss>https://bravenewgeek.com/liftbridge-1-0/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">3772</post-id>	</item>
+		<item>
+		<title>Digitally Transformed: Becoming a Technology Product Company</title>
+		<link>https://bravenewgeek.com/digitally-transformed-becoming-a-technology-product-company/</link>
+					<comments>https://bravenewgeek.com/digitally-transformed-becoming-a-technology-product-company/#comments</comments>
+		
+		<dc:creator><![CDATA[Tyler Treat]]></dc:creator>
+		<pubDate>Wed, 05 Feb 2020 15:46:47 +0000</pubDate>
+				<category><![CDATA[Business]]></category>
+		<category><![CDATA[Consulting]]></category>
+		<category><![CDATA[Culture]]></category>
+		<category><![CDATA[Management]]></category>
+		<category><![CDATA[Software Engineering]]></category>
+		<category><![CDATA[agile]]></category>
+		<category><![CDATA[business]]></category>
+		<category><![CDATA[consulting]]></category>
+		<category><![CDATA[culture]]></category>
+		<category><![CDATA[digital transformation]]></category>
+		<category><![CDATA[engineering culture]]></category>
+		<category><![CDATA[leadership]]></category>
+		<category><![CDATA[management]]></category>
+		<category><![CDATA[okrs]]></category>
+		<category><![CDATA[planning]]></category>
+		<category><![CDATA[prioritization]]></category>
+		<category><![CDATA[process]]></category>
+		<category><![CDATA[product development]]></category>
+		<category><![CDATA[software engineering]]></category>
+		<category><![CDATA[strategy]]></category>
+		<guid isPermaLink="false">https://bravenewgeek.com/?p=3768</guid>
+
+					<description><![CDATA[More and more established businesses are attempting to reinvent themselves as technology companies. At the heart of this is the digital transformation, a journey many organizations are undertaking in order to better compete and serve their customers. As a result, companies are pouring tons of cash into digital transformation strategies. For some, this means broader &#8230; <p class="link-more"><a href="https://bravenewgeek.com/digitally-transformed-becoming-a-technology-product-company/" class="more-link">Continue reading<span class="screen-reader-text"> "Digitally Transformed: Becoming a Technology Product Company"</span></a></p><hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/digitally-transformed-becoming-a-technology-product-company/">Digitally Transformed: Becoming a Technology Product Company</a> was first posted on February 5, 2020 at 9:46 am.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></description>
+										<content:encoded><![CDATA[
+<p>More and more established businesses are attempting to reinvent themselves as technology companies. At the heart of this is the <a href="https://trends.google.com/trends/explore?date=all&amp;geo=US&amp;q=digital%20transformation">digital transformation</a>, a journey many organizations are undertaking in order to better compete and serve their customers. As a result, companies are pouring tons of cash into digital transformation strategies. For some, this means broader adoption of agile or DevOps practices. For others, it’s modernizing product offerings or moving to the cloud. Regardless of the changes, many are struggling to find success transforming themselves due to low throughput, quality issues, or failing to deliver the right thing at the right time. In a few cases, digital transformation has ended in <a href="https://www.theregister.co.uk/2019/04/23/hertz_accenture_lawsuit/"><em>outright disaster</em></a>.</p>
+
+
+
+<p>What is it that these companies are really after? To solve new problems in new ways through innovation? To more rapidly adapt to the changing market? To protect existing revenue? Any leader worth their salt will say <em>all</em> of these are important outcomes, so how do you even begin to make a “digital transformation” actionable? What are we transforming <em>to</em>? How do we know when we’ve arrived?</p>
+
+
+
+<p>The reason so many digital transformations fail has to do with how IT is usually positioned within mature, established businesses. I believe what these companies are really after is not a digital transformation—whatever that might be—but rather an <em>organizational</em> one that radically changes the way the business operates. One that redefines what IT means in the context of building software. The technology is incidental to this cultural shift which involves the intersection of people, processes, and innovation. In order to be successful, these organizations need to become <em>technology product companies</em>.</p>
+
+
+
+<h2>The Genesis of IT</h2>
+
+
+
+<p>There is an inertia within organizations to overvalue tactics and undervalue strategy. This is true not just of mature, established businesses but really <em>all</em> businesses, startups included. In fact, it’s this exact reason most startups fail. A lack of clear strategy and guiding vision precludes even the best execution from delivering success outside of the odd unicorn (after all, <em>someone</em> has to win the Powerball). Established businesses, however, already have a reliable cash flow engine to fall back on. There is much more margin for error when it comes to both strategy and execution, but this peacetime mentality leads to disruption. Many leaders have begun to recognize this and act on it, falling right back to what they know best—<em>tactics</em>.</p>
+
+
+
+<p>Why do companies and managers tend to bias towards tactics over strategy in software development? It comes back to the genesis of IT. Historically, IT was about managing computers, networks, email, phone systems, and other technical areas of the business. While this is still true today, the result of <a href="https://www.wsj.com/articles/SB10001424053111903480904576512250915629460">software eating the world</a> has caused that scope to broaden significantly. But for mature, established businesses, IT has long been viewed as a cost center, and the mandate for an IT leader is cost minimization. This is in spite of the fact that the business has shifted away from humans, paper forms, and telephones to automation and software-based solutions. IT has always existed to <em>support</em> business operations, first by managing the technology the business depended on, now by <em>building</em> it. The only real change was IT transforming from a servant of the business to a partner of it.</p>
+
+
+
+<p>Consequently, there are two key directives for a traditional IT organization: carry out the orders of the business and minimize cost. These goals inherently lead to a <em>project mindset</em> that is output- and task-oriented. Thus, IT has always been tactical and execution-minded in nature.</p>
+
+
+
+<h2>A Spotter’s Guide to Project-Minded IT</h2>
+
+
+
+<p>There are three ways to identify a project-minded IT organization. First, if both software engineers and more traditional IT roles like hardware support or help desk report up to a CIO, it’s likely a project-minded organization. In this case, it’s all just lumped into one group called “IT.”</p>
+
+
+
+<p>This contrasts with <em>product</em>-minded companies which place IT responsibilities under a CIO, whose directive is still cost minimization, and product development responsibilities under a CTO and/or CPO (Chief Product Officer), whose directive is strategic investment. There are two distinct groups, IT and Product Development or R&amp;D. It’s more common to see CTOs or CPOs at newer, technology-first companies than it is at mature, established businesses since this requires a major realignment. This alignment, however, is why we see many of the execution issues at companies attempting to “digitally transform” themselves.</p>
+
+
+
+<p>Second, if there is a clear separation between IT or development and the business, there’s a good chance it’s a project-minded organization. This might be signaled by business partners, business analysts, or product owners who provide teams with implementation requirements and act as a backlog administrator. Developers might not have a good understanding of who their customers are or they view the <em>business partner</em> as the customer. This can also be signaled by frequently changing priorities, an ever-growing backlog of tasks, or unaddressed tech debt piling up. The team is typically not cross-functional, consisting only of developers and a business partner. Marty Cagan refers to these as <a href="https://svpg.com/product-vs-feature-teams/"><em>delivery teams</em></a>, and they are purely output-driven.</p>
+
+
+
+<p>Alternatively, the team may be cross-functional with some form of designer (often oriented more towards UI than UX) and product manager, but it’s still governed by outputs. The product manager’s role is closer to that of a <em>project</em> manager armed with a product roadmap, and the closest thing developers have to product discovery is design and usability testing. Cagan refers to these as <em>feature teams</em>. Both delivery and feature teams exist to <em>serve the business</em>. These are the teams you’ll find at most companies building software.</p>
+
+
+
+<p>At product-minded companies, teams are cross-functional with designers, UX, engineers, and product, and they are measured by <em>outcomes</em>, not outputs. This focus on outcomes means that the team is empowered to figure out the best way to solve the problems they’ve been asked to solve rather than being fed a list of features to build. These teams have an intimate understanding of their customers and interact with them regularly to perform product discovery and validate solutions. These are <em>product teams</em> in the truest sense but also quite rare.</p>
+
+
+
+<p>The last way to spot a project-minded organization might be the most obvious. If the roadmap has a clear end point, it’s a project. Here, an IT organization treats building a software solution the same way it treats installing a new phone system. When the project is completed, teams or resources are reallocated to new projects and one of two things happen: it’s either dumped on another team to maintain and extend or no one sticks around to support it. The finished project languishes or former developers are told to context switch to it reactively and at the whims of the business. Engineers are treated as interchangeable and teams are not particularly durable or mission-driven but rather task-driven.</p>
+
+
+
+<p>Product-minded companies instead embrace the virtues of minimum viable product, shipping incremental value, validating ideas, and iteration. The product manager provides a vision that unites the team in a common mission. Products are not “completed,” rather they grow and evolve. There is an emphasis on business outcomes over task outputs. Managers understand that teams are composed of people with diverse skills who are not easily fungible but who might be better suited to different phases of a product’s lifecycle. Members of a team might shift focus to other areas and priorities over time, but always in support of the team’s mission.</p>
+
+
+
+<h2>The Philosophical Dilemma of the Stoplight</h2>
+
+
+
+<p>A tactics-first mindset results in a propensity to treat software development like an assembly line. We can see this with the recent adoption of ideas from the Toyota Production System and lean manufacturing as it’s applied to software development. This emphasis on tactics causes managers to view product development as an optimization problem—if we just optimize the right set of tactics and practices, we can significantly improve throughput and quality at scale. This has led to the rise in packaged frameworks and processes like <a href="https://www.scaledagile.com">SAFe</a>, <a href="https://less.works">LeSS</a>, <a href="https://disciplinedagiledelivery.com/">DAD</a>, and <a href="https://www.scrum.org/resources/scaling-scrum">Nexus</a> as well as tactics like agile, pair programming, and test-driven development at large organizations.</p>
+
+
+
+<p>The assembly-line mindset aims to take developers of arbitrary skill and background, run them through a prescribed process, and get high-quality, high-output results on the other end. I’ve never seen this deliver the desired outcomes in practice, at least not to the degree most leaders hope.</p>
+
+
+
+<p>On the surface, mass production and software development share a lot of similarities. Both require quality standards, collaboration between groups of specialized workers, and repeatability. However, the reality is they are quite different from each other. A manufacturing assembly line is optimized to produce the <em>exact same product</em> over and over again, efficiently and reliably. Software products, especially <em>Software as a Service</em>, are heterogeneous. While we seek a process that produces consistent results, each product and situation is unique. Too prescriptive, and we end up with a rigid process that yields poor results and low-throughput. Too unstructured, and we end up with inconsistent and unreliable output.</p>
+
+
+
+<p>Our Head of Client Experience Mike Taylor refers to this as the<em> </em><a href="https://blog.realkinetic.com/the-stoplight-problem-8210abcb514f"><em>Stoplight Problem</em></a>. To demonstrate, ask a roomful of people what to do at each phase of a stoplight. On green, everyone says “Go.” On red, “Stop.” And on yellow? The answers vary—even more so with the introduction of flashing yellow lights. How close are we to the light? How fast are we traveling? Are the roads icy? What are the cars in front or behind us doing? What happens at a yellow light is entirely context-dependent and situational. It comes down to making informed choices in the moment without an authoritative, black-and-white determination.</p>
+
+
+
+<p>Execution and delivery issues invariably come down to one thing: <em>the yellow light</em>. The green and red lights are binary indicators. There are clear right and wrong actions to take. These are things that can be taught and learned—where tactics matter—but the yellow light comes down to making good decisions. This is something organizations struggle with at scale. How do you trust your teams to make good decisions? As a result, they end up making those decisions top-down in a command-and-control or assembly-line fashion. This is how organizations end up with delivery and feature teams. What’s needed is a sort of <em>meta process </em>or process for encouraging good decision making.</p>
+
+
+
+<h2>Empowered Product Teams</h2>
+
+
+
+<p>The emphasis on tactics isn’t limited to traditional project-minded IT organizations. Tactics are more visible and measurable. To a manager, tactics <em>feel</em> like work is happening, but they are rarely the difference maker for a company.</p>
+
+
+
+<p>To illustrate, imagine handing out a bunch of axes to a group of people and telling them to go collect some wood. You might even teach them the proper technique for chopping down a tree. What happens next? Chaos. Confusion. A general sense of wandering in the woods. What kind of timber do we need? How much? What is it used for? How do we move it? Watching an army of people swinging axes is going to look like a lot of work is going on, but is it work that <em>matters</em>? You might follow people around, directing them where to go, which trees to cut down, and where to move them, but this won’t scale very well.</p>
+
+
+
+<p>Without a guiding vision, we’re left with a bunch of people wandering in the woods swinging axes. Work happens, things get done—maybe even <em>things that matter</em>—but it’s haphazard and inefficient. More often than not, though, we’re always two weeks from completion because there isn’t clarity on <em>where we’re trying to be</em>. In agile terminology, we’re <a href="https://blog.realkinetic.com/youre-iterating-to-nowhere-d685c9ea8ba7">iterating to nowhere</a>.</p>
+
+
+
+<p>Our response might be to micromanage or implement the assembly-line process, turning our teams into feature factories. In my experience, this creates new challenges. In the first case, by grinding throughput to a halt, and in the second case, by failing to address the Stoplight Problem. The solution is a combination of vision, strategy, and execution.</p>
+
+
+
+<p>A <em>vision</em> is a mental image of what the future could be like. It’s a grand and idealistic state, not something that can be achieved in a short amount of time. A shared vision empowers teams to make better decisions independently.</p>
+
+
+
+<p><em>Strategy</em> consists of a plan with decreasing fidelity. Some organizations attempt to plan 12 to 18 months out in a very waterfall-like fashion, and unless you’re sending a rocket into space, it just doesn’t work. A strategy is really a series of goals that get progressively fuzzier the further you go out. While a vision usually isn’t directly actionable, goals are both actionable <em>and</em> attainable in support of the overarching vision. We can break our strategy down into sets of three-month goals, which allows us to adjust course as needed. This is important since our goals are increasingly fuzzy. The key here is that strategy and goals are not dictated to teams. There needs to be give and take and dialog. <a href="https://blog.realkinetic.com/okr-process-489891e6b6a8">OKRs</a> can be a good tool for facilitating this.</p>
+
+
+
+<p>At Real Kinetic, we hold quarterly leadership offsites to revisit our vision and strategy, course-correct, and ensure we have a general sense of alignment. We help our clients do the same within their product development organizations. The challenge with strategy is it looks like <em>talking</em>, while tactics look like working, even if it’s work that doesn’t truly move the needle. This is a cognitive bias leaders and managers should be aware of because it can trap us into focusing on tactics that aren’t framed by a clear vision and strategy.</p>
+
+
+
+<p><em>Execution</em> is all about hitting the goals we lay out in our strategy. This is where tactics come into play, but rather than providing teams with a list of features to implement or tasks to perform, we <em>empower</em> them to make good decisions. This is made possible by our guiding vision and cross-functional, mission-driven product teams. Our product manager is figuring out what lies ahead and helping plan the best course of action for realizing our vision. They are looking at value and business viability risks for the product. Our designer is looking at usability risks, and our tech lead is looking at feasibility, making estimations, and contributing to the strategy in order to avoid potential obstacles. You’ll notice that nowhere have we mentioned agile or scrum because these are specific tactics for managing execution. Together, the team is determining execution and discovering a solution that moves the business towards the ideal state set forth by its leadership.</p>
+
+
+
+<h2>Becoming a Technology Product Company</h2>
+
+
+
+<p>The struggle with digital transformation is it doesn’t get at the heart of the issue. It’s a tactical response to a tangible, yet ultimately inconsequential, part of the problem. The problem is not due to technology or innovation or particular tactics, it’s due to organizational alignment and execution deficiencies. Unfortunately, the former is more visible and more easily acted on than the latter.</p>
+
+
+
+<p>The transformation that organizations are actually after is becoming a <em>technology product company</em>. This requires empowered product teams in combination with vision, strategy, and execution. Most companies focus on the execution because it’s easier, but it’s not sufficient. Empowered product teams require a shared vision that enables them to make good decisions without the need for an overly regimented or top-down process. This is the <em>only</em> effective way I’ve seen software companies scale throughput and quality. Don’t let your organization think it’s building a boulevard when it’s actually <a href="https://bravenewgeek.com/planting-perennials-next-to-potholes/">planting perennials next to potholes</a>.</p>
+
+
+
+<p><em>Real Kinetic helps clients build great product development organizations. <a href="http://realkinetic.com/">Learn more</a> about working with us.</em></p>
+<hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/digitally-transformed-becoming-a-technology-product-company/">Digitally Transformed: Becoming a Technology Product Company</a> was first posted on February 5, 2020 at 9:46 am.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></content:encoded>
+					
+					<wfw:commentRss>https://bravenewgeek.com/digitally-transformed-becoming-a-technology-product-company/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">3768</post-id>	</item>
+		<item>
+		<title>Microservice Observability, Part 2: Evolutionary Patterns for Solving Observability Problems</title>
+		<link>https://bravenewgeek.com/microservice-observability-part-2-evolutionary-patterns-for-solving-observability-problems/</link>
+					<comments>https://bravenewgeek.com/microservice-observability-part-2-evolutionary-patterns-for-solving-observability-problems/#comments</comments>
+		
+		<dc:creator><![CDATA[Tyler Treat]]></dc:creator>
+		<pubDate>Fri, 03 Jan 2020 20:18:10 +0000</pubDate>
+				<category><![CDATA[Cloud]]></category>
+		<category><![CDATA[Design Patterns]]></category>
+		<category><![CDATA[DevOps]]></category>
+		<category><![CDATA[Messaging]]></category>
+		<category><![CDATA[Operations]]></category>
+		<category><![CDATA[Software Architecture]]></category>
+		<category><![CDATA[Software Engineering]]></category>
+		<category><![CDATA[architecture]]></category>
+		<category><![CDATA[cloud]]></category>
+		<category><![CDATA[cloud-native]]></category>
+		<category><![CDATA[debugging]]></category>
+		<category><![CDATA[design patterns]]></category>
+		<category><![CDATA[devops]]></category>
+		<category><![CDATA[messaging]]></category>
+		<category><![CDATA[microservices]]></category>
+		<category><![CDATA[monitoring]]></category>
+		<category><![CDATA[observability]]></category>
+		<category><![CDATA[observability pipeline]]></category>
+		<category><![CDATA[ops]]></category>
+		<guid isPermaLink="false">https://bravenewgeek.com/?p=3754</guid>
+
+					<description><![CDATA[In part one of this series, I described the difference between monitoring and observability and why the latter starts to become more important when dealing with microservices. Next, we’ll discuss some strategies and patterns for implementing better observability. Specifically, we’ll look at the idea of an observability pipeline and how we can start to iteratively &#8230; <p class="link-more"><a href="https://bravenewgeek.com/microservice-observability-part-2-evolutionary-patterns-for-solving-observability-problems/" class="more-link">Continue reading<span class="screen-reader-text"> "Microservice Observability, Part 2: Evolutionary Patterns for Solving Observability Problems"</span></a></p><hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/microservice-observability-part-2-evolutionary-patterns-for-solving-observability-problems/">Microservice Observability, Part 2: Evolutionary Patterns for Solving Observability Problems</a> was first posted on January 3, 2020 at 2:18 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></description>
+										<content:encoded><![CDATA[
+<p>In <a href="https://bravenewgeek.com/microservice-observability-part-1-disambiguating-observability-and-monitoring/">part one</a> of this series, I described the difference between monitoring and observability and why the latter starts to become more important when dealing with microservices. Next, we’ll discuss some strategies and patterns for <em>implementing</em> better observability. Specifically, we’ll look at the idea of an <a href="https://bravenewgeek.com/the-observability-pipeline/">observability pipeline</a> and how we can start to iteratively improve observability in our systems.</p>
+
+
+
+<p>To recap, observability can be described simply as the ability to ask questions of your systems without knowing those questions in advance. This requires capturing a variety of signals such as logs, metrics, and traces as well as tools for interpreting those signals like log analysis, SIEM, data warehouses, and time-series databases. A number of challenges surface as a result of this. <a href="https://twitter.com/clintsharp">Clint Sharp</a> does a great job <a href="https://cribl.io/blog/the-observability-pipeline/">discussing</a> the key problems, which I’ll summarize below along with some of my own observations.</p>
+
+
+
+<h2>Problem 1: Agent Fatigue</h2>
+
+
+
+<p>A typical microservice-based system requires a lot of different operational tooling—log and metric collectors, uptime monitoring, analytics aggregators, security scanners, APM runtime instrumentation, and so on. Most of these involve agents that run on every node in the cluster (or, in some cases, every <em>pod</em> in Kubernetes). Since vendors optimize for day-one experience and differentiating capabilities, they are incentivized to provide agents unique to their products rather than attempting to unify or standardize on tooling. This causes problems for ops teams who are concerned with the <em>day-two</em> costs of running and managing all of these different agents. Resource consumption alone can be significant, especially if you add in a service mesh like <a href="https://istio.io/">Istio</a> into the mix. Additionally, since each agent is unique, the way they are configured and managed is different. Finally, from a security perspective, every agent added to a system introduces additional attack surface to hosts in the cluster. Each agent brings not just the vendor’s code into production but also all of its dependencies.</p>
+
+
+
+<h2>Problem 2: Capacity Anxiety</h2>
+
+
+
+<p>With the elastic microservice architectures I described in <a href="https://bravenewgeek.com/microservice-observability-part-1-disambiguating-observability-and-monitoring/">part one</a>, capacity planning for things like logs and metrics starts to become a challenge. This point is particularly salient if, for example, you’ve ever been responsible for managing Splunk licensing. With microservices, a new deployment can now cause a spike in log volumes forcing back pressure on your log ingestion across <em>all</em> of your services. I’ve seen Splunk ingestion get backed up for <em>days’</em> worth of logs, making it nearly impossible to debug production issues when logs are needed most. I’ve seen Datadog metric ingestion grind to a halt after someone added a high-cardinality dimension to classify a metric by user. And I’ve seen security teams turn on cloud audit log exporting to their SIEM only to get flooded with low-level minutiae and noise. Most tools prioritize gross data ingestion over fine-grained control like sampling, filtering, deduplicating, and aggregating. Using collectors such as Fluentd can help with this problem but add to the first problem. Elastic microservice architectures tend to require more control over data ingestion to avoid capacity issues.</p>
+
+
+
+<h2>Problem 3: Foresight Required</h2>
+
+
+
+<p>Unlike monitoring, observability is about asking questions that we hadn’t planned to ask in advance, but we can’t ask those questions if the necessary data was never collected in the first place! The capacity problem described above might cause us to under-instrument our systems, especially when the value of logs is effectively zero—<em>until it’s not</em>. Between monitoring, debugging, security forensics, and other activities, effective operations requires a lot of foresight. Unfortunately, this foresight tends to come from hindsight, which might be too late depending on the situation. Most dashboards are operational scar tissue, after all. Adding or reconfiguring instrumentation <em>after the fact</em> can have significant lag time, which can be the difference between prolonged downtime or a speedy remediation. Elastic microservice architectures benefit greatly from the ability to selectively and dynamically dial up the granularity of operational data when it’s needed and dial it back down when it’s not.</p>
+
+
+
+<h2>Problem 4: Tooling and Data Accessibility</h2>
+
+
+
+<p>Because of the problems discussed earlier, it’s not uncommon for organizations to settle on a limited set of operations tools like logging and analytics systems. This can pose its own set of challenges, however, as valuable operational data becomes locked up within certain systems in production environments. Vendor lock-in and high switching costs can make it difficult to use the right tool for the job.</p>
+
+
+
+<p>There’s a wide range of data sources that provide high-value signals such as VMs, containers, load balancers, service meshes, audit logs, VPC flow logs, and firewall logs. And there’s a wide range of sinks and downstream consumers that can benefit from these different signals. The problem is that tool and data needs vary from team to team. Different tools or products are needed for different data and different use cases. The data that operations teams care about is different from the data that business analysts, security, or product managers care about. But if the data is siloed based on form or function or the right <em>tools</em> aren’t available, it becomes harder for these different groups to be effective. There’s an ever-changing landscape of tools, products, and services—particularly in the operations space—so the question is: how big of a lift is it for your organization to add or change tools? How easy is it to experiment with new ones? In addition to the data siloing, the “agent fatigue” problem described above can make this challenging when re-rolling host agents at scale.</p>
+
+
+
+<h2>Solution: The Observability Pipeline</h2>
+
+
+
+<p>Solving these problems requires a solution that offers the following characteristics:</p>
+
+
+
+<ol><li>Allows capturing arbitrarily wide events</li><li>Consolidates data collection and instrumentation</li><li>Decouples data sources from data sinks</li><li>Supports input-to-output schema normalization</li><li>Provides a mechanism to encode routing, filtering, and transformation logic</li></ol>
+
+
+
+<p>When we implement these different concepts, we get an <em>observability pipeline</em>—a way to unify the collection of operational data, shape it, enrich it, eliminate noise, and route it to any tool in the organization that can benefit from it. With input-to-output schema normalization, we can perform schema-agnostic processing to enrich, filter, aggregate, sample, or drop fields from any shape and adapt data for different destinations. This helps to support a wider range of data collectors and agents. And by decoupling sources and sinks, we can easily introduce or change tools and reroute data without impacting production systems.</p>
+
+
+
+<p>We’re starting to see the commercialization of this idea with products like <a href="https://cribl.io/">Cribl</a>, but there are ways to solve some of these problems yourself, incrementally, and without the use of commercial software. The remainder of this post will discuss patterns and strategies for building your own observability pipeline. While the details here will be fairly high level, part three of this series will share some implementation details and tactics through examples.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter size-large"><img loading="lazy" width="1024" height="474" src="https://bravenewgeek.com/wp-content/uploads/2018/09/observability_pipeline-1024x474.png" alt="" class="wp-image-3596" srcset="https://bravenewgeek.com/wp-content/uploads/2018/09/observability_pipeline-1024x474.png 1024w, https://bravenewgeek.com/wp-content/uploads/2018/09/observability_pipeline-300x139.png 300w, https://bravenewgeek.com/wp-content/uploads/2018/09/observability_pipeline-768x355.png 768w, https://bravenewgeek.com/wp-content/uploads/2018/09/observability_pipeline.png 1374w" sizes="(max-width: 767px) 89vw, (max-width: 1000px) 54vw, (max-width: 1071px) 543px, 580px" /></figure></div>
+
+
+
+<h2>Pattern 1: Structured Data</h2>
+
+
+
+<p>A key part of improving system observability is being more purposeful in how we structure our data. Specifically, structured logging is critical to supporting production systems and aiding debuggability. The last thing you want to be doing when debugging a production issue is frantically grepping log files trying to pull out needles from a haystack. In the past, logs were primarily consumed by <em>human</em> operators. Today, they are primarily consumed by <em>tools</em>. That requires some adjustments at design time. For example, if we were designing a login system, historically, we might have a logging statement that resembles the following:</p>
+
+
+
+<p><pre>log.error(“User '{}' login failed”.format(user))</pre></p>
+
+
+
+<p>This would result in a log message like:</p>
+
+
+
+<p><pre>ERROR 2019-12-30 09:28.31 User ‘tylertreat' login failed</pre></p>
+
+
+
+<p>When debugging login problems, we’d probably use a combination of grep and regular expressions to track down the users experiencing issues. This might be okay for the time being, but as we introduce additional metadata, it becomes more and more kludgy. It also means our logs are extremely fragile. People begin to rely on the format of logs in ways that might even be unknown to the developers responsible for them. Unstructured logs become an implicit, undocumented API.</p>
+
+
+
+<p>With structured logs, we make that contract more explicit. Our logging statement might change to something more like:</p>
+
+
+
+<p><pre>log.error(“User login failed”,<br>          event=LOGIN_ERROR,<br>          user=“tylertreat”,<br>          email=“tyler.treat@realkinetic.com”,<br>          error=error)</pre></p>
+
+
+
+<p>The actual format we use isn’t hugely important. I typically recommend JSON because it’s ubiquitous and easy to write and parse. With JSON, our log looks something like the following:</p>
+
+
+
+<p><pre>{<br>    “timestamp”: “2019-12-30 09:28.31”,<br>    “level”: “ERROR”,<br>    “event”: “user_login_error”,<br>    “user”: “tylertreat”,<br>    “email”: “tyler.treat@realkinetic.com”,<br>    “error”: “Invalid username or password”,<br>    “message”: “User login failed”<br>}</pre></p>
+
+
+
+<p>With this, we can parse the structure, index it, query it, even transform or redact it, and we can add new pieces of metadata without breaking consumers. Our logs start to look more like events. Remember, observability is about being able to ask arbitrary questions of our systems. Events are like logs with context, and shifting towards this model helps with being able to ask questions of our systems.</p>
+
+
+
+<h2>Pattern 2: Request Context and Tracing</h2>
+
+
+
+<p>With elastic microservice architectures, correlating events and metadata between services becomes essential. <a href="https://opentracing.io/docs/overview/what-is-tracing/">Distributed tracing</a> is one component of this. Another is tying our structured logs together and passing shared context between services as a request traverses the system. A pattern that I recommend to teams adopting microservices is to pass a context object to <em>everything</em>. This is actually a <a href="https://blog.golang.org/context">pattern that originated in Go</a> for passing request-scoped values, cancelation signals, and deadlines across API boundaries. It turns out, this is also a useful pattern for observability when extended to <em>service</em> boundaries. While it’s contentious to explicitly pass context objects due to the obtrusiveness to APIs, I find it better than relying on implicit, request-local storage.</p>
+
+
+
+<p>In its most basic form, a context object is simply a key-value bag that lets us track metadata as a request passes through a service and is persisted through the entire execution path. OpenTracing refers to this as <a href="https://opentracing.io/docs/overview/tags-logs-baggage/">baggage</a>. You can include this context as part of your structured logs. <a href="https://www.honeycomb.io/blog/best-practices-for-observability/">Some suggest</a> having a single event/structured-log-with-context emitted per hop, but I think this is more aspirational. For most, it’s probably easier to get started by adding a context object to your existing logging. Our login system’s logging from above would look something like this:</p>
+
+
+
+<p><pre>def login(ctx, username, email, password):<br>    ctx.set(user=username, email=email)<br>    ...<br>    log.error(“User login failed”,<br>              event=LOGIN_ERROR,<br>              context=ctx,<br>              error=error)<br>    ...</pre></p>
+
+
+
+<p>This adds rich metadata to our logs—great for debugging—as they start evolving towards events. The context is also a convenient way to propagate tracing information, such as a span ID, between services.</p>
+
+
+
+<p><pre>{<br>    “timestamp”: “2019-12-30 09:28.31”,<br>    “level”: “ERROR”,<br>    “event”: “user_login_error”,<br>    “context”: {<br>        “id”: “accfbb8315c44a52ad893ca6772e1caf”,<br>        “http_method”: “POST”,<br>        “http_path”: “/login”,<br>        “user”: “tylertreat”,<br>        “email”: “tyler.treat@realkinetic.com”,<br>        “span_id”: “34fe6cbf9556424092fb230eab6f4ea6”,<br>    },<br>    “error”: “Invalid username or password”,<br>    “message”: “User login failed”<br>}</pre></p>
+
+
+
+<p>You might be wondering what to put on the context versus just putting on our structured logs. It’s a good question and, like most things, the answer is “it depends.” A good rule of thumb is what can you get for “free” and what do you need to pass along? These should typically be things specific to a particular request. For instance, CPU utilization and memory usage can be pulled from the environment, but a user or correlation ID are request-specific and must be propagated. This decision starts to become more obvious the <em>deeper</em> your microservice architectures get. Just be careful not to leak sensitive data into your logs! While we can introduce tooling into our observability pipeline to help with this risk, I believe <a href="https://bravenewgeek.com/how-to-level-up-dev-teams/">code reviews</a> are the best line of defense here.</p>
+
+
+
+<h2>Pattern 3: Data Schema</h2>
+
+
+
+<p>With our structured data and context, we can take it a step further and introduce schemas for each data type we collect, such as logs, metrics, and traces. Schemas provide a standard shape to the data and allow consumers to rely on certain fields and types. They might validate data types and enforce required fields like a user ID, license, or trace ID. These schemas basically take the explicit contract described above and codify it into a specification. This is definitely the most organization-dependent pattern, so it’s hard to provide specific advice. The key thing is having structured data that can be easily evolved and relied on for debugging or exploratory purposes.</p>
+
+
+
+<p>These schemas also need <em>libraries</em> which implement the specifications and make it easy for developers to actually instrument their systems. There is a plethora of existing libraries available for structured logging. For tracing and metrics, <a href="https://opentelemetry.io">OpenTelemetry</a> has emerged as a vendor-neutral API and forthcoming data specification.</p>
+
+
+
+<h2>Pattern 4: Data Collector</h2>
+
+
+
+<p>So far, we’ve talked mostly about development practices that improve observability. While they don’t directly address the problems described above, later, we’ll see how they also help support other parts of the observability pipeline. Now we’re going to look at some actual <em>infrastructure</em> patterns for building out a pipeline.</p>
+
+
+
+<p>Recall that two of the characteristics we desire in our observability solution are the ability to consolidate data collection and instrumentation and decouple data sources from data sinks. One of the ways we can reduce agent fatigue is by using a data collector to unify the collection of key pieces of observability data—namely logs (or events), metrics, and traces. This component collects the data, optionally performs some transformations or filtering on it, and writes it to a data pipeline. This commonly runs as an agent on the host. In Kubernetes, this might be a <a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">DaemonSet</a> with an instance running on each node. From the application or container side, data is written to stdout/stderr or a Unix domain socket which the collector reads. From here, the data gets written to the pipeline, which we’ll look at next.</p>
+
+
+
+<p>Moving data collection out of process can be important if your application emits a significant amount of logs or you’re doing anything at a large enough scale. I’ve seen cases where applications were spending more time writing logs than performing actual business logic. Writing logs to disk can easily take down a database or other I/O-intensive workload just by sharing a filesystem with its logging. Rather than sacrificing observability by reducing the volume and granularity of logs, offload it and move it out of the critical execution path. Logging can absolutely <a href="https://www.honeycomb.io/blog/lies-my-parents-told-me-about-logs/">affect the performance and reliability of your application</a>.</p>
+
+
+
+<p>For this piece, I generally recommend using either <a href="https://www.fluentd.org/">Fluentd</a> or <a href="https://www.elastic.co/products/logstash">Logstash</a> along with the <a href="https://www.elastic.co/products/beats">Beats ecosystem</a>. I usually avoid putting too much logic into the data collector due to the way it runs distributed and at scale. If you put a lot of processing logic here, it can become difficult to manage and evolve. I find it works better to have the collector act as a dumb pipe for getting data into the system where it can be processed offline.</p>
+
+
+
+<h2>Pattern 5: Data Pipeline</h2>
+
+
+
+<p>Now that we have an agent running on each host collecting our structured data, we need a scalable, fault-tolerant data stream to handle it all. Even at modestly sized organizations, I’ve seen upwards of about 1TB of logs indexed daily with elastic microservice architectures. This volume can be <em>much greater</em> for larger organizations, and it can burst dramatically with the introduction of new services. As a result, decoupling sources and sinks becomes important for reducing capacity anxiety. This data pipeline is often something that can be partitioned for horizontal scalability. In doing this, we might just end up shifting the capacity anxiety from one system to another, but depending on the solution, this can be an easier problem to solve or might not be a problem at all if using a managed cloud service. Finally, a key reason for decoupling is that it also allows us to introduce or change sinks without impacting our production cluster. A benefit of this is that we can also evaluate and compare tools side-by-side. This helps reduce switching costs.</p>
+
+
+
+<p>There are quite a few available solutions for this component, both open source and managed. On the open source side, examples include <a href="https://kafka.apache.org/">Apache Kafka</a>, <a href="https://pulsar.apache.org/">Apache Pulsar</a>, and <a href="https://liftbridge.io/">Liftbridge</a>. On the cloud-managed services side, <a href="https://aws.amazon.com/kinesis/">Amazon Kinesis</a>, <a href="https://cloud.google.com/pubsub/">Google Cloud Pub/Sub</a>, and <a href="https://azure.microsoft.com/en-us/services/event-hubs/">Azure Event Hubs</a> come to mind. I tend to prefer managed solutions since they allow me to focus on things that directly deliver business value rather than surrounding operational concerns.</p>
+
+
+
+<p>Note that there are some important nuances depending on the pipeline implementation you use or which might <em>determine</em> the implementation you choose. For example, questions like how long do you need to retain observability data, do you need the ability to replay data streams, and do you need strict, in-order delivery of messages? Replaying operational data can be useful for retraining ML models or testing monitoring changes, for instance. For systems that are explicitly sharded, there’s also the question of how to partition the data. Random partitioning is usually easiest from a scaling and operations perspective, but it largely depends on how you intend to consume it.</p>
+
+
+
+<h2>Pattern 6: Data Router</h2>
+
+
+
+<p>The last pattern and component of our observability pipeline is the data router. With our operational data being written to a pipeline such as Kafka, we need something that can consume it, perform processing, and write it to various backend systems. This is also a great place to perform dynamic sampling, filtering, deduplication, aggregation, or data enrichment. The schema mentioned earlier becomes important here since the shape of the data determines how it gets handled. If you’re dealing with data from multiple sources, you’ll likely need to normalize to some common schema, either at ingestion time or processing time, in order to execute shared logic and perform schema-agnostic processing. Data may also need to be reshaped before writing to destination systems.</p>
+
+
+
+<p>This piece can be as sophisticated or naive as you’d like, depending on your needs or your organization’s observability and operations maturity. A simple example is merely looking at the record type and sending logs to Splunk and Amazon Glacier cold storage, sending traces to Stackdriver, sending metrics to Datadog, and sending high-cardinality events to Honeycomb. More advanced use cases might involve dynamic sampling to dial up or down the granularity on demand, dropping values to reduce storage consumption or eliminate noise, masking values to implement data loss prevention, or joining data sources to create richer analytics.</p>
+
+
+
+<p>Ultimately, this is a glue component that’s reading data in, parsing the shape of it, and writing it out to assorted APIs or other topics/streams for further downstream processing. Depending on the statefulness of your router logic, this can be a good fit for serverless solutions like <a href="https://aws.amazon.com/lambda/">AWS Lambda</a>, <a href="https://cloud.google.com/functions/">Google Cloud Functions</a>, <a href="https://cloud.google.com/run/">Google Cloud Run</a>, <a href="https://azure.microsoft.com/en-us/services/functions/">Azure Functions</a>, or <a href="https://www.openfaas.com/">OpenFaaS</a>. If using Kafka, <a href="https://kafka.apache.org/documentation/streams/">Kafka Streams</a> might be a good fit.</p>
+
+
+
+<h2>The Journey to Better Observability</h2>
+
+
+
+<p>Observability with elastic microservice architectures introduces some unique challenges like agent fatigue, capacity anxiety, required foresight, and tooling and data accessibility. Solving these problems requires a solution that can capture arbitrarily wide events, consolidate data collection and instrumentation, decouple data sources and sinks, support input-to-output schema normalization, and encode routing, filtering, and transformation logic. When we implement this, we get an <em>observability pipeline</em>, which is really just a fancy name for a collection of observability patterns and best practices.</p>
+
+
+
+<p>An observability pipeline should be an <em>evolutionary</em> or iterative process. You shouldn’t waste time building out a sophisticated pipeline early on; you should be focused on delivering value to your customers. Instead, start small with items that add immediate value to the observability of your systems.</p>
+
+
+
+<p>Something you can begin doing today that adds a <em>ton</em> of value with minimal lift is structured logging. Another high-leverage pattern is passing a context object throughout your service calls to propagate request metadata which can be logged and correlated. Use distributed tracing to understand and identify issues with performance. Next, move log collection out of process using Fluentd or Logstash. If you’re not already, use a centralized logging system—Splunk, Elasticsearch, Sumo Logic, Graylog—there are a bunch of options here, both open source and commercial, SaaS or self-managed. With the out-of-process collector, you can then introduce a data pipeline to decouple log producers from consumers. Again, there are managed options like Amazon Kinesis or Google Cloud Pub/Sub and self-managed ones like Apache Kafka. With this, you can now add, change, or compare consumers and log sinks without impacting production systems. Evaluate a product like Honeycomb for storing high-cardinality events. At this point, you can start to unify the collection of other instrumentation such as metrics and traces and evolve your logs towards context-rich events.</p>
+
+
+
+<p>Each of these things will incrementally improve the observability of your systems and can largely be done in a stepwise fashion. Whether you’re just beginning your transition to microservices or have fully adopted them, the journey to better observability doesn’t have to require a herculean effort. Rather, it’s done one step at a time.</p>
+
+
+
+<p>In part three of this series, I’ll demonstrate a few implementation details through examples to show some of these observability patterns in practice.</p>
+<hr style="border-top:black solid 1px" /><a href="https://bravenewgeek.com/microservice-observability-part-2-evolutionary-patterns-for-solving-observability-problems/">Microservice Observability, Part 2: Evolutionary Patterns for Solving Observability Problems</a> was first posted on January 3, 2020 at 2:18 pm.<br />&copy;2018 &quot;<a href="https://bravenewgeek.com">Brave New Geek</a>&quot;. Use of this feed is for personal non-commercial use only. If you are not reading this article in your feed reader, then the site is guilty of copyright infringement. Please contact me at <!--email_off-->ttreat31@gmail.com<!--/email_off--><br />]]></content:encoded>
+					
+					<wfw:commentRss>https://bravenewgeek.com/microservice-observability-part-2-evolutionary-patterns-for-solving-observability-problems/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">3754</post-id>	</item>
+	</channel>
+</rss>

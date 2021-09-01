@@ -1,0 +1,8 @@
+{
+  "title":"GHC 8.10.7 is now available",
+  "date":"2021-08-26T17:00:00.000000-07:00",
+  "author":"ghc-devs",
+  "id":"http://haskell.org/ghc/blog/20210827-ghc-8.10.7-released.html",
+  "link":"http://haskell.org/ghc/blog/20210827-ghc-8.10.7-released.html",
+  "content":"GHC 8.10.7 is now available\nZubin Duggal - 2021-08-27\n\nThe GHC team is very pleased to announce the availability of GHC 8.10.7. Source and binary distributions are available at the usual place.\nThis is a small bugfix release, fixing one linking portability issue (#19950) present in GHC 8.10.5 and GHC 8.10.6 on some x86_64 macOS toolchains, which resulted in undefined symbol errors for ___darwin_check_fd_set_overflow.\nIssue #19950 is caused by a bug in newer Apple toolchains (specifically XCode 12) where programs compiled with affected versions of XCode are not backwards compatible with configurations running older version of XCode (certain versions of XCode 11).\nWe claimed to have fixed this in GHC 8.10.6, but alas this wasnâ€™t the case. The fix was originally tested on the master branch, which uses a different build configuration from the 8.10 branch. We have now tested the fix on the GHC 8.10 branch and finally squashed the bug.\nWe would like to thank Microsoft Research, GitHub, IOHK, the Zw3rk stake pool, Tweag I/O, Serokell, Equinix, SimSpace, and other anonymous contributors whose on-going financial and in-kind support has facilitated GHC maintenance and release management over the years. We would also like to thank the hundreds of open-source contributors whose work makes GHC possible.\nA complete list of bug fixes and improvements can be found in the release notes.\nAs always, feel free to report any issues you encounter via gitlab.haskell.org.\n    "
+}
