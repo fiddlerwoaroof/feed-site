@@ -110,36 +110,13 @@ root = new Vue({
         .then(() => (this.show_likes = false));
     },
 
-    like(item, feed) {
-      fetch("https://srv2.elangley.org/hub/feed_archive", {
-        method: "POST",
-        body: JSON.stringify({
-          event: "like-item",
-          item: item.link,
-          title: item.title,
-          author: item.author,
-          "feed-title": feed.metadata.title,
-          "feed-link": feed.metadata.link,
-        }),
-      });
-    },
+    like(item, feed) { },
 
     get_item(path) {
       window
         .fetch(this.current_feed.base_path + path)
         .then((resp) => resp.json())
         .then((data) => {
-          fetch("https://srv2.elangley.org/hub/feed_archive", {
-            method: "POST",
-            body: JSON.stringify({
-              event: "read-item",
-              item: data.link,
-              title: data.title,
-              author: data.author,
-              "feed-title": this.current_feed.metadata.title,
-              "feed-link": this.current_feed.metadata.link,
-            }),
-          });
           window.history.pushState(
             {
               current_feed: root.current_feed,
