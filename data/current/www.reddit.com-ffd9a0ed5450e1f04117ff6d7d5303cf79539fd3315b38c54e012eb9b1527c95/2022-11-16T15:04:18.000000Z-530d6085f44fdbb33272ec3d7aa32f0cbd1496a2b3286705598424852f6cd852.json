@@ -1,0 +1,8 @@
+{
+  "title":"Version 0.6 of Flat, a principled, portable and compact binary data format",
+  "date":"2022-11-16T15:04:18.000000Z",
+  "author":"/u/Bitter_Desk_1103",
+  "id":"t3_ywvtfw",
+  "link":"https://www.reddit.com/r/haskell/comments/ywvtfw/version_06_of_flat_a_principled_portable_and/",
+  "content":"<div class=\"md\"><p>Version 0.6 of <a href=\"https://github.com/Quid2/flat\">Flat</a> is on <a href=\"https://hackage.haskell.org/package/flat\">Hackage</a>.</p> <h3>How To Use It For Fun and Profit</h3> <p><code>haskell {-# LANGUAGE DeriveGeneric, DeriveAnyClass #-} import Flat data Direction = North | South | Center | East | West deriving (Show,Generic,Flat) </code></p> <p>Use <strong>flat</strong> to encode and <strong>unflat</strong> to decode:</p> <p><code>haskell unflat (flat [North,South]) :: Decoded [Direction] -&gt; Right [ North , South ] </code></p> <p>And, thanks to Flat's bit-encoding, this list fits in just 1 byte:</p> <p><code>haskell flatBits [North,South] -&gt; &quot;10010101&quot; </code></p> </div>   submitted by   <a href=\"https://www.reddit.com/user/Bitter_Desk_1103\"> /u/Bitter_Desk_1103 </a>   to   <a href=\"https://www.reddit.com/r/haskell/\"> r/haskell </a> <br> <span><a href=\"https://www.reddit.com/r/haskell/comments/ywvtfw/version_06_of_flat_a_principled_portable_and/\">[link]</a></span>   <span><a href=\"https://www.reddit.com/r/haskell/comments/ywvtfw/version_06_of_flat_a_principled_portable_and/\">[comments]</a></span>"
+}

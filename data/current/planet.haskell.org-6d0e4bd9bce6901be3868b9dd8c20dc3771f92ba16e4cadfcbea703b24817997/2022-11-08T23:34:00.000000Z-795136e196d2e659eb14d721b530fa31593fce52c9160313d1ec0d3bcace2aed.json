@@ -1,0 +1,8 @@
+{
+  "title":"Addenda to recent articles 202210",
+  "date":"2022-11-08T23:34:00.000000Z",
+  "author":"Mark Dominus",
+  "id":"tag:,2022:/addenda/202210",
+  "link":"https://blog.plover.com/addenda/202210.html",
+  "content":"I haven't done one of these in a while.  And there have been\naddenda. I thought hey, what if I ask Git to give me a list of commits\nfrom October that contain the word ‘Addendum’.  And what do you know,\nthat worked pretty well.  So maybe addenda summaries will become a\nregular thing again, if I don't forget by next month.\n\nMost of the addenda resulted in separate followup articles, which I\nassume you will already have seen.\n([1]\n[2]\n[3]) I will not mention this sort of\naddendum in future summaries.\n\n\nIn my discussion of lazy search in Haskell \nI had a few versions that used do-notation in the list monad, but\neventually abandoned it n favor of explicit concatMap.  For\nexample:\n\n      s nodes = nodes ++ (s $ concatMap childrenOf nodes)\n\n\nI went back to see what this would look like with do notation:\n\n      s nodes = (nodes ++) . s $ do\n          n &lt; "
+}

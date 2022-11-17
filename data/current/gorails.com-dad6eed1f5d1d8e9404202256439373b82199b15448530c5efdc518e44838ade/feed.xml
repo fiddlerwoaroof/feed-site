@@ -1,0 +1,944 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>GoRails</title>
+    <description>Short screencasts for Rails developers</description>
+    <link>https://gorails.com/blog</link>
+    <item>
+      <title>How To Test A Rails Rubygem Against Multiple Databases </title>
+      <description>&lt;p&gt;If you're building a Rubygem that integrates with Rails and ActiveRecord, you'll probably want to test against multiple databases. This is pretty easy to setup for CI where you can run multiple databases in Docker containers with different steps, but what about local development?&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;DATABASE_URL&lt;/code&gt; is typically used for setting the production database for your Rails app. Hatchbox, Heroku, Render, etc all will set this environment variable for Rails to pick up and use the correct database.&lt;/p&gt;
+
+&lt;p&gt;You might not realize that the &lt;code&gt;DATABASE_URL&lt;/code&gt; can also be used for other things like testing!&lt;/p&gt;
+
+&lt;p&gt;Instead of running &lt;code&gt;rails test&lt;/code&gt; like normal, you can prepend the &lt;code&gt;DATABASE_URL&lt;/code&gt; env var to change the database.&lt;/p&gt;
+
+&lt;p&gt;For example, we can change from the default database to Postgres&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;DATABASE_URL=postgres://127.0.0.1/test_db rails test
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can even take this a step further and write a script to test each of the databases:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/usr/bin/env bash
+
+echo &quot;Testing against SQLite3&quot;
+rails test
+
+echo &quot;Testing against PostgreSQL&quot;
+DATABASE_URL=postgres://127.0.0.1/test_db rails test
+
+echo &quot;Testing against MySQL&quot;
+DATABASE_URL=mysql2://root:@127.0.0.1/test_db rails test
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+      <pubDate>Wed, 30 Mar 2022 16:07:42 -0500</pubDate>
+      <link>https://gorails.com/blog/how-to-test-a-rails-rubygem-against-multiple-databases</link>
+      <guid>https://gorails.com/blog/how-to-test-a-rails-rubygem-against-multiple-databases</guid>
+    </item>
+    <item>
+      <title>Black Friday 2021 Deals on GoRails, courses, and Jumpstart Pro!</title>
+      <description>&lt;p&gt;I run sales once a year on Black Friday as a way of saying thank you. You've been a huge part of making GoRails a success and I can't thank you enough. 🥰&lt;/p&gt;
+
+&lt;p&gt;Here's what we've got going on this year:&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://gorails.com/pricing&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;&lt;strong&gt;36% off GoRails with the yearly plan&lt;/strong&gt;&lt;/a&gt; - &lt;a href=&quot;https://gorails.com/pricing&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Get the deal&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Get a yearly subscription to GoRails for just $144/year. That's only $12/mo to stay up-to-date with Hotwire, Rails 7, Ruby 3, and much more!&lt;/p&gt;
+
+&lt;p&gt;If you're already subscribed to GoRails, you can upgrade from the monthly plan to lock in the savings.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://jumpstartrails.com/pricing&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;&lt;strong&gt;$50+ off Jumpstart Pro (Rails &amp;amp; iOS)&lt;/strong&gt;&lt;/a&gt; - &lt;a href=&quot;https://jumpstartrails.com/pricing&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Get the deal&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Choose either the Rails or iOS template and get $50 off a single site license or $150 off an unlimited license. &lt;/p&gt;
+
+&lt;p&gt;We've never run a sale on Jumpstart Pro before so be sure to snag a copy while you can! Read on to see some exciting new updates for Jumpstart Pro that we recently launched.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://courses.gorails.com/advanced-ruby-for-rails-devs?coupon=N1LAN9L&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;&lt;strong&gt;$50 off Advanced Ruby: Behind the Magic&lt;/strong&gt;&lt;/a&gt; - &lt;a href=&quot;https://courses.gorails.com/advanced-ruby-for-rails-devs?coupon=N1LAN9L&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Get the deal&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This is also the first time I've discounted the Advanced Ruby course! This course is everything I wish I knew about Ruby when I started as a Rails developer. We cover 6+ hours of Ruby techniques used in Rails and other Rubygems to see how they work from scratch.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://courses.gorails.com/refactoring-rails?coupon=N1LAN9L&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;&lt;strong&gt;$50 off Refactoring Rails&lt;/strong&gt;&lt;/a&gt; - &lt;a href=&quot;https://courses.gorails.com/refactoring-rails?coupon=N1LAN9L&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Get the deal&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Ben Orenstein's Refactoring Rails course is one I refer back to several times a year. It's a great set of strategies for cleaning up and better organizing your code.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://courses.gorails.com/payments-with-rails-master-class?coupon=N1LAN9L&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;&lt;strong&gt;$50 off Payments with Ruby on Rails Master Class&lt;/strong&gt;&lt;/a&gt; - &lt;a href=&quot;https://courses.gorails.com/payments-with-rails-master-class?coupon=N1LAN9L&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Get the deal&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Want to add Payments to your Rails app? It's gotten much trickier over the past years. This course walks you through accepting Payments with Stripe that are compatible with Strong Customer Authentication, webhooks, and more.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;That's everything! I just want to say thanks again for everything and allowing me to do this for a living. 2021 has been a crazy year and there are some secret things I've been working on that I can't wait to share with you soon.&lt;/p&gt;
+
+&lt;p&gt;If you have any questions, hit reply and let me know. 👋&lt;/p&gt;
+</description>
+      <pubDate>Tue, 23 Nov 2021 22:17:50 -0600</pubDate>
+      <link>https://gorails.com/blog/black-friday-2021-deals-on-gorails-courses-and-jumpstart-pro</link>
+      <guid>https://gorails.com/blog/black-friday-2021-deals-on-gorails-courses-and-jumpstart-pro</guid>
+    </item>
+    <item>
+      <title>How to render ActionText Attachments in Plain Text</title>
+      <description>&lt;p&gt;ActionText supports custom attachments using Signed Global IDs. We can use this to embed any database record in Rails such as @mentions for users.&lt;/p&gt;
+
+&lt;p&gt;For HTML, Rails will use the &lt;code&gt;to_partial_path&lt;/code&gt; to render the HTML template for the attachment. For a user, this would be &lt;code&gt;app/views/users/_user.html.erb&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;With Plain Text output, Rails will default to the caption specified on the attachable. Typically, this is nil because we don't need a caption for an @mention.&lt;/p&gt;
+
+&lt;p&gt;By defining the &lt;code&gt;attachable_plain_text_representation&lt;/code&gt; method, we can specify the default value for the plain text ActionText output.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class User
+  include ActionText::Attachable
+
+  # When ActionText rendering mentions in plain text
+  def attachable_plain_text_representation(caption = nil)
+    caption || name
+  end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And that's it! Simply render your ActionText content as plain text and it will use this method for rendering.&lt;/p&gt;
+</description>
+      <pubDate>Tue, 02 Nov 2021 10:12:26 -0500</pubDate>
+      <link>https://gorails.com/blog/how-to-render-actiontext-attachments-in-plain-text</link>
+      <guid>https://gorails.com/blog/how-to-render-actiontext-attachments-in-plain-text</guid>
+    </item>
+    <item>
+      <title>How to use Partials in Rails</title>
+      <description>&lt;p&gt;If you want to keep your code simple and/or reuse a block of code in multiple files, then you can store that code in an html.erb file called a partial.&lt;/p&gt;
+
+&lt;p&gt;Create partial 🧩 &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Go to app &amp;gt; views.&lt;/li&gt;
+&lt;li&gt;Create a folder called shared.&lt;/li&gt;
+&lt;li&gt;Create a file to store your code in and name it using the syntax: _[partial].html.erb
+Insert partial ⬇️&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In the file where you want to include the code from a partial, insert the tag&lt;br&gt;
+&lt;code&gt;&amp;lt;%= render partial &quot;shared/&lt;/code&gt;&lt;code&gt;[partial]&lt;/code&gt;&lt;code&gt;%&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;View page 👀 &lt;/p&gt;
+
+&lt;p&gt;You’ll see your page with the code from the partial included.&lt;/p&gt;
+</description>
+      <pubDate>Tue, 23 Feb 2021 15:38:18 -0600</pubDate>
+      <link>https://gorails.com/blog/how-to-use-partials-in-rails</link>
+      <guid>https://gorails.com/blog/how-to-use-partials-in-rails</guid>
+    </item>
+    <item>
+      <title>How to add a Root Route to your Rails app</title>
+      <description>&lt;p&gt;You need to replace the default, “Yay! You’re on Rails” landing page with a real index page for your app.&lt;/p&gt;
+
+&lt;p&gt;Create a route 🛤️ &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Go to config &amp;gt; routes.rb file&lt;/li&gt;
+&lt;li&gt;In the Rails.application.routes.draw method, enter the route:
+&lt;code&gt;get root, to:&lt;/code&gt; &lt;code&gt;&quot;&lt;/code&gt;&lt;code&gt;main#index&lt;/code&gt;&lt;code&gt;&quot;&lt;/code&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img&gt;&lt;/p&gt;
+
+&lt;p&gt;Create a controller 👨‍✈️ &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Go to app &amp;gt; controllers folder&lt;/li&gt;
+&lt;li&gt;Create a file named &lt;code&gt;main_controller.rb&lt;/code&gt;
+&lt;/li&gt;
+&lt;li&gt;Create a class named &lt;code&gt;MainController&lt;/code&gt; and inherit from &lt;code&gt;ApplicationController&lt;/code&gt;
+&lt;/li&gt;
+&lt;li&gt;Define a method named &lt;code&gt;index&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img&gt;&lt;/p&gt;
+
+&lt;p&gt;Create a view 🏞️ &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Go to app &amp;gt; views folder&lt;/li&gt;
+&lt;li&gt;Create a folder named &lt;code&gt;main&lt;/code&gt;
+&lt;/li&gt;
+&lt;li&gt;In that folder create a file named &lt;code&gt;index.html.erb&lt;/code&gt;
+&lt;/li&gt;
+&lt;li&gt;Add HTML&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img&gt;&lt;/p&gt;
+
+&lt;p&gt;View new page 👀 &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Go to &lt;a href=&quot;http://localhost:3000&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;http://localhost:3000&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;You’ll see the new page&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img&gt;&lt;/p&gt;
+</description>
+      <pubDate>Tue, 23 Feb 2021 15:37:51 -0600</pubDate>
+      <link>https://gorails.com/blog/how-to-add-a-root-route-to-your-rails-app</link>
+      <guid>https://gorails.com/blog/how-to-add-a-root-route-to-your-rails-app</guid>
+    </item>
+    <item>
+      <title>How to add a Page to your Rails app</title>
+      <description>&lt;p&gt;⚠️ This is how to add a page without any interaction with the model.&lt;/p&gt;
+
+&lt;h2&gt;Create a route 🛤️&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Go to config &amp;gt; routes.rb file&lt;/li&gt;
+&lt;li&gt;In the Rails.application.routes.draw method, enter a route using the syntax:
+[request type] &quot;[URL]&quot;, to: &quot;[controller]#[action]&quot;
+&lt;img&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Create a controller 👨‍✈️ &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Go to app &amp;gt; controllers folder&lt;/li&gt;
+&lt;li&gt;Create a file named [route]_controller.rb, e.g. about_controller.rb&lt;/li&gt;
+&lt;li&gt;Create a class named [Route]Controller and inherit from ApplicationController&lt;/li&gt;
+&lt;li&gt;Define a method named [action from routes.rb], e.g. index
+&lt;img&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Create a view 🏞️ &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Go to app &amp;gt; views folder&lt;/li&gt;
+&lt;li&gt;Create a folder named [route]&lt;/li&gt;
+&lt;li&gt;In that folder create a file named [action.html.erb]&lt;/li&gt;
+&lt;li&gt;Add HTML (and ERB)
+&lt;img&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;View new page 👀 &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Go to &lt;a href=&quot;http://localhost:3000/about&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;http://localhost:3000/about&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;You’ll see the new page&lt;br&gt;
+&lt;img&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Open Web Inspector&lt;br&gt;
+👀 You’ll see the request from the browser and the response from the server for the GET request to the /about URL.&lt;br&gt;
+&lt;img&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;View the page’s source code&lt;br&gt;
+👀 You’ll see the content that Rails added code from app &amp;gt; views &amp;gt; layouts &amp;gt; application.html.erb and inserted the code from index.html.erb inside the &amp;lt;%= yield =&amp;gt; ERB tag.&lt;br&gt;
+&lt;img&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img&gt;&lt;/p&gt;
+</description>
+      <pubDate>Tue, 23 Feb 2021 15:37:06 -0600</pubDate>
+      <link>https://gorails.com/blog/how-to-add-a-page-to-your-rails-app</link>
+      <guid>https://gorails.com/blog/how-to-add-a-page-to-your-rails-app</guid>
+    </item>
+    <item>
+      <title>How HTTP Requests work in Rails</title>
+      <description>&lt;h2&gt;Process overview&lt;/h2&gt;
+
+&lt;p&gt;⚠️ This is how HTTP requests work without any interaction with the model.&lt;/p&gt;
+
+&lt;p&gt;[request] ➡️ routes.rb ➡️ [controller] + [action] ➡️ view ➡️ browser&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;A browser sends an HTTP &lt;a href=&quot;e.g.%20/about&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;request&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;The Rails server receives the request&lt;/li&gt;
+&lt;li&gt;routes.rb tells Rails which [controller] + [action] to send the request to (e.g. about#index)&lt;/li&gt;
+&lt;li&gt;The [controller] receives the request and runs code in the method that matches the [action] from routes.rb&lt;/li&gt;
+&lt;li&gt;Rails generates a view (e.g. index.html.erb)&lt;/li&gt;
+&lt;li&gt;Rails sends the view back to the browser&lt;/li&gt;
+&lt;li&gt;The browser renders the view&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img&gt;&lt;/p&gt;
+
+&lt;p&gt;⚠️ A model is included in later guides.&lt;/p&gt;
+
+&lt;p&gt;🔗 &lt;a href=&quot;https://thoughtbot.com/upcase/videos/rest&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Link&lt;/a&gt; to REST tutorial via Thoughtbot&lt;/p&gt;
+</description>
+      <pubDate>Tue, 23 Feb 2021 15:36:19 -0600</pubDate>
+      <link>https://gorails.com/blog/how-http-requests-work-in-rails</link>
+      <guid>https://gorails.com/blog/how-http-requests-work-in-rails</guid>
+    </item>
+    <item>
+      <title>Black Friday 2020 Deals</title>
+      <description>&lt;p&gt;This is a special time of the year to give back to the Ruby on Rails community. You have so wonderful and supportive of GoRails. 🤗&lt;/p&gt;
+
+&lt;p&gt;I'm running a big sale across all the GoRails products this year. I only do this once a year so if you're thinking about grabbing a GoRails subscription, Jumpstart Pro, or one of my courses, grab it now! &lt;strong&gt;Deals end on November 30th, 2020.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://gorails.com/pricing&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;&lt;strong&gt;36% off GoRails with the yearly plan&lt;/strong&gt;&lt;/a&gt; - &lt;a href=&quot;https://gorails.com/pricing&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Get the deal&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You can get a yearly subscription to GoRails for just $144/year. That's $12/mo to keep up-to-date with the latest Ruby on Rails features, learn testing, and how to build features for your products.&lt;/p&gt;
+
+&lt;p&gt;If you're already subscribed to GoRails, you can upgrade from the monthly plan to lock in the savings.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://jumpstartrails.com/pricing&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;&lt;strong&gt;Buy Jumpstart Pro and get 3 free months of Hatchbox.io&lt;/strong&gt;&lt;/a&gt; - &lt;a href=&quot;https://jumpstartrails.com/pricing&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Get the deal&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Jumpstart Pro is a pre-built Ruby on Rails application template that comes with Authentication, Teams, Payments (with Stripe SCA support), an API, and &lt;em&gt;a ton&lt;/em&gt; of other features ready out of the box.&lt;/p&gt;
+
+&lt;p&gt;We know hosting can be expensive when you're spending your savings trying to launch a production idea. That's why we're bundling 3 months of &lt;a href=&quot;https://hatchbox.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Hatchbox.io&lt;/a&gt; so you can deploy your apps without worrying about hosting costs eating into your rent money.&lt;/p&gt;
+
+&lt;p&gt;In 2021, we'll be working on Jumpstart Pro to include updates for the new Turbolinks and Stimulus changes coming soon. Since we have a lot of ongoing maintenance, I'm going to change the pricing to start charging for yearly updates with new customers in the future. Now is a great time to buy Jumpstart Pro and be grandfathered in for free updates for your license forever!&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://courses.gorails.com/payments-with-rails-master-class&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;&lt;strong&gt;$50 off Payments with Ruby on Rails Master Class&lt;/strong&gt;&lt;/a&gt; - &lt;a href=&quot;https://courses.gorails.com/payments-with-rails-master-class&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Get the deal&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I recently launched the new Payments with Ruby on Rails master class with updates for the all new Stripe APIs. If you need to add Strong Customer Authentication for payments in your application, now's the time to buy the course. I spent 3 months learning and implementing the Stripe changes for SCA so you don't have to.&lt;/p&gt;
+
+&lt;p&gt;The price goes up to $149 after December 2nd, so make sure to snag the course while you can.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://courses.gorails.com/refactoring-rails&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;&lt;strong&gt;$50 off Refactoring Rails&lt;/strong&gt;&lt;/a&gt; - &lt;a href=&quot;https://courses.gorails.com/refactoring-rails&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Get the deal&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Ben Orenstein (who you probably know from Tuple.app and expert Vim skills) teaches a wonderful course on the refactorings, patterns, and best practices that will let you ship quickly even as your Rails app matures.&lt;/p&gt;
+
+&lt;p&gt;I personally went through this course and regularly reference it when I refactor my code.&lt;br&gt;
+​&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://courses.gorails.com/advanced-ruby-for-rails-devs&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;&lt;strong&gt;Private Livestreams for Advanced Ruby: Behind The Magic students&lt;/strong&gt;&lt;/a&gt; - &lt;a href=&quot;https://courses.gorails.com/advanced-ruby-for-rails-devs&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Get the deal&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I wanted to do something special for the Advanced Ruby course since it is BRAND NEW! This course covers &lt;em&gt;tons&lt;/em&gt; of techniques that the Rails core team and gem developers use to build fantastic libraries in Ruby. These are things you won't typically see in day-to-day Rails code, but knowing these things can drastically improve your Ruby code (whether it's in a Rails app or not).&lt;/p&gt;
+
+&lt;p&gt;For Black Friday, I'm doing several private livestreams exclusively for Advanced Ruby students. I'll be answering questions, refactor Ruby snippets with you, and most importantly I will show you how to apply these techniques in a real example: the Pay gem.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;That's everything! 2020 has been a hard year and I wanted to say thanks for your support. I'm incredibly fortunate to be able to do this for a living. Thank you so much for making that possible!&lt;/p&gt;
+
+&lt;p&gt;If you have any questions, send me an email at chris @ gorails dot com&lt;/p&gt;
+</description>
+      <pubDate>Wed, 25 Nov 2020 22:53:51 -0600</pubDate>
+      <link>https://gorails.com/blog/black-friday-2020-deals</link>
+      <guid>https://gorails.com/blog/black-friday-2020-deals</guid>
+    </item>
+    <item>
+      <title>Dynamic Footer Timestamp in Rails</title>
+      <description>&lt;p&gt;Ever seen the typical copyright message at the bottom of a website that's out of date? Yep. A surprising amount of websites have them!&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;© 1992 Your Company&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Someone just hard coded the year and called it a day.&lt;/p&gt;
+
+&lt;p&gt;That's fine and dandy and it's not hard to change, but it's easy to forget you need to update it.&lt;/p&gt;
+
+&lt;p&gt;A better solution? Use Rails to dynamically generate it.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;© &amp;lt;%= Date.current.year %&amp;gt; Your Company&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;This will always print the current year in your footer. We use &lt;code&gt;Date.current&lt;/code&gt; because we're using Rails and this method will take into account the current time zone in Rails. &lt;/p&gt;
+
+&lt;p&gt;You can also use &lt;code&gt;Date.today.year&lt;/code&gt; to use pure Ruby, but this won't apply the current time zone to the calculation. &lt;/p&gt;
+
+&lt;p&gt;Either way, this is will display the current year from the server side and will always be accurate.&lt;/p&gt;
+
+&lt;p&gt;An alternative is to use client side Javascript for this, but it will instead use the browser's timezone so it will display the year in their time zone. &lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;© &amp;lt;script&amp;gt;new Date().getFullYear()&amp;gt;2010&amp;amp;&amp;amp;document.write(&quot;-&quot;+new Date().getFullYear());&amp;lt;/script&amp;gt; Your Company&lt;/code&gt;&lt;/p&gt;
+</description>
+      <pubDate>Tue, 31 Dec 2019 12:26:40 -0600</pubDate>
+      <link>https://gorails.com/blog/dynamic-footer-timestamp-in-rails</link>
+      <guid>https://gorails.com/blog/dynamic-footer-timestamp-in-rails</guid>
+    </item>
+    <item>
+      <title>Limit Webpacker RAM on compile for production</title>
+      <description>&lt;p&gt;If you're deploying Rails to production with Webpacker, you might run into a Compilation failed error from Webpacker. &lt;/p&gt;
+
+&lt;p&gt;Often this happens because Webpacker runs out of RAM and the operating system kills the command for using too many resources. Modern VPS servers run on SSDs and don't enable a swap file by default because it can cause additional wear on the SSD and significantly reduce the lifetime of the drive. A side effect of this is the operating system is more aggressive with killing processes when it runs out of RAM.&lt;/p&gt;
+
+&lt;p&gt;To confirm this is your problem, you'll want to make sure that compiling assets doesn't throw any errors because of broken code. Update &lt;code&gt;config/webpacker.yml&lt;/code&gt; to have &lt;code&gt;webpack_compile_output: true&lt;/code&gt; and redeploy. If you are getting an error now, then you probably just need to fix that and you aren't running out of RAM.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Getting the &quot;Compilation failed&quot; error from Webpacker?&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Try setting NODE_OPTIONS=&quot;--max-old-space-size=350&quot; in your environment variables.&lt;/p&gt;
+
+&lt;p&gt;What this will do is tell Node.js that it can only use up to 350MB of RAM. This applies to your yarn install and webpack compile steps and will force it to run within those limits.&lt;/p&gt;
+
+&lt;p&gt;If you set this number too low, you'll get an error that Node.js was unable to allocate memory. You can try raising the max-old-space-size number until your compiles are working again. &lt;/p&gt;
+
+&lt;p&gt;This is really helpful if you're compiling webpack assets on a 1GB of RAM server and already have Rails, Sidekiq, Postgres, Redis, etc running. The free RAM will only be a portion of the 1GB left, so in our case, we could set it to 350MB of RAM to keep the OS from killing our webpack precompile.&lt;/p&gt;
+</description>
+      <pubDate>Thu, 12 Dec 2019 08:44:46 -0600</pubDate>
+      <link>https://gorails.com/blog/limit-webpacker-ram-on-compile-for-production</link>
+      <guid>https://gorails.com/blog/limit-webpacker-ram-on-compile-for-production</guid>
+    </item>
+    <item>
+      <title>How to Test and Assert Link text is not on Page with Rails</title>
+      <description>&lt;p&gt;Have you ever wanted to create an assert that tests if a link is NOT on the page with Rails? It's not easy to find an example of this. You can find some with Rspec, but not with Rails's builtin test suite using Minitest.&lt;/p&gt;
+
+&lt;p&gt;Typically you'll use &lt;code&gt;assert_selector&lt;/code&gt; to find a match on the page like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;assert_selector &quot;a&quot;, &quot;Edit Team&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This takes two arguments and searches for any anchor tags that contain the text &quot;Edit Team&quot; in them. If it finds it, the assertion passes.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately there is no &lt;code&gt;assert_not_selector&lt;/code&gt; or &lt;code&gt;refute_selector&lt;/code&gt; method to execute the inverse of &lt;code&gt;assert_selector&lt;/code&gt;. The &lt;code&gt;assert_selector docs do mention some&lt;/code&gt;equality` options you can pass in, but the documentation is kind of hard to understand.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;How do you test and assert a link is not on the page?&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Well, you can pass in the text and count options and check for the count of 0. Easy as that.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;assert_selector &quot;a&quot;, text: &quot;Edit Team&quot;, count: 0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To keep tests consistent, I like to use the same count selector when I want to check for presence too.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;assert_selector &quot;a&quot;, text: &quot;Edit Team&quot;, count: 1
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+      <pubDate>Tue, 10 Dec 2019 11:39:55 -0600</pubDate>
+      <link>https://gorails.com/blog/how-to-test-and-assert-link-text-is-not-on-page-with-rails</link>
+      <guid>https://gorails.com/blog/how-to-test-and-assert-link-text-is-not-on-page-with-rails</guid>
+    </item>
+    <item>
+      <title>How to test helpers in Rails with Devise current_user and ActionView::TestCase</title>
+      <description>&lt;p&gt;Recently I was trying to test a couple of helpers I had written in Rails. Basic helpers are pretty easily tested using ActionView::TestCase, but what happens when you want to use Devise' &lt;code&gt;current_user&lt;/code&gt; method in your helpers? We have to actually write our own method to stub out Devise &lt;code&gt;current_user&lt;/code&gt; in our test suite so that we can return the correct user.&lt;/p&gt;
+
+&lt;p&gt;Let's take a very trivial example of a helper that depends upon &lt;code&gt;current_user&lt;/code&gt;. Here we have a &lt;code&gt;current_team&lt;/code&gt; method that returns the first team for the user.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;module ExampleHelper
+  def current_team
+    @current_team ||= current_user.teams.first
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The current_resource method in Devise is not a helper, but a method in ApplicationController, so it's not available in ActionView::TestCase even if it was exposed with &lt;code&gt;helper_method :current_user&lt;/code&gt; in the controller.&lt;/p&gt;
+
+&lt;p&gt;To write tests for this, we need to actually implement the &lt;code&gt;current_user&lt;/code&gt; method in our test suite. &lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;require 'test_helper'
+
+class ExampleHelperTest &amp;lt; ActionView::TestCase
+  def current_user
+    @current_user
+  end
+
+  setup do
+    @current_user = users(:one)
+  end
+
+  test &quot;current_team&quot; do
+    assert_not_nil current_team
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Everything is run in the context of our &lt;code&gt;ActionView::TestCase&lt;/code&gt; class, so the helpers have access to the methods inside our test suite.&lt;/p&gt;
+
+&lt;p&gt;What we've done here is defined the &lt;code&gt;current_user&lt;/code&gt; method and have it simply return an instance variable. This lets us change the value of &lt;code&gt;current_user&lt;/code&gt; at any time in our tests which can come in handy. Our test will call the &lt;code&gt;current_team&lt;/code&gt; helper, then call our &lt;code&gt;current_user&lt;/code&gt; method defined in &lt;code&gt;ExampleHelperTest&lt;/code&gt; and use that instead of the Devise method. &lt;/p&gt;
+</description>
+      <pubDate>Mon, 02 Dec 2019 12:27:11 -0600</pubDate>
+      <link>https://gorails.com/blog/how-to-test-helpers-in-rails-with-devise-current_user-and-actionview-testcase</link>
+      <guid>https://gorails.com/blog/how-to-test-helpers-in-rails-with-devise-current_user-and-actionview-testcase</guid>
+    </item>
+    <item>
+      <title>Fill in Stripe Elements JS for SCA / 3D Secure 2 and Capybara</title>
+      <description>&lt;p&gt;&lt;a href=&quot;https://stripe.com/docs/elements&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Stripe Elements&lt;/a&gt; Javascript now has support for Strong Customer Authentication (SCA) with 3D Secure 2 (3DS2). This makes handling these in system tests a bit harder. Filling out the credit card fields in the past has been pretty straightforward, but now we have an extra modal to handle with SCA authentication. &lt;/p&gt;
+
+&lt;p&gt;In test mode, Stripe Elements JS displays a modal iframe and then dynamically loads an inner iframe that displays the &quot;Complete authentication&quot; and &quot;Fail authentication&quot; buttons for testing.&lt;/p&gt;
+
+&lt;p&gt;Stripe Element's card element loads an iframe inside the div that it's mounted to. Similarly, Stripe handles SCA injecting an iframe on the body to create a modal. This iframe contains another iframe that holds the actual authentication buttons.&lt;/p&gt;
+
+&lt;p&gt;Here are 3 helper methods you can use with Capybara for interacting with Stripe's card element and SCA modal buttons.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;require &quot;test_helper&quot;
+
+class ApplicationSystemTestCase &amp;lt; ActionDispatch::SystemTestCase
+  driven_by :selenium, using: :chrome, screen_size: [1400, 1400]
+
+  # Fills out the Stripe card element with the provided card details in Capybara
+  # You can also provide a custom selector to find the correct iframe
+  # By default, we use the ID of &quot;#card-element&quot; which Stripe uses in their documentation
+  def fill_stripe_elements(card: , expiry: '1234', cvc: '123', postal: '12345', selector: '#card-element &amp;gt; div &amp;gt; iframe')
+    find_frame(selector) do
+      card.to_s.chars.each do |piece|
+        find_field('cardnumber').send_keys(piece)
+      end
+
+      find_field('exp-date').send_keys expiry
+      find_field('cvc').send_keys cvc
+      find_field('postal').send_keys postal
+    end
+  end
+
+  # Completes SCA authentication successfully
+  def complete_stripe_sca
+    find_frame('body &amp;gt; div &amp;gt; iframe') do
+      # This helps find the inner iframe in the SCA modal's challenge frame which doesn't load immediately
+      sleep 1
+
+      find_frame('#challengeFrame') do
+        find_frame(&quot;iframe[name='acsFrame']&quot;) do 
+          click_on &quot;Complete authentication&quot;
+        end
+      end
+    end
+  end
+
+  # Fails SCA authentication
+  def fail_stripe_sca
+    find_frame('body &amp;gt; div &amp;gt; iframe') do
+      # This helps find the inner iframe in the SCA modal's challenge frame which doesn't load immediately
+      sleep 1
+
+      find_frame('#challengeFrame') do
+        find_frame(&quot;iframe[name='acsFrame']&quot;) do 
+          click_on &quot;Fail authentication&quot;
+        end
+      end
+    end
+  end
+
+  # Generic helper for finding an iframe 
+  def find_frame(selector, &amp;amp;block)
+    using_wait_time(15) do
+      frame = find(selector)
+      within_frame(frame) do
+        block.call
+      end
+    end
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To fill out the Stripe Elements JS credit card field with the default &lt;code&gt;#card-element &amp;gt; div &amp;gt; iframe&lt;/code&gt; selector, you can run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;fill_stripe_elements(card: '4242 4242 4242 4242')
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To use a different selector if your element doesn't have the ID of &lt;code&gt;card-element&lt;/code&gt; on it, you can pass in the &lt;code&gt;selector&lt;/code&gt; option:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;fill_stripe_elements(card: '4242 4242 4242 4242', selector: '#some-other-selector')
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To complete the SCA modal and confirm authentication, you can run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;complete_stripe_sca
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To fail the SCA modal and test when authentication fails, you can run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;fail_stripe_sca
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I've been using this with Rails system tests for &lt;a href=&quot;https://jumpstartrails.com&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;JumpstartRails.com&lt;/a&gt; for a while now and it works great.&lt;/p&gt;
+
+&lt;p&gt;👉 Plus, I've created the &lt;a href=&quot;https://courses.gorails.com/payments-with-rails-master-class&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Payments with Ruby on Rails Master Class&lt;/a&gt; to walk through every single step of setting up Stripe payments with Strong Customer Authentication support for your Rails app. We cover everything from one-time payments, subscription billing, receipts, refunds, webhooks, strong customer authentication confirmation, and testing. It took me 3 months to learn, implement, and test Stripe with SCA in my apps, so I made this course to save you the trouble!&lt;/p&gt;
+
+&lt;p&gt;If you have any tweaks that improve this, leave a comment below!&lt;/p&gt;
+</description>
+      <pubDate>Wed, 23 Oct 2019 22:08:00 -0500</pubDate>
+      <link>https://gorails.com/blog/fill-in-stripe-elements-js-for-sca-3d-secure-2-and-capybara</link>
+      <guid>https://gorails.com/blog/fill-in-stripe-elements-js-for-sca-3d-secure-2-and-capybara</guid>
+    </item>
+    <item>
+      <title>Engineering Books I Recommend</title>
+      <description>&lt;p&gt;A lot of people ask what the best Ruby books are to buy. There are plenty of good ones, but don't limit yourself to just Ruby or Rails books. There are many about general programming and software engineering topics that teach very important concepts like the Mythical Man-Month. Here's a list of books to check out:&lt;/p&gt;
+
+&lt;h3&gt;Ruby Books&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&quot;https://amzn.to/2HRIiw7&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Metaprogramming Ruby 2&lt;/a&gt; - While fairly advanced, this book will help you understand the philosophy Ruby developers take when building things like Rails and ActiveRecord. Metaprogramming is a widely used tool that is the source of all the &quot;magic&quot; most newbies fear. &lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2JOqyUW&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Practical Object Oriented Design in Ruby&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2YqRU7d&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Effective Ruby: 48 Specific Ways to Write Better Ruby&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2Wpq5tN&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Eloquent Ruby&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2JDmbMt&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Design Patterns in Ruby&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2YpMJ7d&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;The Ruby Programming Language: Everything You Need To Know&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2WojIHu&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;The Rails 5 Way&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;General Programming and Software Engineering Books&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2YmYCuQ&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;The Mythical Man-Month&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2WqI977&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;The Pragmatic Programmer&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2Yo8DIb&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Refactoring: Improving the Design of Existing Code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2HHJmDv&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Patterns of Enterprise Application Architecture&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&quot;https://amzn.to/2YlQ5YS&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Managing Humans&lt;/a&gt; - Even though this book is targeted at managers, this book will give you really good insight into how a well oiled engineering team should operate.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      <pubDate>Mon, 25 Mar 2019 17:12:30 -0500</pubDate>
+      <link>https://gorails.com/blog/engineering-books-i-recommend</link>
+      <guid>https://gorails.com/blog/engineering-books-i-recommend</guid>
+    </item>
+    <item>
+      <title>My Screencasting Setup</title>
+      <description>&lt;p&gt;I started screencasting for my business, GoRails.com, in 2014. I had no idea what I was doing, so it took me a while to find a setup I was comfortable with.&lt;/p&gt;
+
+&lt;p&gt;My main goals were portability and simplicity. So let's dive into my original configuration.&lt;/p&gt;
+
+&lt;h3&gt;Original Screencasting Setup&lt;/h3&gt;
+
+&lt;p&gt;When I started, the goal was just to have something super duper simple and cheap. &lt;/p&gt;
+
+&lt;p&gt;I already had a Macbook Pro, so I simply spent $150 and got a decent microphone, the Blue Yeti. This is a great starter microphone and simply plugs in with USB. No dealing with XLR or audio interfaces. I also didn't use a webcam because my main focus was just on the content. That made it even cheaper and easier to get started.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2E5KRqQ&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Macbook Pro 15&quot;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2XmU5bg&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Blue Yeti&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;No Webcam&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For software, I use Screenflow which is a fantastic Mac-only app for editing audio and video. It's got just about everything you need for recording and editing in one app.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.telestream.net/screenflow/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Screenflow&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Current Screencasting Setup&lt;/h3&gt;
+
+&lt;p&gt;After recording for a few years, I wanted a better setup. I still wanted it to be portable, but the major improvement here was adding a nice camera. I often spend a couple minutes during screencasts explaining topics and ideas so it's nice to be able to look at someone instead of a blank screen for those times.&lt;/p&gt;
+
+&lt;p&gt;Rather than buying a webcam, I opted for a Panasonic GH5 camera with a 12-35mm lens. This is one of the few consumer cameras that has clean HDMI out. The camera's HDMI out goes into a USB3 capture card made by Inogeni and basically makes it work as a 4k webcam. &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2E5KRqQ&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Macbook Pro 15&quot;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2GZ8HHU&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Panasonic GH5&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2Ew0kCd&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Rode VideoMic Pro&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.amazon.com/INOGENI-4K2USB3-HDMI-Capture-Device/dp/B01AQ7HQ62&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Inogeni 4k2USB3&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Same as before, I use Screenflow for recording and editing my screencasts.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.telestream.net/screenflow/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Screenflow&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Podcasting&lt;/h3&gt;
+
+&lt;p&gt;In the last 6 months, I've also started podcasting. While the Blue Yeti would work great for this, I wanted to invest in something higher quality since podcasts are only audio. The Shure SM7b is what you see on Joe Rogan's podcast and used regularly by radio stations and musicians.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2tD4OAI&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Shure SM7b&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2U93YHE&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Yamaha AG03&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://amzn.to/2U3Kl3G&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Cloudlifter&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For podcasting, we record using &lt;a href=&quot;https://zencastr.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Zencastr&lt;/a&gt; which has been fantastic.&lt;/p&gt;
+</description>
+      <pubDate>Mon, 25 Feb 2019 13:21:57 -0600</pubDate>
+      <link>https://gorails.com/blog/my-screencasting-setup</link>
+      <guid>https://gorails.com/blog/my-screencasting-setup</guid>
+    </item>
+    <item>
+      <title>How to Compile Dynamic NGINX Modules</title>
+      <description>&lt;p&gt;Compiling dynamic NGINX modules is something that's kind of hard to find online. Especially if you want to compile them for an existing compiled copy of NGINX. This guide is going to walk through compiling the &lt;a href=&quot;https://github.com/fdintino/nginx-upload-module&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Upload module for NGINX&lt;/a&gt; on Ubuntu 18.04 using &lt;a href=&quot;https://packages.ubuntu.com/bionic/nginx&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;nginx from their repositories&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;NGINX has already been compiled for us with various different options. If you install the &lt;code&gt;nginx-extras&lt;/code&gt; package you get NGINX compiled with a bunch of modules, but you can also use the &lt;code&gt;nginx-full&lt;/code&gt; or just &lt;code&gt;nginx&lt;/code&gt; packages to get less modules.&lt;/p&gt;
+
+&lt;p&gt;To compile our new dynamic module, we'll need to download the source code for NGINX, install any dependencies used when the Ubuntu package maintainers compiled it, and use the same flags they did.&lt;/p&gt;
+
+&lt;h2&gt;Installing dependencies&lt;/h2&gt;
+
+&lt;p&gt;You'll first need to install any dependencies for the NGINX modules you're compiling. For me, I needed the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo apt install libperl-dev libgeoip-dev libgd-dev
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;Downloading NGINX and module source code&lt;/h2&gt;
+
+&lt;p&gt;You'll need to compile this against the same version of NGINX that's currently installed. You can find that by running &lt;code&gt;nginx -v&lt;/code&gt;. For me, we're using &lt;code&gt;1.14.0&lt;/code&gt; so we'll download the source for that version.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;wget https://nginx.org/download/nginx-1.14.0.tar.gz
+tar zxf nginx-1.14.0.tar.gz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then we need to download the source for our module. We're using the Upload module which can be found on Github. We'll grab the latest zip.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;wget https://github.com/fdintino/nginx-upload-module/archive/master.zip
+unzip master.zip
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;Find the NGINX compile flags&lt;/h2&gt;
+
+&lt;p&gt;To make our module compatible with the existing NGINX binary, we need to use the same compile flags. We can find those by running the following command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;nginx -V
+
+# nginx version: nginx/1.14.0 (Ubuntu)
+built with OpenSSL 1.1.0g  2 Nov 2017
+TLS SNI support enabled
+configure arguments: --with-cc-opt='-g -O2 -fdebug-prefix-map=/build/nginx-mcUg8N/nginx-1.14.0=. -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC' --prefix=/usr/share/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --modules-path=/usr/lib/nginx/modules --http-client-body-temp-path=/var/lib/nginx/body --http-fastcgi-temp-path=/var/lib/nginx/fastcgi --http-proxy-temp-path=/var/lib/nginx/proxy --http-scgi-temp-path=/var/lib/nginx/scgi --http-uwsgi-temp-path=/var/lib/nginx/uwsgi --with-debug --with-pcre-jit --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-http_auth_request_module --with-http_v2_module --with-http_dav_module --with-http_slice_module --with-threads --with-http_addition_module --with-http_flv_module --with-http_geoip_module=dynamic --with-http_gunzip_module --with-http_gzip_static_module --with-http_image_filter_module=dynamic --with-http_mp4_module --with-http_perl_module=dynamic --with-http_random_index_module --with-http_secure_link_module --with-http_sub_module --with-http_xslt_module=dynamic --with-mail=dynamic --with-mail_ssl_module --with-stream=dynamic --with-stream_ssl_module --with-stream_ssl_preread_module --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-headers-more-filter --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-auth-pam --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-cache-purge --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-dav-ext --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-ndk --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-echo --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-fancyindex --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/nchan --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-lua --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/rtmp --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-uploadprogress --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-upstream-fair --add-dynamic-module=/build/nginx-mcUg8N/nginx-1.14.0/debian/modules/http-subs-filter
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now this is a LOT of flags, but we can ignore any of the ones for &lt;code&gt;--add-dynamic-module&lt;/code&gt; because we don't need to compile those modules, just our new one. That leaves us with the following flags:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;--with-cc-opt='-g -O2 -fdebug-prefix-map=/build/nginx-mcUg8N/nginx-1.14.0=. -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC' --prefix=/usr/share/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --modules-path=/usr/lib/nginx/modules --http-client-body-temp-path=/var/lib/nginx/body --http-fastcgi-temp-path=/var/lib/nginx/fastcgi --http-proxy-temp-path=/var/lib/nginx/proxy --http-scgi-temp-path=/var/lib/nginx/scgi --http-uwsgi-temp-path=/var/lib/nginx/uwsgi --with-debug --with-pcre-jit --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-http_auth_request_module --with-http_v2_module --with-http_dav_module --with-http_slice_module --with-threads --with-http_addition_module --with-http_flv_module --with-http_geoip_module=dynamic --with-http_gunzip_module --with-http_gzip_static_module --with-http_image_filter_module=dynamic --with-http_mp4_module --with-http_perl_module=dynamic --with-http_random_index_module --with-http_secure_link_module --with-http_sub_module --with-http_xslt_module=dynamic --with-mail=dynamic --with-mail_ssl_module --with-stream=dynamic --with-stream_ssl_module --with-stream_ssl_preread_module
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;em&gt;WARNING&lt;/em&gt; If you don't do this, you'll end up with an error later on when you try to load the module that looks like this: &lt;code&gt;# module &quot;/usr/lib/nginx/modules/ngx_http_upload_module.so&quot; is not binary compatible in /etc/nginx/modules-enabled/50-mod-http-upload.conf:1&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Make sure you use these same flags when compiling so you don't get this error.&lt;/p&gt;
+
+&lt;h2&gt;Compiling the module&lt;/h2&gt;
+
+&lt;p&gt;Now we just need to hop into the nginx source directory and compile the module. We will add the flag to compile our new dynamic module at the end after the other flags &lt;code&gt;--add-dynamic-module=../nginx-upload-module-master&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cd nginx-1.14.0
+
+./configure --with-cc-opt='-g -O2 -fdebug-prefix-map=/build/nginx-mcUg8N/nginx-1.14.0=. -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC' --prefix=/usr/share/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --modules-path=/usr/lib/nginx/modules --http-client-body-temp-path=/var/lib/nginx/body --http-fastcgi-temp-path=/var/lib/nginx/fastcgi --http-proxy-temp-path=/var/lib/nginx/proxy --http-scgi-temp-path=/var/lib/nginx/scgi --http-uwsgi-temp-path=/var/lib/nginx/uwsgi --with-debug --with-pcre-jit --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-http_auth_request_module --with-http_v2_module --with-http_dav_module --with-http_slice_module --with-threads --with-http_addition_module --with-http_flv_module --with-http_geoip_module=dynamic --with-http_gunzip_module --with-http_gzip_static_module --with-http_image_filter_module=dynamic --with-http_mp4_module --with-http_perl_module=dynamic --with-http_random_index_module --with-http_secure_link_module --with-http_sub_module --with-http_xslt_module=dynamic --with-mail=dynamic --with-mail_ssl_module --with-stream=dynamic --with-stream_ssl_module --with-stream_ssl_preread_module --add-dynamic-module=../nginx-upload-module-master
+
+make modules
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you're missing any dependencies, these configure and make commands might fail. Make sure you install any dependencies that are missing and try again.&lt;/p&gt;
+
+&lt;h2&gt;Installing the compiled module&lt;/h2&gt;
+
+&lt;p&gt;The last step is just to move the compiled module to a place that NGINX can find and tell NGINX to load it. We'll move the compiled dynamic module to &lt;code&gt;/usr/lib/nginx/modules&lt;/code&gt; where the other modules live and then create a config file telling NGINX to load that module.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo mv objs/ngx_http_upload_module.so /usr/lib/nginx/modules
+
+echo 'load_module /usr/lib/nginx/modules/ngx_http_upload_module.so;' | sudo tee /etc/nginx/modules-enabled/50-mod-http-upload.conf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;Testing the module&lt;/h2&gt;
+
+&lt;p&gt;Last but not least we want to confirm everything is working. A quick check is we can run the following command to verify our config. If everything went well, you should get the following output.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo nginx -t
+# nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+# nginx: configuration file /etc/nginx/nginx.conf test is successful
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And for the real test, you can add the module's lines to your nginx server block, restart nginx, and make sure they actually work.&lt;/p&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Dynamic modules are awesome. While they might be a bit harder to compile, we don't have to worry about recompiling ALL of NGINX anymore if we want to use some new plugin. Hopefully this guide helps you get modules compiled for your OS so you can continue using your repository-provided copy of NGINX.&lt;/p&gt;
+</description>
+      <pubDate>Wed, 20 Jun 2018 14:34:29 -0500</pubDate>
+      <link>https://gorails.com/blog/how-to-compile-dynamic-nginx-modules</link>
+      <guid>https://gorails.com/blog/how-to-compile-dynamic-nginx-modules</guid>
+    </item>
+    <item>
+      <title>GoRails: Question And Answer #1</title>
+      <description>
+
+&lt;p&gt;If you have more questions you'd like to hear answered, ask them below in the comments!&lt;/p&gt;
+</description>
+      <pubDate>Thu, 09 Feb 2017 10:52:26 -0600</pubDate>
+      <link>https://gorails.com/blog/gorails-question-and-answer-1</link>
+      <guid>https://gorails.com/blog/gorails-question-and-answer-1</guid>
+    </item>
+    <item>
+      <title>Announcing New Features And Subscriptions Plans</title>
+      <description>&lt;p&gt;With the holiday season just beginning, I'm proud to announce that GoRails gets a fresh coat of paint and a bunch of new features to make learning Ruby on Rails that much better. 🎉&lt;/p&gt;
+
+&lt;p&gt;Here's some of the awesome new stuff you can check out right now:&lt;/p&gt;
+
+&lt;h2&gt;New feature: Series&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;/series&quot;&gt;&lt;br&gt;
+&lt;img&gt;&lt;br&gt;
+&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I'm now organizing videos in &lt;a href=&quot;https://gorails.com/series&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Series&lt;/a&gt; so you can dive deep into specific topics. After publishing over 150 different episodes, there's a lot of content on GoRails and it can be hard to dive into higher level topics, so that's what Series are here to solve. I've already grouped some of the existing episodes into series for easier watching, and I'll be releasing brand new series on APIs, Testing, React, Vue, and more coming very, very soon.&lt;/p&gt;
+
+&lt;p&gt;Keep an eye on the &lt;a href=&quot;https://gorails.com/series&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;GoRails Series&lt;/a&gt; page for new releases!&lt;/p&gt;
+
+&lt;h2&gt;New Feature: Watch Later&lt;/h2&gt;
+
+&lt;p&gt;&lt;img&gt;&lt;/p&gt;
+
+&lt;p&gt;When you're browsing GoRails, sometimes a few episodes catch your eye and you want to make sure to mark those down to watch later. Now you can! Hit the &quot;Watch Later&quot; button and the episodes will be added to your queue on your &lt;a href=&quot;https://gorails.com/dashboard&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Dashboard&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;New Feature: Mark as Complete&lt;/h2&gt;
+
+&lt;p&gt;&lt;img&gt;&lt;/p&gt;
+
+&lt;p&gt;It's hard to keep track of which episodes you've watched and which you haven't, so I've added the ability for you to mark episodes as complete.&lt;/p&gt;
+
+&lt;h2&gt;Upgraded: Forums&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;/forum&quot;&gt;&lt;br&gt;
+&lt;img&gt;&lt;br&gt;
+&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://gorails.com/forum&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;forums&lt;/a&gt; have been a fantastic place to ask questions and get answers. Like Github, I've added the ability to add reactions to posts so you can easily add your thoughts to a conversation.&lt;/p&gt;
+
+&lt;p&gt;I've also added subscriber badges and reactions to the forum. You earn a new badge for each milestone you reach of 1, 3, 6, 12, and 24 months.&lt;/p&gt;
+
+&lt;h2&gt;New Subscription Plans&lt;/h2&gt;
+
+&lt;p&gt;Along with all the new features, I'm updating our pricing. I'll be investing everything back into GoRails to expand the topics into more things like Vue.js, iOS / Android with Rails backends, testing, and more. I'm also planning on expanding our community and improving support to make GoRails an even better place to get advice on how to build great web apps.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;GoRails will be going up to $19/mo for all new subscribers.&lt;/strong&gt; As a subscriber, you'll get access to all lessons on GoRails and support the subscribers-only forum and private Slack group.&lt;/p&gt;
+
+&lt;p&gt;If you haven't subscribed yet, GoRails is on sale for $9/mo up until Cyber Monday (November 28, 2016). Be sure to subscribe to get the discount before it ends!&lt;/p&gt;
+
+&lt;p&gt;If you're currently subscribed to GoRails, don't worry! You'll be grandfathered in to your current plan as long as you're subscribed. That's my way of saying thanks for all the support you've given me over the years. 💕&lt;/p&gt;
+
+&lt;h2&gt;Thank you&lt;/h2&gt;
+
+&lt;p&gt;Almost 3 years ago I started working on GoRails fulltime. Today, there are over 10,000 people using GoRails. It's come an amazing way because of you. Thanks to your feedback, requests, and questions I've been able to make GoRails a much more useful resource for learning Ruby on Rails. &lt;/p&gt;
+
+&lt;p&gt;I believe you should be able to build any web app you can imagine, and have the resources to look up how to implement the features you'll need for it. We've accomplished some of this together but have a lot more to do. These changes are a big step in the direction of helping anyone become an incredibly good developer and I hope you're as excited about the future as I am! As always, I'm excited to hear your feedback.&lt;/p&gt;
+
+&lt;p&gt;&lt;img&gt;&lt;/p&gt;
+</description>
+      <pubDate>Thu, 10 Nov 2016 08:01:22 -0600</pubDate>
+      <link>https://gorails.com/blog/announcing-new-features-and-subscriptions-plans</link>
+      <guid>https://gorails.com/blog/announcing-new-features-and-subscriptions-plans</guid>
+    </item>
+    <item>
+      <title>Using Named Scopes Across Models with ActiveRecord#Merge</title>
+      <description>&lt;div&gt; &lt;/div&gt;
+
+
+
+
+wistiaEmbed = Wistia.embed(&quot;oy1d6l4h3y&quot;, {
+  videoFoam: true
+});
+
+
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;After years of working with ActiveRecord and watching it change so much, it is exciting to find new features you didn't know about. The one I discovered this week is &lt;a href=&quot;http://apidock.com/rails/ActiveRecord/SpawnMethods/merge&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;ActiveRecord#merge&lt;/a&gt;. It is one of the most underused methods in ActiveRecord, due in part, to the name. It isn't necessarily clear what they mean by &quot;merge&quot; but it's simply a way of using a named scope on a joined model.&lt;/p&gt;
+
+&lt;p&gt;Say we have two models that are associated and one of them has a scope: &lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Author &amp;lt; ActiveRecord::Base
+  has_many :books
+end&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;class Book &amp;lt; ActiveRecord::Base
+  belongs_to :author
+
+  scope :available, -&amp;gt;{ where(available: true) }
+end&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let's say we want to join the tables to find all Authors who have books that are available. Without ActiveRecord#merge, we have to make this query:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Author.joins(:books).where(&quot;books.available = ?&quot;, true)&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;SELECT &quot;authors&quot;.* FROM &quot;authors&quot; INNER JOIN &quot;books&quot; ON &quot;books&quot;.&quot;author_id&quot; = &quot;authors&quot;.&quot;id&quot; WHERE &quot;books&quot;.&quot;available&quot; = 't'&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But with ActiveRecord#merge, this becomes a whole lot cleaner and we don't duplicate the &lt;code&gt;available&lt;/code&gt; scope:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Author.joins(:books).merge(Book.available)&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;SELECT &quot;authors&quot;.* FROM &quot;authors&quot; INNER JOIN &quot;books&quot; ON &quot;books&quot;.&quot;author_id&quot; = &quot;authors&quot;.&quot;id&quot; WHERE &quot;books&quot;.&quot;available&quot; = 't'&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, the resulting SQL queries are exactly the same. ActiveRecord#merge is a great way to reduce the duplication in your code to continue relying on the named scopes you define in your models. I really want to see more people using this so please share this around!&lt;/p&gt;
+
+&lt;p&gt;Want to learn more about Rails and become a great programmer? &lt;/p&gt;
+
+&lt;p&gt;Check out the &lt;strong&gt;&lt;a href=&quot;https://gorails.com&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;Ruby on Rails Screencasts&lt;/a&gt;&lt;/strong&gt; for more awesome learning material like this.&lt;/p&gt;
+</description>
+      <pubDate>Thu, 15 May 2014 09:08:54 -0500</pubDate>
+      <link>https://gorails.com/blog/activerecord-merge</link>
+      <guid>https://gorails.com/blog/activerecord-merge</guid>
+    </item>
+    <item>
+      <title>SimpleCalendar 1.1 released!</title>
+      <description>&lt;p&gt;Having spent a significant time over the years playing with various calendar gems, I felt they were all lacking in different ways. Some were overbearing providing you CSS stylesheets when all I wanted was a plain calendar. Others were a bit too involved, there was a lot of work on my end and all I wanted to do was render a simple table for the calendar.&lt;/p&gt;
+
+&lt;p&gt;Calendars also aren't necessarily a month anyways. Sometimes you want to see 6 weeks at a time. Sometimes 2 weeks. Sometimes you only want 4 days. But none of the gems seemed to care.&lt;/p&gt;
+
+&lt;p&gt;Seeing all this, I decided to make my own: &lt;a href=&quot;https://github.com/excid3/simple_calendar&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;github.com/excid3/simple_calendar&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;At the simplest version, simple_calendar renders a table for your calendar. &lt;/p&gt;
+
+&lt;p&gt;You can make a month calendar:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;&amp;lt;%= month_calendar do |date| %&amp;gt;&lt;br&gt;
+  &amp;lt;%= date %&amp;gt;&lt;br&gt;
+&amp;lt;% end %&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;You can make a 2 week calendar:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;&amp;lt;%= week_calendar number_of_weeks: 2 do |date| %&amp;gt;&lt;br&gt;
+  &amp;lt;%= date %&amp;gt;&lt;br&gt;
+&amp;lt;% end %&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;You can make a 4 day agenda calendar:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;&amp;lt;%= calendar number_of_days: 4 do |date| %&amp;gt;&lt;br&gt;
+  &amp;lt;%= date %&amp;gt;&lt;br&gt;
+&amp;lt;% end %&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;The calendar just generates some basic HTML for you that you are free to work with, complete with navigation links and a header (if you want it).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;div&amp;gt;
+  &amp;lt;a href=&quot;/events?start_date=2014-05-13&quot;&amp;gt;«&amp;lt;/a&amp;gt;
+  &amp;lt;a href=&quot;/events?start_date=2014-05-18&quot;&amp;gt;»&amp;lt;/a&amp;gt;
+&amp;lt;/div&amp;gt;
+&amp;lt;table class=&quot;table table-bordered&quot;&amp;gt;
+  &amp;lt;tbody&amp;gt;
+    &amp;lt;tr&amp;gt;
+      &amp;lt;td class=&quot;day today current-month wday-3&quot; current=&quot;2014-05-14&quot; start=&quot;2014-05-14&quot;&amp;gt;
+        2014-05-14
+      &amp;lt;/td&amp;gt;
+      &amp;lt;td class=&quot;day future current-month wday-4&quot; current=&quot;2014-05-15&quot; start=&quot;2014-05-14&quot;&amp;gt;
+        2014-05-15
+      &amp;lt;/td&amp;gt;
+      &amp;lt;td class=&quot;day future current-month wday-5&quot; current=&quot;2014-05-16&quot; start=&quot;2014-05-14&quot;&amp;gt;
+        2014-05-16
+      &amp;lt;/td&amp;gt;
+      &amp;lt;td class=&quot;day future current-month wday-6&quot; current=&quot;2014-05-17&quot; start=&quot;2014-05-14&quot;&amp;gt;
+        2014-05-17
+      &amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+  &amp;lt;/tbody&amp;gt;
+&amp;lt;/table&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;These are fine and dandy, but what is a calendar without events? We've got that too.&lt;/p&gt;
+
+&lt;p&gt;Because we need to know what attribute on your model is the event's start time, we have a simple include in your model that lets you define it:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;class Event &amp;lt; ActiveRecord::Base&lt;br&gt;
+  extend SimpleCalendar&lt;br&gt;
+  has_calendar attribute: :start_time&lt;br&gt;
+end&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;You define which attribute to use in your model and then simply pass them into your view to have them all sorted out by day.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;&amp;lt;%= month_calendar events: Event.all do |date, events| %&amp;gt;&lt;br&gt;
+  &amp;lt;%= date %&amp;gt;&lt;br&gt;
+  &amp;lt;% events.each do |event %&amp;gt;&lt;br&gt;
+    &amp;lt;div&amp;gt;&amp;lt;%= event.name %&amp;gt;&amp;lt;/div&amp;gt;&lt;br&gt;
+  &amp;lt;% end %&amp;gt;&lt;br&gt;
+&amp;lt;% end %&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;This will yield the date and all the events sorted by start time for the given date to your code. Do with them however you please, it is up to you.&lt;/p&gt;
+
+&lt;p&gt;I'm pleased with the end result currently and look forward to improving it more in the future. If you have any suggestions or improvements to make, make a Github issue and let's make the easiest calendar for Rails we can!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Try it out at &lt;a href=&quot;https://github.com/excid3/simple_calendar&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot;&gt;https://github.com/excid3/simple_calendar&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+</description>
+      <pubDate>Wed, 14 May 2014 07:13:39 -0500</pubDate>
+      <link>https://gorails.com/blog/simplecalendar-1-1-released</link>
+      <guid>https://gorails.com/blog/simplecalendar-1-1-released</guid>
+    </item>
+  </channel>
+</rss>

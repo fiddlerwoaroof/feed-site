@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="https://jemma.dev/blog/published.xml" rel="self" type="application/atom+xml"><link href="https://jemma.dev/" rel="alternate" type="text/html"><updated>2022-07-11T20:59:58+00:00</updated><id>https://jemma.dev/blog/published.xml</id><title type="html">Jemma Issroff</title><entry><title type="html">Hash#except in Ruby 3+</title><link href="https://jemma.dev/blog/hash-except" rel="alternate" type="text/html" title="Hash#except in Ruby 3+"><published>2022-01-06T14:58:49+00:00</published><updated>2022-01-06T14:58:49+00:00</updated><id>https://jemma.dev/blog/hash-except</id><content type="html" xml:base="https://jemma.dev/blog/hash-except">&lt;p&gt;This was the tip of the week in the &lt;a href=&quot;https://rubyweekly.com/issues/585&quot;&gt;January 6, 2022 Ruby Weekly Newsletter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;If you’re an avid Rails user, you might be familiar with ActiveSupport’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hash#except&lt;/code&gt; which has been around for &lt;a href=&quot;f&quot;&gt;roughly 15 years&lt;/a&gt;. As of Ruby 3.0, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hash#except&lt;/code&gt; is now a native Ruby method too!&lt;/p&gt;
+
+&lt;p&gt;But… what does it do? &lt;a href=&quot;he&quot;&gt;Hash#except&lt;/a&gt; gives us a hash excluding all of the keys we’ve passed as arguments. Let’s look at an example:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;jemma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Jemma&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;username: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;jemma&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;password: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;super secure&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;jemma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;except&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; { name: &quot;Jemma&quot;, username: &quot;jemma&quot; }&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Before Ruby 3.0, if we were in a repo which wasn’t using Rails, we could have done something like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;jemma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Jemma&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;username: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;jemma&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;password: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;super secure&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;jemma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reject&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:password&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; { name: &quot;Jemma&quot;, username: &quot;jemma&quot; }&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;While this works totally fine, it gets a little clunky if we’re trying to exclude multiple different keys. Yet &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hash#except&lt;/code&gt; can also take multiple arguments:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;jemma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Jemma&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;username: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;jemma&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;password: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;super secure&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;jemma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;except&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt;  { username: &quot;jemma&quot; }&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hash#except&lt;/code&gt; might look familiar because it’s the inverse of &lt;a href=&quot;slice&quot;&gt;Hash#slice&lt;/a&gt;. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hash#slice&lt;/code&gt; will give us a hash containing key / value pairs whose keys we specify as arguments, while &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hash#except&lt;/code&gt; will give us a hash containing key / value pairs whose keys we don’t specify as arguments.&lt;/p&gt;
+
+&lt;p&gt;We might be wondering, what happens if we pass a key that is not in the hash?&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;jemma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Jemma&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;username: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;jemma&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;password: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;super secure&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;jemma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;except&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;key doesn't exist&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; { name: &quot;Jemma&quot;, username: &quot;jemma&quot;, password: &quot;super secure&quot; }&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In this case, Ruby is technically still excluding this key from our hash - it just never appeared in the hash to begin with. (This is the same behavior as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hash#slice&lt;/code&gt;.)&lt;/p&gt;</content><author><name/></author><category term="Ruby Weekly"/><category term="published"/><summary type="html">This was the tip of the week in the January 6, 2022 Ruby Weekly Newsletter.</summary></entry><entry><title type="html">The -p and -n options when running Ruby</title><link href="https://jemma.dev/blog/576" rel="alternate" type="text/html" title="The -p and -n options when running Ruby"><published>2021-10-26T14:58:49+00:00</published><updated>2021-10-26T14:58:49+00:00</updated><id>https://jemma.dev/blog/ruby-p-n-options</id><content type="html" xml:base="https://jemma.dev/blog/576">&lt;p&gt;This was the tip of the week in the &lt;a href=&quot;https://rubyweekly.com/issues/576&quot;&gt;October 26, 2021 Ruby Weekly Newsletter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;In a &lt;a href=&quot;https://jemma.dev/blog/ruby-e-c-options&quot;&gt;recent Tip of the Week&lt;/a&gt;, we learned about the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-e&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-c&lt;/code&gt; flags we can use when running Ruby from the comand line. Ruby has many more flags we can use as well! (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ruby --help&lt;/code&gt; shows us the full list of flags.) Of note today, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-n&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-p&lt;/code&gt; flags both wrap scripts in loops.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-n&lt;/code&gt; adds a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;while gets ... end&lt;/code&gt; loop around our script. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gets&lt;/code&gt; reads user input and stores it in a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$_&lt;/code&gt;. So adding a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;while gets&lt;/code&gt; loop around our script allows us to continually read in user input. Without the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-n&lt;/code&gt; flag, if we were testing snippets of code which respond to user input, we might keep re-running them on different manual test cases. This &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;while&lt;/code&gt; loop with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-n&lt;/code&gt; flag can be specifically useful for testing snippets of code without needing to re-run the snippets.&lt;/p&gt;
+
+&lt;p&gt;The syntax to use with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-n&lt;/code&gt; flag if using a Ruby script is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ruby -n file.rb&lt;/code&gt;, but for a one liner we can continue to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-e&lt;/code&gt; as we explored last week. For example:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ruby &lt;span class=&quot;nt&quot;&gt;-ne&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'puts &quot;You said #{$_}&quot;'&lt;/span&gt;
+Hello there!
+You said Hello there!
+something &lt;span class=&quot;k&quot;&gt;else
+&lt;/span&gt;You said something &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;(Note that the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello there!&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;something else&lt;/code&gt; are user input, while the interleaving statements are printed output. You could also pipe in other data to be processed by this loop, such as with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ls | ruby -ne 'puts &quot;You said #{$_}&quot;'&lt;/code&gt; which would then run the code for each file returned by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ls&lt;/code&gt;.)&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;As always, we can exit this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;while&lt;/code&gt; loop using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;control-D&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Taking the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-n&lt;/code&gt; flag one step further, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-p&lt;/code&gt; flag will wrap a ruby file in a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;while gets&lt;/code&gt; loop and also print the user input itself. So using the same small example as above, we can do the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ruby &lt;span class=&quot;nt&quot;&gt;-pe&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'puts &quot;You said #{$_}&quot;'&lt;/span&gt;
+Hello there!
+You said Hello there!
+Hello there!
+something &lt;span class=&quot;k&quot;&gt;else
+&lt;/span&gt;You said something &lt;span class=&quot;k&quot;&gt;else
+&lt;/span&gt;something &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We input &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello there!&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;something else&lt;/code&gt;, Ruby executes our script, and then also prints our input again. This can be more handy, perhaps, when you want to make quick transformations over incoming data and then have it output again without using something like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;puts&lt;/code&gt; yourself.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;hello world&quot;&lt;/span&gt; | ruby &lt;span class=&quot;nt&quot;&gt;-pe&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'$_.upcase!'&lt;/span&gt;
+HELLO WORLD
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Try this with the piped &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ls&lt;/code&gt; idea from above to see what happens!&lt;/p&gt;</content><author><name/></author><category term="Ruby Weekly"/><category term="published"/><summary type="html">This was the tip of the week in the October 26, 2021 Ruby Weekly Newsletter.</summary></entry><entry><title type="html">Ruby’s -e and -c command line options</title><link href="https://jemma.dev/blog/ruby-e-c-options" rel="alternate" type="text/html" title="Ruby’s -e and -c command line options"><published>2021-10-14T14:58:49+00:00</published><updated>2021-10-14T14:58:49+00:00</updated><id>https://jemma.dev/blog/ruby-e-c-options</id><content type="html" xml:base="https://jemma.dev/blog/ruby-e-c-options">&lt;p&gt;This was the tip of the week in the &lt;a href=&quot;https://rubyweekly.com/issues/574&quot;&gt;October 14, 2021 Ruby Weekly Newsletter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;You will be familiar with running Ruby code saved in a file from the command line using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ruby filename.rb&lt;/code&gt;. You’ll also be familiar, especially if you follow along with the &lt;em&gt;Tip of the Week!&lt;/em&gt;, with running snippets of code within different Ruby REPLs, such as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;irb&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pry&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails c&lt;/code&gt; or something else.&lt;/p&gt;
+
+&lt;p&gt;We can also run small snippets by passing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-e&lt;/code&gt; flag to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ruby&lt;/code&gt; from the command line. For instance:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ruby &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;puts 1 + 3&quot;&lt;/span&gt;
+4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-e&lt;/code&gt; flag can come in handy if we’re looking for a specific method, or just need a quick calculation, and don’t necessarily need to open up a full REPL.&lt;/p&gt;
+
+&lt;p&gt;This &lt;a href=&quot;https://learnbyexample.github.io/learn_ruby_oneliners/one-liner-introduction.html&quot;&gt;guide to Ruby ‘one liners’&lt;/a&gt; provides a vast array of ways to use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-e&lt;/code&gt; flag along with others to achieve quite complex outcomes from the command line or shell script.&lt;/p&gt;
+
+&lt;p&gt;Another useful flag is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-c&lt;/code&gt; which will do a Ruby &lt;em&gt;syntax check&lt;/em&gt; on a file without actually executing the file. I find this useful when resolving git merge conflicts, as a way to double check that I haven’t left any stray lines in my Ruby files. For instance:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ruby &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; some_file.rb
+some_file.rb:1: syntax error, unexpected end-of-input
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-e&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-c&lt;/code&gt; flags are two of many which we can use when running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ruby&lt;/code&gt; from the command line. To see more options, run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;man ruby&lt;/code&gt; from the command line, and we will cover some more interesting ones in coming weeks too.&lt;/p&gt;</content><author><name/></author><category term="Ruby Weekly"/><category term="published"/><summary type="html">This was the tip of the week in the October 14, 2021 Ruby Weekly Newsletter.</summary></entry><entry><title type="html">General Delimited Input</title><link href="https://jemma.dev/blog/general-delimited-input" rel="alternate" type="text/html" title="General Delimited Input"><published>2021-09-23T14:58:49+00:00</published><updated>2021-09-23T14:58:49+00:00</updated><id>https://jemma.dev/blog/general-delimited-input</id><content type="html" xml:base="https://jemma.dev/blog/general-delimited-input">&lt;p&gt;This was the tip of the week in the &lt;a href=&quot;https://rubyweekly.com/issues/571&quot;&gt;September 23, 2021 Ruby Weekly Newsletter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;We sometimes see Ruby snippets like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%w(some strings)&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%s(some other strings)&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%Q(even more #{strings})&lt;/code&gt;. It can be a little unclear what is happening. What’s the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%&lt;/code&gt; syntax? What do the different letters do? When are they uppercase or lowercase?&lt;/p&gt;
+
+&lt;p&gt;This is usually referred to as &lt;em&gt;‘general delimited input’&lt;/em&gt;, although I’ve also heard this called &lt;em&gt;‘percent syntax’&lt;/em&gt;. Either way, it’s a shorthand for creating strings, arrays, symbols, or regular expressions. And, as we’ll see below, each different letter creates an object of a different class.&lt;/p&gt;
+
+&lt;p&gt;With one exception, lowercase delimiters ignore interpolation, while uppercase delimiters compute interpolated values.&lt;/p&gt;
+
+&lt;p&gt;General delimited input is used most frequently for constants which are arrays of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;String&lt;/code&gt;s, in codebases which prefer the syntax for multi-line strings, and for regexes.&lt;/p&gt;
+
+&lt;p&gt;Let’s take a brief tour of a handful of general delimited input syntaxes, and what they do:&lt;/p&gt;
+
+&lt;h2 id=&quot;w-or-w---arrays-of-strings&quot;&gt;%w() or %W() - Arrays of Strings&lt;/h2&gt;
+&lt;p&gt;These split the arguments on space, and create arrays where each element in the array is a String&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;%w() no interpolation, so will split ‘interpolated-looking’ values on spaces too:
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sx&quot;&gt;%w(some values #{1 + 1})&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;some&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;values&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\#&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;{1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;+&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;1}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;%W() with interpolation:
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sx&quot;&gt;%W(some values &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;sx&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;some&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;values&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;i-or-i---arrays-of-symbols&quot;&gt;%i() or %I() - Arrays of Symbols&lt;/h2&gt;
+&lt;p&gt;Same as above, except instead of strings, each element is a Symbol.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;%i() no interpolation, so will split interpolated values on spaces too:
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sx&quot;&gt;%i(some values #{1 + 1})&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:some&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\#&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;{1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:&quot;1}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;%I() with interpolation:
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sx&quot;&gt;%I(some values &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;sx&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:some&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:&quot;2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;q-or-q---strings&quot;&gt;%q() or %Q() - Strings&lt;/h2&gt;
+&lt;p&gt;These will turn the argument into a string.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;%q() no interpolation, so will split interpolated values on spaces too:
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sx&quot;&gt;%q(some values #{1 + 1})&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;some values &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\#&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;{1 + 1}&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;%Q() with interpolation:
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sx&quot;&gt;%Q(some values &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;sx&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;some values 2&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;s---symbols&quot;&gt;%s() - Symbols&lt;/h2&gt;
+&lt;p&gt;%s() no interpolation, so will split interpolated values on spaces too:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sx&quot;&gt;%s(some values #{1 + 1})&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:&quot;some values &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\#&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;{1 + 1}&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;r---regex&quot;&gt;%r() - Regex&lt;/h2&gt;
+&lt;p&gt;%r() is the only exception to the capitalization / interpolation rule. %r() will give us a regex with interpolation:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sr&quot;&gt;%r(some values &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/some values 2/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Hopefully next time you see, or need to use general delimited input, you now know the appropriate delimiter to use.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Note: The characters delimiting the contents (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;)&lt;/code&gt; in the examples above) don’t have to be parentheses, but could be square brackets, braces, angle brackets, and others - but that’s a tip for another day.&lt;/em&gt;&lt;/p&gt;</content><author><name/></author><category term="Ruby Weekly"/><category term="published"/><summary type="html">This was the tip of the week in the September 23, 2021 Ruby Weekly Newsletter.</summary></entry><entry><title type="html">Numbered Parameters</title><link href="https://jemma.dev/blog/numbered-parameters" rel="alternate" type="text/html" title="Numbered Parameters"><published>2021-09-09T14:58:49+00:00</published><updated>2021-09-09T14:58:49+00:00</updated><id>https://jemma.dev/blog/numbered-parameters</id><content type="html" xml:base="https://jemma.dev/blog/numbered-parameters">&lt;p&gt;This was the tip of the week in the &lt;a href=&quot;https://rubyweekly.com/issues/569&quot;&gt;September 9, 2021 Ruby Weekly Newsletter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;We have likely all interacted with Ruby blocks which take parameters. Maybe we’ve seen something like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;squared_numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;From Ruby 2.7 onwards, we have an alternate syntax we can use to express this same statement. Instead of naming parameters (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;|num|&lt;/code&gt; above), Ruby allows us to use numbers prefixed with underscores to refer to the parameters. In the case above, since the block has one parameter, we can use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_1&lt;/code&gt; to refer to what was previously &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;num&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;squared_numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If there are multiple parameters, we use numbers sequentially to refer to different parameters as they would have been ordered if they were named. For instance, iterating over a hash, we have both a key (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;city&lt;/code&gt; below) and value (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;population&lt;/code&gt; below) parameter. So this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;city_populations&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Tokyo&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;37_435_191&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;s2&quot;&gt;&quot;Delhi&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;29_399_141&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Shanghai&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;26_317_104&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;city_populations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;city&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;population&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Population of &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;city&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; is &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;population&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;.. becomes this using numbered parameters:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;city_populations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Population of &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_1&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; is &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_2&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;use-numbered-parameters-or-named-parameters&quot;&gt;Use numbered parameters or named parameters&lt;/h2&gt;
+
+&lt;p&gt;Numbered parameters only work if we don’t name the parameters. As soon as we give them a name, we can’t then also try access them by number:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;squared_numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# SyntaxError (ordinary parameter is defined)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;style-note&quot;&gt;Style note&lt;/h2&gt;
+
+&lt;p&gt;Before finishing this tip, it’s important to note that while in some cases numbered parameters are simpler, there are also some times numbered parameters can make code harder to read and understand than named parameters. I use numbered parameters for simple blocks, and named parameters as soon as any complicated logic appears in a block.&lt;/p&gt;
+
+&lt;p&gt;Be sure to agree with your team on when it’s stylistically appropriate to use numbered parameters or named parameters!&lt;/p&gt;</content><author><name/></author><category term="Ruby Weekly"/><category term="published"/><summary type="html">This was the tip of the week in the September 9, 2021 Ruby Weekly Newsletter.</summary></entry><entry><title type="html">extend</title><link href="https://jemma.dev/blog/extend" rel="alternate" type="text/html" title="extend"><published>2021-08-26T14:58:49+00:00</published><updated>2021-08-26T14:58:49+00:00</updated><id>https://jemma.dev/blog/extend</id><content type="html" xml:base="https://jemma.dev/blog/extend">&lt;p&gt;This was the tip of the week in the &lt;a href=&quot;https://rubyweekly.com/issues/567&quot;&gt;August 26, 2021 Ruby Weekly Newsletter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://jemma.dev/singleton-classes&quot;&gt;Last week&lt;/a&gt;, we learned something important about singleton classes: class methods are instance methods on a class’ singleton class. Let’s take a step back though - how is this relevant to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend&lt;/code&gt;?&lt;/p&gt;
+
+&lt;p&gt;We already know that &lt;a href=&quot;https://jemma.dev/include&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt;&lt;/a&gt; inserts a module into the class’ &lt;a href=&quot;https://jemma.dev/ancestors&quot;&gt;ancestors chain&lt;/a&gt; right after the class that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;includes&lt;/code&gt; it and &lt;a href=&quot;https://jemma.dev/prepend&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt;&lt;/a&gt; inserts it right before. Well, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend&lt;/code&gt; also inserts a module into an ancestors chain, but it does this on the ancestors chain of the &lt;a href=&quot;https://jemma.dev/singleton-classes&quot;&gt;singleton class&lt;/a&gt; of a class (not the class itself):&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ExampleModule&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleClass&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;extend&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ExampleModule&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ancestors&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Kernel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BasicObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;singleton_class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ancestors&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;Class:ExampleClass&amp;gt;, ExampleModule, #&amp;lt;Class:Object&amp;gt;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&amp;lt;Class:BasicObject&amp;gt;, Class, Module, Object, Kernel, BasicObject]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#&amp;lt;Class:ExampleClass&amp;gt;&lt;/code&gt; syntax means it’s the singleton class of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleClass&lt;/code&gt;. We can see that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleModule&lt;/code&gt; is inserted into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleClass&lt;/code&gt;’s singleton class’ ancestors chain.&lt;/p&gt;
+
+&lt;p&gt;Let’s combine this with what we’ve learned about singleton classes - instance methods on a class’ singleton class are class methods on that class. So say we had an instance method defined on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleModule&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ExampleModule&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;example_module_instance_method&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;This is an instance method defined on ExampleModule&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If we &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend ExampleModule&lt;/code&gt; it will become a &lt;em&gt;class method&lt;/em&gt; on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleClass&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleClass&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;extend&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ExampleModule&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_module_instance_method&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;This is an instance method defined on ExampleModule&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If we had instead used &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt; on the same &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleModule&lt;/code&gt;, this would remain an instance method:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleClass&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ExampleModule&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_module_instance_method&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;This is an instance method defined on ExampleModule&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Nice! We’ve now learned three ways to use code from a module in a class:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://jemma.dev/include&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt;&lt;/a&gt; inserts a module into the class’ ancestors chain right after the class.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://jemma.dev/prepend&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt;&lt;/a&gt; inserts a module into the class’ ancestors chain right before the class.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend&lt;/code&gt; inserts a module into the class’ singleton class’ ancestors chain right after the class, meaning essentially all of the module’s instance methods can be accessed as if class methods on the class which extends it.&lt;/li&gt;
+&lt;/ul&gt;</content><author><name/></author><category term="Ruby Weekly"/><category term="published"/><summary type="html">This was the tip of the week in the August 26, 2021 Ruby Weekly Newsletter.</summary></entry><entry><title type="html">Singleton classes (briefly…)</title><link href="https://jemma.dev/blog/singleton-classes" rel="alternate" type="text/html" title="Singleton classes (briefly…)"><published>2021-08-19T14:58:49+00:00</published><updated>2021-08-19T14:58:49+00:00</updated><id>https://jemma.dev/blog/singleton-classes</id><content type="html" xml:base="https://jemma.dev/blog/singleton-classes">&lt;p&gt;This was the tip of the week in the &lt;a href=&quot;https://rubyweekly.com/issues/566&quot;&gt;August 19, 2021 Ruby Weekly Newsletter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;In the past few tips, we’ve covered &lt;a href=&quot;https://jemma.dev/blog/ancestors&quot;&gt;ancestors&lt;/a&gt;, &lt;a href=&quot;https://jemma.dev/blog/prepend&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt;&lt;/a&gt; and &lt;a href=&quot;https://jemma.dev/blog/include&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt;&lt;/a&gt;, all in service of learning different ways Ruby allows us to import code into a class. There is one more way to do this, with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend&lt;/code&gt;. However, before we jump straight into learning about &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend&lt;/code&gt;, we first need to understand singleton classes.&lt;/p&gt;
+
+&lt;p&gt;Singleton classes are key to Ruby’s object model. Let’s say we have an instance of a class, and want to define a method on just that instance:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleClass&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;example&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;example&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;This is a singleton method&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;example&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;This is a singleton method&quot;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Example&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# NoMethodError (undefined method `example_method' for #&amp;lt;ExampleClass:0x00007f9686858a80&amp;gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We see that our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;example&lt;/code&gt; instance can have its own specially defined method, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;example_method&lt;/code&gt;, which won’t work on other instances of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleClass&lt;/code&gt;. Where is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;example_method&lt;/code&gt; stored though? How does Ruby keep track of it? It’s defined on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;example&lt;/code&gt;’s singleton class.&lt;/p&gt;
+
+&lt;p&gt;Every Ruby object has a singleton class. This allows us to do things like the above: define methods on instances and have them work only for those instances. We also know that classes in Ruby are themselves objects - and so also have singleton classes. This is actually how class methods work under the hood!&lt;/p&gt;
+
+&lt;p&gt;Class methods are really instance methods on a class’ singleton class. Let’s look more deeply:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleClass&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_class_method&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;This is a class method&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_class_method&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;This is a class method&quot;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;singleton_class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;instance_methods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:example_class_method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Singleton classes are deep enough to deserve a whole series themselves! For now though, we’ve learned what we need in order to properly understand how &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend&lt;/code&gt; works next week. Namely, we’ve learned that class methods are instance methods on the singleton class of a class.&lt;/p&gt;</content><author><name/></author><category term="Ruby Weekly"/><category term="published"/><summary type="html">This was the tip of the week in the August 19, 2021 Ruby Weekly Newsletter.</summary></entry><entry><title type="html">prepend</title><link href="https://jemma.dev/blog/prepend" rel="alternate" type="text/html" title="prepend"><published>2021-08-12T14:58:49+00:00</published><updated>2021-08-12T14:58:49+00:00</updated><id>https://jemma.dev/blog/prepend</id><content type="html" xml:base="https://jemma.dev/blog/prepend">&lt;p&gt;This was the tip of the week in the &lt;a href=&quot;https://rubyweekly.com/issues/565&quot;&gt;August 12, 2021 Ruby Weekly Newsletter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;We’ll continue our brief &lt;em&gt;Tip of the Week&lt;/em&gt; series around using code from a module by learning about &lt;a href=&quot;https://ruby-doc.org/core-3.0.1/Module.html#method-i-prepend&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt;&lt;/a&gt;. &lt;a href=&quot;https://jemma.dev/blog/ancestors&quot;&gt;Last week&lt;/a&gt;, we learned about &lt;a href=&quot;https://ruby-doc.org/core-3.0.2/Module.html#method-i-include&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt;&lt;/a&gt;, and how it inserts a module into the ancestors chain directly after the class which includes it.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt; uses the same syntax as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt; but works differently - it inserts a module into the ancestors chain directly &lt;em&gt;before&lt;/em&gt; the class which includes it. Let’s take a look:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ExampleModule&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;This is defined in the module we're prepending&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleClass&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;prepend&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ExampleModule&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;This is defined in the module we're prepending&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now if we look at the ancestors chain, we’ll see that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleModule&lt;/code&gt; &lt;em&gt;precedes&lt;/em&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleClass&lt;/code&gt;. This is the exact opposite of what we saw last week with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleModule&lt;/code&gt; &lt;em&gt;succeeding&lt;/em&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleClass&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ancestors&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ExampleModule&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Kernel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BasicObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As we learned when [discussing ancestors][anc], this means that Ruby will first look for a method defined on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleModule&lt;/code&gt;, and if it’s not defined there, it will continue to traverse the list of ancestors, looking next at &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleClass&lt;/code&gt; (our class itself).&lt;/p&gt;
+
+&lt;p&gt;This means using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt; will cause the methods defined on the module we’re prepending to trump methods defined on the class itself.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ExampleModule&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;This is defined in ExampleModule, which we're prepending&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleClass&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;prepend&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ExampleModule&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;This is defined in ExampleClass itself&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;This is defined in ExampleModule, which we're prepending&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt; is commonly used in cases where it makes sense for a module to override a method defined in a class. Examples of this might be when a module needs to set something up in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initialize&lt;/code&gt; method, but the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initialize&lt;/code&gt; method of a class itself doesn’t call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;super&lt;/code&gt;. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initialize&lt;/code&gt; method in the module can do whatever setup it needs, and then call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;super&lt;/code&gt; to execute the class’ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initialize&lt;/code&gt; method.&lt;/p&gt;
+
+&lt;p&gt;We’ll learn about &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend&lt;/code&gt; next week!&lt;/p&gt;</content><author><name/></author><category term="Ruby Weekly"/><category term="published"/><summary type="html">This was the tip of the week in the August 12, 2021 Ruby Weekly Newsletter.</summary></entry><entry><title type="html">include</title><link href="https://jemma.dev/blog/include" rel="alternate" type="text/html" title="include"><published>2021-08-05T14:58:49+00:00</published><updated>2021-08-05T14:58:49+00:00</updated><id>https://jemma.dev/blog/include</id><content type="html" xml:base="https://jemma.dev/blog/include">&lt;p&gt;This was the tip of the week in the &lt;a href=&quot;https://rubyweekly.com/issues/564&quot;&gt;August 5, 2021 Ruby Weekly Newsletter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;In &lt;a href=&quot;https://jemma.dev/blog/ancestors&quot;&gt;last week’s tip&lt;/a&gt;, we learned about ancestors. This set us up to learn about three ways of using code from a module in a class. This week, we’ll discuss what is likely the most common of these approaches: &lt;a href=&quot;https://ruby-doc.org/core-3.0.2/Module.html#method-i-include&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We can look at an example of using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt; to include a module’s methods in a class:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ExampleModule&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;This is defined in the module we're including&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleClass&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ExampleModule&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;This is defined in the module we're including&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;What is actually happening when we &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include ExampleModule&lt;/code&gt;, or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt; any module or class, is that this module or class will be inserted in the ancestors chain directly after the class which &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt;s it:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ancestors&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ExampleModule&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Kernel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BasicObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As we learned last week, this means that Ruby will first look for a method defined on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleClass&lt;/code&gt;, and if it’s not defined there, it will continue to traverse the list of ancestors, looking next at &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ExampleModule&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This means using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt; gives us the helpful property of being able to easily override methods defined in an included module:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ExampleModule&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;This is defined in the module we're including&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleClass&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ExampleModule&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;This is defined in ExampleClass itself&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ExampleClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;example_method&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;This is defined in ExampleClass itself&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If we’re used to using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt;, we might have an intuitive understanding of this overriding in action. Hopefully now with the context around &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ancestors&lt;/code&gt;, we can see why it’s happening. In the coming weeks, we’ll have tips around two other ways of using code from modules or classes: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt;.&lt;/p&gt;</content><author><name/></author><category term="Ruby Weekly"/><category term="published"/><summary type="html">This was the tip of the week in the August 5, 2021 Ruby Weekly Newsletter.</summary></entry><entry><title type="html">Esoteric Ruby in MemoWise</title><link href="https://jemma.dev/blog/esoteric-ruby-in-memowise" rel="alternate" type="text/html" title="Esoteric Ruby in MemoWise"><published>2021-08-02T12:59:49+00:00</published><updated>2021-08-02T12:59:49+00:00</updated><id>https://jemma.dev/blog/esoteric-ruby-memowise</id><content type="html" xml:base="https://jemma.dev/blog/esoteric-ruby-in-memowise">&lt;p&gt;&lt;em&gt;This post was co-written by &lt;a href=&quot;https://ja.cob.land/&quot;&gt;Jacob Evelyn&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;We recently released a memoization gem, &lt;a href=&quot;https://github.com/panorama-ed/memo_wise&quot;&gt;MemoWise&lt;/a&gt;! We’ve written about &lt;a href=&quot;https://medium.com/building-panorama-education/introducing-memowise-51a5f0523489&quot;&gt;its origin story&lt;/a&gt; and &lt;a href=&quot;https://ja.cob.land/optimizing-memowise-performance&quot;&gt;performance&lt;/a&gt;. In this post, we’ll discuss some esoteric corners of Ruby we encountered while writing MemoWise.&lt;/p&gt;
+
+&lt;h3 id=&quot;memoizing-frozen-objects-with-prepend&quot;&gt;Memoizing frozen objects with prepend&lt;/h3&gt;
+
+&lt;p&gt;One of the features we needed to support when creating this gem was memoization of frozen, or immutable, objects. Specifically, we use the &lt;a href=&quot;https://github.com/tcrayford/Values&quot;&gt;Values gem&lt;/a&gt; which creates immutable instances. Once an object is frozen, we can’t assign any of its instance variables:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Example&lt;/span&gt;
+ &lt;span class=&quot;nb&quot;&gt;attr_writer&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:value&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Example&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;freeze&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# FrozenError (can't modify frozen Example)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;How is this relevant to memoization? Most memoization gems work by creating a hash to store memoized values. This hash is usually an instance variable on the object itself. (We call ours &lt;a href=&quot;https://github.com/panorama-ed/memo_wise/blob/0614c38a5b4456f1831071b8aabbfdbe53330ca8/lib/memo_wise/internal_api.rb#L22&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@_memo_wise&lt;/code&gt;&lt;/a&gt;.) So if the object is immutable, this instance variable can’t be assigned &lt;em&gt;after&lt;/em&gt; the object is frozen. (It can, however, be mutated.)&lt;/p&gt;
+
+&lt;p&gt;This is why we &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt; the MemoWise module to enable memoization. &lt;a href=&quot;https://ruby-doc.org/core-3.0.2/Module.html#method-i-prepend&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt;&lt;/a&gt; is less well known than &lt;a href=&quot;https://ruby-doc.org/core-3.0.2/Module.html#method-i-include&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt;&lt;/a&gt; or &lt;a href=&quot;https://ruby-doc.org/core-3.0.2/Object.html#method-i-extend&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend&lt;/code&gt;&lt;/a&gt; and works slightly differently than both of them.&lt;/p&gt;
+
+&lt;p&gt;Every Ruby class has a list of &lt;a href=&quot;https://ruby-doc.org/core-3.0.2/Module.html#method-i-ancestors&quot;&gt;ancestors&lt;/a&gt;. This list contains all included or preprended modules, ordered by inheritance. We can look at &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Array&lt;/code&gt; as an example:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ancestors&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Enumerable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Kernel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BasicObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When a method is called on an object, Ruby will look through each ancestor sequentially to see if the method is defined on any of the ancestors of that object. When we &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include&lt;/code&gt; a module, that module is inserted after the class:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Example&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Array&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Example&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ancestors&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Example&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Enumerable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Kernel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BasicObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When we &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;extend&lt;/code&gt; a module, the module’s methods are imported as methods on the class, and the module is not inserted into the ancestors chain.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Array&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;extend&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Example&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ancestors&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Enumerable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Kernel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BasicObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When we &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt; a module, the module is inserted &lt;em&gt;before&lt;/em&gt; the class &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prepend&lt;/code&gt;ing it in the ancestors chain. The module’s methods will take precedence over the class’ methods.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Array&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;prepend&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Example&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ancestors&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Example&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Enumerable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Kernel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BasicObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This, in turn, allows us to override the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initialize&lt;/code&gt; method, and &lt;a href=&quot;https://github.com/panorama-ed/memo_wise/blob/f7d6c944fc2d46bec076c1d60416ba1645b859d6/lib/memo_wise.rb#L75&quot;&gt;create the memoization hash before the object is frozen&lt;/a&gt;. This is how MemoWise allows memoization of frozen objects.&lt;/p&gt;
+
+&lt;h3 id=&quot;determining-method-visibility&quot;&gt;Determining method visibility&lt;/h3&gt;
+
+&lt;p&gt;Another important feature in MemoWise is preserving method visibility. If someone using our gem memoizes a private method, we want to guarantee that the memoized method will still be private.&lt;/p&gt;
+
+&lt;p&gt;There is &lt;a href=&quot;https://bugs.ruby-lang.org/issues/11689&quot;&gt;actually not a built-in Ruby method&lt;/a&gt; to get a method’s visibility. However, it is possible to determine visibility by &lt;a href=&quot;https://github.com/panorama-ed/memo_wise/blob/1f56991c2e3ad3b9d958f509b1f74ea32e1d531c/lib/memo_wise/internal_api.rb#L255-L278&quot;&gt;combining various built-in methods&lt;/a&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;private_method_defined?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:private&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;elsif&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;protected_method_defined?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:protected&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;elsif&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;public_method_defined?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;:public&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;NoMethodError&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Using this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:private&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:protected&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:public&lt;/code&gt; symbol, we can then &lt;a href=&quot;https://github.com/panorama-ed/memo_wise/blob/c92d3e9706ac6f78a2b55c33e3236eed2498d400/lib/memo_wise.rb#L228&quot;&gt;dynamically set the visibility of our new method&lt;/a&gt; to match the original one.&lt;/p&gt;
+
+&lt;h3 id=&quot;supporting-objects-created-with-allocate-as-well-as-new&quot;&gt;Supporting objects created with allocate as well as new&lt;/h3&gt;
+
+&lt;p&gt;In testing an early version of this gem, we encountered errors memoizing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; classes. The errors indicated that our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@_memo_wise&lt;/code&gt; instance variable wasn’t set, which surprised us because, as mentioned earlier, we set it in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initialize&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;After a lot of debugging we learned that there is a little-known way in Ruby to initialize an object &lt;em&gt;without&lt;/em&gt; executing its &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initialize&lt;/code&gt; method! It’s called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;allocate&lt;/code&gt;, and it’s &lt;a href=&quot;https://github.com/rails/rails/blob/a395c3a6af1e079740e7a28994d77c8baadd2a9d/activerecord/lib/active_record/persistence.rb#L411&quot;&gt;used by Rails’ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;When we call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;new&lt;/code&gt; on a class, what’s happening under the hood looks something like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Example&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;allocate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tap&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;By using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;allocate&lt;/code&gt; instead of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;new&lt;/code&gt;, Rails was bypassing our initialization of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@_memo_wise&lt;/code&gt;. To fix this we had to &lt;a href=&quot;https://github.com/panorama-ed/memo_wise/blob/f7d6c944fc2d46bec076c1d60416ba1645b859d6/lib/memo_wise.rb#L109-L111&quot;&gt;overwrite &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;allocate&lt;/code&gt; to also perform this initialization&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;looking-ahead&quot;&gt;Looking Ahead&lt;/h3&gt;
+
+&lt;p&gt;These are a few of the fun things we’ve learned about Ruby while developing &lt;a href=&quot;https://github.com/panorama-ed/memo_wise&quot;&gt;MemoWise&lt;/a&gt;, and we plan to write about others in the future! In the meantime, please try it out or read the &lt;a href=&quot;https://github.com/panorama-ed/memo_wise&quot;&gt;code on GitHub&lt;/a&gt;, and we’re happy to accept contributions.&lt;/p&gt;</content><author><name/></author><category term="Ruby"/><category term="published"/><summary type="html">This post was co-written by Jacob Evelyn.</summary></entry></feed>

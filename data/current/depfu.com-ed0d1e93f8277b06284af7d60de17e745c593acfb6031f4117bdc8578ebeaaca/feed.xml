@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Depfu</title>
+    <description>Get the great feeling of up-to-date dependencies and secure software without all the boring manual work</description>
+    <link>https://depfu.com/</link>
+    <atom:link href="https://depfu.com/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 11 Nov 2022 17:16:00 +0000</pubDate>
+    <lastBuildDate>Fri, 11 Nov 2022 17:16:00 +0000</lastBuildDate>
+    <generator>Jekyll v4.3.0</generator>
+    
+    
+      <item>
+        <title>Configure Depfu with config files</title>
+        <description>&lt;p&gt;&lt;em&gt;tldr: You can now configure the behavior of Depfu by adding a config file to your repo, the docs are &lt;a href=&quot;https://docs.depfu.com/article/41-config-files&quot;&gt;here&lt;/a&gt;. Finally!&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Listening to feature requests from users is a tricky thing. Sure, if a lot of people ask for support of their favorite package manager, eventually it will make sense for us to build it. But as the product management trope goes, people often ask for specific features while actually, they want to solve a specific problem, which is not the same thing. Maybe the feature they asked for is the best solution, but that’s definitely not always the case.&lt;/p&gt;
+
+&lt;p&gt;Over the years, people have asked us to support config files as other tools do. For a very long time we’ve been super reluctant to add them, because we felt like a) a well structured UI can explain your options much better and thus reduce misconfiguration and b) having different configs for different branches (in contrast to CI, for example) doesn’t make a ton of sense for Depfu.&lt;/p&gt;
+
+&lt;h2 id=&quot;okay-then&quot;&gt;Okay then&lt;/h2&gt;
+
+&lt;p&gt;At this point we think that we might have been wrong about this, or, put differently, it was probably not something we should have resisted for so long. So, yes, you can now add a file to your repos that will configure all the settings (with the exception of privacy sensitive settings like tokens etc.) the moment you push it into the repo or the moment you activate the repo on Depfu.&lt;/p&gt;
+
+&lt;p&gt;We’ve decided to make this relatively simple, hopefully not too simple. To add a configuration to a repo, simply create a file called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.depfu.yml&lt;/code&gt; . Yes, we chose yaml as the configuration language. Our thought here was that even though many people hate yaml for its quirks and its ambiguities, you probably already have a couple of yaml config files in your repo and so you probably have syntax highlighting in your editor, maybe even a linter in place.&lt;/p&gt;
+
+&lt;p&gt;The config syntax is very flat, in an attempt to keep both the syntax to learn (or look up) simple but also our parsers. Here’s an example &lt;a href=&quot;https://docs.depfu.com/article/41-config-files&quot;&gt;from the documentation&lt;/a&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;update_strategy&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;security&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;yarn&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;update_strategy&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;grouped&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;grouped_update_schedule&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;weekly&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;grouped_update_start_date&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;2022-01-01&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;grouped_update_time&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;6:00&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, you can override settings for specific package managers. Additionally, if you have more than one folder activated from your repo, you can have a global config file and then have specific overrides in the sub folder. This gives you a large amount of flexibility but we implore you to keep this as simple as possible to not confuse yourself (and us).&lt;/p&gt;
+
+&lt;h2 id=&quot;what-happens-with-the-settings-ui&quot;&gt;What happens with the settings UI&lt;/h2&gt;
+
+&lt;p&gt;We’ve been a bit lazy with this, for now. You can still change settings via the UI (But it will warn you if a config file is present) and it’s simply “last change wins”. So make sure that you and your team agree on one way of doing it and then sticking to it to prevent playing a game of settings ping pong where team members change settings in both places to find out who wins. It’s a fun game, but probably not very productive, all things considered.&lt;/p&gt;
+
+&lt;p&gt;The settings page is also the place to look for error messages. If you have a feeling that your config file changes have not been picked up, there will be error messages with hopefully  useful error descriptions on that page.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-use-one-or-the-other-method&quot;&gt;Why use one or the other method&lt;/h2&gt;
+
+&lt;p&gt;People who have asked us for config files often ask for them because Depfu doesn’t have a concept of organization wide defaults (except for a few settings).&lt;/p&gt;
+
+&lt;p&gt;If you want to make sure that all the projects you’re activating in Depfu start off with the same set of defaults, then you now can simply drop one file into each of your repos, which is a much simpler thing (and can be handled via template repos in GitHub) than having to instruct teams to go to the settings page, and list what kind of changes they need to make to each setting. In that sense, it is great for teams that simply have a ton of repos, often create new ones and that will want to enforce a certain set of standard settings for Depfu.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, if you just added your first repo to Depfu, the settings page is much easier to understand, we think, and doesn’t need additional documentation, so we feel like there’s no need to use config files just because they are available. The settings UI will not go away.&lt;/p&gt;
+
+&lt;p&gt;You can find &lt;a href=&quot;https://docs.depfu.com/article/41-config-files&quot;&gt;the full documentation here&lt;/a&gt;. Please let us know if you run into any issues or if you miss something.&lt;/p&gt;
+
+&lt;p&gt;We hope to ease the pain for bigger teams quite significantly with this change. Sometimes the feature you want is the feature you need.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 08 Sep 2022 00:00:00 +0000</pubDate>
+        <link>https://depfu.com/blog/configure-depfu-with-config-files</link>
+        <guid isPermaLink="true">https://depfu.com/blog/configure-depfu-with-config-files</guid>
+        
+        
+      </item>
+    
+    
+    
+      <item>
+        <title>Support for Yarn 3</title>
+        <description>&lt;p&gt;We’ve been dancing around supporting &lt;a href=&quot;https://github.com/yarnpkg/berry&quot;&gt;Yarn 2 aka Yarn Berry&lt;/a&gt; for a while now because adoption seemed not to be there. It looks like that has changed.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;We’ve now launched support for Yarn Berry and the important bit here is that we only support v3 and not v2&lt;/em&gt;. Yarn 3 has some command line switches specifically designed to support things like Depfu and that allowed us to build a much simpler version of Yarn support than what was possible before. Given that Yarn 3 has no additional drawbacks over Yarn 2, we think that migrating should be not a huge issue for most teams.&lt;/p&gt;
+
+&lt;p&gt;Our support for Yarn 3 is not complete, unfortunately:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Depfu will not maintain &lt;a href=&quot;https://yarnpkg.com/features/offline-cache&quot;&gt;offline caches&lt;/a&gt; for zero install.&lt;/li&gt;
+  &lt;li&gt;We will load &lt;a href=&quot;https://yarnpkg.com/features/protocols/#patch&quot;&gt;patches&lt;/a&gt;, but we don’t support updating patched dependencies.&lt;/li&gt;
+  &lt;li&gt;We don’t support &lt;a href=&quot;https://yarnpkg.com/features/constraints&quot;&gt;constraints&lt;/a&gt; right now.&lt;/li&gt;
+  &lt;li&gt;We do honor the vendored version of Yarn and vendored &lt;a href=&quot;https://yarnpkg.com/features/plugins&quot;&gt;plugins&lt;/a&gt;. We do not support any specific plugins beyond simply providing and loading them.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;what-about-zero-install&quot;&gt;What about zero install?&lt;/h2&gt;
+
+&lt;p&gt;From the looks of it, this seems to be one of the more desirable features of Yarn Berry. For us, supporting the offline cache that’s the basis for zero install is, unfortunately, at least currently, sitting between “very hard” and “impossible”. Here are some reasons for that:&lt;/p&gt;
+
+&lt;p&gt;With Yarn Berry, updating the offline cache is unfortunately not as easy as with other package managers, as Yarn repackages every dependency in a different, probably slightly more efficient format, which means that Yarn actually needs to be involved. For other package managers, we simply download the packages from the registry and sort them into the git branch we’re working on.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, the Git Data API of GitHub, which we use for constructing the commit for an update, has some hard limits of how big a commit can be. We’ve run into this limitation already with Bundler, but given how large changesets for Yarn dependencies can become, we’re pretty sure we’ll run into this limit quite often. Fixing this would mean to completely rewrite the way we’re interacting with GitHub. That would not only be a very big, complicated change, but also would be much more expensive in operations.&lt;/p&gt;
+
+&lt;h2 id=&quot;a-slightly-dirty-workaround&quot;&gt;A slightly dirty workaround&lt;/h2&gt;
+
+&lt;p&gt;What we’ve told a couple of clients when we asked them to test Yarn 3 support is to handle this in a CI step that runs after Depfu. This is not a great solution because it messes with Depfu rebases, as we only rebase PRs that are not touched by other people’s (or robots) commits. But it does work and maybe we would even be able to support that with a bit of extra code so that these CI commits can be ignored and we could still run rebases. Let us know if you want us to try that.&lt;/p&gt;
+
+&lt;h2 id=&quot;worth-the-upgrade&quot;&gt;Worth the upgrade?&lt;/h2&gt;
+
+&lt;p&gt;Yarn Berry is a bit of a weird one. The engineering feels very solid and some of the ideas are really quite good. From a personal standpoint, having dealt with it during our implementation and testing phases and having read a lot of documentation, Berry feels a bit over-engineered, though.&lt;/p&gt;
+
+&lt;p&gt;I may be totally wrong and it could be that especially for larger teams and more complex setups, all the extra complexity is worth it, but there are a few things that I am really skeptical about. Having a generic plugin interface in a package manager sounds like a great idea, for example, but all I see is a bunch of extra complexity that might come to bite you at the most inconvenient moment in the future.&lt;/p&gt;
+
+&lt;p&gt;To me, and I am ready to admit that as a developer on Depfu I may have a unique perspective, package managers should be, as the saying goes, as simple as possible, but not simpler. They should focus on simplicity first and then performance. Yarn Berry errs on the side of trying to enable everything that anyone ever could want from a package manager.&lt;/p&gt;
+
+&lt;p&gt;That being said, I am very happy that the Yarn Berry team thought of the robot factories and specifically added options to support automated dependency updating. Integrating Yarn 1 has been quite a challenge and requires some really weird pieces of code.&lt;/p&gt;
+
+&lt;p&gt;Given that Yarn 1 is in sort of a “bugfix only” mode by now, I think it makes sense to migrate away from it in the near future. That could mean migrating to Yarn Berry, but of course it could also mean migrating to a current version of npm, since npm by now supports most of the Yarn exclusive features such as workspaces (and we’ve recently updated our npm integration to support them).&lt;/p&gt;
+</description>
+        <pubDate>Wed, 07 Sep 2022 00:00:00 +0000</pubDate>
+        <link>https://depfu.com/blog/yarn-3-support</link>
+        <guid isPermaLink="true">https://depfu.com/blog/yarn-3-support</guid>
+        
+        
+      </item>
+    
+    
+    
+      <item>
+        <title>Assigning and reviewing PRs</title>
+        <description>&lt;p&gt;We just shipped a few improvements to how you can assign PRs and request reviews.&lt;/p&gt;
+
+&lt;p&gt;The goal was to support all features that were introduced by Github and Gitlab since we last worked on this, which was quite some time ago.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;⚠️ We’ll be requesting one additional permission on our Github App in order to make these features possible: &lt;strong&gt;read-only access to organization members and teams&lt;/strong&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/pr_review_requests.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;github&quot;&gt;Github&lt;/h2&gt;
+
+&lt;h3 id=&quot;request-reviews-from-teams&quot;&gt;Request reviews from teams&lt;/h3&gt;
+
+&lt;p&gt;Github allows you to &lt;a href=&quot;https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/requesting-a-pull-request-review&quot;&gt;request reviews&lt;/a&gt; from individuals and teams. We’ve long supported requesting reviews from users, but now you can also configure Depfu to request from one or multiple of your teams.&lt;/p&gt;
+
+&lt;p&gt;In order to do this with the Github API we need the additional read-only permission, but since we’ve been asked about this many times we think the additional permission is worth it. If you don’t care about this feature you can also ignore the permission request and Depfu will continue to work just fine.&lt;/p&gt;
+
+&lt;h3 id=&quot;assign-multiple-users-to-a-pr&quot;&gt;Assign multiple users to a PR&lt;/h3&gt;
+
+&lt;p&gt;You can now assign multiple users to a PR, before this was limited to a single user from our side.&lt;/p&gt;
+
+&lt;h2 id=&quot;gitlab&quot;&gt;Gitlab&lt;/h2&gt;
+
+&lt;h3 id=&quot;review-requests&quot;&gt;Review requests&lt;/h3&gt;
+
+&lt;p&gt;Gitlab also &lt;a href=&quot;https://about.gitlab.com/blog/2020/10/13/merge-request-reviewers/&quot;&gt;recently added the concept of review requests&lt;/a&gt;, so you can now also configure Depfu to add reviewers when creating merge requests.&lt;/p&gt;
+
+&lt;h3 id=&quot;assign-multiple-users-to-a-mr&quot;&gt;Assign multiple users to a MR&lt;/h3&gt;
+
+&lt;p&gt;Multiple assignees are also &lt;a href=&quot;https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html&quot;&gt;possible on Gitlab&lt;/a&gt;, but only for Gitlab Enterprise Edition and Gitlab Premium accounts. So we’ll silently ignore additional users if we’re getting an error and only assign the first one you’ve configured.&lt;/p&gt;
+
+&lt;h2 id=&quot;feedback&quot;&gt;Feedback&lt;/h2&gt;
+
+&lt;p&gt;We’re always looking for small (and big) things that make your life with Depfu easier, smoother and calmer. So please don’t hold back on any feedback, we’re listening on &lt;a href=&quot;https://twitter.com/depfu&quot;&gt;Twitter&lt;/a&gt; and via &lt;a href=&quot;mailto:hi@depfu.com&quot;&gt;email&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 08 Jun 2021 00:00:00 +0000</pubDate>
+        <link>https://depfu.com/blog/assigning-and-reviewing-prs</link>
+        <guid isPermaLink="true">https://depfu.com/blog/assigning-and-reviewing-prs</guid>
+        
+        
+      </item>
+    
+    
+    
+      <item>
+        <title>Depfu for PHP</title>
+        <description>&lt;p&gt;For all the work that goes into supporting a new ecosystem, the blog posts are suprisingly boring, so let’s keep this one short:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Depfu now fully supports PHP with Composer.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;That includes&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Individual and Grouped Updates.&lt;/li&gt;
+  &lt;li&gt;Our reasonably up-to-date strategy to get significantly fewer PRs.&lt;/li&gt;
+  &lt;li&gt;Private package registries from your self-hosted Satis to Private Packagist.&lt;/li&gt;
+  &lt;li&gt;Tracking of Security Vulnerabilities.&lt;/li&gt;
+  &lt;li&gt;And everything else, of course.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We’ve been running this in production for quite some time now so we’ve ironed out most bugs and it’s stable and ready to be used.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+        <pubDate>Mon, 07 Jun 2021 00:00:00 +0000</pubDate>
+        <link>https://depfu.com/blog/depfu-for-php</link>
+        <guid isPermaLink="true">https://depfu.com/blog/depfu-for-php</guid>
+        
+        
+      </item>
+    
+    
+    
+      <item>
+        <title>Auto-Merge, Nightshift and Auto-Activation</title>
+        <description>&lt;p&gt;We wrapped up and polished a few smaller features recently that we had working in one form or another for individual customers. Let me tell you about them:&lt;/p&gt;
+
+&lt;h2 id=&quot;auto-merge&quot;&gt;Auto-Merge&lt;/h2&gt;
+
+&lt;p&gt;This does exactly what you think it does: Depfu will automatically merge a PR if and when all the status checks come back green.&lt;/p&gt;
+
+&lt;p&gt;You can configure to only auto-merge development or runtime dependencies and even specifically limit by SemVer type for very fine grained control.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/auto_merge.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;⚠️ We advise to use this feature very cautiously: with compromised packages and continuous deployment you could quickly get into trouble. But for some projects it can make a lot of sense. You can also combine it with our &lt;a href=&quot;/blog/reasonably-up-to-date&quot;&gt;reasonably up-to-date feature&lt;/a&gt;, which always waits at least 7 days before sending you the PR, to get a bit more safety.&lt;/p&gt;
+
+&lt;h2 id=&quot;nightshift&quot;&gt;Nightshift&lt;/h2&gt;
+
+&lt;p&gt;Nightshift allows you to constrain the Depfu scheduler to a certain time of day and certain days of the week. This way you can tell Depfu to only send you PRs during your night time or during the weekend.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/nightshift.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There are two main benefits:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Less PR noise during your working day and PRs are ready for you in the morning.&lt;/li&gt;
+  &lt;li&gt;Depfu is not competing at all with your normal work, so we don’t use up CI capacity which could cause your developers to wait.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All security updates and manually triggered rebases will run outside of those limited hours, of course.&lt;/p&gt;
+
+&lt;h2 id=&quot;auto-activation&quot;&gt;Auto-Activation&lt;/h2&gt;
+
+&lt;p&gt;With Github apps you either select individual repos Depfu should run on or you select “all” repos. Originally, Depfu didn’t work with the “all” option, since we preferred to not have so much access.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/github_repo_access.png&quot; width=&quot;531px&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But we had a few requests for enabling Depfu on every repo in an organization by default, especially from our Enterprise customers. So now you can! After selecting “all” in Github you can either choose individual repos yourself in Depfu or you enable Auto-Activation.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/auto_activation.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Auto-Activation enables all of your repos which are supported by Depfu. We also enable all future repos and repos that were initially empty, but later introduce package manager files we understand.&lt;/p&gt;
+
+&lt;p&gt;You can decide which update strategy newly activated repos should start with, for example by setting all of them to “Security Updates only” and then select other strategies individually per repo.&lt;/p&gt;
+
+&lt;h2 id=&quot;feedback&quot;&gt;Feedback&lt;/h2&gt;
+
+&lt;p&gt;We’re always looking for small (and big) things that make your life with Depfu easier, smoother and calmer. So please don’t hold back on any feedback, we’re listening on &lt;a href=&quot;https://twitter.com/depfu&quot;&gt;Twitter&lt;/a&gt; and via &lt;a href=&quot;mailto:hi@depfu.com&quot;&gt;email&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 24 Jun 2020 00:00:00 +0000</pubDate>
+        <link>https://depfu.com/blog/auto-merge-nightshift-and-auto-activation</link>
+        <guid isPermaLink="true">https://depfu.com/blog/auto-merge-nightshift-and-auto-activation</guid>
+        
+        
+      </item>
+    
+    
+    
+      <item>
+        <title>Update your engines!</title>
+        <description>&lt;p&gt;Ever since we started working on Depfu, we wondered if it would make sense to update the runtimes or, as we call it more generically: engines as well. Updating to a new Ruby or Node.js version is, very much like updating dependencies, an unloved chore with clear benefits when done regularly. Today we’ll start the beta test of this as a new Depfu feature.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/engine_update_pr.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto; border: 1px solid #ddd;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;On the surface, this feature doesn’t sound very complicated, but don’t be fooled. For dependencies, at least in the runtimes we support, there usually is a single (or double, if you count the lockfile separately) source of truth. For runtimes, things get complicated really, really fast. Even if you are using one of the version managers (Or, our new favourite, &lt;a href=&quot;https://asdf-vm.com&quot;&gt;asdf-vm&lt;/a&gt;, the one version manager to rule them all), it’s not done by replacing the version number in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.ruby-version&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.node-version&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.tool-versions&lt;/code&gt;. For ruby, a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; could also specify a version (used by, for example, Heroku). For Node.js, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;package.json&lt;/code&gt; can specify an arbitrarily complex version specificator in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;engines&lt;/code&gt; compartment (of course it can, right?). What about your CI configuration? Do you use a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; to specify your base images?&lt;/p&gt;
+
+&lt;h3 id=&quot;now-in-beta&quot;&gt;Now in Beta!&lt;/h3&gt;
+
+&lt;p&gt;The beta we’re launching today starts with support for the bare minimum of files to patch that sounded useful to us. Now we need to learn what other configuration files are important for you and where the patch strategies we’re initially starting with are falling over.&lt;/p&gt;
+
+&lt;p&gt;We’re starting with support for all three engines we’re supporting right now, so that’s Ruby, Node.js and Elixir. We support simple a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;, configs for CircleCI and Travis, and also, hopefully, a somewhat complete set of version manager configs for these three runtimes.&lt;/p&gt;
+
+&lt;p&gt;We’re also still pondering on how we can make it easier for 3rd parties (aka you!) to contribute to this. Do we need a generic, configurable way for you to support your overly specific hand crafted container config or would you rather directly contribute additional updaters if possible? This is an ongoing conversation but please tell us your ideas of course.&lt;/p&gt;
+
+&lt;h3 id=&quot;how-you-can-test-it&quot;&gt;How you can test it&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/engine_update_settings.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto; border: 1px solid #ddd;&quot; alt=&quot;A screenshot of the Depfu engine updates configuration, showing the options described below&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you are already using Depfu, you can simply enable engine updates in the Depfu settings page. There are two settings, “Only Minor Engine Updates” and “Minor and Major Engine Updates” and these probably do what you expect: If you choose “Only Minor”, you will only get updates within your current major version line. If you choose “Minor and Major”, you will get updates for new major versions as well - As with normal dependency updates, the chances that something breaks spectacularly with those updates are higher, but if you treat the resulting pull/merge requests as the start of the update process, it may work for you.&lt;/p&gt;
+
+&lt;p&gt;We try to be somewhat smart with this, so for example, for Ruby, a project that doesn’t follow SemVer and instead treats major plus minor version as some sort of major version line, you will only get patch releases if you chose “minor”. It’s not your task to get caught up in nitpicky discussions about version semantics, right?&lt;/p&gt;
+
+&lt;h3 id=&quot;halp&quot;&gt;Halp!&lt;/h3&gt;
+
+&lt;p&gt;Like I said, we need your help with this - if a config that stores an engine version in your repo is not properly updated it could be because of several reasons: Either we don’t support that file type yet or our updater’s way of patching the file content is way too naive. So please watch the diffs in these updates carefully and &lt;a href=&quot;https://github.com/depfu/feedback/issues/43&quot;&gt;report any mistakes or missing files&lt;/a&gt;. And if you don’t feel like carrying that burden, that’s totally fine, too. Opting out can either be done via the project settings in the same way you turned the feature on or simply replying in the pull/merge request with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@depfu pause&lt;/code&gt; - We’ll definitely let you all know as soon as we think that this feature is stable enough to not be called a beta anymore.&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 17 Jun 2020 00:00:00 +0000</pubDate>
+        <link>https://depfu.com/blog/update-your-engines</link>
+        <guid isPermaLink="true">https://depfu.com/blog/update-your-engines</guid>
+        
+        
+      </item>
+    
+    
+    
+      <item>
+        <title>When do we create pull requests?</title>
+        <description>&lt;p&gt;Did you ever wonder when Depfu will send you the PR for a new version?&lt;/p&gt;
+
+&lt;p&gt;We haven’t been super transparent about that in the past as we were also experimenting with different strategies. But one major theme has become apparent: we’re not that interested in real-time. &lt;em&gt;We think updating as soon as possible after a new version gets released rarely make sense&lt;/em&gt;. When it does make sense we do send you updates right away and when it doesn’t, we now allow you to control it yourself.&lt;/p&gt;
+
+&lt;p&gt;There are a few layers of latency when it comes to new releases in Depfu:&lt;/p&gt;
+
+&lt;h2 id=&quot;when-do-we-detect-new-releases&quot;&gt;When do we detect new releases?&lt;/h2&gt;
+
+&lt;p&gt;Only very few registries support webhooks for new releases, so we unified on polling registries regularly instead. We do check public registries every 15 minutes and private registries every 30 minutes. That means at the latest 30 minutes after a new version is released, we’ll have it in the system.&lt;/p&gt;
+
+&lt;h2 id=&quot;when-do-we-run-new-releases&quot;&gt;When do we run new releases?&lt;/h2&gt;
+
+&lt;p&gt;We differentiate between detecting releases and running them. Running means we start creating pull requests for repos using that package.&lt;/p&gt;
+
+&lt;p&gt;Pretty early on we noticed two patterns around releases:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;The quick bugfix release&lt;/strong&gt;: Often after major versions, but also in other cases the maintainer notices themselves or gets bug reports about some major problem right away. Within hours there will be a new release, sometimes more than one. This is not a problem in itself, but it created a lot of noise in your pull requests, as we would open and close several PRs in short succession.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;The yanked release&lt;/strong&gt;: If the maintainer overlooked something major and doesn’t have time to fix it right away, they usually yank the newly released version. Which means if you updated right away, you’re now using a yanked version.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We looked at the data we had and realized that waiting for 24 hours before creating the pull request would avoid a lot of these cases. So that’s what we do: If a new version comes in before the 24 hours are up, it’ll supersede the older version and we will wait 24 hours again before we run it. For packages that release daily we do make sure to run at least one release a month.&lt;/p&gt;
+
+&lt;h2 id=&quot;reasonably-up-to-date&quot;&gt;Reasonably up-to-date&lt;/h2&gt;
+
+&lt;p&gt;Our &lt;a href=&quot;/blog/reasonably-up-to-date&quot;&gt;reasonably-up-to-date strategy&lt;/a&gt; is another layer on top of this. Since it highly depends on the package and its release frequency, we can’t really predict when we will run it. But we always wait at least 7 days and at most 30 days.&lt;/p&gt;
+
+&lt;p&gt;By using this strategy you’ll also have a bit of a buffer, which can come in handy for releases containing malware or similar issues, which often take some time to get detected.&lt;/p&gt;
+
+&lt;h2 id=&quot;when-not-to-wait&quot;&gt;When not to wait&lt;/h2&gt;
+
+&lt;p&gt;There are a few cases where waiting doesn’t make sense and you want to get the pull request as soon as possible:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Security releases&lt;/strong&gt;: Of course, when a release fixes security vulnerabilities waiting clearly doesn’t make sense. As soon as we know about it, we will run the release right away and not wait at all.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Private packages&lt;/strong&gt;: With public packages waiting doesn’t really affect you since you don’t know when the new version was released in the first place. So it doesn’t feel like waiting, the release just comes in. Private package are different, since you do the release yourself and you know it just happened. You usually do a release of a private package because you want to update a specific project or all projects with that new version. As of today you can trigger updates from the releases page for all your repos or a single one. This way you have full control if you want to wait or not.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;the-new-releases-page&quot;&gt;The new releases page&lt;/h2&gt;
+
+&lt;p&gt;To give you more visibility and control into all of this we build a new page, showing you what’s happening for your org:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/releases_page.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto; border: 1px solid #ddd;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It allows you to:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;See which releases we have already detected and when they will run.&lt;/li&gt;
+  &lt;li&gt;Run those releases early for all your repos or just a single one.&lt;/li&gt;
+  &lt;li&gt;Trigger a check of your private registries for new releases. For when you know you just released a new version and want it rolled out right away.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Please give it a try and let us know on &lt;a href=&quot;https://twitter.com/depfu&quot;&gt;Twitter&lt;/a&gt; or via &lt;a href=&quot;mailto:hi@depfu.com&quot;&gt;email&lt;/a&gt; if you have any feedback or ideas, we’re always eager for your input!&lt;/p&gt;
+</description>
+        <pubDate>Tue, 19 Nov 2019 00:00:00 +0000</pubDate>
+        <link>https://depfu.com/blog/when-do-we-create-pull-requests</link>
+        <guid isPermaLink="true">https://depfu.com/blog/when-do-we-create-pull-requests</guid>
+        
+        
+      </item>
+    
+    
+    
+      <item>
+        <title>Depfu for GitLab</title>
+        <description>&lt;p&gt;If you’re using GitLab and were wondering if automated dependency updates could work for your team or project, I have good news for you: Depfu fully supports GitLab now!&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://gitlab.com/depfu/example-ruby/merge_requests&quot;&gt;&lt;img src=&quot;/images/posts/gitlab_merge_request.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto; border: 1px solid #ddd;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Here are the details:&lt;/p&gt;
+
+&lt;h2 id=&quot;if-youre-using-gitlabcom&quot;&gt;If you’re using gitlab.com&lt;/h2&gt;
+
+&lt;p&gt;If you’re using any of the SaaS plans from GitLab, free or paid, you can now use Depfu by simply signing up, connecting with your GitLab account and selecting which repos you want to run on. Our login and signup lets you choose between GitLab or Github, like you’re used from other services.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/gitlab_select_org.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto; border: 1px solid #ddd;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Unfortuntely, similar to Github before they released &lt;a href=&quot;https://developer.github.com/apps/&quot;&gt;Github Apps&lt;/a&gt;, the &lt;a href=&quot;https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#limiting-scopes-of-a-personal-access-token&quot;&gt;API permissions and scopes on GitLab&lt;/a&gt; are not as granular as we would like them to be for our use case. Here is what happens when you sign up with GitLab:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;You’re signing up with your personal user account. We don’t use your personal credentials to do anything but enabling and disabling repos you want Depfu to run on. Otherwise all of Depfu’s activity would show up as coming from you, which is super confusing and also ruins notifications for you.&lt;/li&gt;
+  &lt;li&gt;On all repos you have “Maintainer” permissions you can activate Depfu. When activating a repo, we add our &lt;a href=&quot;https://gitlab.com/depfu-bot&quot;&gt;bot-user account&lt;/a&gt; to that repo with “Developer” permissions. That means we can interact with the API to create branches and merge requests.&lt;/li&gt;
+  &lt;li&gt;We also install a webhook on that repo which reports a few events back to us. This way we can keep track of changes to your dependencies and you can interact with our merge requests using the &lt;a href=&quot;/blog/depfu-bot-commands&quot;&gt;@depfu bot commands&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;If you disable a repo, we uninstall the webhook and remove the bot-user.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We didn’t find a way to do this with less permissions, but we (and many others) gave our feedback to GitLab and hope they will come up with a better system in the future. If you have any ideas or concerns about this take a look at our &lt;a href=&quot;/security&quot;&gt;security page&lt;/a&gt; or &lt;a href=&quot;mailto:hi@depfu.com&quot;&gt;get in touch&lt;/a&gt;, we’re happy to discuss it in detail.&lt;/p&gt;
+
+&lt;p&gt;Depfu for GitLab works exactly like Depfu for Github, all features are available and supported, including &lt;a href=&quot;/blog/grouping-all-updates-together&quot;&gt;grouped updates&lt;/a&gt; and our new &lt;a href=&quot;/blog/reasonably-up-to-date&quot;&gt;reasonably up-to-date strategy&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;if-youre-running-your-own-gitlab-instance&quot;&gt;If you’re running your own GitLab instance&lt;/h2&gt;
+
+&lt;p&gt;We have been supporting GitLab on-premises deployments for a few months now with &lt;a href=&quot;/enterprise&quot;&gt;Depfu Enterprise&lt;/a&gt; and it’s used by several customers very successfully. With Depfu Enterprise you’re running your own instance of Depfu in your data center or cloud, which connects exclusively to your self-managed GitLab instance. Your source-code never leaves your premises and you can still benefit from using Depfu fully.&lt;/p&gt;
+
+&lt;p&gt;If you’re not interested in running Depfu yourself, but still want to use it with your self-managed GitLab instance, please &lt;a href=&quot;mailto:hi@depfu.com&quot;&gt;get in touch&lt;/a&gt;, we might add support for that soon.&lt;/p&gt;
+
+&lt;h2 id=&quot;free-for-open-source-and-personal-repos&quot;&gt;Free for open source and personal repos&lt;/h2&gt;
+
+&lt;p&gt;Like with Github, Depfu is free for all your open source repos and private repos in your personal account. Which is a great way to get started and try out Depfu.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/signup&quot;&gt;Sign up today&lt;/a&gt; and &lt;a href=&quot;mailto:hi@depfu.com&quot;&gt;let us know&lt;/a&gt; what you think!&lt;/p&gt;
+</description>
+        <pubDate>Thu, 10 Oct 2019 00:00:00 +0000</pubDate>
+        <link>https://depfu.com/blog/depfu-for-gitlab</link>
+        <guid isPermaLink="true">https://depfu.com/blog/depfu-for-gitlab</guid>
+        
+        
+      </item>
+    
+    
+    
+      <item>
+        <title>Reasonably up-to-date</title>
+        <description>&lt;p&gt;Let’s face it, sometimes the amount of pull requests you get with Depfu, or automated dependency updates in general, can get a bit overwhelming and annoying. Especially on projects with a large amount of dependencies and especially in the JS ecosystem (which moves quite fast).&lt;/p&gt;
+
+&lt;p&gt;There are a few patterns we’ve seen happening over and over again:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Stabilization releases&lt;/strong&gt;: A new version (often a major release) is followed by at least one, sometimes several bugfix releases within hours as people discover critical bugs with the new version. These cause a lot of churn and noise in your PRs and notifications.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;High frequency packages&lt;/strong&gt;: Some libraries just release new versions very often. There are libraries like the AWS SDKs that auto-release daily, and there are libraries that release several new versions within a month regularly.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;its-called-bleeding-edge-for-a-reason&quot;&gt;It’s called bleeding edge for a reason&lt;/h2&gt;
+
+&lt;p&gt;Depfu now supports a new update strategy called “reasonably up-to-date”. There is a lot of value in having your dependencies up-to-date, but there is very little value in being on all the latest versions, you just want your dependencies to stay &lt;i&gt;current&lt;/i&gt;. It’s called bleeding edge for a reason.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Depfu’s new reasonably up-to-date feature “matures” releases before sending you pull requests, while making sure you’re never more than 1 month behind.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;how-does-it-work&quot;&gt;How does it work?&lt;/h2&gt;
+
+&lt;p&gt;When a new release comes in, we take a look at how often this particular library released new versions in the past and calculate a release frequency. We’re trying to predict how likely it is there will be another release within the next few weeks.&lt;/p&gt;
+
+&lt;p&gt;Based on the release frequency we wait several days to a whole month before we send you a PR for this version, basically “maturing” this version like a cheese or wine. During this time two things can happen:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;A new version gets released&lt;/strong&gt;: In this case we supersede the previous version and apply the same maturing algorithm to the new version.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;No new version gets released&lt;/strong&gt;: If we waited the designated time and there was no new version, we finally send you the PR.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If the new version always get superseded (for example some libraries release daily), we make sure to send you a PR at least every month, incorporating all versions released the past month up to the newest version. This way we ensure all your dependencies are on a version that is never older than 1 month.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Security releases will get send to you as soon as possible, skipping the reasonably up-to-date strategy.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;For libraries releasing very often this reduces the number of PRs you get significantly. For libraries that release very rarely you still get the same amount of PRs, just a little later than when the version was released.&lt;/p&gt;
+
+&lt;h2 id=&quot;we-have-data&quot;&gt;We have data&lt;/h2&gt;
+
+&lt;p&gt;We’ve been testing this for several weeks now with a few customers and have seen reductions up to 50% in the amount of pull requests, sometimes more, sometimes less:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/reasonably_graph.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And Christian, one of the beta testers had this to say:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The “maturing” feature on Depfu really works well. The number of updates are easier to cope with now and we are still very much up to date. The most frustrating before were those patch PRs where you got one each day as they were fixing various bugs. That was a bit annoying.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;try-it-out&quot;&gt;Try it out&lt;/h2&gt;
+
+&lt;p&gt;You can enable this new strategy in the settings for your repo, by default it’s disabled.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/reasonably_setting.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We would love for you to give it a try and help us make it even better. Any issues or feedback around this, please let us know on &lt;a href=&quot;https://twitter.com/depfu&quot;&gt;Twitter&lt;/a&gt; or via &lt;a href=&quot;mailto:hi@depfu.com&quot;&gt;email&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 06 Jun 2019 00:00:00 +0000</pubDate>
+        <link>https://depfu.com/blog/reasonably-up-to-date</link>
+        <guid isPermaLink="true">https://depfu.com/blog/reasonably-up-to-date</guid>
+        
+        
+      </item>
+    
+    
+    
+      <item>
+        <title>Support for appraisal</title>
+        <description>&lt;p&gt;Depfu now supports Ruby projects using the &lt;a href=&quot;https://github.com/thoughtbot/appraisal&quot;&gt;appraisal gem&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Appraisal makes it easy to test your library with different versions of a dependency. It is most commonly used for libraries that provide plugin-like functionality for frameworks. For example, you want to make sure your image uploading library works with several major versions of Rails.&lt;/p&gt;
+
+&lt;p&gt;From the normal, main gemspec and Gemfile of the library, appraisal generates multiple additional gemfiles, one for each release line of the gem you’re “appraising”.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;appraise&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;4.2&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rails&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;~&amp;gt; 4.2.0&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;appraise&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.0&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rails&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;~&amp;gt; 5.0.0&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Which results in the following folder structure:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;paperclip
+|-- lib
+|-- gemfiles
+|   |-- 4.2.gemfile
+|   |-- 5.0.gemfile
+|-- Appraisals
+|-- Gemfile
+|-- paperclip.gemspec
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Depfu did work fine before on the main gemspec and Gemfile of the library, but appraisal projects usually run their CI on the generated gemfiles as a matrix build. Which means Depfu would create a PR with the dependency update, but the CI build for that PR did not include the update and so the test results would be meaningless.&lt;/p&gt;
+
+&lt;p&gt;We now autodetect projects using appraisal, continue to update the main gemspec and Gemfile as before and additionally apply the same gem update to all files found in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gemfiles/&lt;/code&gt; folder (with or without lockfiles).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/appraisal_diff.png&quot; width=&quot;700px&quot; style=&quot;margin: 30px auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If it’s the actual “appraised” gem that got a new release, we only apply the patch/minor version that would make sense for this release line. Otherwise Depfu would update all generated gemfiles to the latest Rails release, which defeats the purpose of using appraisal in the first place.&lt;/p&gt;
+
+&lt;p&gt;If you tried Depfu in the past with a project using appraisal, it would be great if you could give it another go. Any issues or feedback around this, please let us know on &lt;a href=&quot;https://twitter.com/depfu&quot;&gt;Twitter&lt;/a&gt; or via &lt;a href=&quot;mailto:hi@depfu.com&quot;&gt;email&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 24 Apr 2019 00:00:00 +0000</pubDate>
+        <link>https://depfu.com/blog/support-for-appraisal</link>
+        <guid isPermaLink="true">https://depfu.com/blog/support-for-appraisal</guid>
+        
+        
+      </item>
+    
+    
+  </channel>
+</rss>

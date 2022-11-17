@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mike Perham</title>
+    <link>https://www.mikeperham.com/</link>
+    <description>Recent content on Mike Perham</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 27 Oct 2022 10:08:17 -0700</lastBuildDate>
+    
+	<atom:link href="https://www.mikeperham.com/index.xml" rel="self" type="application/rss+xml"/>
+    
+    
+    <item>
+      <title>Introducing Sidekiq 7.0</title>
+      <link>https://www.mikeperham.com/2022/10/27/introducing-sidekiq-7.0/</link>
+      <pubDate>Thu, 27 Oct 2022 10:08:17 -0700</pubDate>
+      
+      <guid>https://www.mikeperham.com/2022/10/27/introducing-sidekiq-7.0/</guid>
+      <description>I&amp;rsquo;m proud to announce, after nearly a year of work, Sidekiq 7.0 is now available. Sidekiq is the most popular background job system for Ruby, used by thousands of companies around the world. This release is our biggest, most splendiforous release ever!
+What&amp;rsquo;s New? Metrics One thing I know: everybody loves big beautiful graphs! Sidekiq 7.0 has a major new feature for tracking and visualizing job execution times. Big thanks to @adamlogic of Rails Autoscale for implementing the new graphs and I hope you&amp;rsquo;ll agree he did a fantastic job.</description>
+    </item>
+    
+    <item>
+      <title>Sidekiq 7.0: Embedding</title>
+      <link>https://www.mikeperham.com/2022/10/27/sidekiq-7.0-embedding/</link>
+      <pubDate>Thu, 27 Oct 2022 09:21:22 -0700</pubDate>
+      
+      <guid>https://www.mikeperham.com/2022/10/27/sidekiq-7.0-embedding/</guid>
+      <description>Sidekiq 7.0 can be embedded within another process so you do not need to run a separate Sidekiq process. This is called embedding.
+Why? Why would you want to do this? Embedding can make for a simpler deployment: you deploy one larger process instead of two separate processes, now you only need to monitor and manage one process. Embedding also requires less total memory since both subsystems will share most of the Ruby data structures and code in memory.</description>
+    </item>
+    
+    <item>
+      <title>Sidekiq 7.0: Metrics</title>
+      <link>https://www.mikeperham.com/2022/10/27/sidekiq-7.0-metrics/</link>
+      <pubDate>Thu, 27 Oct 2022 09:20:55 -0700</pubDate>
+      
+      <guid>https://www.mikeperham.com/2022/10/27/sidekiq-7.0-metrics/</guid>
+      <description>Sidekiq 7.0 introduces a new subsystem for gathering job execution data along with a new Metrics tab within the Web UI to visualize this data. The data is designed to help you answer a few questions:
+Which types of jobs executed? Which types of jobs took the most amount of time to execute? How has the performance of Job X changed recently? When did any deploys occur during this time? The graphs only show data for the last hour.</description>
+    </item>
+    
+    <item>
+      <title>Sidekiq 7.0 Beta now Available</title>
+      <link>https://www.mikeperham.com/2022/09/27/sidekiq-7.0-beta-now-available/</link>
+      <pubDate>Tue, 27 Sep 2022 15:17:08 -0700</pubDate>
+      
+      <guid>https://www.mikeperham.com/2022/09/27/sidekiq-7.0-beta-now-available/</guid>
+      <description>Yesterday I released the first public beta of Sidekiq 7.0. This is a major new release with several huge new features, several features removed, APIs refactored and updated requirements.
+Job Performance Metrics! Embedded mode! Capsules! Strict args! But with all these awesome new features, we refactored a LOT of internal APIs and likely broke a bunch of things. In other words, we really need people to test it and open issues in order to get a smooth 7.</description>
+    </item>
+    
+    <item>
+      <title>Sidekiq and Request-Specific Context</title>
+      <link>https://www.mikeperham.com/2022/07/29/sidekiq-and-request-specific-context/</link>
+      <pubDate>Fri, 29 Jul 2022 19:43:06 -0700</pubDate>
+      
+      <guid>https://www.mikeperham.com/2022/07/29/sidekiq-and-request-specific-context/</guid>
+      <description>At some point in growing a large-scale software system, you&amp;rsquo;ll require &amp;ldquo;out of band&amp;rdquo; context: data which is not explicitly passed as an argument to a function but rather implicitly attached to the request, job or event being processed. Usually context is implemented as thread-local variables; your code first sets up the necessary context and then processes the request. A common example is multi-tenancy: you might want to limit any data queried by a given request to a database schema specific to a given tenant.</description>
+    </item>
+    
+    <item>
+      <title>Modernizing Einhorn</title>
+      <link>https://www.mikeperham.com/2022/07/14/modernizing-einhorn/</link>
+      <pubDate>Thu, 14 Jul 2022 08:41:10 -0700</pubDate>
+      
+      <guid>https://www.mikeperham.com/2022/07/14/modernizing-einhorn/</guid>
+      <description>Einhorn is a Ruby gem which provides the ability to manage multiple forked processes of Unix services. Stripe originally built Einhorn to manage their internal collection of services in production but stopped actively maintaining the gem several years ago. I recently asked for and was granted ownership of the gem so that I could provide maintenance going forward. This blog post is meant to document how I took over and what I did, I hope others find this interesting and perhaps even useful.</description>
+    </item>
+    
+    <item>
+      <title>Coming Soon in Sidekiq, 2022 edition</title>
+      <link>https://www.mikeperham.com/2022/06/17/coming-soon-in-sidekiq-2022-edition/</link>
+      <pubDate>Fri, 17 Jun 2022 09:00:00 -0800</pubDate>
+      
+      <guid>https://www.mikeperham.com/2022/06/17/coming-soon-in-sidekiq-2022-edition/</guid>
+      <description>I just released Sidekiq 6.5 and I&amp;rsquo;ve got a lot of changes on the roadmap for Sidekiq 7.0. Here&amp;rsquo;s what&amp;rsquo;s coming soon so you can plan too.
+New Transaction-aware Client Sidekiq has long had a &amp;ldquo;problem&amp;rdquo; with executing jobs very fast, before any associated transaction has committed, leading to &amp;ldquo;Cannot find Model id=1234&amp;rdquo; errors. Sidekiq 6.5 introduced beta support for a new Sidekiq::Client option which will delay all job pushes until the current transaction has committed.</description>
+    </item>
+    
+    <item>
+      <title>🎉 Happy 10th Birthday, Sidekiq! 🎂</title>
+      <link>https://www.mikeperham.com/2022/01/17/happy-10th-birthday-sidekiq/</link>
+      <pubDate>Mon, 17 Jan 2022 09:00:00 -0800</pubDate>
+      
+      <guid>https://www.mikeperham.com/2022/01/17/happy-10th-birthday-sidekiq/</guid>
+      <description>It&amp;rsquo;s hard for me to believe these words but I pushed Sidekiq&amp;rsquo;s first commit on Jan 16th, 2012. Ten years ago. The public announcement. One month later. One quarter later.
+Some context for those new to this blog: Sidekiq is the most popular background job system for the Ruby programming language. Every application has tasks which are important: send an email, charge a credit card, reserve inventory for an order, synchronize some data to a 3rd party service, etc.</description>
+    </item>
+    
+    <item>
+      <title>What's New in Sidekiq 6.3</title>
+      <link>https://www.mikeperham.com/2021/11/07/whats-new-in-sidekiq-6.3/</link>
+      <pubDate>Sun, 07 Nov 2021 09:00:00 -0700</pubDate>
+      
+      <guid>https://www.mikeperham.com/2021/11/07/whats-new-in-sidekiq-6.3/</guid>
+      <description>I&amp;rsquo;m happy to announce the general availability of Sidekiq 6.3 here at Rubyconf 2021! Since Sidekiq 6.2 in March we&amp;rsquo;ve passed 110 million downloads on Rubygems.org and added a number of nice new features. Let&amp;rsquo;s dive in!
+Sidekiq::Job One consistent issue in communication with the Sidekiq community is the nebulous term worker. Are you talking about a process? A thread? A type of job? Vagueness breeds confusion and frustration. I encourage developers to stop using the term worker and use include Sidekiq::Job in your job classes.</description>
+    </item>
+    
+    <item>
+      <title>On Multi-Platform Docker images</title>
+      <link>https://www.mikeperham.com/2021/07/15/on-multi-platform-docker-images/</link>
+      <pubDate>Thu, 15 Jul 2021 09:29:54 -0700</pubDate>
+      
+      <guid>https://www.mikeperham.com/2021/07/15/on-multi-platform-docker-images/</guid>
+      <description>Until recently, Faktory only supported the x86_64 platform. With the rise of the Apple Silicon chip and AWS Graviton, it was obvious that I would need to roll out ARM64 support soon. This week I spent several days fighting Docker&amp;rsquo;s support for multi-platform images and wanted to document what I learned.
+Faktory OSS The Faktory OSS build was relatively straightforward, with three steps for each platform:
+Build the ./faktory binary on the host.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>Scott Watermasysk</title>
+	<subtitle>Origin - </subtitle>
+
+	
+	<link href="https://scottw.com/feed.xml" rel="self">
+	<link href="https://scottw.com">
+	<updated>2021-08-02T02:18:08+00:00</updated>
+	<id>https://scottw.com/feed.xml</id>
+	<author>
+		<name>Scott Watermasysk</name>
+		<email>origin@scottw.com</email>
+	</author>
+	
+	<entry>
+		<title>ThocStock</title>
+		<link href="https://scottw.com/blog/thocstock">
+		<updated>2021-08-02T02:18:08+00:00</updated>
+		<id>cdb95737-386b-495c-aaa8-19ef71f0a7ba</id>
+		<content type="html">&lt;p&gt;Back in February, I built and released a new site, &lt;a href=&quot;https://thocstock.com/&quot;&gt;ThocStock&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottw.com/assets/images/posts/thocstock.png&quot; alt=&quot;ThocStock.com&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The primary goal of ThocStock is to list custom mechanical keyboard products that are not only of high quality but also in stock.&lt;/p&gt;
+&lt;p&gt;For those not familiar with the custom mechanical keyboard space, products are scattered across many sites worldwide; availability is often very scarce.&lt;/p&gt;
+&lt;p&gt;In the first six months, the site has far exceeded my expectations. Like most side projects, it is often not easy to find time to keep them going, but the community's enthusiasm has made it easy to keep updating and enhancing the experience.&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Ruby Enumerable#tally</title>
+		<link href="https://scottw.com/blog/tally">
+		<updated>2020-12-02T18:50:39+00:00</updated>
+		<id>80819a47-e443-4563-965d-6477c4ea33be</id>
+		<content type="html">&lt;p&gt;10+ years in, and Ruby continues to surprise me.&lt;/p&gt;
+&lt;p&gt;I am trying to complete the &lt;a href=&quot;https://adventofcode.com/&quot;&gt;Advent of Code&lt;/a&gt; this year. For &lt;a href=&quot;https://gist.github.com/scottwater/c7b17f33bea2cdb3067c48b519f436b7&quot;&gt;day two&lt;/a&gt;, I needed to be able to sum the number of items in an array.&lt;/p&gt;
+&lt;pre class=&quot;language-ruby&quot;&gt;&lt;code class=&quot;language-ruby&quot;&gt;array &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;token comment&quot;&gt;# {&quot;a&quot; =&gt; 2, &quot;b&quot; =&gt; 1}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;One of my favorite little Ruby hacks is setting the default value of Hash: &lt;code&gt;Hash.new(0)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;I have done something like this hundreds of times for quick counts:&lt;/p&gt;
+&lt;pre class=&quot;language-ruby&quot;&gt;&lt;code class=&quot;language-ruby&quot;&gt;array &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;br&gt;hash &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;Hash&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;br&gt;array&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;item&lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; hash&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;item&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;token comment&quot;&gt;# {&quot;a&quot; =&gt; 2, &quot;b&quot; =&gt; 1}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For the Advent of Code, I was curious if there was a good way to do this in one line&lt;sup class=&quot;footnote-ref&quot;&gt;&lt;a href=&quot;#fn1&quot; id=&quot;fnref1&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt; (no technical reason, just because...)&lt;/p&gt;
+&lt;p&gt;Not sure why, but it dawned on me this was likely something that Ruby would have built in (again, just because). It turns out in Ruby 2.7, the &lt;a href=&quot;https://ruby-doc.org/core-2.7.2/Enumerable.html#method-i-tally&quot;&gt;tally&lt;/a&gt; method was added to Enumerable.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Tallies the collection, i.e., counts the occurrences of each element. Returns a hash with the elements of the collection as keys and the corresponding counts as values.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre class=&quot;language-ruby&quot;&gt;&lt;code class=&quot;language-ruby&quot;&gt;hash &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;tally&lt;br&gt;&lt;span class=&quot;token comment&quot;&gt;# {&quot;a&quot; =&gt; 2, &quot;b&quot; =&gt; 1}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Simple and named appropriately. Is there another language that would have something like this readily available?&lt;/p&gt;
+&lt;hr class=&quot;footnotes-sep&quot;&gt;
+&lt;section class=&quot;footnotes&quot;&gt;
+&lt;ol class=&quot;footnotes-list&quot;&gt;
+&lt;li id=&quot;fn1&quot; class=&quot;footnote-item&quot;&gt;&lt;p&gt;Tap to the rescue - &lt;code&gt;Hash.new(0).tap { |h| [&amp;quot;a&amp;quot;, &amp;quot;a&amp;quot;, &amp;quot;b&amp;quot;].each { |item| h[item]+=1 }}&lt;/code&gt; &lt;a href=&quot;#fnref1&quot; class=&quot;footnote-backref&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/section&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Heroku + CloudFlare + SSL</title>
+		<link href="https://scottw.com/blog/heroku-cloudflare-ssl">
+		<updated>2020-07-30T19:49:14+00:00</updated>
+		<id>1dce0a94-ac2b-4d90-ba28-8bb1f3ab65a7</id>
+		<content type="html">&lt;p&gt;For a couple of years now, Heroku has had pretty good free’ish SSL support. You add your domain, enable auto certs, and enter a DNS record.&lt;/p&gt;
+&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;heroku domains &lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt; www.mkrank.com&lt;br&gt;heroku certs:auto:enable&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Heroku makes it super easy, but it does come with one big drawback: &lt;em&gt;Heroku does not support root (apex) level domains&lt;/em&gt;. Whether you should use your root domain or subdomain and if it matters is a debate for another day. All I care about here is the user experience around setting up a root level SSL cert and if it is easy to set up and maintain.&lt;/p&gt;
+&lt;p&gt;Lack of Heroku certs on root level domains is usually not a big deal. Most of your traffic likely comes from something other than a person typing a URL directly into a browser (and even then autocomplete based on browsing history helps guide visitors back). But, if we could do it and it was easy to do, then why not?&lt;/p&gt;
+&lt;p&gt;In practice, you would not want to CNAME your apex domain since it likely hides there records in the same node&lt;sup class=&quot;footnote-ref&quot;&gt;&lt;a href=&quot;#fn1&quot; id=&quot;fnref1&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;However, there are a couple of DNS providers support for “aliasing” apex level domains without the side effect of making other records in that node unavailable. As far as I know, this is not an actual spec/standard yet, but its support is pretty solid and has been growing over the years.&lt;/p&gt;
+&lt;p&gt;The three I know who support it today are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;DNS Made Easy&lt;/li&gt;
+&lt;li&gt;DNSimple&lt;/li&gt;
+&lt;li&gt;CloudFlare&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Both DNS Made Easy and DNSimple require you explicitly choose to use this type of alias record. CloudFlare automatically does this if you add a CNAME for your root domain (regardless of whether it is on accident or purpose). I am not sure which is better, but every six months I spend 30 minutes try to remember how to do this in CloudFlare&lt;sup class=&quot;footnote-ref&quot;&gt;&lt;a href=&quot;#fn2&quot; id=&quot;fnref2&quot;&gt;[2]&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;Anyway, back to CloudFlare, I have been using them more and more for my projects. In addition to great DNS and pretty good support, they have a growing list of exciting features, such as workers.&lt;/p&gt;
+&lt;p&gt;So how do we get going? To use CloudFlare for SSL for Heroku:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Add your domain to Heroku (&lt;code&gt;heroku domains add mkrank.com&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Take the CNAME record they give you and add it to CloudFlare&lt;sup class=&quot;footnote-ref&quot;&gt;&lt;a href=&quot;#fn3&quot; id=&quot;fnref3&quot;&gt;[3]&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;SSL will work, but it comes with a minor caveat. The traffic from your clients' browsers to CloudFlare will be secure. However, from CloudFlare to your Heroku app will not be. Chances are this is not an issue, but it is a weak link. I did not even notice the weak link until I published a new app, &lt;a href=&quot;https://mkrank.com/&quot;&gt;MKRank&lt;/a&gt;&lt;sup class=&quot;footnote-ref&quot;&gt;&lt;a href=&quot;#fn4&quot; id=&quot;fnref4&quot;&gt;[4]&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;I built this app as a fun side project, and I want nothing to do with managing emails/passwords/etc., so I opted to use OmniAuth and enabled signing in with various existing sites.&lt;/p&gt;
+&lt;p&gt;Everything worked locally, but when I first deployed MKRank, I could not sign in with any third-party site. After a little debugging, I realized the callback URL that was from my app did not match what I had configured in each third-party app (all are hard-coded to use SSL).&lt;/p&gt;
+&lt;p&gt;So what was going on?&lt;/p&gt;
+&lt;p&gt;Well, if you remember from above, communications between the client and CloudFlare were happening over SSL. However, CloudFlare was communicating back to my app over HTTP. Since my app was receiving non-SSL traffic, the URLs it generated for OmniAuth was not using HTTPS.&lt;/p&gt;
+&lt;p&gt;One fix would be too somehow force OmniAuth always to use SSL in production (this might be a good idea either way).&lt;/p&gt;
+&lt;p&gt;However, a better fix would be to enable SSL communication between CloudFlare and my app.&lt;/p&gt;
+&lt;p&gt;It turns out this is very simple. All we have to do is add the Heroku auto certs feature (&lt;code&gt;heroku certs:auto:enable&lt;/code&gt;). Once in place, Heroku will accept SSL traffic for our app.&lt;/p&gt;
+&lt;p&gt;The final step is to go back into CloudFlare and enable full SSL.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottw.com/assets/images/posts/full-ssl.png&quot; alt=&quot;Full SSL&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Now all communication from the client (browser) → CloudFlare → Heroku is secure. Logins with OmniAuth will now generate the proper callback urls, and no additional configuration or monkey-patching was necessary.&lt;/p&gt;
+&lt;hr class=&quot;footnotes-sep&quot;&gt;
+&lt;section class=&quot;footnotes&quot;&gt;
+&lt;ol class=&quot;footnotes-list&quot;&gt;
+&lt;li id=&quot;fn1&quot; class=&quot;footnote-item&quot;&gt;&lt;p&gt;Everyone at some point finds this out the hard way when their email is no longer available because MX records are no longer available. &lt;a href=&quot;#fnref1&quot; class=&quot;footnote-backref&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id=&quot;fn2&quot; class=&quot;footnote-item&quot;&gt;&lt;p&gt;Actually, who am I kidding. I prefer being explicit, but as someone who does product support, I 100% get why they just made it so. &lt;a href=&quot;#fnref2&quot; class=&quot;footnote-backref&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id=&quot;fn3&quot; class=&quot;footnote-item&quot;&gt;&lt;p&gt;I you should create a second CNAME on the www domain. Once in place, you can use CloudFlare's page rules to redirect all www. traffic back to the non-www URL. &lt;a href=&quot;#fnref3&quot; class=&quot;footnote-backref&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id=&quot;fn4&quot; class=&quot;footnote-item&quot;&gt;&lt;p&gt;MKRank is an app for the mechanical keyboard community. It allows you to build lists of your favorite mechanical keyboard products. &lt;a href=&quot;#fnref4&quot; class=&quot;footnote-backref&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/section&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>MKRank.com</title>
+		<link href="https://scottw.com/blog/mkrank">
+		<updated>2020-07-30T16:53:01+00:00</updated>
+		<id>6b06ae82-65a6-4d7d-b50b-83bab42407c6</id>
+		<content type="html">&lt;p&gt;A couple of weeks ago, I built and released a new side project, &lt;a href=&quot;https://mkrank.com/&quot;&gt;MKRank.com&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottw.com/assets/images/posts/mkrank.png&quot; alt=&quot;MKRank.com&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The goal of MKRank is to allow members of the mechanical keyboard community to rank some of their favorite products.&lt;/p&gt;
+&lt;p&gt;There were a couple of interesting technical changes I need to write up for this site (SSL, Stimulus.js, Tailwind, and the leaderboards in particular).&lt;/p&gt;
+&lt;p&gt;From an app perspective, similar to HowIVSCode, I am determined to build this without the need to market to the existing user base continually. I am not collecting emails, no tracking, etc.&lt;/p&gt;
+&lt;p&gt;Lack of contact information means growth will be slow, but new people are signing up daily, and I have been able to keep adding new content consistently.&lt;/p&gt;
+&lt;p&gt;If it sticks, it will be a matter of persistence (and not getting bored myself).&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Moving the Footnotes on Eleventy</title>
+		<link href="https://scottw.com/blog/moving_the_footnotes_on_eleventy">
+		<updated>2020-06-05T14:43:56+00:00</updated>
+		<id>6334a955-4b8f-45c4-a1c9-07e76644c798</id>
+		<content type="html">&lt;p&gt;Typically with Markdown, footnotes are found at the end of the content.&lt;/p&gt;
+&lt;p&gt;For my &lt;a href=&quot;https://scottw.com/boards/&quot;&gt;keyboard posts&lt;/a&gt;, I am using a nunjucks layout that looks a bit like this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Post HTML content&lt;/li&gt;
+&lt;li&gt;Nunjucks rendered YouTube video&lt;/li&gt;
+&lt;li&gt;Nunjucks rendered Images&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;pre class=&quot;language-html&quot;&gt;&lt;code class=&quot;language-html&quot;&gt;{{ content | safe }}&lt;br&gt;{% if soundTest %}&lt;br&gt;  &lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;div&lt;/span&gt; &lt;span class=&quot;token attr-name&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;mb-2&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;h3&lt;/span&gt; &lt;span class=&quot;token attr-name&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;mb-2 text-2xl font-semibold text-center&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;Sound Profile&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;/&lt;/span&gt;h3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;p&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;{{soundTest}}&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;/&lt;/span&gt;p&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;/&lt;/span&gt;div&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;{% endif %}&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With this layout, my footnotes were not at the bottom of the page as you would typically expect (it went post content, footnotes, video, images).&lt;/p&gt;
+&lt;p&gt;With the help of this online &lt;a href=&quot;https://regex101.com/&quot;&gt;regular expression&lt;/a&gt; tool, I put together the following transformer:&lt;/p&gt;
+&lt;pre class=&quot;language-javascript&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;eleventyConfig&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;addTransform&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;move-footnotes&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token parameter&quot;&gt;content&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; outputPath&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;outputPath &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; outputPath&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;endsWith&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;.html&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token keyword&quot;&gt;const&lt;/span&gt; footnoteRegex &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token regex&quot;&gt;&lt;span class=&quot;token regex-delimiter&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;token regex-source language-regex&quot;&gt;(&amp;lt;hr class=&quot;footnotes-sep&quot;&gt;\n&amp;lt;section class=&quot;footnotes&quot;&gt;[\s\S]+&amp;lt;\/section&gt;)&lt;/span&gt;&lt;span class=&quot;token regex-delimiter&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;token regex-flags&quot;&gt;m&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token keyword&quot;&gt;const&lt;/span&gt; newFootnoteLocationRegex &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token regex&quot;&gt;&lt;span class=&quot;token regex-delimiter&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;token regex-source language-regex&quot;&gt;&amp;lt;!--FOOTNOTES--&gt;&lt;/span&gt;&lt;span class=&quot;token regex-delimiter&quot;&gt;/&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; newLocation &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; content&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;newFootnoteLocationRegex&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; footnote &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; content&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;footnoteRegex&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;newLocation &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; footnote&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;      &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; content&lt;br&gt;        &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;footnoteRegex&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;br&gt;        &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;newFootnoteLocationRegex&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; footnote&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;br&gt;&lt;br&gt;  &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; content&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What it does is check to see if there are indeed footnotes and that if a new location is defined to put them in. I did not want to try and guess where in the HTML to insert them, so I went with an HTML comment. If it finds this comment as well, it replaces it with the footnote HTML.&lt;/p&gt;
+&lt;p&gt;I am unfortunately executing both regular expressions twice, so there may be some other optimizations that can be made (such as declaring the regexes outside of the function). However, as far as I can tell for my site, there has not been a noticeable change in build speed.&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Stimulus.js Toggler for TailwindUI Nav</title>
+		<link href="https://scottw.com/blog/stimulus_toggler_for_tailwindui">
+		<updated>2020-05-12T17:33:40+00:00</updated>
+		<id>85590c8e-e1f0-48c9-9823-b1ed2149b8da</id>
+		<content type="html">&lt;p&gt;I am using the &lt;a href=&quot;https://tailwindui.com/&quot;&gt;TailwindUI&lt;/a&gt; navigation bar and needed to implement a way of opening and closing the mobile view.&lt;/p&gt;
+&lt;p&gt;Here is a simple Stimulus.js controller I added. The class names are hard-coded, but it should not be too hard to extend or customize for your needs.&lt;/p&gt;
+&lt;pre class=&quot;language-javascript&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; Controller &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;stimulus&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;span class=&quot;token keyword&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;extends&lt;/span&gt; Controller &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;token keyword&quot;&gt;static&lt;/span&gt; targets &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;element&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;&lt;br&gt;  &lt;span class=&quot;token function&quot;&gt;toggle&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token parameter&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;    event&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;preventDefault&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;elementTargets&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token parameter&quot;&gt;element&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;      &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;element&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;classList&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;contains&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;hidden&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;        element&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;classList&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;hidden&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;        element&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;classList&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;block&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;      &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;        element&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;classList&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;hidden&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;        element&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;classList&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;block&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;      &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To use on the TailwindUI navigation bar:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;On the main nav item, add the controller: &lt;code&gt;data-controller=&amp;quot;toggle&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;On the button, add the action: &lt;code&gt;data-action=&amp;quot;click-&amp;gt;toggle#toggle&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;On each element you need to toggle add the target: &lt;code&gt;data-target=&amp;quot;toggle.element&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The ability to target more than one element (see this.elementTargets vs. this.elementTarget above) is one of my favorite features in Stimulus.js. It keeps your code, logic, and implementation very clean.&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Pry Remote</title>
+		<link href="https://scottw.com/blog/pry_remote">
+		<updated>2020-05-11T19:02:00+00:00</updated>
+		<id>01c68894-2629-4e6b-85b8-be901fc516cb</id>
+		<content type="html">&lt;p&gt;I have been coding quite a bit with Wepacker + Stimulus lately and leveraging Foreman to make the &lt;a href=&quot;https://scottw.com/blog/profile.dev/&quot;&gt;process quick and easy&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Another gem I like to use for development is pry-rails. If you are not familiar, &lt;a href=&quot;https://github.com/rweng/pry-rails&quot;&gt;pry-rails&lt;/a&gt; makes it easy to set a break-point, &lt;code&gt;binding.pry&lt;/code&gt;, and enter a console session during your rails requests.&lt;/p&gt;
+&lt;p&gt;Using Foreman, this still works, but you do are not able to see what you are typing, and it gets complicated if you make multiple requests.&lt;/p&gt;
+&lt;p&gt;After a little searching, I found the &lt;a href=&quot;https://github.com/Mon-Ouie/pry-remote&quot;&gt;pry-remote&lt;/a&gt; gem.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A way to start Pry remotely and to connect to it using DRb. This allows to access the state of the running program from anywhere.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;With pry-remote in place, you can set a break point with &lt;code&gt;binding.remote_pry&lt;/code&gt;. This works the same as the original &lt;code&gt;binding.pry&lt;/code&gt; except now you can open up a new terminal window and connect to your pry session (remotely).&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Nunjucks Inline Ternary Operator</title>
+		<link href="https://scottw.com/blog/nunjucks-inline-operator">
+		<updated>2020-05-04T13:23:53+00:00</updated>
+		<id>a88598df-4229-4016-883b-a3fa5316bfc6</id>
+		<content type="html">&lt;p&gt;On this site, I use the post URL as the ID for feeds&lt;sup class=&quot;footnote-ref&quot;&gt;&lt;a href=&quot;#fn1&quot; id=&quot;fnref1&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt;. This is generally a good idea since urls should not change...except when they do.&lt;/p&gt;
+&lt;p&gt;Netlify makes it easy to put redirects in place to help ensure you do not break the internet. However, any person or service that uses my feed ends up seeing every recent post marked as a new post.&lt;/p&gt;
+&lt;p&gt;The long term fix is an easy one: use a real UUID for the ID&lt;sup class=&quot;footnote-ref&quot;&gt;&lt;a href=&quot;#fn2&quot; id=&quot;fnref2&quot;&gt;[2]&lt;/a&gt;&lt;/sup&gt; field in the feeds.&lt;/p&gt;
+&lt;pre class=&quot;language-xml&quot;&gt;&lt;code class=&quot;language-xml&quot;&gt;&lt;br&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;id&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;{{ post.data.uuid}}&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;/&lt;/span&gt;id&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This does not work for previous posts since they do not have a UUID. I could generate one for each, but that would cause the issue we originally started with (accidental new ids).&lt;/p&gt;
+&lt;p&gt;So we end up with something like this:&lt;/p&gt;
+&lt;pre class=&quot;language-xml&quot;&gt;&lt;code class=&quot;language-xml&quot;&gt;{% if post.data.uuid %}&lt;br&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;id&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;{{ post.data.uuid}}&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;/&lt;/span&gt;id&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;{% else %}&lt;br&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;id&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;{{ absolutePostUrl}}&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;/&lt;/span&gt;id&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;{% endif %}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This works, and for the sake of time, I probably should have left it like that, but the if/else/end was bothering me. I figured Nunjucks must have an inline ternary operator. Drum roll.....here we go.&lt;/p&gt;
+&lt;pre class=&quot;language-xml&quot;&gt;&lt;code class=&quot;language-xml&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;id&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;{{ post.data.uuid if post.data.uuid else absolutePostUrl }}&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;/&lt;/span&gt;id&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I do not love the syntax. I naively tried &lt;code&gt;||&lt;/code&gt; and &lt;code&gt;or&lt;/code&gt; a couple of times before I checked the docs. I am sure there is a reason for it and it works. 😃&lt;/p&gt;
+&lt;hr class=&quot;footnotes-sep&quot;&gt;
+&lt;section class=&quot;footnotes&quot;&gt;
+&lt;ol class=&quot;footnotes-list&quot;&gt;
+&lt;li id=&quot;fn1&quot; class=&quot;footnote-item&quot;&gt;&lt;p&gt;Yes, I know, nobody uses feeds anymore, but they are still handy for automation. &lt;a href=&quot;#fnref1&quot; class=&quot;footnote-backref&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id=&quot;fn2&quot; class=&quot;footnote-item&quot;&gt;&lt;p&gt;Technically this does not fix the moving of posts issue. I am assuming the next time I move something all of the posts listed in my feeds will be new enough to have the UUID. &lt;a href=&quot;#fnref2&quot; class=&quot;footnote-backref&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/section&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Multiple Instances of Webpacker</title>
+		<link href="https://scottw.com/blog/webpacker_port">
+		<updated>2020-04-30T15:53:40+00:00</updated>
+		<id>https://scottw.com/blog/webpacker_port</id>
+		<content type="html">&lt;p&gt;I am a big fan of OS X of spaces and usually have quite a few instances of VSCode opened in various spaces.&lt;/p&gt;
+&lt;p&gt;One early headache with this approach was Rails starting on port 3000 by default. The fix for this was quite easy. Just add an ENV&lt;sup class=&quot;footnote-ref&quot;&gt;&lt;a href=&quot;#fn1&quot; id=&quot;fnref1&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt; variable PORT=3002 (or whatever number you choose). The ENV is nice because it isolates the port number I picked from what I check in to git.&lt;/p&gt;
+&lt;p&gt;In my post, &lt;em&gt;&lt;a href=&quot;https://scottw.com/blog/profile.dev/&quot;&gt;Making Rails and Webpacker Feel Faster&lt;/a&gt;&lt;/em&gt;, I wrote about how I was using a separate Procfiles to start Rails and Webpacker quickly.&lt;/p&gt;
+&lt;p&gt;My technique for starting Rails on something other than 3000 still worked! Unfortunately, I did run into a bit of snag. The webpacker server starts on port 3035, and there does not appear to be any way to configure this via an ENV variable or even via ERB on the YAML file. There are a couple of Github threads asking for changes/options, but so far, nothing has stuck.&lt;/p&gt;
+&lt;p&gt;The good news is you can certainly make it work by editing your &lt;code&gt;webpacker.yml&lt;/code&gt; file:&lt;/p&gt;
+&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;  &lt;span class=&quot;token key atrule&quot;&gt;dev_server&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token key atrule&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token boolean important&quot;&gt;false&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token key atrule&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; localhost&lt;br&gt;    &lt;span class=&quot;token key atrule&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3036&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token key atrule&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; localhost&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;3036&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The downside is these changes get committed. Hopefully there will be a fix/update in the future, but for now this works quite well.&lt;/p&gt;
+&lt;hr class=&quot;footnotes-sep&quot;&gt;
+&lt;section class=&quot;footnotes&quot;&gt;
+&lt;ol class=&quot;footnotes-list&quot;&gt;
+&lt;li id=&quot;fn1&quot; class=&quot;footnote-item&quot;&gt;&lt;p&gt;Yes, I know you can pass -p, but then I have to remember to do that. 😃 &lt;a href=&quot;#fnref1&quot; class=&quot;footnote-backref&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/section&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Revisiting Mac (Ergo) Keyboards</title>
+		<link href="https://scottw.com/blog/ergo_mac">
+		<updated>2020-04-15T15:50:06+00:00</updated>
+		<id>https://scottw.com/blog/ergo_mac</id>
+		<content type="html">&lt;p&gt;By far, the most popular post on this site is &lt;em&gt;&lt;a href=&quot;https://scottw.com/blog/mac-mechanical-keyboard-search/&quot;&gt;My Mac Mechanical Keyboard Search&lt;/a&gt;&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;I got quite a few things wrong there and have learned quite a bit about keyboards in the last year. I figured it was time to clean somethings up.&lt;/p&gt;
+&lt;h2&gt;On Mac Keyboards&lt;/h2&gt;
+&lt;p&gt;I originally was on the lookout for a Mac keyboard. This was short-sighted. Functionally, the only significant difference between a Mac and PC keyboard is the bottom row. Macs and PC's alternate the command (winkey) and alt. OS X has a straightforward option for swapping them. There is also excellent software like BetterTouchTool you can to remap them. Finally, many keyboards have dip switches, firmware, and macros you can use to customize further the key mappings (and potentially wire up the media controls)&lt;/p&gt;
+&lt;p&gt;So, in short, find the mechanical keyboard you enjoy, and you will very likely be able to customize the keymap (and keycaps) later.&lt;/p&gt;
+&lt;h2&gt;On Comfort and Ergo&lt;/h2&gt;
+&lt;p&gt;The first keyboard I enjoyed was the Microsoft Natural. I didn't need the ergonomics at the time, but I just enjoyed the board.&lt;/p&gt;
+&lt;p&gt;My tastes and preferences have changed over the years. I know it doesn't matter a functionally, but a big piece of cheap black plastic is not going to bring me joy.&lt;/p&gt;
+&lt;p&gt;Outside of the Natural, there are a couple of options that I know of:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Kinesis Advantages - All I can say typing does not hurt enough for me to put that on my desk. 😃&lt;/li&gt;
+&lt;li&gt;Ortholinears - Ergodox, Planck, Preonic, etc. I tried both the ErgoDox EZ and Preonic. Ortholinears worked OK for me, but I found the transition between them and staggered layouts to be too much mental strain. Someday, my body might force me down this path for good. But for now, I still want to be able to be productive on many keyboards (and sometimes my MBP keyboard), and that means orthos are out for me.&lt;/li&gt;
+&lt;li&gt;Alice layouts - Alice is not a particular board but is instead a layout that adds some ergonomics to your typical staggered keyboard. I have a board with an Alice layout ordered, but I have not used it myself yet.&lt;/li&gt;
+&lt;li&gt;Layers/short cuts/mappings - Most mechanical keyboards come with some options to customize the layout. This is especially true with custom keyboards, most of which are powered by QMK. I have tried to pay more attention to keystrokes that are uncomfortable and/or awkward and map them to something a bit more sain (or even push them to something like a macropad.)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Summary&lt;/h2&gt;
+&lt;p&gt;Find the keyboard you will enjoy. If you are OK with something off the shelf, great. If you want to dive into the wonderful world of custom keyboards, you will need to be extremely patient and be willing to open up your (virtual) checkbook. I am here to help. Feel free to reach out.&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>How to Make Rails and Webpacker Feel Faster</title>
+		<link href="https://scottw.com/blog/profile.dev">
+		<updated>2020-04-13T19:24:00+00:00</updated>
+		<id>https://scottw.com/blog/profile.dev</id>
+		<content type="html">&lt;p&gt;I have been enjoying using &lt;a href=&quot;https://github.com/rails/webpacker&quot;&gt;Webpacker&lt;/a&gt; (Rails gem for working with Webpack) with &lt;a href=&quot;https://stimulusjs.org/&quot;&gt;Stimulus&lt;/a&gt;. However, it can be frustrating waiting for an extra couple of seconds between page refreshes to see your Stimulus changes.&lt;/p&gt;
+&lt;p&gt;Webpacker is the Rails wrapper around Webpack. For the most part, once setup up, it just works (the Rails Way!). You start your local Rails server, visit a page, and all of your assets are properly &lt;code&gt;packed&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;However, this also means there can be a noticeable lag after you make changes because your assets are not &lt;code&gt;re-packed&lt;/code&gt; until you request them.&lt;/p&gt;
+&lt;p&gt;Thankfully, Webpacker ships with an optional server &lt;code&gt;webpack-dev-server&lt;/code&gt; you can run, which will watch for asset changes and &lt;code&gt;re-pack&lt;/code&gt; them so they are usually ready before you can even refresh the page.&lt;/p&gt;
+&lt;p&gt;The downside is you need to remember to start the second server.&lt;/p&gt;
+&lt;p&gt;However, while perusing the excellent &lt;a href=&quot;https://github.com/excid3/jumpstart&quot;&gt;Rails JumpStart&lt;/a&gt; template, I noticed a neat trick to use a custom Procfile (&lt;code&gt;Procfile.dev&lt;/code&gt;) and have Foreman start both the regular rails server as well as the &lt;code&gt;webpack-dev-server&lt;/code&gt;. Even better, you can throw in your background job server of choice, and now you have everything running with one simple command:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;web: bundle exec rails server
+pack: bin/webpack-dev-server
+worker: bundle exec sidekiq
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then you can start via formeman: &lt;code&gt;foreman start -f Procfile.dev&lt;/code&gt;&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Tot 👌🔥</title>
+		<link href="https://scottw.com/blog/tot">
+		<updated>2020-02-28T14:37:06+00:00</updated>
+		<id>https://scottw.com/blog/tot</id>
+		<content type="html">&lt;p&gt;This app is superb. Seven color-coordinated notes at your disposal. Hat tip to @gruber.&lt;/p&gt;
+&lt;p&gt;I have used Tyke for years, but syncing across devices and a little extra space are game-changers.&lt;/p&gt;
+&lt;!--more--&gt;
+&lt;p&gt;&lt;a href=&quot;https://tot.rocks/&quot;&gt;Grab the App&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://daringfireball.net/2020/02/tot&quot;&gt;DaringFireball write-up&lt;/a&gt;&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Via Configurator</title>
+		<link href="https://scottw.com/blog/via">
+		<updated>2020-02-07T20:08:41+00:00</updated>
+		<id>https://scottw.com/blog/via</id>
+		<content type="html">&lt;p&gt;I previously mentioned my best experience with QMK was via ErgoDox EZ's online tool, Oryx. Oryx may be the best online tool, but it is no longer my favorite.&lt;/p&gt;
+&lt;p&gt;Hello &lt;strong&gt;&lt;a href=&quot;https://caniusevia.com/&quot;&gt;Via Configurator&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottw.com/assets/images/posts/via/via.png&quot; alt=&quot;Via Configurator Logo&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Via is a desktop tool for configuring your keyboards' firmware (QMK). I had never used it until a couple of days ago, but I have now tried it with three different keyboards (NK65, Rama M10-B, and Rama M60-A). In all three cases, it has been nothing short of amazing. I am blown away by how well it works.&lt;/p&gt;
+&lt;p&gt;Via's most impressive feature: &lt;strong&gt;no compiling and flashing&lt;/strong&gt;. You make a change, and it is working on your keyboard. No need to run a &lt;code&gt;make&lt;/code&gt; command and then flash your board. No need to compile and watch the baking potato on the screen. 😀 It just works!&lt;/p&gt;
+&lt;p&gt;Support for Via is limited to about 40 different boards. No clue what it takes to go from &amp;quot;regular&amp;quot; QMK to Via compatible, but I hope others can make the journey soon.&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Taking Control of Twitter</title>
+		<link href="https://scottw.com/blog/less-twitter">
+		<updated>2020-02-06T10:50:34+00:00</updated>
+		<id>https://scottw.com/blog/less-twitter</id>
+		<content type="html">&lt;p&gt;For better or worse, Twitter has become the de facto information exchange hub for some of my favorite communities (developers and bootstrappers). While I long for the day when blogs and personal sites make their triumphant return, I am taking a more pragmatic approach to how I interact with Twitter.&lt;/p&gt;
+&lt;p&gt;Twitter makes sharing small pieces of content highly efficient. Unfortunately, it lacks tools to make consuming content anywhere near as efficiently. Since it relies on your eyeballs to get paid, it does its best to keep you within it as much as possible.&lt;/p&gt;
+&lt;p&gt;Over the last couple of months, I have been using the following tools to help keep me informed, without the time suck that Twitter can often become.&lt;/p&gt;
+&lt;h2&gt;&lt;a href=&quot;https://feedbin.com/&quot;&gt;Feedbin&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;As the name implies, FeedBin is a tool for consuming feeds (RSS/Atom for young readers). However, in addition to feeds, it posses secret weapons for following specific user accounts on Twitter and subscribing to mailing lists. These features allow me to accumulate information from a variety of sources and then consume it when I am ready. The setup for Twitter is a bit manual (you add each account individually), but I view this as a speed bump to ensure you only add what you need.&lt;/p&gt;
+&lt;p&gt;Making this even better are two great Feedbin features:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;With a single click, you can see all the replies to a given tweet.&lt;/li&gt;
+&lt;li&gt;If a tweet contains a link, Feedbin will show the contents of the post after the Tweet.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Feedbin does cost $5 a month, but it is certainly worth it.&lt;/p&gt;
+&lt;h2&gt;&lt;a href=&quot;https://github.com/kitze/Twizzle&quot;&gt;Twizzle&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;What truly makes Twitter great (at times) is the ease of sharing. Anyone can share something at any time without a lot of fuss. Unfortunately, every time you log in to Twitter (or open an app) is a chance to get sucked in. Enter Twizzle!&lt;/p&gt;
+&lt;p&gt;Twizzle is a small application that lives in your menu bar that enables you to send tweets (even tweet streams) without the full Twitter experience. (It also handles DM's, but I rarely use that functionality).&lt;/p&gt;
+&lt;p&gt;When it was first released, it cost a wapping $5 but is now free and open source.&lt;/p&gt;
+&lt;h2&gt;&lt;a href=&quot;https://apps.apple.com/us/app/edit-a-single-page-scratchpad/id1231744746&quot;&gt;Edit&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Edit.app is my favorite new(ish) app to come to iOS in a long time. It provides a simple screen you can use to write just one thing and makes it easy to copy that into another app. You can use it for much more than Tweeting (I have mine set to be a blog client as well), but similar to Twizzle, it lets you write/share without getting sucked into the full Twitter experience.&lt;/p&gt;
+&lt;h2&gt;On Community&lt;/h2&gt;
+&lt;p&gt;It is important to point out that this Twitter experience does have it's drawbacks. The most noticeable is interacting with the community in real-time. Keeping Twitter at arm's length at all times is undoubtedly good for your mental health and productivity, but it certainly comes at the expense of some of the Twitter charm.&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>QMK Any (or How to Setup a Custom Quantum Keycode)</title>
+		<link href="https://scottw.com/blog/qmk-any">
+		<updated>2020-02-05T15:11:30+00:00</updated>
+		<id>https://scottw.com/blog/qmk-any</id>
+		<content type="html">&lt;p&gt;I mentioned previously that I am huge fan of the &lt;a href=&quot;https://scottw.com/blog/qmk/&quot;&gt;QMK Firmware&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For most customizations, you can use the online &lt;a href=&quot;https://config.qmk.fm/&quot;&gt;configurator&lt;/a&gt; to make your changes right in the browser.&lt;/p&gt;
+&lt;p&gt;I have been using a keyboard with a HHKB layout the last couple of weeks. After a bit of trial and error I settled on the following basic layout:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottw.com/assets/images/posts/qmk_any/hhkb_bottom_row.png&quot; alt=&quot;Bottom Row&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Bottom Row: Control - Command - Spacebar - Alt - Control&lt;/li&gt;
+&lt;li&gt;Caplock - MO(2) (essentially Function2)&lt;/li&gt;
+&lt;li&gt;Function - MO(1)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This has been working really well for me, with one notable issue - Command + Alt is awkward. This is evident when trying to debug something in a browser. For years, I have been trained to Command+Alt+I to open up the developer console and related tools in every browser.&lt;/p&gt;
+&lt;p&gt;In the configurator, there is a tab labeled &lt;a href=&quot;https://docs.qmk.fm/#/quantum_keycodes&quot;&gt;Quantum&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Quantum keycodes allow for easier customization of your keymap than the basic ones provide, without having to define custom actions.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;There are built in keycodes for many modifier combinations (like Hyper, Meh, etc). However, Alt + Command was missing.&lt;/p&gt;
+&lt;p&gt;Unable to find an answer, I hopped on the &lt;a href=&quot;https://discordapp.com/invite/Uq7gcHh&quot;&gt;QMK discord&lt;/a&gt; and was told that you can use the Any key to add a custom keycode (Thanks fauxpar!).&lt;/p&gt;
+&lt;p&gt;Armed with this, I changed the keycode for the letter I on Layer 2 to Any with the following: &lt;code&gt;A(G(KC_I))&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottw.com/assets/images/posts/qmk_any/any_config.png&quot; alt=&quot;Bottom Row&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;We have lift off!&lt;/strong&gt;&lt;br&gt;
+&lt;img src=&quot;https://media.giphy.com/media/jV65cP2S4mphrQfJkk/giphy.gif&quot; alt=&quot;We have lift off!&quot;&gt;&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Turbolinks and Eleventy (and Static Sites)</title>
+		<link href="https://scottw.com/blog/turbo-static">
+		<updated>2020-01-13T15:23:43+00:00</updated>
+		<id>https://scottw.com/blog/turbo-static</id>
+		<content type="html">&lt;p&gt;With Gatsby, I like the idea of using a React router to make transitioning from page to page as seamless (fast) as possible. However, I could not convince myself overhead, and the complexity of Gatsby was not worth the effort. In the end, I decided to use Eleventy.&lt;/p&gt;
+&lt;p&gt;Still, this got me thinking about alternative approaches. On my Rails apps, I use Turbolinks and decided to give it a shot on my blog (and my &lt;a href=&quot;https://github.com/scottwater/eleventy-origin&quot; title=&quot;Get a nice Eleventy site up and running quickly&quot;&gt;Origin&lt;/a&gt; template).&lt;/p&gt;
+&lt;p&gt;Setting it up takes just a couple of seconds, and it has worked flawlessly. Assuming you can keep all of your scripts in your HTML Head (and they do not change from page to page), you should be able to do the same with minimal effort (on just about any static site generator).&lt;/p&gt;
+&lt;p&gt;On Eleventy side, I did need to make one adjustment on the development side for BrowserSync. BrowserSync injects its scripts out of the head which, causes a conflict navigating pages in development. The &lt;a href=&quot;https://github.com/turbolinks/turbolinks/issues/147&quot; title=&quot;View the Github issue on this&quot;&gt;fix is to add the following to your BrowserSync config&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&quot;language-js&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;eleventyConfig&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;setBrowserSyncConfig&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;token comment&quot;&gt;// scripts in body conflict with Turbolinks&lt;/span&gt;&lt;br&gt;  snippetOptions&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;    rule&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;      match&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token regex&quot;&gt;&lt;span class=&quot;token regex-delimiter&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;token regex-source language-regex&quot;&gt;&amp;lt;\/head&gt;&lt;/span&gt;&lt;span class=&quot;token regex-delimiter&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;token regex-flags&quot;&gt;i&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;br&gt;      &lt;span class=&quot;token function-variable function&quot;&gt;fn&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token parameter&quot;&gt;snippet&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; match&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;br&gt;        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; snippet &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; match&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;br&gt;      &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;br&gt;    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Once in place you can get quick and minimal page changes without the hassle of a massive framework.&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Ruby Pattern Matching aka Almost JavaScript Destructing</title>
+		<link href="https://scottw.com/blog/ruby-pattern-matching-aka-almost-javascript-destructing">
+		<updated>2020-01-03T17:05:37+00:00</updated>
+		<id>https://scottw.com/blog/ruby-pattern-matching-aka-almost-javascript-destructing</id>
+		<content type="html">&lt;p&gt;One of my favorite (modern) JavaScript features is destructuring. Ruby 2.7’s pattern matching makes this almost possible, but the lack of handling missing items makes it unusable for  destructuring today.&lt;/p&gt;
+&lt;!--more--&gt;
+&lt;p&gt;Pattern matching is clearly marked as experimental. It sounds like this more about the syntax and performance than functionality. Proper destructuring would make working with JSON (and Ruby hashes in general) more enjoyable. Hopefully this becomes an option.&lt;/p&gt;
+&lt;p&gt;See: &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment&quot;&gt;JavaScript Destructuring&lt;/a&gt;.&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Ruby Literals</title>
+		<link href="https://scottw.com/blog/ruby-literals">
+		<updated>2020-01-02T02:38:43+00:00</updated>
+		<id>https://scottw.com/blog/ruby-literals</id>
+		<content type="html">&lt;p&gt;There are quite a few I was completely unaware of. Ruby still surprises me every day.&lt;/p&gt;
+&lt;!--more--&gt;
+&lt;p&gt;See: &lt;a href=&quot;https://citizen428.net/blog/ruby_literals_you_may_not_know/&quot;&gt;Ruby Literals You May Not Know&lt;/a&gt;&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>BetterTouchTool  👍👍👍👍👍</title>
+		<link href="https://scottw.com/blog/bettertouchtool">
+		<updated>2019-12-13T15:45:18+00:00</updated>
+		<id>https://scottw.com/blog/bettertouchtool</id>
+		<content type="html">&lt;p&gt;The best $7.50 I spent all year was on BetterTouchTool.&lt;/p&gt;
+&lt;p&gt;I had always assumed it was just for the touch bar/pad, but you can do so much more with.&lt;/p&gt;
+&lt;p&gt;I highly recommend it (much more user-friendly than Karabiner).&lt;/p&gt;
+&lt;!--more--&gt;
+&lt;p&gt;Grab it: &lt;a href=&quot;https://folivora.ai/&quot;&gt;https://folivora.ai&lt;/a&gt;.&lt;/p&gt;
+</content>
+	</entry>
+	
+	<entry>
+		<title>Is My Site Up...Around the world ☝️🔗</title>
+		<link href="https://scottw.com/blog/my-site-up-around-world">
+		<updated>2019-12-11T20:21:20+00:00</updated>
+		<id>https://scottw.com/blog/my-site-up-around-world</id>
+		<content type="html">&lt;p&gt;A quick way to see if a domain is available at multiple locations and some performance data as well.&lt;/p&gt;
+&lt;p&gt;I especially like the time to first-byte metric.&lt;/p&gt;
+&lt;!--more--&gt;
+&lt;p&gt;See: &lt;a href=&quot;https://tools.keycdn.com/performance&quot;&gt;KeyCDN Tools&lt;/a&gt;&lt;/p&gt;
+</content>
+	</entry>
+</feed>

@@ -1,0 +1,912 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="https://tom-lord.github.io/feed.xml" rel="self" type="application/atom+xml"><link href="https://tom-lord.github.io/" rel="alternate" type="text/html"><updated>2017-12-14T15:24:43+00:00</updated><id>https://tom-lord.github.io/</id><title type="html">tom-lord.github.io</title><subtitle>Senior Engineer at Team Satchel, London</subtitle><entry><title type="html">10 More New Features in Ruby v2.5</title><link href="https://tom-lord.github.io/10-More-New-Features-In-Ruby-2.5/" rel="alternate" type="text/html" title="10 More New Features in Ruby v2.5"><published>2017-12-11T00:00:00+00:00</published><updated>2017-12-11T00:00:00+00:00</updated><id>https://tom-lord.github.io/10-More-New-Features-In-Ruby-2.5</id><content type="html" xml:base="https://tom-lord.github.io/10-More-New-Features-In-Ruby-2.5/">&lt;p&gt;With the upcoming release of ruby v2.5 scheduled (as per tradition) for 25th December,
+it’s good to know what’s changed in the language - so you can take advantage any new
+(or refined) features.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://blog.jetbrains.com/ruby/2017/10/10-new-features-in-ruby-2-5/&quot;&gt;This popular blog post&lt;/a&gt;
+by &lt;a href=&quot;https://twitter.com/jnchito&quot;&gt;Junichi Ito&lt;/a&gt; highlighted 10 new features; but since
+there are &lt;a href=&quot;https://docs.ruby-lang.org/en/trunk/NEWS.html&quot;&gt;so many&lt;/a&gt; improvements to the language,
+let’s dive in and unravel &lt;em&gt;10 more&lt;/em&gt; handpicked highlights!&lt;/p&gt;
+
+&lt;h2 id=&quot;1-more-public-module-methods&quot;&gt;1. More public &lt;code class=&quot;highlighter-rouge&quot;&gt;Module&lt;/code&gt; methods&lt;/h2&gt;
+
+&lt;p&gt;(Features &lt;a href=&quot;https://bugs.ruby-lang.org/issues/14132&quot;&gt;#14132&lt;/a&gt; and
+&lt;a href=&quot;https://bugs.ruby-lang.org/issues/14133&quot;&gt;#13133&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Module#attr&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;attr_accessor&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;attr_reader&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;attr_writer&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;define_method&lt;/code&gt;,
+&lt;code class=&quot;highlighter-rouge&quot;&gt;alias_method&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;undef_method&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;remove_method&lt;/code&gt; are now &lt;em&gt;all&lt;/em&gt; public.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Ruby v2.4&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;alias_method&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:plus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; NoMethodError: private method `alias_method' called for Integer:Class&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Workaround 1:&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:alias_method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:plus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Workaround 2:&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;alias_method&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:plus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Ruby v2.5&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;alias_method&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:plus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This update follows nicely from similar changes back in Ruby v2.1.0, where &lt;code class=&quot;highlighter-rouge&quot;&gt;Module#include&lt;/code&gt;
+and &lt;code class=&quot;highlighter-rouge&quot;&gt;Module#prepend&lt;/code&gt; were &lt;a href=&quot;https://github.com/ruby/ruby/blob/v2_1_0/NEWS#core-classes-updates-outstanding-ones-only&quot;&gt;made public&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I think this is a great example of ruby being a community-driven language: Its design
+has evolved over time, influenced by how its users &lt;em&gt;want&lt;/em&gt; it to be; not set in stone
+due to the original designers’ opinions.&lt;/p&gt;
+
+&lt;h2 id=&quot;2-stringstart_with-supports-regexp&quot;&gt;2. &lt;code class=&quot;highlighter-rouge&quot;&gt;String#start_with?&lt;/code&gt; supports regexp&lt;/h2&gt;
+
+&lt;p&gt;(Feature &lt;a href=&quot;https://bugs.ruby-lang.org/issues/13712&quot;&gt;#13712&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;This enhancement provides some nice syntactic sugar, which could help prevent a
+common (and sometimes security-related) mistake in ruby:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Checking whether a string starts with a lower-case letter&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;match?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/^[a-z]/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# BAD!&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;match?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/\A[a-z]/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Good&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The mistake arrises because, unlike most other languages, the &lt;code class=&quot;highlighter-rouge&quot;&gt;^&lt;/code&gt; anchor means “starts
+of &lt;em&gt;line&lt;/em&gt;” in ruby; not “start of &lt;em&gt;string&lt;/em&gt;”. (That’s what &lt;code class=&quot;highlighter-rouge&quot;&gt;\A&lt;/code&gt; is for.)&lt;/p&gt;
+
+&lt;p&gt;So, that first line of code would also return &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt; when &lt;code class=&quot;highlighter-rouge&quot;&gt;string = &quot;123\ntest&quot;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Using the new &lt;code class=&quot;highlighter-rouge&quot;&gt;String#start_with?&lt;/code&gt; method, such a mistake wouldn’t happen:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Ruby v2.5&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start_with?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/[a-z]/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Also good&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;3-improvements-to-bindingirb&quot;&gt;3. Improvements to &lt;code class=&quot;highlighter-rouge&quot;&gt;binding.irb&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;(Features &lt;a href=&quot;https://bugs.ruby-lang.org/issues/13099&quot;&gt;#13099&lt;/a&gt; and &lt;a href=&quot;https://bugs.ruby-lang.org/issues/14124&quot;&gt;#14124&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;For a few years now, the &lt;a href=&quot;https://www.sitepoint.com/rubyists-time-pry-irb/&quot;&gt;recommended ruby toolkit&lt;/a&gt;
+for developer consoles and debuggers has been dominated by &lt;a href=&quot;https://github.com/pry/pry&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pry&lt;/code&gt;&lt;/a&gt;, &lt;a href=&quot;https://github.com/deivid-rodriguez/byebug&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;byebug&lt;/code&gt;&lt;/a&gt;,
+or even some &lt;a href=&quot;https://github.com/deivid-rodriguez/pry-byebug&quot;&gt;hybrid&lt;/a&gt; of the above.&lt;/p&gt;
+
+&lt;p&gt;…Which is a little odd, since ruby already comes with a pretty good built-in REPL: &lt;code class=&quot;highlighter-rouge&quot;&gt;irb&lt;/code&gt;
+(“Interactive Ruby”).&lt;/p&gt;
+
+&lt;p&gt;But as of ruby v2.5, we see two enhancements to the library that help bridge the gap,
+and make it a little less likely to feel the need for &lt;code class=&quot;highlighter-rouge&quot;&gt;pry&lt;/code&gt; in every application:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;require 'irb'&lt;/code&gt; is no longer needed in your code, in order to invoke &lt;code class=&quot;highlighter-rouge&quot;&gt;binding.irb&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Show source around &lt;code class=&quot;highlighter-rouge&quot;&gt;binding.irb&lt;/code&gt; is now shown on startup.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Ruby v2.4&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# test.rb:&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'irb'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;test&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;binding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;irb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Running the file yields:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;001&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Ruby v2.5:&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# test.rb:&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;test&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;binding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;irb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Running the file yields:&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;From&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;rb&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;@&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+
+    &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;test&lt;/span&gt;
+ &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;   &lt;span class=&quot;nb&quot;&gt;binding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;irb&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;001&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;4-integersqrt-added&quot;&gt;4. &lt;code class=&quot;highlighter-rouge&quot;&gt;Integer.sqrt&lt;/code&gt; added&lt;/h2&gt;
+
+&lt;p&gt;(Feature &lt;a href=&quot;https://bugs.ruby-lang.org/issues/13219&quot;&gt;#13219&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;Quite often in algorithms, you need to find “the largest integer less than &lt;code class=&quot;highlighter-rouge&quot;&gt;sqrt(n)&lt;/code&gt;”.
+For example, a simple algorithm to check whether &lt;code class=&quot;highlighter-rouge&quot;&gt;n&lt;/code&gt; is prime is to simply try dividing
+&lt;code class=&quot;highlighter-rouge&quot;&gt;n&lt;/code&gt; by all primes up to &lt;code class=&quot;highlighter-rouge&quot;&gt;sqrt(n)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This operation can now be executed more succinctly, within the core library methods:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Ruby v2.4&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; 2.0&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_i&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; 2&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; 3.1622776601683795&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_i&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; 3&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Ruby v2.5&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; 2&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; 3&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;5-stringcasecmp-and-casecmp-now-return-nil-for-non-string-arguments&quot;&gt;5. &lt;code class=&quot;highlighter-rouge&quot;&gt;String#casecmp&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;casecmp?&lt;/code&gt; now return nil for non-string arguments&lt;/h2&gt;
+
+&lt;p&gt;(…instead of raising a &lt;code class=&quot;highlighter-rouge&quot;&gt;TypeError&lt;/code&gt;)&lt;/p&gt;
+
+&lt;p&gt;(Bug &lt;a href=&quot;https://bugs.ruby-lang.org/issues/13312&quot;&gt;#13312&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Fairly self-explanatory:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Ruby v2.4&lt;/span&gt;
+&lt;span class=&quot;s2&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;casecmp&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;123&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; TypeError: no implicit conversion of Integer into String&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Ruby v2.5&lt;/span&gt;
+&lt;span class=&quot;s2&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;casecmp&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;123&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; nil&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Changes like this usually slip under the radar, as they are not “exciting” features.
+But it just goes to show: There’s still all sorts of simple room for improvement in
+the language; and sometimes the change you wish to
+&lt;a href=&quot;https://bugs.ruby-lang.org/attachments/6464/patch.diff&quot;&gt;make may not even be very complicated&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;But all of these many incremental changes add up, and are what makes modern ruby
+such a robust, stable language.&lt;/p&gt;
+
+&lt;h2 id=&quot;6-mathnrb-removed-from-stdlib&quot;&gt;6. &lt;code class=&quot;highlighter-rouge&quot;&gt;mathn.rb&lt;/code&gt; removed from stdlib&lt;/h2&gt;
+
+&lt;p&gt;(Feature &lt;a href=&quot;https://bugs.ruby-lang.org/issues/10169&quot;&gt;#10169&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;It may sound odd to announce the “removal” of a library as a new feature, but
+please hear me out!…&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/ruby/mathn&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;mathn&lt;/code&gt;&lt;/a&gt; is an unusual library. It not only adds to,
+but also &lt;em&gt;changes&lt;/em&gt;, the behaviour of &lt;code class=&quot;highlighter-rouge&quot;&gt;Integer&lt;/code&gt;s!&lt;/p&gt;
+
+&lt;p&gt;When you &lt;code class=&quot;highlighter-rouge&quot;&gt;require 'mathn'&lt;/code&gt;, this in turn loads other libraries such as &lt;code class=&quot;highlighter-rouge&quot;&gt;require 'prime'&lt;/code&gt;,
+which adds the methods: &lt;code class=&quot;highlighter-rouge&quot;&gt;Integer.each_prime&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Integer.from_prime_division&lt;/code&gt;,
+&lt;code class=&quot;highlighter-rouge&quot;&gt;Integer#prime?&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Integer#prime_division&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;However, more bizarrely, it also
+&lt;a href=&quot;https://github.com/ruby/mathn/blob/93cee0b3309239748017b51688596962f43467f7/lib/mathn.rb#L67-L76&quot;&gt;&lt;em&gt;redefines&lt;/em&gt;&lt;/a&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;Integer#/&lt;/code&gt; to be an alias for &lt;code class=&quot;highlighter-rouge&quot;&gt;Numeric#quo&lt;/code&gt;!&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 0&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; Integer&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# In Ruby v2.5, this line will `raise LoadError: cannot load such file -- mathn`&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# (Unless you also install the deprecated `mathn` gem.)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'mathn'&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; (1/3)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; Rational&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This isn’t &lt;em&gt;always&lt;/em&gt; a problem, but it certainly doesn’t conform the the &lt;a href=&quot;https://en.wikipedia.org/wiki/Principle_of_least_astonishment&quot;&gt;principle
+of least surprise&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For example, there was &lt;a href=&quot;https://stackoverflow.com/a/3445121/1954610&quot;&gt;a case about 9 years ago&lt;/a&gt;
+where the Rubinius VM essentially “blew up” due to some obscure code simply running
+&lt;code class=&quot;highlighter-rouge&quot;&gt;require 'mathn'&lt;/code&gt;. Even today, people are sometimes left confused by &lt;a href=&quot;https://stackoverflow.com/q/47457498/1954610&quot;&gt;different behaviour
+on development vs production servers&lt;/a&gt;,
+due to some production-specific dependency loading the library!&lt;/p&gt;
+
+&lt;p&gt;This behaviour-changing aspect of the &lt;code class=&quot;highlighter-rouge&quot;&gt;mathn&lt;/code&gt; library has been a known issue for
+several years, now. The library
+&lt;a href=&quot;https://bugs.ruby-lang.org/issues/10169&quot;&gt;was officially “deprecated” as of Ruby v2.2&lt;/a&gt;,
+but that doesn’t stop people from using it of course!&lt;/p&gt;
+
+&lt;p&gt;However, thanks to this change in Ruby v2.5, you can now only load &lt;code class=&quot;highlighter-rouge&quot;&gt;mathn&lt;/code&gt; &lt;em&gt;as a gem&lt;/em&gt;.
+This finally means:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Developers will need to &lt;a href=&quot;https://github.com/ruby/mathn#installation&quot;&gt;bundle a deprecated gem&lt;/a&gt;
+into their project, in order to use it. (Which means usage is much less likely!)&lt;/li&gt;
+  &lt;li&gt;…And therefore, even if some dependency in your project &lt;em&gt;does&lt;/em&gt; require &lt;code class=&quot;highlighter-rouge&quot;&gt;mathn&lt;/code&gt;,
+you will have traceability of the root culprit in the &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;7-default-template-file-encoding-is-changed-from-ascii-8bit-to-utf-8-in-erb-command&quot;&gt;7. Default template file encoding is changed from ASCII-8BIT to UTF-8 in erb command&lt;/h2&gt;
+
+&lt;p&gt;(Bug &lt;a href=&quot;https://bugs.ruby-lang.org/issues/14095&quot;&gt;#14095&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Similar to #5 above, this just goes to show how well the open source community
+works to improve the language. What started out as a &lt;a href=&quot;https://www.reddit.com/r/ruby/comments/7bszd5/setting_script_encoding_for_erb_file/&quot;&gt;discussion on Reddit&lt;/a&gt;
+was then raised with the core developers, and promptly fixed. And, once again,
+the code fix was &lt;a href=&quot;https://bugs.ruby-lang.org/projects/ruby-trunk/repository/revisions/60739/diff&quot;&gt;simple&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This (obscure) bug was in fact a lingering legacy of Ruby v1.9’s implementation!
+However, its fix could prove to be quite useful in conjunction with
+&lt;a href=&quot;https://bugs.ruby-lang.org/projects/ruby-trunk/repository/revisions/58891/diff&quot;&gt;other changes&lt;/a&gt;
+in Ruby v2.5.&lt;/p&gt;
+
+&lt;h2 id=&quot;8-hashslice-added&quot;&gt;8. &lt;code class=&quot;highlighter-rouge&quot;&gt;Hash#slice&lt;/code&gt; added&lt;/h2&gt;
+
+&lt;p&gt;(Feature &lt;a href=&quot;https://bugs.ruby-lang.org/issues/8499&quot;&gt;#8499&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport&lt;/code&gt; library, which comes bundled with the popular Ruby on Rails
+framework (but can also be used in isolation) provides many - often controversial -
+extensions to Ruby’s core classes.&lt;/p&gt;
+
+&lt;p&gt;Over the past few years, however, Ruby has gradually been &lt;a href=&quot;http://mitrev.net/ruby/2015/11/13/the-operator-in-ruby/&quot;&gt;cherry-picking the “best”
+features&lt;/a&gt; and merging them
+into the core language.
+&lt;a href=&quot;https://apidock.com/rails/ActiveSupport/CoreExtensions/Hash/Slice&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Hash#slice&lt;/code&gt;&lt;/a&gt;
+is one such method; continuing the trend.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Ruby v2.5&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;a: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;b: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;c: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; {:a=&amp;gt;1, :b=&amp;gt;2}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;9-securerandomalphanumeric-added&quot;&gt;9. &lt;code class=&quot;highlighter-rouge&quot;&gt;SecureRandom.alphanumeric&lt;/code&gt; added&lt;/h2&gt;
+
+&lt;p&gt;(Feature &lt;a href=&quot;https://bugs.ruby-lang.org/issues/10849&quot;&gt;#10849&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;One thing that’s always struck me as a little odd in ruby, given its vastly rich
+core library methods, is its lack of a clear “random string” generator.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/q/88311/1954610&quot;&gt;This StackOverflow question&lt;/a&gt;, for
+example, demonstrates just some of the many (often surprising!) popular methods
+used by developers, to generate a “random string”. Here are a few of them:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# 1.&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'z'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;join&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 2.&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'z'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;shuffle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;join&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 3.&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;36&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;36&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 4.&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'securerandom'&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;SecureRandom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;hex&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Each approach has various pros and cons with regard to its flexibility, readability
+and entropy (“true randomness”). For instance, only option 4 above should be considered
+&lt;em&gt;cryptographically secure&lt;/em&gt;. Other &lt;code class=&quot;highlighter-rouge&quot;&gt;SecureRandom&lt;/code&gt; methods include:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;SecureRandom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;base64&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# e.g. &quot;/qWJPsvoxnSe17HrTlzQ7Q==&quot;&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;SecureRandom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;urlsafe_base64&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# e.g. &quot;IINbXW4YKjfoncJMpP-CkQ&quot;&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;SecureRandom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;random_bytes&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# e.g. &quot;\t\x85\xB9\x9C\xD1\f\xD3\xE6t\xB4S^\v-\xFFo&quot;&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;SecureRandom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;random_number&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# e.g. 0.8993676724126768&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Due to the common use case of needing a purely alphanumeric string, the new
+&lt;a href=&quot;https://github.com/ruby/ruby/blob/86a794a6c34c9412f497907736b4857739b7af3c/lib/securerandom.rb#L273-L293&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SecureRandom.alphanumeric&lt;/code&gt; method&lt;/a&gt;
+fits in nicely with this collection.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately though, if you need to generate a &lt;em&gt;cryptographically secure&lt;/em&gt; random
+string with some other specific characters, you’ll need still to write something
+a little clunky - e.g.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# 20 random chars; chosen from a, b, c, d, e, v, w, x, y and z&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;flat_map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'e'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'v'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'z'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;random: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;SecureRandom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;… Or if you’re just looking for a clean syntax for arbitrary random strings, why not
+check out my &lt;a href=&quot;https://github.com/tom-lord/regexp-examples#usage&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;regexp-examples&lt;/code&gt;&lt;/a&gt;
+library?&lt;/p&gt;
+
+&lt;h2 id=&quot;10-nethttpstatus_codes&quot;&gt;10. &lt;code class=&quot;highlighter-rouge&quot;&gt;Net::HTTP::STATUS_CODES&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;(Feature &lt;a href=&quot;https://bugs.ruby-lang.org/issues/12935&quot;&gt;#12935&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Ruby v2.5 has now &lt;a href=&quot;https://github.com/ruby/ruby/blob/bd73d374715ae8ca6e53ebd4a32f3ae2d6542352/lib/net/http/status.rb#L21-L81&quot;&gt;defined a hash of all HTTP status codes&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;Previously, this was only recorded in &lt;a href=&quot;https://github.com/ruby/ruby/blob/86a794a6c34c9412f497907736b4857739b7af3c/lib/net/http.rb#L331-L387&quot;&gt;documentation&lt;/a&gt;,
+and it was left up to web frameworks such as Rails to &lt;a href=&quot;http://www.railsstatuscodes.com/&quot;&gt;define their own&lt;/a&gt;
+“human-friendly” mappings.&lt;/p&gt;
+
+&lt;p&gt;Additionally, definitions of the following status codes have been added to ruby:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Ruby v2.5
+require 'net/http/status_codes'
+Net::HTTP::STATUS_CODES
+{
+  # ...
+  208 =&amp;gt; 'Already Reported',
+  308 =&amp;gt; 'Permanent Redirect',
+  421 =&amp;gt; 'Misdirected Request',
+  506 =&amp;gt; 'Variant Also Negotiates',
+  508 =&amp;gt; 'Loop Detected',
+  510 =&amp;gt; 'Not Extended',
+  # ...
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;bonus-unicode-100-support&quot;&gt;Bonus: Unicode 10.0 support&lt;/h2&gt;
+
+&lt;p&gt;(Feature &lt;a href=&quot;https://bugs.ruby-lang.org/issues/13685&quot;&gt;#13685&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Keeping up with the new unicode standard, &lt;a href=&quot;http://blog.unicode.org/2017/06/announcing-unicode-standard-version-100.html&quot;&gt;released in June 2017&lt;/a&gt;,
+Ruby v2.5 has been updated to support the new characters.&lt;/p&gt;
+
+&lt;p&gt;The new characters include a &lt;a href=&quot;https://www.unicode.org/charts/PDF/Unicode-10.0/U100-20A0.pdf&quot;&gt;Bitcoin symbol&lt;/a&gt;
+and &lt;a href=&quot;http://www.unicode.org/emoji/charts/emoji-released.html&quot;&gt;56 new emojis&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgs.xkcd.com/comics/vomiting_emoji_2x.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;The ruby language has increasingly stabilised over the past few years. And while it’s
+fair to say that these changes are far less revolutionary than
+&lt;a href=&quot;https://www.ruby-lang.org/en/news/2013/02/24/ruby-2-0-0-p0-is-released/&quot;&gt;what we saw back in Ruby v2.0&lt;/a&gt;
+for instance, there is still a lot going on within this active community.&lt;/p&gt;
+
+&lt;p&gt;Ruby v2.5 will be released on Christmas Day, but you can
+&lt;a href=&quot;https://www.ruby-lang.org/en/downloads/releases/&quot;&gt;download a pre-release version today&lt;/a&gt;
+and try it out!&lt;/p&gt;</content><author><name/></author><summary type="html">With the upcoming release of ruby v2.5 scheduled (as per tradition) for 25th December, it’s good to know what’s changed in the language - so you can take advantage any new (or refined) features.</summary></entry><entry><title type="html">Missy Elliott’s Reciprocal Cipher</title><link href="https://tom-lord.github.io/Missy-Elliott's-Encoding-Algorithm/" rel="alternate" type="text/html" title="Missy Elliott's Reciprocal Cipher"><published>2015-03-29T00:00:00+00:00</published><updated>2015-03-29T00:00:00+00:00</updated><id>https://tom-lord.github.io/Missy-Elliott's-Encoding-Algorithm</id><content type="html" xml:base="https://tom-lord.github.io/Missy-Elliott's-Encoding-Algorithm/">&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/missy_elliott/portrait.jpg&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;MissyElliott&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Example&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;\xAE\xF0\xBC\xA4\xF8\xE4\xAC&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#&quot;Example&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#--&amp;gt; [&quot;E&quot;, &quot;x&quot;, &quot;a&quot;, &quot;m&quot;, &quot;p&quot;, &quot;l&quot;, &quot;e&quot;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#--&amp;gt; [69, 120, 97, 109, 112, 108, 101]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#--&amp;gt; [&quot;01000101&quot;, &quot;01111000&quot;, &quot;01100001&quot;, &quot;01101101&quot;, &quot;01110000&quot;, &quot;01101100&quot;, &quot;01100101&quot;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Shift yo bits down&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#--&amp;gt; [&quot;10001010&quot;, &quot;11110000&quot;, &quot;11000010&quot;, &quot;11011010&quot;, &quot;11100000&quot;, &quot;11011000&quot;, &quot;11001010&quot;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Flip it&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#--&amp;gt; [&quot;01110101&quot;, &quot;00001111&quot;, &quot;00111101&quot;, &quot;00100101&quot;, &quot;00011111&quot;, &quot;00100111&quot;, &quot;00110101&quot;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# And reverse it&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#--&amp;gt; [&quot;10101110&quot;, &quot;11110000&quot;, &quot;10111100&quot;, &quot;10100100&quot;, &quot;11111000&quot;, &quot;11100100&quot;, &quot;10101100&quot;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#--&amp;gt; [174, 240, 188, 164, 248, 228, 172]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#--&amp;gt; [&quot;\xAE&quot;, &quot;\xF0&quot;, &quot;\xBC&quot;, &quot;\xA4&quot;, &quot;\xF8&quot;, &quot;\xE4&quot;, &quot;\xAC&quot;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#--&amp;gt; &quot;\xAE\xF0\xBC\xA4\xF8\xE4\xAC&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is an excerpt from the README of a silly ruby gem I published, aptly named:
+&lt;a href=&quot;https://github.com/tom-lord/missy_elliott&quot;&gt;missy_elliott&lt;/a&gt;.
+It is obvious, at a glance, that this encoding algorithm is easily reversible: You simply repeat the same 3 steps (“shift, flip, reverse”) in reverse order (“reverse, flip, un-shift”).&lt;/p&gt;
+
+&lt;p&gt;However, after further investigation, I noticed something strange: &lt;code class=&quot;highlighter-rouge&quot;&gt;MissyElliott.encode&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;MissyElliott.decode&lt;/code&gt; -
+despite having &lt;a href=&quot;https://github.com/tom-lord/missy_elliott/blob/master/lib/missy_elliott.rb&quot;&gt;different implementations&lt;/a&gt; -
+are actually doing exactly the same thing!!&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;MissyElliott&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;How is this even possible?!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;\xF6\x84\x88\xFD\xB4\x98\xFD\xE8\xF4\xB4\x98\xFD\xAC\xC8\xAC\xC4\xFD\xF8\x84\x98\x98\xB4\xDC\xE4\xAC\x81\xBD&quot;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;MissyElliott&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\xF6\x84\x88\xFD\xB4\x98\xFD\xE8\xF4\xB4\x98\xFD\xAC\xC8\xAC\xC4\xFD\xF8\x84\x98\x98\xB4\xDC\xE4\xAC\x81\xBD&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;How is this even possible?!&quot;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;MissyElliott&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;decode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;How is this even possible?!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;\xF6\x84\x88\xFD\xB4\x98\xFD\xE8\xF4\xB4\x98\xFD\xAC\xC8\xAC\xC4\xFD\xF8\x84\x98\x98\xB4\xDC\xE4\xAC\x81\xBD&quot;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;MissyElliott&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;decode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\xF6\x84\x88\xFD\xB4\x98\xFD\xE8\xF4\xB4\x98\xFD\xAC\xC8\xAC\xC4\xFD\xF8\x84\x98\x98\xB4\xDC\xE4\xAC\x81\xBD&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;How is this even possible?!&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This completely threw me off when I first saw it - I figured there must be a bug in my code. But it’s true!&lt;/p&gt;
+
+&lt;p&gt;If you’d like to have a go at proving this for yourself, stop reading now. I’ll show my answer after the following message from my sponsor:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=cjIvu7e6Wq8&quot;&gt;&lt;img src=&quot;https://img.youtube.com/vi/cjIvu7e6Wq8/0.jpg&quot; alt=&quot;Youtube video&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;reciprocal-ciphers&quot;&gt;Reciprocal Ciphers&lt;/h2&gt;
+
+&lt;p&gt;A &lt;a href=&quot;https://en.wikipedia.org/wiki/Symmetric-key_algorithm#Reciprocal_cipher&quot;&gt;reciprocal cipher&lt;/a&gt; is an encoding algorithm
+that is the inverse of itself. Perhaps the simplest, best-known example of such a cipher is
+&lt;a href=&quot;http://en.wikipedia.org/wiki/ROT13&quot;&gt;ROT-13&lt;/a&gt;; a special case of the &lt;a href=&quot;http://en.wikipedia.org/wiki/Caesar_cipher&quot;&gt;Caesar cipher&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The reason why ROT-13 is reciprocal is quite obvious: We shift each letter of the input down (or up!) 13 places
+in the alphabet. And, since there are 26 letters in the alphabet, repeating the process gets us back to where
+we started. For example:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;flip me&quot; --&amp;gt; &quot;syvc zr&quot; --&amp;gt; &quot;flip me&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But how on Earth does Missy Elliott manage this, with her much more complicated encoding?! Here’s one example, to show the reciprocal encoding in action:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;ORIGINAL: 10011101&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;p&gt;shift:    00111011&lt;/p&gt;
+
+  &lt;p&gt;flip:     11000100&lt;/p&gt;
+
+  &lt;p&gt;reverse:  &lt;strong&gt;00100011 (encoded)&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;p&gt;shift:    01000110&lt;/p&gt;
+
+  &lt;p&gt;flip:     10111001&lt;/p&gt;
+
+  &lt;p&gt;reverse:  &lt;strong&gt;10011101 (twice encoded == ORIGINAL!!)&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Is this always true? Can we prove it? Yes - here’s what I came up with:&lt;/p&gt;
+
+&lt;p&gt;We only need to consider what happens to an individual bit, when applying the Missy Elliot algorithm (twice). Each bit an be precisely described by two things: its value (1 or 0), and its position (how many bits are to the left/right).&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/Without_loss_of_generality&quot;&gt;Without loss of generality&lt;/a&gt;,
+let’s consider what happens to a single bit, of value B (the opposite of which is b),
+which has x bits to its left (and for the sake of clarity, y bits to its right).
+The following syntax should be fairly self explanatory:&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/missy_elliott/shift_proof.gif&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;*There is a slight edge case here, which I have omitted: What happens when x=0, i.e. the bit is “shifted” onto the back of the list? However, this is a fairly trivial edge case to cover; I leave this as an exercise for the reader. (I’ve always wanted to use that phrase, after having it drilled into me at university!)&lt;/p&gt;
+
+&lt;h2 id=&quot;missy-elliotts-graph&quot;&gt;Missy Elliott’s Graph&lt;/h2&gt;
+
+&lt;p&gt;Missy Elliott’s algorithm essentially works by mapping each character’s &lt;a href=&quot;http://www.asciitable.com/&quot;&gt;ASCII code&lt;/a&gt;
+to an “encoded” number, then converting it back to the corresponding character in the ASCII table.
+Since the algorithm is reciprocal, this creates a 1-to-1 pairing between ASCII codes when repeating the encoding.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;0 = 00000000 &amp;lt;--&amp;gt; 11111111 = 255
+1 = 00000001 &amp;lt;--&amp;gt; 10111111 = 191
+2 = 00000010 &amp;lt;--&amp;gt; 11011111 = 223
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Do you wonder what it would look like to plot all 256 points on a scatter graph? Well, I did:&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/missy_elliott/scatter_graph.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The obvious property that this graph shows is:
+If &lt;code class=&quot;highlighter-rouge&quot;&gt;x&amp;lt;128&lt;/code&gt;, then &lt;code class=&quot;highlighter-rouge&quot;&gt;Encoding(x) &amp;gt;=128&lt;/code&gt; (and vice versa). Proving this is quite easy:&lt;/p&gt;
+
+&lt;p&gt;Using similar technique to the above proof, only in this case B represents 7 digits, rather than just 1
+(and b represents its “flipped” value), consider what happens when we apply the Missy Elliott encoding
+to any number &amp;lt; 128:&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/missy_elliott/shift_proof2.gif&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In other words, if the original value starts with a &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; (i.e. is &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt; 128&lt;/code&gt;) then its encoded value
+must start with a &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt; (i.e. is &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;= 128&lt;/code&gt;). However, there is a far more interesting (less obvious)
+feature of this graph: it always oscillates in value…&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Encoding(0) = 255 &amp;gt; Encoding(1) = 191 &amp;lt; Encoding(2) = 223 &amp;gt; Encoding(3) = 159 &amp;lt; ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;… &lt;strong&gt;Except&lt;/strong&gt; for one point, in the middle:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Encoding(126) = 192 &amp;gt; Encoding(127) = 128 &amp;gt; Encoding(128) = 127 &amp;gt; Encoding(129) = 64
+                                         ^^^
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This can be visualised by taking a subsection of the above graph:&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/missy_elliott/scatter_graph2.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In fact, this sequence has an even crazier property hiding beneath the surface.
+Let’s only look at the second half of the mappings, i.e.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Encoding(128), Encoding(129), ..., Encoding(255)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This sub-sequence is equal to:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;127, 63, 95, 31, 111, 47, 79, 15, 119, 55, 87, 23, 103, 39, 71, 7, 123, 59, 91, 27, 107, 43, 75, 11, 115, 51, 83, 19, 99, 35, 67, 3, 125, 61, 93, 29, 109, 45, 77, 13, 117, 53, 85, 21, 101, 37, 69, 5, 121, 57, 89, 25, 105, 41, 73, 9, 113, 49, 81, 17, 97, 33, 65, 1, 126, 62, 94, 30, 110, 46, 78, 14, 118, 54, 86, 22, 102, 38, 70, 6, 122, 58, 90, 26, 106, 42, 74, 10, 114, 50, 82, 18, 98, 34, 66, 2, 124, 60, 92, 28, 108, 44, 76, 12, 116, 52, 84, 20, 100, 36, 68, 4, 120, 56, 88, 24, 104, 40, 72, 8, 112, 48, 80, 16, 96, 32, 64, 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;perfect-oscillating-sequences&quot;&gt;Perfect Oscillating Sequences&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Disclaimer: I have no idea if sequences with this property have ever been named before; I certainly cannot find one! I invented the name “perfect oscillating”, but if you feel an alternative name is more suiting, or are aware of pre-existing name, please let me know in the comments!&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s take a look at a few sub-sequences of the above:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;(a_2n) = 63, 31, 47, 15, 55, 23, 39, 7, 59, 27, ...
+(a_3n) = 95, 47, 119, 23, 71, 59, 107, 11, 83, ...
+(a_4n) = 31, 15, 23, 7, 27, 11, 19, 3, 29, 13, ...
+(a_2n-1) = 127, 95, 111, 79, 119, 87, 103, 71, 123, ...
+(a_5n-3) = 63, 79, 23, 123, 43, 83, 3, 109, 53, 69, ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Any sub-sequence of the form (&lt;code class=&quot;highlighter-rouge&quot;&gt;a_xn+y&lt;/code&gt;) also oscillates!!&lt;/p&gt;
+
+&lt;p&gt;As it turns out, Missy Elliott’s song is all about a novel way to generate the sequence:
+&lt;a href=&quot;http://oeis.org/A030109&quot;&gt;A030109[7]&lt;/a&gt;. Who would have guessed?!&lt;/p&gt;
+
+&lt;p&gt;In fact, there’s one very useful application for sequences like these - the answer might come as a surprise!&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/missy_elliott/portrait2.jpg&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To keep things simple from here on, let’s use a somewhat shorter sequence.
+The following perfect oscillating sequence can also be generated using the Missy Elliott algorithm
+(on the numbers 0 - 7), and adding 1 to each term:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;8, 4, 6, 2, 7, 3, 5, 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I found a clue for how this sequence is used, in the comments for &lt;a href=&quot;http://oeis.org/A049773&quot;&gt;A049773&lt;/a&gt;.
+To summarise, this is the “optimally fair” starting line-up for ranked players in a knock-out tournament!
+Assuming the favourite always wins, the result of such a tournament would look like this:&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/missy_elliott/knockout_ranks.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Missy Elliott truly is a lyrical genius, after all.&lt;/p&gt;
+
+&lt;p&gt;Phew, well that got a little side-tracked from the original purpose of this blog post!&lt;/p&gt;
+
+&lt;p&gt;Was it worth it?&lt;/p&gt;</content><author><name/></author><summary type="html"/></entry><entry><title type="html">Reverse Engineering Regular Expressions</title><link href="https://tom-lord.github.io/Reverse-Engineering-Regular-Expressions/" rel="alternate" type="text/html" title="Reverse Engineering Regular Expressions"><published>2015-03-19T00:00:00+00:00</published><updated>2015-03-19T00:00:00+00:00</updated><id>https://tom-lord.github.io/Reverse-Engineering-Regular-Expressions</id><content type="html" xml:base="https://tom-lord.github.io/Reverse-Engineering-Regular-Expressions/">&lt;p&gt;I recently published a powerful ruby gem on Github:
+&lt;a href=&quot;https://github.com/tom-lord/regexp-examples&quot;&gt;regexp-examples&lt;/a&gt;.
+This library allows you to generate all (or one random) strings that match any
+regular expression! (With just
+&lt;a href=&quot;https://github.com/tom-lord/regexp-examples#impossible-features-illegal-syntax&quot;&gt;a few limitations&lt;/a&gt;
+on what’s possible.) To install it yourself and have a quick play is dead easy:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; gem install regexp-examples
+  Fetching: regexp-examples-1.3.1.gem (100%)
+  Successfully installed regexp-examples-1.3.1
+  Parsing documentation for regexp-examples-1.3.1
+  Installing ri documentation for regexp-examples-1.3.1
+  Done installing documentation for regexp-examples after 0 seconds
+  1 gem installed
+&amp;gt; pry
+[1] pry(main)&amp;gt; require 'regexp-examples'
+  =&amp;gt; true
+[2] pry(main)&amp;gt; ls /rexex/
+  CoreExtensions::Regexp::Examples#methods: examples  random_example
+  Regexp#methods: ==  ===  =~  casefold?  encoding  eql?  fixed_encoding?
+    hash  inspect  match  named_captures  names  options  source  to_s  ~
+[3] pry(main)&amp;gt; /quick|little|demo/.examples
+  =&amp;gt; [&quot;quick&quot;, &quot;little&quot;, &quot;demo&quot;]
+[4] pry(main)&amp;gt; /\w{10}@(hotmail|gmail)\.com &amp;lt;--Backref! \1/.random_example
+  =&amp;gt; &quot;cpRe_f2vMI@gmail.com &amp;lt;--Backref! gmail&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In this post, I will try to explain some of the core logic and techniques that I
+used to build this library. What is a regular expression, really? How/why is it
+always possible de-construct a regex, to list all possible strings that match
+it? How on Earth did I get back-references to work?!&lt;/p&gt;
+
+&lt;p&gt;All shall be revealed…&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;what-is-a-regular-expression&quot;&gt;What Is A “Regular” Expression?&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;h3 id=&quot;regular-expression&quot;&gt;Regular Expression&lt;/h3&gt;
+  &lt;p&gt;&lt;em&gt;noun, computing&lt;/em&gt;&lt;/p&gt;
+
+  &lt;p&gt;a sequence of symbols and characters expressing a string or pattern to
+be searched for within a longer piece of text.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Perhaps the most confusing aspect of regular expressions comes from their formal
+definition, and the fact that several features in the regex language are not
+really “regular” at all! These “irregular” pieces of syntax are, in short (and
+by no coincidence!), the “illegal syntax” in my regexp-examples gem.&lt;/p&gt;
+
+&lt;p&gt;However, rather than mysteriously telling you what a regular expression isn’t,
+let’s try to explain what it is:&lt;/p&gt;
+
+&lt;p&gt;There are only &lt;em&gt;really&lt;/em&gt; &lt;strong&gt;four&lt;/strong&gt; (yes, that’s right, &lt;strong&gt;four!&lt;/strong&gt;) pieces of syntax
+allowed in a “true” regular expression:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The “empty string”, usually denoted by: &lt;code class=&quot;highlighter-rouge&quot;&gt;ε&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Literal characters, e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;/abc123/&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt; repeater, e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;/a*b*c*/&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;|&lt;/code&gt; (“Or”) operator, e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;/a|b|c/&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Oh, and there’s also brackets - so maybe five pieces of syntax, if you want to
+count those as well!&lt;/p&gt;
+
+&lt;p&gt;Every other piece of syntax is really just a nice way to simplify writing out
+horrendously long, complicated combinations of the above. Let’s try a few examples:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sr&quot;&gt;/a+/&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/a|a*/&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/a?/&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/ε|a/&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/a{2,4}/&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/aa|aaa|aaaa/&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/a{3,}/&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/aaaa*/&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/[a-d]*/&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/(a|b|c|d)*/&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/\d\n?/&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/(0|1|2|3|4|5|6|7|8|9)(ε|\n)
+
+# Note: My use of the == operator here is not to be taken
+# too literally... In ruby, Regexp equality is not based
+# purely on what strings they match!
+# http:/&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ruby&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;org&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;core&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Regexp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#method-i-3D-3D&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;…Hopefully, you get the idea. To put this another way, any regex that &lt;em&gt;can’t&lt;/em&gt;
+be expressed in this way is &lt;em&gt;not&lt;/em&gt; truly a “regular” expression!&lt;/p&gt;
+
+&lt;p&gt;An easy way to see whether or not this is the case is: Does (part of) the regex
+need to know its surrounding context, in order to determine a match? For example:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# How does &quot;\b&quot; know whether it lies on a word boundary?&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/\bword\b/&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# How does &quot;^&quot; know whether it lies at the start of a line?&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/line1\n^line2/&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Or in general, how can any &quot;look-ahead&quot;/&quot;look-behind&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# be regular?&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/irregular (?=expression)/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;These all need to know “what came before”, or “what comes next”, and are therefore
+not &lt;em&gt;True Regular Expressions™&lt;/em&gt;. Hopefully this makes the common claim that
+“back-references are not regular” a little more obvious to understand: You need
+to know what the capture group matches before you can know what the back-reference
+matches (i.e. knowledge of context). So of course you cannot express such
+patterns using only those four symbols!&lt;/p&gt;
+
+&lt;p&gt;One final point to make, before we move on: There is only really one type of
+repeater in regex; the others are all nothing more than shorthand:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sr&quot;&gt;/a/&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/a{1}/&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/a?/&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/a{0,1}/&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/a*/&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/a{0,}/&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/a+/&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/a{1,}/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Understanding this structure is at the very heart of my ruby gem; the whole
+library architecture depends on (and, for some occasional edge cases, is
+restricted by!) it.&lt;/p&gt;
+
+&lt;p&gt;All &lt;em&gt;True Regular Expressions™&lt;/em&gt; are built using this structure:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sr&quot;&gt;/Group-Repeater-Group-Repeater-Group-Repeater-.../&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Where every group can, itself, be built using that same structure.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;What?! Show me some examples!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I’m glad you asked. Consider the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sr&quot;&gt;/(this|that)+/&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/(this|that){1,}/&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/(t{1}h{1}i{1}s{1}|t{1}h{1}a{1}t{1}){1,}/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(Yuck! Thankfully we don’t normally need to write them out like this!…)
+But this lays the foundations for the main purpose of this blog post:&lt;/p&gt;
+
+&lt;h2 id=&quot;how-to-parse-a-regular-expression&quot;&gt;How To Parse A Regular Expression&lt;/h2&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/bunny_hat.jpg&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Without getting bogged down in the nitty-gritty implementation details of parsing,
+let’s dive straight in and look at the internal objects generated by
+&lt;code class=&quot;highlighter-rouge&quot;&gt;RegexpExamples::Parser&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# After placing `binding.pry` at a crucial point, for inspection:&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/a*|b+/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;random_example&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;RegexpExamples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;repeaters&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::OrGroup:0x00000001598020&lt;/span&gt;
+  &lt;span class=&quot;vi&quot;&gt;@repeaters_list&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::StarRepeater:0x000000015983e0&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@group&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::SingleCharGroup:0x000000015984f8 @char=&quot;a&quot;, @ignorecase=false&amp;gt;,&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@max_repeats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@min_repeats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::PlusRepeater:0x00000001598110&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@group&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::SingleCharGroup:0x00000001598188 @char=&quot;b&quot;, @ignorecase=false&amp;gt;,&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@max_repeats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@min_repeats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This may look complicated, but it’s essentially not much different to what I
+described above. There is only one key additional thing to consider.&lt;/p&gt;
+
+&lt;p&gt;In order to avoid problems with infinity, we must restrict repeaters like &lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt;
+and &lt;code class=&quot;highlighter-rouge&quot;&gt;+&lt;/code&gt; to have an upper limit. Taken
+&lt;a href=&quot;https://github.com/tom-lord/regexp-examples#configuration-options&quot;&gt;straight from the gem’s README&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;max_repeater_variance&lt;/code&gt; (default = &lt;code class=&quot;highlighter-rouge&quot;&gt;2&lt;/code&gt;) restricts how many examples to return
+for each repeater. For example:&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.*&lt;/code&gt; is equivalent to &lt;code class=&quot;highlighter-rouge&quot;&gt;.{0,2}&lt;/code&gt;&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.+&lt;/code&gt; is equivalent to &lt;code class=&quot;highlighter-rouge&quot;&gt;.{1,3}&lt;/code&gt;&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.{2,}&lt;/code&gt; is equivalent to &lt;code class=&quot;highlighter-rouge&quot;&gt;.{2,4}&lt;/code&gt;&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.{,3}&lt;/code&gt; is equivalent to &lt;code class=&quot;highlighter-rouge&quot;&gt;.{0,2}&lt;/code&gt;&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.{3,8}&lt;/code&gt; is equivalent to &lt;code class=&quot;highlighter-rouge&quot;&gt;.{3,5}&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Or, in other words, the above regex of &lt;code class=&quot;highlighter-rouge&quot;&gt;/a*|b+/&lt;/code&gt; has been interpreted as
+equivalent to the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sr&quot;&gt;/(a{0,2}|b{1,3}){1}/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Like I said above: &lt;code class=&quot;highlighter-rouge&quot;&gt;/Group-Repeater-Group-Repeater-Group-Repeater-.../&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;how-to-generate-examples-from-a-regular-expression&quot;&gt;How To Generate Examples From A Regular Expression&lt;/h2&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/drumroll_please.jpg&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So, we have our parsed regex. All that remains is to transform this into its
+possible strings. The trick to this is that all groups and repeaters are given
+a special method: #result. These results are then built up, piece by piece, to
+form the full strings that match the regex. Let’s take the above example,
+one step at a time:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;SingleCharGroup&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;a&quot;&lt;/code&gt;) has one possible result: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;a&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Therefore the &lt;code class=&quot;highlighter-rouge&quot;&gt;StarRepeater&lt;/code&gt; has three possible results: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;&quot;, &quot;a&quot;, &quot;aa&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Similarly, &lt;code class=&quot;highlighter-rouge&quot;&gt;SingleCharGroup&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;b&quot;&lt;/code&gt;) has one possible result: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;b&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Therefore, &lt;code class=&quot;highlighter-rouge&quot;&gt;PlusRepeater&lt;/code&gt; has three possible results: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;b&quot;, &quot;bb&quot;, &quot;bbb&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Next, the &lt;code class=&quot;highlighter-rouge&quot;&gt;OrGroup&lt;/code&gt; simply concatenates these arrays of possible results,
+i.e. it has six possible results: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;&quot;, &quot;a&quot;, &quot;aa&quot;, &quot;b&quot;, &quot;bb&quot;, &quot;bbb&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;And finally, the top level &lt;code class=&quot;highlighter-rouge&quot;&gt;OneTimeRepeater&lt;/code&gt; just returns these same values.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And there you have it, for a fairly simple example! Let’s look at one more, to
+demonstrate perhaps the most important method in the whole gem:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Again, placing `binding.pry` at the same crucial point:&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/a+|b+|c+/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;examples&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;RegexpExamples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;repeaters&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::OrGroup:0x000000013fc630&lt;/span&gt;
+  &lt;span class=&quot;vi&quot;&gt;@repeaters_list&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::PlusRepeater:0x000000013fcc70&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@group&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::SingleCharGroup:0x000000013fcd10 @char=&quot;a&quot;, @ignorecase=false&amp;gt;,&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@max_repeats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@min_repeats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::PlusRepeater:0x000000013fca18&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@group&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::SingleCharGroup:0x000000013fcae0 @char=&quot;b&quot;, @ignorecase=false&amp;gt;,&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@max_repeats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@min_repeats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::PlusRepeater:0x000000013fc770&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@group&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;RegexpExamples::SingleCharGroup:0x000000013fc7e8 @char=&quot;c&quot;, @ignorecase=false&amp;gt;,&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@max_repeats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@min_repeats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Once again, we make use of &lt;code class=&quot;highlighter-rouge&quot;&gt;PlusRepeater#result&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;SingleCharGroup#result&lt;/code&gt;
+to build up the final answer from each “partial result”.&lt;/p&gt;
+
+&lt;p&gt;However, in this case we end up with the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;aa&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;aaa&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bbb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;c&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;cc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;ccc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Where each of those inner arrays is the result of each &lt;code class=&quot;highlighter-rouge&quot;&gt;PlusRepeater&lt;/code&gt;. We need
+to make one more step: Find all possible results, from joining one element from
+each array, to form a “final result” string. Enter the magic glue that holds
+this whole thing together:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Given an array of arrays of strings, returns all possible perutations&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# for strings, created by joining one element from each array&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# For example:&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# permutations_of_strings [ ['a'], ['b'], ['c', 'd', 'e'] ] #=&amp;gt; ['abc', 'abd', 'abe']&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# permutations_of_strings [ ['a', 'b'], ['c', 'd'] ] #=&amp;gt; [ 'ac', 'ad', 'bc', 'bd' ]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;permutations_of_strings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arrays_of_strings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;first&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arrays_of_strings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;shift&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;first&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arrays_of_strings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;empty?&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;product&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;permutations_of_strings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arrays_of_strings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;sub&gt;*I’ve actually simplified this method slightly, to avoid confusion. The
+real deal can be found
+&lt;a href=&quot;https://github.com/tom-lord/regexp-examples/blob/ce2f6ffb1d0e1b787f1baa667230807451d1b993/lib/regexp-examples/helpers.rb#L13-L19&quot;&gt;here&lt;/a&gt;.&lt;/sub&gt;&lt;/p&gt;
+
+&lt;p&gt;And so, after applying this method to the above array, we end up with:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;abc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;abcc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;abccc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;abbc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;abbcc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.....&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This method gets used a lot, when dealing with more complicated regexes! It is
+the magic function that allows patterns to be made arbitrarily complicated,
+with unlimited nesting of groups and so on.&lt;/p&gt;
+
+&lt;p&gt;So, there you have it! Now you understand all about how to generate examples
+from regular expressions, right?…&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/iceberg.jpg&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Oh, but…&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;How do you deal with escaped characters, like &lt;code class=&quot;highlighter-rouge&quot;&gt;\d&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;\W&lt;/code&gt;, etc?&lt;/li&gt;
+  &lt;li&gt;What about regexp options (ignorecase, multiline, extended form)?&lt;/li&gt;
+  &lt;li&gt;What about unicode characters, control codes, named properties, and so on?&lt;/li&gt;
+  &lt;li&gt;How on earth do you correctly parse all of the possible syntax in character
+sets, such as:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sr&quot;&gt;/[abc]/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;examples&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/[a-z]/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;examples&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/[^\d\ba-c]/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;examples&lt;/span&gt;
+&lt;span class=&quot;sr&quot;&gt;/[[:alpha:]&amp;amp;&amp;amp;[a-c]]/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;examples&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;…And I’m barely getting started here! There is a huge range of syntax to consider!&lt;/p&gt;
+
+&lt;p&gt;To cut a long story short: parsing is complicated!! However, all the basic
+principles discussed above still apply.&lt;/p&gt;
+
+&lt;p&gt;There is just one final piece of the puzzle that I have mostly avoided up until
+this point: back-references.&lt;/p&gt;
+
+&lt;p&gt;As discussed earlier, back-references are not regular, as they require knowledge
+of context. They are not strictly possible to fully support with this gem!
+(And indeed, there are some rare edge cases where my solution does not work.)&lt;/p&gt;
+
+&lt;p&gt;But, as promised, all shall be revealed…&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;/images/fireworks.jpg&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;how-to-generate-examples-with-back-references&quot;&gt;How to generate examples with back-references&lt;/h2&gt;
+
+&lt;p&gt;The important thing to recognise here is that you cannot know what the
+back-references need to match, until after the rest of the regex example has been
+generated. For example, consider the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;sr&quot;&gt;/(a|b)\1/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;random_example&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You cannot possibly know whether the &lt;code class=&quot;highlighter-rouge&quot;&gt;\1&lt;/code&gt; is meant to be an &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;a&quot;&lt;/code&gt; or a &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;b&quot;&lt;/code&gt;,
+until after the capture group’s “partial example” is chosen!&lt;/p&gt;
+
+&lt;p&gt;The solution? We cheat, and use a place-holder - then substitute the correct
+pattern back in later!&lt;/p&gt;
+
+&lt;p&gt;The pattern I chose is: &lt;code class=&quot;highlighter-rouge&quot;&gt;__X__&lt;/code&gt;, where &lt;code class=&quot;highlighter-rouge&quot;&gt;X&lt;/code&gt; is the name of your back-reference
+(in this case, &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;1&quot;&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;There is a lot of intricate logic involved in actually keeping track of the
+results of these capture groups (perhaps the topic for a follow-up blog post?),
+so let’s gloss over this detail for now. So in summary, examples for the above
+regex are calculated as follows:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;SingleCharGroup&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;a&quot;&lt;/code&gt;) has one possible result: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;a&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;SingleCharGroup&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;b&quot;&lt;/code&gt;) has one possible result: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;b&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;OrGroup&lt;/code&gt; has two possible results: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;a&quot;, &quot;b&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;MultiGroup&lt;/code&gt; with &lt;code class=&quot;highlighter-rouge&quot;&gt;group_id=1&lt;/code&gt; has two possible results: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;a&quot;, &quot;b&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;BackReferenceGroup&lt;/code&gt; has one possible result: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;__1__&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;This gives us a final array of possible results: &lt;code class=&quot;highlighter-rouge&quot;&gt;[[&quot;a&quot;, &quot;b&quot;], [&quot;__1__&quot;]]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;After applying the &lt;code class=&quot;highlighter-rouge&quot;&gt;permutations_of_strings&lt;/code&gt; method, this gives us two “final
+results”: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;a__1__&quot;, &quot;b__1__&quot;]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;We now do one final step: Apply a &lt;code class=&quot;highlighter-rouge&quot;&gt;#substitute_backreferences&lt;/code&gt; method on each
+string, to reveal the true strings that match the original regex: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&quot;aa&quot;, &quot;bb&quot;]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And now finally, young Padawan, you are ready to see the actual implementation
+of &lt;code class=&quot;highlighter-rouge&quot;&gt;Regexp#examples&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;examples&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# map_results basically just calls permutations_of_strings(repeater.result),&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# on each repeater&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;full_examples&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RegexpExamples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map_results&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;RegexpExamples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Parser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;RegexpExamples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;BackReferenceReplacer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;substitute_backreferences&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;full_examples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;sub&gt;*Once again, I’ve been naughty and shown you a slightly simplified version,
+to avoid confusion. See the real thing over
+&lt;a href=&quot;https://github.com/tom-lord/regexp-examples/blob/6b8afc366d728d196921723e135679ee35a2c843/lib/core_extensions/regexp/examples.rb#L7-L14&quot;&gt;here&lt;/a&gt;.&lt;/sub&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;one-final-example&quot;&gt;One Final Example&lt;/h2&gt;
+
+&lt;p&gt;I’ll leave you with one final example, showing the true power of this gem.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Question:&lt;/strong&gt; What the hell does &lt;a href=&quot;http://emailregex.com/&quot;&gt;this ridiculous regex&lt;/a&gt;
+match?! (Side note: It’s usually a bad idea to validate email addresses like
+this. If you want to ensure the address is correct, just send a confirmation
+email!)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt; (And on my average machine, it took &lt;code class=&quot;highlighter-rouge&quot;&gt;~0.01&lt;/code&gt; seconds to generate this example
+string!!)&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Yes, this line of code is ridiculous :D&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;pry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email_regex&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;%r{(?:[a-z0-9!#$%&amp;amp;'*+/=?^_`{|}~-]+(?:&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;[a-z0-9!#$%&amp;amp;'*+/=?^_`{|}~-]+)*|&quot;(?:[&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x01&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x08\x0b\x0c\x0e&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x1f\x21\x23&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x5b\x5d&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x7f&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;]|&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x01&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x09\x0b\x0c\x0e&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x7f&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;])*&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\[&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x01&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x08\x0b\x0c\x0e&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x1f\x21&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x5a\x53&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x7f&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;]|&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x01&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x09\x0b\x0c\x0e&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x7f&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;])+)&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\]&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;)}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;pry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email_regex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;random_example&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;cec.y.1@gh.jd&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name/></author><summary type="html">I recently published a powerful ruby gem on Github: regexp-examples. This library allows you to generate all (or one random) strings that match any regular expression! (With just a few limitations on what’s possible.) To install it yourself and have a quick play is dead easy:</summary></entry></feed>

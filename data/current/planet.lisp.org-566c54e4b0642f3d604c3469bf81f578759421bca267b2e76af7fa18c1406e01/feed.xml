@@ -8,392 +8,418 @@
 
 
 <item>
-	<title>Joe Marshall: Tail recursion and fold-left</title>
-	<guid isPermaLink="true">http://funcall.blogspot.com/2021/08/tail-recursion-and-fold-left.html</guid>
-	<link>http://funcall.blogspot.com/2021/08/tail-recursion-and-fold-left.html</link>
+	<title>Nicolas Hafner: Release Date Announcement! - November Kandria Update</title>
+	<guid isPermaLink="true">https://reader.tymoon.eu/article/417</guid>
+	<link>https://reader.tymoon.eu/article/417</link>
 	
-	<description>&lt;p&gt;&lt;code&gt;fold-left&lt;/code&gt; has this basic recursion:&lt;pre&gt;(fold-left f init ())      = init
-(fold-left f init (a . d)) = (fold-left f (f init a) d)&lt;/pre&gt;
-A straightforward implementation of this is&lt;pre&gt;(defun fold-left (f init list)
-  (if (null list)
-      init
-      (fold-left f (funcall f init (car list)) (cdr list))))&lt;/pre&gt;
-The straightforward implementation uses a slightly more space than
-necessary.  The call to &lt;code&gt;f&lt;/code&gt; occurs in a subproblem
-position, so there the stack frame for &lt;code&gt;fold-left&lt;/code&gt; is
-preserved on each call and the result of the call is returned to that
-stack frame.&lt;/p&gt;
-&lt;p&gt;But the result of &lt;code&gt;fold-left&lt;/code&gt; is the result of the last
-call to &lt;code&gt;f&lt;/code&gt;, so we don't need to retain the stack frame
-for &lt;code&gt;fold-left&lt;/code&gt; on the last call.  We can end the iteration on a tail call
-to &lt;code&gt;f&lt;/code&gt; on the final element by unrolling the loop
-once:&lt;pre&gt;(defun fold-left (f init list)
-  (if (null list)
-      init
-      (fold-left-1 f init (car list) (cdr list))))
-
-(defun fold-left-1 (f init head tail)
-  (if (null tail)
-      (funcall f init head)
-      (fold-left-1 f (funcall f init head) (car tail) (cdr tail))))&lt;/pre&gt;&lt;/p&gt;
-&lt;p&gt;There aren't many problems where this would make a difference (a
-  challenge to readers is to come up with a program that runs fine
-  with the unrolled loop but causes a stack overflow with the
-  straightforward implementation), but depending on how extreme your
-  position on tail recursion is, this might be worthwhile.&lt;/p&gt;</description>
+	<description>&lt;img alt=&quot;https://kandria.com/media/trailer%20cover.png&quot; src=&quot;https://kandria.com/media/trailer%20cover.png&quot; /&gt;&lt;p&gt;This update's an important one! The final release date, a new trailer, and some more announcements. Dang! Well, without further ado:&lt;/p&gt;&lt;h2 id=&quot;release date: 11th of january!&quot;&gt;Release Date: 11th of January!&lt;/h2&gt;&lt;p&gt;Alright, I'm happy to announce that we got a final release date for Kandria, which is as the title says, &lt;strong&gt;Wednesday, 11th of January 2023&lt;/strong&gt;! To celebrate the release date announcement, and the large amounts of progress we've made polishing the game, please enjoy this brand new trailer as well:&lt;/p&gt;&lt;p&gt;The game will release on &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/steam&quot;&gt;Steam&lt;/a&gt;, &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/itch&quot;&gt;itch.io&lt;/a&gt;, and onto &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com&quot;&gt;the website&lt;/a&gt; as a direct sale. All copies of the game will be DRM-free. I'm also excited to say that the game will release both in &lt;strong&gt;English&lt;/strong&gt; and in &lt;strong&gt;German&lt;/strong&gt;, translated by yours truly. We have enough time left over to do the localisation, so I really want to do it.&lt;/p&gt;&lt;h2 id=&quot;shevalin single&quot;&gt;Shevalin Single&lt;/h2&gt;&lt;p&gt;The full soundtrack of the game (which is excellent, by the way!) will be released together with the game in January. However, you can enjoy a single from the soundtrack right now:&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://hypeddit.com/q89kb4&quot;&gt;https://hypeddit.com/q89kb4&lt;/a&gt;&lt;/p&gt;&lt;p&gt;This is Shevalin, the ending credits song, composed by our very talented Mikel Dale, and sung by the incredible Julie Elven. I hope you enjoy it!&lt;/p&gt;&lt;h2 id=&quot;user feedback&quot;&gt;User Feedback&lt;/h2&gt;&lt;p&gt;Currently we're still polishing everything we can find and responding to user feedback. One of the most prominent things we noticed watching people play was that they were confused by the locked doors in the first region of the game. So hey, we finally added crashable doors:&lt;/p&gt;&lt;img alt=&quot;https://filebox.tymoon.eu//file/TWpZeE5nPT0=&quot; src=&quot;https://filebox.tymoon.eu//file/TWpZeE5nPT0=&quot; /&gt;&lt;p&gt;If you're part of the beta programme, please give the game a try! We still have some time to include more changes if you have any suggestions.&lt;/p&gt;&lt;h2 id=&quot;development&quot;&gt;Development&lt;/h2&gt;&lt;p&gt;Okey, &lt;a class=&quot;external-link&quot; href=&quot;https://reader.tymoon.eu/article/416&quot;&gt;last month&lt;/a&gt; we got a new roadmap, so let's look at that now:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Add &lt;em&gt;even more&lt;/em&gt; detail tiles, foliage, and animal spawners throughout the world&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Fine-tune the levelling, trade prices, and enemy difficulty&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Create new key art&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Create a new trailer&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Spruce up some of the sound effects &lt;s&gt;and music tracks&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Create achievement icons and integrate them into the game&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Translate everything (over 50'000 words) into German&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;Release the full game&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Backport re-usable components into Trial&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Separate out the assets from the main repository&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Publish the source code under a permissive license&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Fix a plethora of bugs and inconveniences in Alloy&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Polish the editor and make it more stable&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;Release the editor&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Develop a modding system for Trial&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Finish the Forge build system at least to an extent where it's usable&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Integrate the mod.io API with the modding system&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Create a mod manager and browser UI&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Document more parts of Trial and Kandria&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;Release an official modding kit&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Alright! Until the 11th of January finally hits, please continue to share the &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/steam&quot;&gt;steam page&lt;/a&gt; with your friends and other communities!&lt;/p&gt;</description>
 	
-	<pubDate>Mon, 30 Aug 2021 13:29:00 GMT</pubDate>
+	<pubDate>Tue, 15 Nov 2022 13:51:37 GMT</pubDate>
 </item>
 
 <item>
-	<title>Joe Marshall: A Floating-point Problem</title>
-	<guid isPermaLink="true">http://funcall.blogspot.com/2021/08/a-floating-point-problem.html</guid>
-	<link>http://funcall.blogspot.com/2021/08/a-floating-point-problem.html</link>
+	<title>Quicklisp news: November 2022 Quicklisp dist update now available</title>
+	<guid isPermaLink="true">http://blog.quicklisp.org/2022/11/november-2022-quicklisp-dist-update-now.html</guid>
+	<link>http://blog.quicklisp.org/2022/11/november-2022-quicklisp-dist-update-now.html</link>
 	
-	<description>&lt;p&gt;Here's a 2x2 matrix:&lt;pre&gt;[64919121   -159018721]
-[41869520.5 -102558961]&lt;/pre&gt;We can multiply it by a 2 element vector like this:&lt;pre&gt;(defun mxv (a b
-            c d
-
-            x
-            y
-
-            receiver)
-  (funcall receiver
-           (+ (* a x) (* b y))
-           (+ (* c x) (* d y))))
-
-* (mxv 64919121     -159018721
-       41869520.5d0 -102558961
- 
-       3
-       1
-
-       #'list)
-
-(35738642 2.30496005d7)&lt;/pre&gt;Given a matrix and a result, we want to
-  find the 2 element vector that produces that result.  To do this, we
-  compute the inverse of the matrix:&lt;pre&gt;(defun m-inverse (a b
-                  c d
-
-                  receiver)
-  (let ((det (- (* a d) (* b c))))
-    (funcall receiver
-             (/ d det) (/ (- b) det)
-             (/ (- c) det) (/ a det))))&lt;/pre&gt;and multiply the inverse
-  matrix by the result:&lt;pre&gt;(defun solve (a b
-              c d
-
-              x
-              y
-
-              receiver)
-  (m-inverse a b
-             c d
-             (lambda (ia ib
-                      ic id)
-               (mxv ia ib
-                    ic id
-
-                    x
-                    y
-                    receiver))))&lt;/pre&gt;So we can try this on our matrix&lt;pre&gt;* (solve 64919121     -159018721
-         41869520.5d0 -102558961
-
-         1
-         0
-         #'list)
-
-(1.02558961d8 4.18695205d7)&lt;/pre&gt;and we get the wrong answer.&lt;/p&gt;
-&lt;p&gt;What's the right answer?&lt;pre&gt;* (solve 64919121         -159018721
-         (+ 41869520 1/2) -102558961
-
-         1
-         0
-         #'list)
-
-(205117922 83739041)&lt;/pre&gt;If we use double precision floating point, we get
-  the wrong answer by a considerable margin.&lt;/p&gt;
-
-&lt;p&gt;I'm used to floating point calculations being off a little in the least
-  significant digits, and I've seen how the errors can accumulate in an iterative
-  calculation, but here we've lost all the significant digits in a straightforward
-  non-iterative calculation.  Here's what happened:  The determinant of our matrix is
-  computed by subtracting the product of the two diagonals.  One
-  diagonal is &lt;code&gt;(* 64919121 -102558961) =
-  -6658037598793281&lt;/code&gt;, where the other diagonal is &lt;code&gt;(* (+
-  41869520 1/2) -159018721) = -6658037598793280.5&lt;/code&gt;  This second
-  diagonal product cannot be represented in double precision floating
-  point, so it is rounded down to -6658037598793280.  This is where
-  the error is introduced.  An error of .5 in a quantity of
-  -6658037598793281 is small indeed, but we amplify this error when we
-  subtract out the other diagonal.  We still have an absolute error of
-  .5, but now it occurs within a quantity of 1, which makes it
-  relatively huge.  This is called &amp;ldquo;catastrophic cancellation&amp;rdquo;
-  because the subtraction &amp;ldquo;cancelled&amp;rdquo; all the significant digits
-(the &amp;ldquo;catastrophe&amp;rdquo; is presumably the amplification of the error).&lt;/p&gt;
-
-&lt;p&gt;I don't care for the term &amp;ldquo;catastrophic cancellation&amp;rdquo;
-  because it places the blame on the operation of subtraction.  But
-  the subtraction did nothing wrong.  The difference betweeen
-  -6658037598793280 and -6658037598793281 is 1 and that is the result
-  we got.  It was the rounding in the prior step that introduced an
-  incorrect value into the calculation.  The subtraction just exposed
-  this and made it obvious.&lt;/p&gt;
-
-&lt;p&gt;One could be cynical and reject floating point operations as being too
-  unreliable.  When we used exact rationals, we got the exactly correct result.
-  But rational numbers are much slower than floating point and they have a tendancy
-  to occupy larger and larger amounts of memory as the computation continues.
-  Floating point is fast and efficient, but you have to be careful when you use it.&lt;/p&gt;</description>
+	<description>&lt;p&gt;&amp;nbsp;&lt;b&gt;New projects:&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/40ants/40ants-asdf-system/&quot;&gt;40ants-asdf-system&lt;/a&gt;&amp;nbsp;&amp;mdash; Provides a class for being used instead of asdf:package-inferred-system. &amp;mdash; BSD&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/Shinmera/action-list&quot;&gt;action-list&lt;/a&gt;&amp;nbsp;&amp;mdash; An implementation of action lists &amp;mdash; zlib&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/Hectarea1996/adp/&quot;&gt;adp&lt;/a&gt;&amp;nbsp;&amp;mdash; Add Documentation, Please. A documentation generator. &amp;mdash; The Unlicense&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/dtqec/anatevka/&quot;&gt;anatevka&lt;/a&gt;&amp;nbsp;&amp;mdash; A distributed blossom algorithm for minimum-weight perfect matching. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/y2q-actionman/cl-annot-revisit/&quot;&gt;cl-annot-revisit&lt;/a&gt;&amp;nbsp;&amp;mdash; Re-implementation of 'cl-annot', an annotation syntax library for Common Lisp. &amp;mdash; WTFPL&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/alangalvino/cl-bloom-filter/&quot;&gt;cl-bloom-filter&lt;/a&gt;&amp;nbsp;&amp;mdash; Just another Common Lisp bloom filter implementation, enjoy it! &amp;mdash;&amp;nbsp;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/digikar99/cl-cblas/&quot;&gt;cl-cblas&lt;/a&gt;&amp;nbsp;&amp;mdash; A cl-autowrap generated wrapper around CBLAS which provides a C interface to the Basic Linear Algebra Subprograms. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/rajasegar/cl-djula-svg/&quot;&gt;cl-djula-svg&lt;/a&gt;&amp;nbsp;&amp;mdash; Handle SVGs in Djula Templates &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/rajasegar/cl-djula-tailwind/&quot;&gt;cl-djula-tailwind&lt;/a&gt;&amp;nbsp;&amp;mdash; Tailwind classes for Djula templates &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/facts-db/cl-facts/&quot;&gt;cl-facts&lt;/a&gt;&amp;nbsp;&amp;mdash; in-memory graph database &amp;mdash; ISC&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/BohongHuang/cl-glib&quot;&gt;cl-glib&lt;/a&gt;&amp;nbsp;&amp;mdash; GLib binding for Common Lisp. &amp;mdash; lgpl3&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/BohongHuang/cl-gobject-introspection-wrapper&quot;&gt;cl-gobject-introspection-wrapper&lt;/a&gt;&amp;nbsp;&amp;mdash; Wrap and call GObject Introspection FFI function in LISP style, based on cl-gobject-introspection. &amp;mdash; lgpl3&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/facts-db/cl-lessp/&quot;&gt;cl-lessp&lt;/a&gt;&amp;nbsp;&amp;mdash; Generic order predicate &amp;mdash; ISC&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/eigenhombre/cl-oju/&quot;&gt;cl-oju&lt;/a&gt;&amp;nbsp;&amp;mdash; Common Lisp equivalents of core Clojure functions, especially sequence-related ones &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/facts-db/cl-rollback/&quot;&gt;cl-rollback&lt;/a&gt;&amp;nbsp;&amp;mdash; rollback functions &amp;mdash; ISC&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/mmontone/cl-sentry-client&quot;&gt;cl-sentry-client&lt;/a&gt;&amp;nbsp;&amp;mdash; Sentry client &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/varjagg/cl-union-find/&quot;&gt;cl-union-find&lt;/a&gt;&amp;nbsp;&amp;mdash; An implementation of UNION-FIND datastructure &amp;mdash; LGPL&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/nlamirault/climc/&quot;&gt;climc&lt;/a&gt;&amp;nbsp;&amp;mdash; A common lisp Instant Messaging client. &amp;mdash; MIT License&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/rabbibotton/clog-plotly/&quot;&gt;clog-plotly&lt;/a&gt;&amp;nbsp;&amp;mdash; New CLOG System &amp;mdash; BSD&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/rabbibotton/clog-terminal/&quot;&gt;clog-terminal&lt;/a&gt;&amp;nbsp;&amp;mdash; CLOG Terminal &amp;mdash; BSD&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/sirherrbatka/de-mock-racy/&quot;&gt;de-mock-racy&lt;/a&gt;&amp;nbsp;&amp;mdash; Simplistic mocking library. &amp;mdash; BSD simplified&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://lisp-stat.dev/docs/manuals/distributions/&quot;&gt;distributions&lt;/a&gt;&amp;nbsp;&amp;mdash; Random numbers and distributions &amp;mdash; MS-PL&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/tfeb/dsm&quot;&gt;dsm&lt;/a&gt;&amp;nbsp;&amp;mdash; Destructuring match &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/tdrhq/easy-macros/&quot;&gt;easy-macros&lt;/a&gt;&amp;nbsp;&amp;mdash; An easier way to write 90% of your macros &amp;mdash; Apache License, Version 2.0&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://shinmera.github.io/filesystem-utils/&quot;&gt;filesystem-utils&lt;/a&gt;&amp;nbsp;&amp;mdash; A collection of utilities for filesystem interaction. &amp;mdash; zlib&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/johnlorentzson/filter-maker/&quot;&gt;filter-maker&lt;/a&gt;&amp;nbsp;&amp;mdash; CLIM program for letting users make filters out of predicates and keys. &amp;mdash; BSD 2-Clause&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/tdrhq/fiveam-matchers/&quot;&gt;fiveam-matchers&lt;/a&gt;&amp;nbsp;&amp;mdash; An extensible matchers library for FiveAM &amp;mdash; Apache License, Version 2.0&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/timeolord/infix-reader/&quot;&gt;infix-reader&lt;/a&gt;&amp;nbsp;&amp;mdash; A reader macro to allow for infix syntax with { ... } &amp;mdash; Unlicence&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://sr.ht/~shunter/wayflan/&quot;&gt;input-event-codes&lt;/a&gt;&amp;nbsp;&amp;mdash; Port of all constants from input-event-codes.h from both Linux and FreeBSD &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/plkrueger/instance-tracking/&quot;&gt;instance-tracking&lt;/a&gt;&amp;nbsp;&amp;mdash; Defines a class that tracks its instances &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/KinaKnowledge/json-lib/&quot;&gt;json-lib&lt;/a&gt;&amp;nbsp;&amp;mdash; A simple and relatively fast JSON parser and encoder &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/dzangfan/lineva/&quot;&gt;lineva&lt;/a&gt;&amp;nbsp;&amp;mdash; Linear evaluation macro system &amp;mdash; GPLv3&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://shinmera.github.io/luckless/&quot;&gt;luckless&lt;/a&gt;&amp;nbsp;&amp;mdash; Lockless data structures &amp;mdash; zlib&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/Hectarea1996/more-cffi/&quot;&gt;more-cffi&lt;/a&gt;&amp;nbsp;&amp;mdash; Extension of the CFFI project. A facility to wrap C bindings and write documentation. &amp;mdash; The Unlicense&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/ntrocado/music-spelling/&quot;&gt;music-spelling&lt;/a&gt;&amp;nbsp;&amp;mdash; Automatic pitch and rhythm spelling. &amp;mdash; Apache 2.0&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/walpurgisnatch/nail/&quot;&gt;nail&lt;/a&gt;&amp;nbsp;&amp;mdash; library providing convenient functions for working with linalg, statistics and probability. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/atlas-engineer/ndebug/&quot;&gt;ndebug&lt;/a&gt;&amp;nbsp;&amp;mdash; A toolkit to construct interface-aware yet standard-compliant debugger hooks. &amp;mdash; BSD 3-Clause&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/digikar99/numericals/&quot;&gt;numericals&lt;/a&gt;&amp;nbsp;&amp;mdash; A high performance numerical computing library for Common Lisp (focus: basic math operations) &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/atlas-engineer/ospm/&quot;&gt;ospm&lt;/a&gt;&amp;nbsp;&amp;mdash; OS package manager interface &amp;mdash; BSD 3-Clause&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/walpurgisnatch/pero/&quot;&gt;pero&lt;/a&gt;&amp;nbsp;&amp;mdash; Logging and text file perations library &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/plkrueger/pk-serialize/&quot;&gt;pk-serialize&lt;/a&gt;&amp;nbsp;&amp;mdash; Serialization of Common Lisp data structures &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://lisp-stat.dev/&quot;&gt;statistics&lt;/a&gt;&amp;nbsp;&amp;mdash; A consolidated system of statistical functions &amp;mdash; MS-PL&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/walpurgisnatch/stepster/&quot;&gt;stepster&lt;/a&gt;&amp;nbsp;&amp;mdash; Web scraping library &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://cicadas.surf/cgit/colin/testiere.git/&quot;&gt;testiere&lt;/a&gt;&amp;nbsp;&amp;mdash; Up Front Testing for DEFUN and DEFMETHOD &amp;mdash; GPLv3&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://notabug.org/cage/trivial-sanitize&quot;&gt;trivial-sanitize&lt;/a&gt;&amp;nbsp;&amp;mdash; clean html strings: &quot;&lt;a&gt;foo&lt;/a&gt;&quot; â&amp;#8224;' &quot;foo&quot; &amp;mdash; LLGPL&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/plkrueger/tsqueue/&quot;&gt;tsqueue&lt;/a&gt;&amp;nbsp;&amp;mdash; Thread Safe Queue &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/marcoheisig/Typo/&quot;&gt;typo&lt;/a&gt;&amp;nbsp;&amp;mdash; A portable type inference library for Common Lisp &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://git.sr.ht/~shunter/wayflan/&quot;&gt;wayflan&lt;/a&gt;&amp;nbsp;&amp;mdash; From-scratch Wayland client implementation &amp;mdash; BSD 3-Clause&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://gitlab.com/Aksej/yah&quot;&gt;yah&lt;/a&gt;&amp;nbsp;&amp;mdash; Yet Another Heap &amp;mdash; BSD-3&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;b&gt;Updated projects&lt;/b&gt;: 3d-quaternions, 3d-vectors, abstract-arrays, acclimation, agnostic-lizard, alexandria-plus, architecture.builder-protocol, array-utils, assoc-utils, auto-restart, bdef, bit-smasher, blackbird, bp, bst, caveman, cephes.cl, cerberus, cffi, chunga, ci, ci-utils, cl+ssl, cl-all, cl-async, cl-autowrap, cl-bmas, cl-charms, cl-collider, cl-confidence, cl-cron, cl-data-structures, cl-form-types, cl-forms, cl-gamepad, cl-generator, cl-git, cl-gserver, cl-i18n, cl-info, cl-interpol, cl-isaac, cl-json-pointer, cl-kaputt, cl-las, cl-lib-helper, cl-liballegro, cl-liballegro-nuklear, cl-libuv, cl-lzlib, cl-marshal, cl-migratum, cl-mixed, cl-mock, cl-naive-store, cl-openal, cl-patterns, cl-pdf, cl-protobufs, cl-randist, cl-random-forest, cl-replica, cl-scsu, cl-semver, cl-sendgrid, cl-ses4, cl-steamworks, cl-str, cl-telegram-bot, cl-tls, cl-torrents, cl-unix-sockets, cl-utils, cl-wav, cl-webkit, cl-xkb, cl-yaml, cl-yxorp, cl-zstd, clack, clgplot, clingon, clj-re, clobber, clog, clog-ace, closer-mop, clsql, clss, cluffer, clunit2, clx, cmd, coleslaw, common-lisp-jupyter, commondoc-markdown, compiler-macro-notes, conduit-packages, consfigurator, croatoan, css-lite, cytoscape-clj, damn-fast-priority-queue, data-frame, data-lens, data-table, datamuse, defmain, dense-arrays, depot, dexador, dfio, dissect, doc, docparser, docs-builder, eclector, erudite, extensible-compound-types, fast-io, fiveam-asdf, flare, float-features, font-discovery, for, functional-trees, github-api-cl, gtirb-capstone, gtirb-functions, gtwiwtg, gute, harmony, http2, hunchensocket, hunchentoot-errors, imago, in-nomine, ironclad, jp-numeral, json-schema, jsonrpc, kekule-clj, lack, latter-day-paypal, lift, linear-programming, linear-programming-glpk, lisp-binary, lisp-critic, lisp-namespace, lisp-stat, lisp-unit2, literate-lisp, log4cl-extras, ltk, lunamech-matrix-api, markup, math, mcclim, mito, mnas-graph, mnas-package, multiposter, mutility, myway, neural-classifier, nfiles, nhooks, nkeymaps, nodgui, numcl, numerical-utilities, nyxt, omglib, one-more-re-nightmare, osc, osicat, overlord, papyrus, parachute, pathname-utils, periods, petalisp, pgloader, piping, plot, plump, polymorphic-functions, posix-shm, postmodern, pp-toml, query-fs, quick-patch, quri, random-state, replic, rutils, sel, select, serapeum, shasht, shop3, simple-neural-network, sketch, skippy-renderer, slite, sly, snakes, special-functions, speechless, spinneret, staple, stripe-against-the-modern-world, stumpwm, stumpwm-dynamic-float, tfeb-lisp-hax, tfeb-lisp-tools, trace-db, trivial-clipboard, trivial-extensible-sequences, trivial-file-size, trivial-mimes, uax-15, uiop, usocket, utilities.print-items, utilities.print-tree, vellum, vellum-binary, vellum-postmodern, vk, with-c-syntax, wuwei, xml-emitter, yason, zippy.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Removed projects&lt;/b&gt;: cl-json-template, cl-schedule, cl-splicing-macro, mito-attachment, trivial-timers.&lt;/p&gt;&lt;p&gt;To get this update, use&amp;nbsp;&lt;code&gt;(ql:update-dist &quot;quicklisp&quot;)&lt;/code&gt;&lt;/p&gt;&lt;p&gt;I apologize for the long gap between this update and the last. I intend to get back on a monthly schedule.&lt;/p&gt;</description>
 	
-	<pubDate>Fri, 27 Aug 2021 13:47:00 GMT</pubDate>
+	<pubDate>Mon, 07 Nov 2022 00:27:00 GMT</pubDate>
 </item>
 
 <item>
-	<title>Joe Marshall: Fold right</title>
-	<guid isPermaLink="true">http://funcall.blogspot.com/2021/08/fold-right.html</guid>
-	<link>http://funcall.blogspot.com/2021/08/fold-right.html</link>
+	<title>Pascal Costanza: New blog address</title>
+	<guid isPermaLink="true">http://p-cos.blogspot.com/2022/11/new-blog-address.html</guid>
+	<link>http://p-cos.blogspot.com/2022/11/new-blog-address.html</link>
 	
-	<description>&lt;p&gt;&lt;code&gt;fold-left&lt;/code&gt; takes arguments like
-this:&lt;pre&gt;(fold-left &lt;i&gt;function&lt;/i&gt; &lt;i&gt;init&lt;/i&gt; &lt;i&gt;list&lt;/i&gt;)&lt;/pre&gt;and
-  computes&lt;pre&gt;* (fold-left (lambda (l r) `(f ,l ,r)) 'init '(a b c))
-(F (F (F INIT A) B) C)&lt;/pre&gt;Notice how &lt;code&gt;init&lt;/code&gt; is the leftmost
-of all the arguments to the function, and each argument appears left
-  to right as it is folded in.&lt;/p&gt;
-&lt;p&gt;Now look at the usual way &lt;code&gt;fold-right&lt;/code&gt; is
-  defined:&lt;pre&gt;(fold-right &lt;i&gt;function&lt;/i&gt; &lt;i&gt;init&lt;/i&gt; &lt;i&gt;list&lt;/i&gt;)&lt;/pre&gt;It
-  computes &lt;pre&gt;* (fold-right (lambda (l r) `(f ,l ,r)) 'init '(a b c))
-(F A (F B (F C INIT)))&lt;/pre&gt;although &lt;code&gt;init&lt;/code&gt; appears first
-  and to the left of &lt;code&gt;'(a b c)&lt;/code&gt; in the arguments
-  to &lt;code&gt;fold-right&lt;/code&gt;, it is actually used as the rightmost
-  argument to the last application.&lt;/p&gt;
-&lt;p&gt;It seems to me that the arguments to &lt;code&gt;fold-right&lt;/code&gt; should
-  be in this order:&lt;pre&gt;; (fold-right &lt;i&gt;function&lt;/i&gt; &lt;i&gt;list&lt;/i&gt; &lt;i&gt;final&lt;/i&gt;)
-* (fold-right (lambda (l r) `(f ,l ,r)) '(a b c) 'final)
-(F A (F B (F C FINAL)))&lt;/pre&gt;
-The argument lists to &lt;code&gt;fold-left&lt;/code&gt;
-and &lt;code&gt;fold-right&lt;/code&gt; would no longer match, but I think
-  switching things around so that the anti-symmetry of the arguments
-  matches the anti-symmetry of the folding makes things clearer.&lt;/p&gt;</description>
+	<description>&lt;p&gt;I am moving my blog away from blogspot / blogger. I am going to host my &lt;a href=&quot;https://blog.p-cos.net&quot;&gt;new blog&lt;/a&gt; at &lt;a href=&quot;https://micro.blog&quot;&gt;micro.blog&lt;/a&gt;. You can subscribe to an &lt;a href=&quot;https://blog.p-cos.net/categories/lisp/feed.xml&quot;&gt;RSS feed on Lisp-related posts&lt;/a&gt; if you care only for that. micro.blog also acts as a social network and, although it is its own platform, is compatible with Mastodon. My Mastodon handle is @costanza@micro.blog.&lt;/p&gt;cnx.cnx-float, cnx.cnx-float cnx { visibility: hidden !important; } div.jwplayer div.jw-wrapper, div[id^='primis_playerSekindoSPlayer'], div.min-tv-is-sticky, iframe.min-tv-is-sticky, div.vjs-pip-container video-js.video-js.vjs-pip-active { position: absolute !important; }cnx.cnx-float, cnx.cnx-float cnx { visibility: hidden !important; } div.jwplayer div.jw-wrapper, div[id^='primis_playerSekindoSPlayer'], div.min-tv-is-sticky, iframe.min-tv-is-sticky, div.vjs-pip-container video-js.video-js.vjs-pip-active { position: absolute !important; }</description>
 	
-	<pubDate>Wed, 18 Aug 2021 12:35:00 GMT</pubDate>
+	<pubDate>Thu, 03 Nov 2022 11:47:00 GMT</pubDate>
 </item>
 
 <item>
-	<title>Quicklisp news: August 2021 Quicklisp dist update now available</title>
-	<guid isPermaLink="true">http://blog.quicklisp.org/2021/08/august-2021-quicklisp-dist-update-now.html</guid>
-	<link>http://blog.quicklisp.org/2021/08/august-2021-quicklisp-dist-update-now.html</link>
+	<title>Joe Marshall: Lisp: Second impression</title>
+	<guid isPermaLink="true">http://funcall.blogspot.com/2022/10/lisp-second-impression.html</guid>
+	<link>http://funcall.blogspot.com/2022/10/lisp-second-impression.html</link>
 	
-	<description>&lt;p&gt;&lt;b&gt;&amp;nbsp;New projects&lt;/b&gt;:&amp;nbsp;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/charje/cache-while/&quot;&gt;cache-while&lt;/a&gt;&amp;nbsp;&amp;mdash; A Common Lisp macro for defining temporary caches that invalidate based on expressions evaluating to different values. &amp;mdash; LLGPL&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/K1D77A/cl-coinpayments/&quot;&gt;cl-coinpayments&lt;/a&gt;&amp;nbsp;&amp;mdash; Helpers for working with the coinpayments.net api. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/Goheeca/cl-drawille/&quot;&gt;cl-drawille&lt;/a&gt;&amp;nbsp;&amp;mdash; cl-drawille: Drawing in terminal with Unicode Braille characters. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/naryl/sha1/&quot;&gt;cl-sha1&lt;/a&gt;&amp;nbsp;&amp;mdash; SHA1 Digest and HMAC for LispWorks. &amp;mdash; Apache 2.0&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/copyleft/cl-webdriver-client/&quot;&gt;cl-webdriver-client&lt;/a&gt;&amp;nbsp;&amp;mdash; cl-webdriver-client is a binding library to the Selenium 4.0 &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/dtenny/clj-con/&quot;&gt;clj-con&lt;/a&gt;&amp;nbsp;&amp;mdash; Implements Clojure-styled concurrency operations such as `future` and `promise`. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/dtenny/clj-re/&quot;&gt;clj-re&lt;/a&gt;&amp;nbsp;&amp;mdash; Implements Clojure-styled regexp operations such as `re-matches` and `re-find`. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://shinmera.github.io/depot&quot;&gt;depot&lt;/a&gt;&amp;nbsp;&amp;mdash; Protocol for transparent collections of files. &amp;mdash; zlib&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://gitlab.com/ambrevar/fof&quot;&gt;fof&lt;/a&gt;&amp;nbsp;&amp;mdash; Enable rapid file search, inspection and manipulation &amp;mdash; GPL3+&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/hyotang666/hash-table-ext/&quot;&gt;hash-table-ext&lt;/a&gt;&amp;nbsp;&amp;mdash; Tiny extensions for common lisp hash-tables. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/interactive-ssr/hunchenissr-routes/&quot;&gt;hunchenissr-routes&lt;/a&gt;&amp;nbsp;&amp;mdash; Better routes to be used with Hunchenissr. &amp;mdash; LLGPL&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/hemml/OMGlib/&quot;&gt;omglib&lt;/a&gt;&amp;nbsp;&amp;mdash; A Common Lisp library to build fully dynamic web interfaces &amp;mdash; GPL3&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/hyotang666/query-repl/&quot;&gt;query-repl&lt;/a&gt;&amp;nbsp;&amp;mdash; REPL for user query. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/tdrhq/slite/&quot;&gt;slite&lt;/a&gt;&amp;nbsp;&amp;mdash; SLIME based Test-runner for FiveAM tests (and possibly others in the future) &amp;mdash; Apache License, Version 2.0&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/y2q-actionman/with-c-syntax/&quot;&gt;with-c-syntax&lt;/a&gt;&amp;nbsp;&amp;mdash; with-c-syntax is a fun package which introduces the C language syntax into Common Lisp. &amp;mdash; WTFPL&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;b&gt;Updated projects&lt;/b&gt;: 3d-vectors, alexandria, also-alsa, april, architecture.builder-protocol, bdef, caveman, check-bnf, chipz, chirp, cl+ssl, cl-ana, cl-collider, cl-cuda, cl-debug-print, cl-environments, cl-form-types, cl-gamepad, cl-gserver, cl-i18n, cl-kraken, cl-las, cl-liballegro, cl-migratum, cl-mixed, cl-opencl, cl-opencl-utils, cl-patterns, cl-ses4, cl-sse, cl-utils, cl-webkit, clack, clem, clog, closer-mop, cmd, colored, command-line-arguments, common-doc, common-html, common-lisp-jupyter, consfigurator, core-reader, croatoan, cserial-port, cytoscape-clj, dartscluuid, data-frame, dexador, dfio, drakma, drakma-async, file-attributes, flexi-streams, gendl, generic-cl, harmony, imago, introspect-environment, jingoh, kekule-clj, lack, lisp-binary, lisp-stat, lispbuilder, lyrics, markup, mcclim, mito, mnas-package, mnas-string, mutility, neural-classifier, null-package, nyxt, overlord, parachute, petalisp, portable-condition-system, postmodern, prompt-for, qlot, quickutil, quilc, read-as-string, rove, sanity-clause, screamer, sel, serapeum, shasht, shop3, sketch, sly, snappy, snooze, special-functions, speechless, static-dispatch, stumpwm, tailrec, ten, tfeb-lisp-hax, tfeb-lisp-tools, trestrul, trivial-ed-functions, trivial-inspector-hook, ufo, uiop, uncursed, vellum, vellum-csv, vgplot, vk, websocket-driver, whirlog, zacl.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Removed projects&lt;/b&gt;: lucerne&lt;/p&gt;&lt;p&gt;To get this update, use (ql:update-dist &quot;quicklisp&quot;). Enjoy!&lt;/p&gt;</description>
+	<description>&lt;p&gt;My first impressions of Lisp were not good.  I didn't see how
+  navigating list structure was of any use.  It seemed to be just a
+  more cumbersome way of getting at the data.&lt;/p&gt;
+
+&lt;p&gt;In fact, my first impressions of computer science were not very
+  positive.  I enjoyed hobbyist coding on my TRS-80, but
+  &amp;ldquo;real&amp;rdquo; programming was tedious and the proscriptions of
+  &amp;ldquo;doing it the correct way&amp;rdquo; took the joy out of it.  I
+  explored other options for my major.  Fate intervened.  Over the next
+  year I realized my calling was EECS, so in my
+  sophomore year I took all the intro courses.&lt;/p&gt;
+
+&lt;p&gt;I had heard that the introductory computer science course used
+  Lisp.  That was disappointing, but I started hearing things about
+  Lisp that made me think I should take a second look.  I learned that
+  Lisp was considered the premier language of MIT's Artificial
+  Intelligence Laboratory.  It was invented by hackers and designed to
+  be a programmable programming language that was infinitely
+  customizable.  The lab had developed special computers that ran
+  Lisp on the hardware.  The OS was even written in Lisp.  I wasn't
+  looking forward to &lt;code&gt;car&lt;/code&gt; and &lt;code&gt;cdr&lt;/code&gt;'ing my way
+  through endless &lt;code&gt;cons&lt;/code&gt; cells, but I figured that there
+  had to be more going on.&lt;/p&gt;
+
+&lt;p&gt;6.001 was unlike the prior computer courses I had
+  taken.  The course was not about how to instruct a computer to
+  perform a task &amp;mdash; the course was about expressing ideas as
+  computation.  To me, this seemed a much better way to approach
+  computers.  Professor Hal Abelson was co-lecturing the course.  He
+  said that he chose Lisp as the teaching language because it was
+  easier to express ideas clearly.&lt;/p&gt;
+
+&lt;p&gt;Two things stood out to me in the first lecture.  Professor Abelson
+  showed the recursive and iterative versions
+  of &lt;code&gt;factorial&lt;/code&gt;.  Of course I had seen
+  recursive &lt;code&gt;factorial&lt;/code&gt; from the earlier course and I knew
+  how it worked.  Clearly the iterative version must work the same
+  way.  (One of my early hangups about Lisp was all the recursion.)  I was suprised to
+  find out that the Lisp system would automatically detect tail
+  recursive cases and turn them into iteration.  Evidentally, the
+  makers of Lisp had put some thought into this.&lt;/p&gt;
+
+&lt;p&gt;Professor Abelson also demonstrated first class functions.  He
+  wrote a procedure that numerically approximates the derivative of a
+  function.  He then used that in a generic Newton's method solver.
+  This is all straightforward stuff, but to a newbie like me, I
+  thought it was amazing.  In just a few lines of code we were doing
+  simple calculus.&lt;/p&gt;
+
+&lt;p&gt;It was a mystery to me how first class functions were implemented,
+  but I could see how they were used in the Newton's method solver.
+  The code Professor Abelson wrote was clear and obvious.  It captured
+  the concept of derivatives and iterative improvement concisely, and
+  it effectively computed answers to boot.  I had to try it.  Right
+  after the lecture I went to lab and started typing examples at the
+  REPL.  Sure enough, they worked as advertised.  A tail-recursive
+  loop really didn't push any stack.  It didn't leak even the tiniest
+  bit of memory, no matter how long the loop.  I tried the Newton's
+  method solver to take cube roots.  I passed the cube function to the
+  derivative function and the result was a function that was
+  numerically close to the derivative.&lt;/p&gt;
+
+&lt;p&gt;Now I was a bit more impressed with Lisp than I was earlier.  I
+  wasn't completely sold, but I could see some potential here.  I
+  wanted to learn a bit more before I dismissed it entirely.
+  It took me several months to become a Lisp fan.  The parenthesis
+  were a small hurdle &amp;mdash; it took me a couple of weeks to get the
+  hang of &lt;code&gt;let&lt;/code&gt; forms.  There was a week or two of
+  navigating &lt;code&gt;cons&lt;/code&gt; cells to wade through.  But I
+  eventually came to love the language.&lt;/p&gt;
+
+&lt;p&gt;My first impression of Lisp was poor.
+  The uselessness of traversing random list structure was
+  unmotivating. My second impression was better.
+ Professor Abelson teaching directly from preprints of S&amp;amp;ICP
+  might have had something to do with it.&lt;/p&gt;</description>
 	
-	<pubDate>Sat, 07 Aug 2021 18:40:00 GMT</pubDate>
+	<pubDate>Sat, 22 Oct 2022 00:44:00 GMT</pubDate>
 </item>
 
 <item>
-	<title>Nicolas Hafner: GDC, fighting, and more - August Kandria Update</title>
-	<guid isPermaLink="true">https://reader.tymoon.eu/article/399</guid>
-	<link>https://reader.tymoon.eu/article/399</link>
+	<title>Joe Marshall: Lisp: First Impressions</title>
+	<guid isPermaLink="true">http://funcall.blogspot.com/2022/10/lisp-first-impressions.html</guid>
+	<link>http://funcall.blogspot.com/2022/10/lisp-first-impressions.html</link>
 	
-	<description>&lt;img alt=&quot;https://studio.tymoon.eu/api/studio/file?id=2017&quot; src=&quot;https://studio.tymoon.eu/api/studio/file?id=2017&quot; /&gt;&lt;p&gt;A big ole update for Kandria this month! &lt;/p&gt;&lt;h2 id=&quot;GDC&quot;&gt;GDC&lt;/h2&gt;&lt;p&gt;One of the main events this month was GDC. This was my first time attending, and I'm really glad that I was offered the chance to with the great support by Pro Helvetia and SwissNex. Thank you very much again for all of your support this year!&lt;/p&gt;&lt;p&gt;The highlight of the event for me were the daily video networking sessions, where you were led onto a virtual floor with a bunch of tables. Each table could seat up to six people and you'd chat over audio and video. It was really cool to hang out and chat with fellow attendees about... well, pretty much whatever!&lt;/p&gt;&lt;p&gt;What wasn't so cool about those sessions, was that they only lasted for an hour, at the end of which you were unceremoniously booted out, without even the ability to see who you were at the table with, nor the accompanying text chat. I do not understand at all why that platform was not just up throughout the entirety of the conference. It's not like there were ever that many people there to begin with, I never saw the total number rise above 120.&lt;/p&gt;&lt;p&gt;With regards to the booth that we had at the Swiss country pavilion, that unfortunately turned out to be almost pointless. Everyone I talked to at the virtual meet wasn't even aware that booths existed at all, let alone the ones in the country pavilions. Being buried under ten links almost guaranteed that we wouldn't be found except by the most vigilant. It isn't surprising then that we didn't get any contact requests through the booth's message box.&lt;/p&gt;&lt;p&gt;I'm really confused as to why they had practically zero visibility for the showfloors and booths. It seems to me that those are a rather large part of a usual conference, so advertising them so poorly is strange. I can't even imagine what SwissNex had to pay to get our booths set up, and I feel sorry for what they got for that.&lt;/p&gt;&lt;p&gt;I hope that next year the presentation is going to be better, as for the amount of money involved in the tickets and everything, I have to say I'm quite disappointed with the GDC organisers. We'll see how Gamescom goes next month, I suppose.&lt;/p&gt;&lt;h2 id=&quot;Combat developments&quot;&gt;Combat developments&lt;/h2&gt;&lt;p&gt;This month was meant to be devoted to combat revisions. I did get a number of those done, so movement is now a lot more satisfying and you can actually juggle enemies in the air:&lt;/p&gt;&lt;p&gt;However, due to the mass of feedback amounted by the playtesting, GDC interruptions, and my general reluctance to work on it there hasn't been as much progress as I would like. I'll definitely have to revisit this again later down the road. In the very least though I feel like we have the features required in the engine now to make the system work well, it's &amp;quot;just&amp;quot; down to tweaking the parameters.&lt;/p&gt;&lt;p&gt;To give you some perspective on why tweaking of these parameters is a pain though, let me show you a screenshot of our in-house animation editor:&lt;/p&gt;&lt;img alt=&quot;https://filebox.tymoon.eu//file/TWpNME1BPT0=&quot; src=&quot;https://filebox.tymoon.eu//file/TWpNME1BPT0=&quot; /&gt;&lt;p&gt;For each frame (the player has around 700 frames of animation at this point), you can set a mass of different properties that change combat behaviour and movement. Tweaking them one by one, performing the attack, going back to tweak it again, and repeating that is an extremely arduous process.&lt;/p&gt;&lt;p&gt;I tried my best to keep at it throughout the month, but the tedium of it made it quite difficult. I hope I can instead gradually improve it with time.&lt;/p&gt;&lt;h2 id=&quot;UI look and feel&quot;&gt;UI look and feel&lt;/h2&gt;&lt;p&gt;I've taken some time to change the look and feel of the UI in the game. Most notably the button prompts now look a &lt;strong&gt;lot&lt;/strong&gt; better than they used to. The fishing minigame shows that best:&lt;/p&gt;&lt;p&gt;The textbox also got a revision and it's now capable of doing text effects:&lt;/p&gt;&lt;img alt=&quot;https://filebox.tymoon.eu//file/TWpNek9RPT0=&quot; src=&quot;https://filebox.tymoon.eu//file/TWpNek9RPT0=&quot; /&gt;&lt;p&gt;Aside from those tweaks there were a myriad of changes from the further blind playtest sessions as well.&lt;/p&gt;&lt;h2 id=&quot;Eternia update&quot;&gt;Eternia update&lt;/h2&gt;&lt;p&gt;A &lt;a class=&quot;external-link&quot; href=&quot;https://store.steampowered.com/app/1605720/Eternia_Pet_Whisperer/&quot;&gt;new update for Eternia: Pet Whisperer&lt;/a&gt; was rolled out. This update took two days to put together and includes important stability fixes for MacOS and Windows users. On MacOS the behaviour on Retina displays is improved and audio output on devices with samplerates above 44.1kHz has been fixed. General performance has also been improved. On Windows spurious crashes caused by antivirus software should now no longer occur.&lt;/p&gt;&lt;p&gt;Eternia will also likely be on sale during the upcoming Gamescom Steam sale, so keep an eye out for that!&lt;/p&gt;&lt;h2 id=&quot;Tim&quot;&gt;Tim&lt;/h2&gt;&lt;p&gt;This month has been about press and polish. With GDC happening, I helped prioritise the press list and reach out to the most relevant people; we didn't get a huge response, which isn't unexpected (press are inundated at the best of times, never mind during GDC) - but it's been encouraging to get some replies; and most importantly, it's getting the game on peoples' radars.&lt;/p&gt;&lt;p&gt;I've also been working through tons of feedback Nick has gathered from blind playtests of the game, using it to make the quests easier to understand and more accessible: finessing spawn locations, clarifying objectives more in dialogue, etc. I ran a few tests myself, and it's amazing how things you thought were obvious sometimes don't translate to the player. A highlight was watching my brother return to the surface after the first quest: he didn't know the rest of the settlement was over to the right, and instead went left, all the way back to the tutorial area; since Catherine was following him at the time, it re-triggered all her tutorial dialogue! Noooooooooo! (But in a good way :) )&lt;/p&gt;&lt;p&gt;Nick also made some cool new features like random spawners that can add a myriad of world-building items to the levels (and which later you'll be able to sell to Sahil); I spent time organising and placing these. Also, text effects and colouring! I went a bit bananas with this at first, using the swirly rainbow effect right off the bat in the tutorial, when Catherine gets excited; to be fair it's probably the only point in the game I could've justified using it. But I've since toned things back, as although the game has quirk, we need to watch the tone and make sure we don't go too cartoony. I've also established a basic visual language for using these effects and colours (hint: sparingly).&lt;/p&gt;&lt;h2 id=&quot;Fred&quot;&gt;Fred&lt;/h2&gt;&lt;p&gt;Fred has been working on new sets of animations and some concept work. Some of the new animations are for expanded combat moves, so there's now a heavy and light charge attack:&lt;/p&gt;&lt;img alt=&quot;https://filebox.tymoon.eu//file/TWpNek9BPT0=&quot; src=&quot;https://filebox.tymoon.eu//file/TWpNek9BPT0=&quot; /&gt;&lt;h2 id=&quot;Mikel&quot;&gt;Mikel&lt;/h2&gt;&lt;p&gt;Mikel finished a couple more tracks, well on ... track to make the September release date with all the music for the current areas included! These tracks are for the camp area, and as such convey a more chill atmosphere:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;&lt;a class=&quot;external-link&quot; href=&quot;https://filebox.tymoon.eu//file/TWpNek5nPT0=&quot;&gt;Medium&lt;/a&gt; &lt;a class=&quot;external-link&quot; href=&quot;https://filebox.tymoon.eu//file/TWpNek53PT0=&quot;&gt;Medium Vocal&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;a class=&quot;external-link&quot; href=&quot;https://filebox.tymoon.eu//file/TWpNek5RPT0=&quot;&gt;Ambient&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Aside from the music there's also been more audio changes, by way of a new team member:&lt;/p&gt;&lt;h2 id=&quot;Cai&quot;&gt;Cai&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;I'm &lt;a class=&quot;external-link&quot; href=&quot;https://courier.tymoon.eu/api/courier/link/resolve?id=fdlp74XgDCmO2sRvXxoTKU1Ea2dPREU9&quot;&gt;Cai&lt;/a&gt;, I'm a Sound Designer for video games. I've been in the industry for 2 years! I focus on making impactful, meaningful sounds that help to immerse the player in the world we create! Kandria is a really exciting project to be involved with! The story and atmosphere of the game are both compelling and exciting so I'm thrilled to have the opportunity to contribute to this through the sound!&lt;/p&gt;&lt;/blockquote&gt;&lt;p&gt;Cai has been hard at work remaking the existing sounds and adding new ones. One of the bigger changes in that respect is the addition of atmospheric sound layers that now underlay each music track. The atmospherics and music both change independently depending on the area the player is currently in.&lt;/p&gt;&lt;p&gt;It still needs some tuning, though. We need to make sure the loudness levels of each track work properly in conjunction with the atmospherics, and that the transitions between areas work smoothly without calling too much attention to themselves.&lt;/p&gt;&lt;h2 id=&quot;Roadmap&quot;&gt;Roadmap&lt;/h2&gt;&lt;p&gt;Let's look at the roadmap from &lt;a class=&quot;external-link&quot; href=&quot;https://reader.tymoon.eu/article/398&quot;&gt;last month&lt;/a&gt; with the updates from this month:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Polish the ProHelvetia submission material&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Polish and revise the combat design&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Finish the desert music tracks&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Further blind playtesting and bugfixing&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Revise the general UI look and feel&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Implement a main menu, map, and other UI elements (partially done)&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Create and integrate new sound effects for 90% of the interactions in the game&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Explore platforming items and mechanics&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Practise platforming level design&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Start work on the horizontal slice&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;I'm quite confident I can get all the UI stuff done in time, so we should be well set for the Pro Helvetia submission!&lt;/p&gt;&lt;p&gt;Until the submission is done, be sure to check our &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/#subscribe&quot;&gt;mailing list&lt;/a&gt; for weekly updates, and the &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/discord&quot;&gt;discord community&lt;/a&gt; for fan discussions!&lt;/p&gt;</description>
+	<description>&lt;p&gt;My first exposure to Lisp was in the summer of 1981.  I was taking
+  a summer school intro to computers.  The course was taught on a
+  PDP-11, and for the first few weeks we programmed in Macro-11
+  assembly language.  For the last couple of weeks they introduced
+  Lisp.&lt;/p&gt;
+
+&lt;p&gt;Frankly, I wasn't impressed.&lt;/p&gt;
+
+&lt;p&gt;The course started by talking about linked lists and how you could
+  navigate them with &lt;code&gt;car&lt;/code&gt; and &lt;code&gt;cdr&lt;/code&gt;.  We then
+  went on to build more complicated structures like alists and
+  plists.  This was an old-fashioned lisp, so we used things
+  like &lt;code&gt;getprop&lt;/code&gt; and &lt;code&gt;putprop&lt;/code&gt; to set symbol
+  properties.&lt;/p&gt;
+
+&lt;p&gt;The subject matter wasn't difficult to understand (though chasing
+  pointers around list structure is error prone).  Since we had
+  just been learning Macro-11, it was natural to play with linked list
+  structure in assembly code.  We wrote assembly code to look things
+  up in a plist.&lt;/p&gt;
+
+&lt;p&gt;My impression was that Lisp was centered around manipulating these
+  rather cumbersome data structures called &lt;code&gt;cons&lt;/code&gt; cells.
+  Linked lists of cons cells have obvious disadvantages when compared
+  to arrays.  This makes the language tedious to work with.&lt;/p&gt;
+
+&lt;p&gt;The summer school course was my first &amp;ldquo;real&amp;rdquo; college
+  course in computers.  I was put off.  &amp;ldquo;Real&amp;rdquo; computing
+  wasn't as much fun as I had hoped it would be.  I definitely
+  wouldn't be considering it as a major, let alone a career.  I wasn't
+  interested in Lisp at all.&lt;/p&gt;
+
+&lt;i&gt;to be continued&lt;/i&gt;</description>
 	
-	<pubDate>Sun, 01 Aug 2021 09:48:57 GMT</pubDate>
+	<pubDate>Wed, 19 Oct 2022 19:00:00 GMT</pubDate>
 </item>
 
 <item>
-	<title>Michał Herda: Common Lisp Recipes, 2nd Edition</title>
-	<guid isPermaLink="true">https://mov.im/?blog/phoe%40movim.eu/ee18159d-a6ed-4487-a3cc-56eb800c536e</guid>
-	<link>https://mov.im/?blog/phoe%40movim.eu/ee18159d-a6ed-4487-a3cc-56eb800c536e</link>
+	<title>Tim Bradshaw: Package-local nicknames</title>
+	<guid isPermaLink="true">https://www.tfeb.org/fragments/2022/10/14/package-local-nicknames/?utm_source=lisp&amp;utm_medium=RSS</guid>
+	<link>https://www.tfeb.org/fragments/2022/10/14/package-local-nicknames/?utm_source=lisp&amp;utm_medium=RSS</link>
 	
-	<description>&lt;div&gt;
-        &lt;div&gt;
-          &lt;p&gt;Let's talk a little about the second edition of Edi Weitz's &lt;a href=&quot;http://weitz.de/cl-recipes/&quot;&gt;&lt;strong&gt;Common Lisp Recipes&lt;/strong&gt;&lt;/a&gt;! What would you like to see added or changed in it? What problems have you possibly faced that could be described in a new recipe?&lt;/p&gt;
-          &lt;p&gt;Please let me know via &lt;a href=&quot;mailto:phoe@disroot.org&quot;&gt;mail&lt;/a&gt;, &lt;a href=&quot;https://functional.cafe/@phoe&quot;&gt;Fediverse&lt;/a&gt;, IRC (&lt;code&gt;phoe&lt;/code&gt; at Libera Chat), or, if you absolutely have to, &lt;a href=&quot;https://twitter.com/phoe_krk&quot;&gt;Twitter&lt;/a&gt;.&lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;</description>
+	<description>&lt;p&gt;What follows is an opinion. Do not under any circumstances read it. Other opinions are available (but wrong).&lt;/p&gt;
+&lt;!-- more--&gt;
+
+&lt;p&gt;Package-local nicknames are an abomination. They should be burned with nuclear fire, and their ashes launched into space on a trajectory which will leave the Solar System.&lt;/p&gt;
+
+&lt;p&gt;The only reason why package-local nicknames matter is if you are writing a lot of code with lots of package-qualified names in it. If you are doing that then &lt;em&gt;you are writing code which is hard to read&lt;/em&gt;: the names in your code are longer than they need to be and the first several characters of them are package name noise (people read, broadly from left to right). Imagine me:a la:version ge:of oe:English oe:where la:people wrote like that: it&amp;rsquo;s just horrible. If you are writing code which is hard to read you are writing bad code.&lt;/p&gt;
+
+&lt;p&gt;Instead you should do the work to construct a namespace in which the words you intend to use are directly present. This means constructing suitable packages: the files containing the package definitions are then almost the only place where package names occur, and are a minute fraction of the total code. Doing this is a good practice in itself because the package definition file is then a place which describes just what names your code needs, from where, and what names it provides. Things like conduit packages (shameless self-promotion) can help with this, which is why I wrote them: being able to say &amp;lsquo;this package exports the combination of the exports of these packages, except &amp;hellip;&amp;rsquo; or &amp;lsquo;this package exports just the following symbols from these packages&amp;rsquo; in an explicit way is very useful.&lt;/p&gt;
+
+&lt;p&gt;If you are now rehearsing a litany of things that can go wrong with this approach in rare cases&lt;sup&gt;&lt;a href=&quot;#2022-10-14-package-local-nicknames-footnote-1-definition&quot; name=&quot;2022-10-14-package-local-nicknames-footnote-1-return&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;, please don&amp;rsquo;t: this is not my first rodeo and, trust me, I know about these cases. Occasionally, the CL package system can make it hard or impossible to construct the namespace you need, with the key term here being being &lt;em&gt;occasionally&lt;/em&gt;: people who give up because something is occasionally hard or impossible have what Erik Naggum famously called &amp;lsquo;one-bit brains&amp;rsquo;&lt;sup&gt;&lt;a href=&quot;#2022-10-14-package-local-nicknames-footnote-2-definition&quot; name=&quot;2022-10-14-package-local-nicknames-footnote-2-return&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;: the answer is to &lt;em&gt;get more bits for your brain&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Once you write code like this then the only place package-local nicknames can matter is, perhaps, the package definition file. And the only reason they can matter there is because people think that picking a name like &amp;lsquo;XML&amp;rsquo; or &amp;lsquo;RPC&amp;rsquo; or &amp;lsquo;SQL&amp;rsquo; for their packages is a good idea. When people in the programming section of my hollowed-out-volcano lair do this they are &amp;hellip; well, I will not say, but my sharks are well-fed and those things on spikes surrounding the crater are indeed their heads.&lt;/p&gt;
+
+&lt;p&gt;People should use long, unique names for packages. Java, astonishingly, got this right: use domains in big-endian order (&lt;code&gt;org.tfeb.conduit-packages&lt;/code&gt;, &lt;code&gt;org.tfeb.hax.metatronic&lt;/code&gt;). Do not use short nicknames. Never use names without at least one dot, which should be reserved for implementations and perhaps KMP-style substandards. Names will now not clash. Names will be longer and require more typing, but this will not matter because the only place package names are referred to are in package definition files and in &lt;code&gt;in-package&lt;/code&gt; forms, which are a minute fraction of your code.&lt;/p&gt;
+
+&lt;p&gt;I have no idea where or when the awful plague of using package-qualified names in code arose: it&amp;rsquo;s not something people used to do, but it seems to happen really a lot now. I think it may be because people also tend to do this in Python and other dotty languages, although, significantly, in Python you never actually need to do this if you bother, once again, to actually go to the work of constructing the namespace you want: rather than the awful&lt;/p&gt;
+
+&lt;pre class=&quot;brush: python&quot;&gt;&lt;code&gt;import sys
+
+... sys.argv ...
+
+...
+
+sys.exit(...)&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;you can simply say&lt;/p&gt;
+
+&lt;pre class=&quot;brush: python&quot;&gt;&lt;code&gt;from sys import argv, exit
+
+... argv ...
+
+exit(...)&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and now the very top of your module lets anyone reading it know exactly what functionality you are importing and from where it comes.&lt;/p&gt;
+
+&lt;p&gt;It may also be because the whole constructing namespaces thing is a bit hard. Yes, it is indeed a bit hard, but designing programs, of which it is a small but critical part, &lt;em&gt;is&lt;/em&gt; a bit hard.&lt;/p&gt;
+
+&lt;p&gt;OK, enough.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;If, after reading the above, you think you should mail me about how wrong it all is and explain some detail of the CL package system to me: don&amp;rsquo;t, I do not want to hear from you. Really, I don&amp;rsquo;t.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+ &lt;ol&gt;
+  &lt;li id=&quot;2022-10-14-package-local-nicknames-footnote-1-definition&quot; class=&quot;footnote-definition&quot;&gt;
+   &lt;p&gt;in particular, if your argument is that someone has used, for instance, the name &lt;code&gt;set&lt;/code&gt; in some package to mean, for instance, a set in the sense it is used in maths, and that this clashes with &lt;code&gt;cl:set&lt;/code&gt; and perhaps some other packages, don&amp;rsquo;t. If you are writing a program and you think, &amp;lsquo;I know, I&amp;rsquo;ll use a symbol with the same name as a symbol exported from CL to mean something else&amp;rsquo; in a context where users of your code also might want to use the symbol exported by CL (which in the case of &lt;code&gt;cl:set&lt;/code&gt; is &amp;lsquo;almost never&amp;rsquo;, of course), then my shark pool is just over here: please throw yourself in.&amp;nbsp;&lt;a href=&quot;#2022-10-14-package-local-nicknames-footnote-1-return&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+  &lt;li id=&quot;2022-10-14-package-local-nicknames-footnote-2-definition&quot; class=&quot;footnote-definition&quot;&gt;
+   &lt;p&gt;Curiously, I think that quote was about Scheme, which I am sure Erik hated. But, for instance, Racket&amp;rsquo;s module system lets you do just the things which are hard in the package system: renaming things on import, for instance.&amp;nbsp;&lt;a href=&quot;#2022-10-14-package-local-nicknames-footnote-2-return&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;</description>
 	
-	<pubDate>Thu, 29 Jul 2021 19:30:36 GMT</pubDate>
+	<pubDate>Fri, 14 Oct 2022 09:26:31 GMT</pubDate>
 </item>
 
 <item>
-	<title>McCLIM: Progress report #12</title>
-	<guid isPermaLink="true">https://common-lisp.net/project/mcclim/posts/Progress-report-12.html</guid>
-	<link>https://common-lisp.net/project/mcclim/posts/Progress-report-12.html</link>
+	<title>Nicolas Hafner: Mapping the Road to Release - October Kandria Update</title>
+	<guid isPermaLink="true">https://reader.tymoon.eu/article/416</guid>
+	<link>https://reader.tymoon.eu/article/416</link>
 	
-	<description>&lt;p&gt;Dear Community,&lt;/p&gt;
+	<description>&lt;img alt=&quot;https://filebox.tymoon.eu//file/TWpVNU1nPT0=&quot; src=&quot;https://filebox.tymoon.eu//file/TWpVNU1nPT0=&quot; /&gt;&lt;p&gt;So, we've been in beta for over a month and gotten lots of useful feedback. Thanks a bunch! We'll continue to listen eagerly for feedback as we move towards the end of the development.&lt;/p&gt;&lt;p&gt;In case you missed the Kickstarter but would still like to support us ahead of the release in January, you can do so by &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/preorder&quot;&gt;preordering Kandria or its soundtrack&lt;/a&gt; through Backerkit. Unlike Kickstarter, this also accepts PayPal, if you don't have access to a credit card.&lt;/p&gt;&lt;h2 id=&quot;herofest&quot;&gt;HeroFest&lt;/h2&gt;&lt;img alt=&quot;https://filebox.tymoon.eu//file/TWpVNU13PT0=&quot; src=&quot;https://filebox.tymoon.eu//file/TWpVNU13PT0=&quot; /&gt;&lt;p&gt;Another convention!&lt;/p&gt;&lt;p&gt;We'll be at the HeroFest in Bern, October 14-16! You'll be able to play the latest Kandria release there and chat about whatever. If you're in the area, please stop on by and check out the rest of the Swiss indie games presenting there as well.&lt;/p&gt;&lt;h2 id=&quot;soundtrack&quot;&gt;Soundtrack&lt;/h2&gt;&lt;p&gt;The release of the soundtrack has been delayed by a bit, as our composer got swamped with work, and we're still trying to hash out the complicated stuff behind royalties and all. However, a single of the soundtrack should be out soon. Please keep an ear out for that!&lt;/p&gt;&lt;h2 id=&quot;steam deck support&quot;&gt;Steam Deck Support&lt;/h2&gt;&lt;p&gt;Gaben finally delivered a Steam Deck to me, and I've tested Kandria on it. There were a couple of minor fixes to make it more usable, but now it seems to run flawlessly on the deck! Nice!&lt;/p&gt;&lt;img alt=&quot;https://pbs.twimg.com/media/Fd1mVMkXwAUexcc?format=jpg&amp;name=large&quot; src=&quot;https://pbs.twimg.com/media/Fd1mVMkXwAUexcc?format=jpg&amp;name=large&quot; /&gt;&lt;p&gt;The Deck is a wonderful piece of tech, and I've been enjoying playing other games on it as well. While I still would like for Kandria to run on the Switch as well, this is the next best thing for now.&lt;/p&gt;&lt;h2 id=&quot;development&quot;&gt;Development&lt;/h2&gt;&lt;p&gt;We're still rounding out the last bits of polish and bugs, and focusing on playing through the game more to ensure the balance and progression also work well. Development of the core game will officially end at the end of November, after which focus will shift towards adding the stretch goals we promised during the Kickstarter, preparing promotional materials, and so on.&lt;/p&gt;&lt;p&gt;To that end, here's a new rough roadmap of all the stuff left to do including post-release updates:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;Add &lt;em&gt;even more&lt;/em&gt; detail tiles, foliage, and animal spawners throughout the world&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Fine-tune the levelling, trade prices, and enemy difficulty&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Spruce up some of the sound effects and music tracks&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Create achievement icons and integrate them into the game&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;Release the full game&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Backport re-usable components into Trial&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Separate out the assets from the main repository&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Publish the source code under a permissive license&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Fix a plethora of bugs and inconveniences in Alloy&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Polish the editor and make it more stable&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;Release the editor&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Develop a modding system for Trial&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Finish the Forge build system at least to an extent where it's usable&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Integrate the mod.io API with the modding system&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Create a mod manager and browser UI&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Document more parts of Trial and Kandria&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;Release an official modding kit&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;We're also planning some cool events to celebrate the three big release milestones, though more info about that as we actually get closer to them.&lt;/p&gt;&lt;p&gt;For now, please continue to share the &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/steam&quot;&gt;steam page&lt;/a&gt; with friends and other groups. It would help a lot to ensure that we can continue to make games in the future!&lt;/p&gt;</description>
+	
+	<pubDate>Mon, 10 Oct 2022 08:54:37 GMT</pubDate>
+</item>
 
-&lt;p&gt;A lot of time passed since the last blog entry. I'm sorry for neglecting this.
-In this post, I'll try to summarize the past two and a half year.&lt;/p&gt;
+<item>
+	<title>Tim Bradshaw: Bradshaw's laws</title>
+	<guid isPermaLink="true">https://www.tfeb.org/fragments/2022/10/03/bradshaw-s-laws/?utm_source=lisp&amp;utm_medium=RSS</guid>
+	<link>https://www.tfeb.org/fragments/2022/10/03/bradshaw-s-laws/?utm_source=lisp&amp;utm_medium=RSS</link>
+	
+	<description>&lt;p&gt;There are two laws.&lt;/p&gt;
+&lt;!-- more--&gt;
 
-&lt;h2&gt;Finances and bounties&lt;/h2&gt;
+&lt;h2 id=&quot;the-laws&quot;&gt;The laws&lt;/h2&gt;
 
-&lt;p&gt;Some of you might have noticed that the bounty program has been suspended. The
-BountySource platform lost our trust around a year ago when they have changed
-their ToS to include:&lt;/p&gt;
+&lt;ol&gt;
+ &lt;li&gt;All sufficiently large software systems end up being programming languages.&lt;/li&gt;
+ &lt;li&gt;Whenever you think the point is at which the first law will apply, it will apply before that.&lt;/li&gt;&lt;/ol&gt;
 
-&lt;blockquote&gt;
-&lt;p&gt;If no Solution is accepted within two years after a Bounty is posted, then the
-Bounty will be withdrawn, and the amount posted for the Bounty will be
-retained by Bountysource.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;h2 id=&quot;implications-of-the-laws&quot;&gt;Implications of the laws&lt;/h2&gt;
 
-&lt;p&gt;They've quickly retracted from that change, but the trust was already lost. Soon
-after, I've suspended the account and all donations with this platform were
-suspended. BountySource refunded all our pending bounties.&lt;/p&gt;
+&lt;p&gt;When building software systems you should design them as programming langages. You should do this however small you think they will be. In order to make this practical for small systems you should therefore use a language which allows seamless extension into other languages with insignificant zero-point cost.&lt;/p&gt;
 
-&lt;p&gt;All paid bounties were summarized in previous posts. Between 2016-08-16 and
-2020-06-16 (46 months of donations) we have collected in total $18700. The
-Bounty Source comission was 10% collected upon withdrawal - all amounts
-mentioned below are presented for &lt;strong&gt;before&lt;/strong&gt; the comission was claimed.&lt;/p&gt;
+&lt;p&gt;But because the laws are not widely known, most large software systems are built without understanding that what is being built is in fact a programming language. Because people don&amp;rsquo;t know they are building a programming language, don&amp;rsquo;t know how to build programming languages, and do not use languages which make the seamless construction of programming languages easy, the languages they build are usually terrible: they are hard to use, have opaque and inconsistent semantics and are almost always insecure.&lt;/p&gt;</description>
+	
+	<pubDate>Mon, 03 Oct 2022 19:50:51 GMT</pubDate>
+</item>
 
-&lt;p&gt;During that time $3200 was paid to bounty hunters who solved various issues in
-McCLIM. The bounty program was a limited success - solutions that were
-contributed were important, however harder problems with bounties were not
-solved. That said, a few developers who contribute today to McCLIM joined in the
-meantime and that might be partially thanks to the bounty program.&lt;/p&gt;
+<item>
+	<title>TurtleWare: Buffering Output</title>
+	<guid isPermaLink="true">https://turtleware.eu/posts/Buffering-Output.html</guid>
+	<link>https://turtleware.eu/posts/Buffering-Output.html</link>
+	
+	<description>&lt;h3&gt;Single buffering&lt;/h3&gt;
 
-&lt;p&gt;When the fundraiser was announced, I've declared I would withdraw $600 monthly
-from the project account. In the meantime I've had a profitable contract and for
-two years I stopped withdrawing money. During the remaining three years I've
-withdrawn $15500 ($440/month) from the account.&lt;/p&gt;
+&lt;p&gt;In graphical applications buffering of output is necessary to avoid
+flickering - a displeasing effect where mid-drawing artifacts are displayed on
+the screen. For example consider the following function:&lt;/p&gt;
 
-&lt;p&gt;As of now we don't have funds and there is no official way to donate money to
-the project (however, this may change in the near future). I hope that this
-summary is sufficient regarding the fundraiser. If you have further questions,
-please don't hesitate to contact me, and I'll do my best to answer them.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;(defun draw-scene (sheet)
+  (draw-rectangle* sheet 125 125 175 175 :ink +red+)
+  (draw-rectangle* sheet 125 125 175 175 :ink +blue+))
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;I'd like to thank all people who donated to the project. Your financial support
-made it possible for me to work on the project more than I would be able without
-it. The fact that people care about McCLIM enough to contribute to it money
-gives me the motivation and faith that working on the codebase is an important
-effort that benefits the Common Lisp community.&lt;/p&gt;
+&lt;p&gt;Here we draw two rectangles one on top of the other. If the red square is
+visible for a brief period of time before the blue one, then it is called
+flickering. To avoid this effect a concept of output buffering was invented -
+only when the output is ready for display, show it on the screen.&lt;/p&gt;
 
-&lt;h2&gt;Improvements&lt;/h2&gt;
+&lt;h3&gt;Double buffering&lt;/h3&gt;
 
-&lt;p&gt;The last update was in 2018-12-31. A lot of changes accumulated in the meantime.&lt;/p&gt;
+&lt;p&gt;With double buffering we draw on the &amp;quot;back&amp;quot; buffer, and when done the back
+buffer contents are shown on the front buffer.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(defun game-loop ()
+  (loop (draw-scene sheet)
+        (swap-buffers sheet (buffer-1 sheet) (buffer-2 sheet))))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3&gt;Triple buffering&lt;/h3&gt;
+
+&lt;p&gt;The triple buffering is used when new scenes are produced much faster than the
+front buffer could be updated. We have &amp;quot;render&amp;quot;, &amp;quot;ready&amp;quot; and &amp;quot;front&amp;quot; buffers.
+The implicit assumption is that the game loop and the display loop operate in
+separate threads.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(defun display-loop ()
+  (loop (swap-buffers sheet (buffer-2 sheet) (buffer-3 sheet))
+        (display-buffer sheet (buffer-3 sheet))))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3&gt;Incremental and non-incremental rendering&lt;/h3&gt;
+
+&lt;p&gt;If each frame is drawn from scratch (like in many games), then it doesn't
+matter whether the &amp;quot;swap&amp;quot; operation copies or swaps buffers. Some applications
+however treat the canvas incrementally. In this case losing the old content is
+not acceptable and we must copy data.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;code&quot;&gt;&lt;span class=&quot;comment&quot;&gt;;;; The frame is rendered from scratch (not incremental)
+&lt;/span&gt;&lt;span class=&quot;paren1&quot;&gt;(&lt;span class=&quot;code&quot;&gt;&lt;i&gt;&lt;span class=&quot;symbol&quot;&gt;defmacro&lt;/span&gt;&lt;/i&gt; swap-buffers &lt;span class=&quot;paren2&quot;&gt;(&lt;span class=&quot;code&quot;&gt;sheet buffer-1 buffer-2&lt;/span&gt;)&lt;/span&gt;
+  `&lt;span class=&quot;paren2&quot;&gt;(&lt;span class=&quot;code&quot;&gt;&lt;i&gt;&lt;span class=&quot;symbol&quot;&gt;with-swap-lock&lt;/span&gt;&lt;/i&gt; &lt;span class=&quot;paren3&quot;&gt;(&lt;span class=&quot;code&quot;&gt;sheet&lt;/span&gt;)&lt;/span&gt;
+     &lt;span class=&quot;paren3&quot;&gt;(&lt;span class=&quot;code&quot;&gt;rotatef ,buffer-1 ,buffer-2&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;;;; The frame is rendered based on the previosu content (incremental)
+&lt;/span&gt;&lt;span class=&quot;paren1&quot;&gt;(&lt;span class=&quot;code&quot;&gt;&lt;i&gt;&lt;span class=&quot;symbol&quot;&gt;defmacro&lt;/span&gt;&lt;/i&gt; copy-buffers &lt;span class=&quot;paren2&quot;&gt;(&lt;span class=&quot;code&quot;&gt;sheet buffer-1 buffer-2&lt;/span&gt;)&lt;/span&gt;
+  `&lt;span class=&quot;paren2&quot;&gt;(&lt;span class=&quot;code&quot;&gt;&lt;i&gt;&lt;span class=&quot;symbol&quot;&gt;with-swap-lock&lt;/span&gt;&lt;/i&gt; &lt;span class=&quot;paren3&quot;&gt;(&lt;span class=&quot;code&quot;&gt;sheet&lt;/span&gt;)&lt;/span&gt;
+     &lt;span class=&quot;paren3&quot;&gt;(&lt;span class=&quot;code&quot;&gt;copy-array ,buffer-1 ,buffer-2&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Copying data is more expensive than rotating buffers. That said sometimes
+re-rendering a frame from scratch may outweigh that cost. Incremental
+rendering resembles drawing on a paper - unless we clear it manually, the old
+content will be visible.&lt;/p&gt;
+
+&lt;h3&gt;Mixed buffering&lt;/h3&gt;
+
+&lt;p&gt;Sometimes we may want to draw directly on the front buffer. This is the most
+performant when we write each pixel exactly once (for example when we render
+an image). In this case we are not only expected to synchronize the front
+buffer with the back buffer, but also the other way around.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;code&quot;&gt;&lt;span class=&quot;comment&quot;&gt;;;; Buffer-1 is &quot;back&quot;, Buffer-2 is &quot;front&quot;.
+&lt;/span&gt;
+&lt;span class=&quot;paren1&quot;&gt;(&lt;span class=&quot;code&quot;&gt;&lt;i&gt;&lt;span class=&quot;symbol&quot;&gt;defun&lt;/span&gt;&lt;/i&gt; activate-single-buffering &lt;span class=&quot;paren2&quot;&gt;(&lt;span class=&quot;code&quot;&gt;&lt;/span&gt;)&lt;/span&gt;
+  &lt;span class=&quot;comment&quot;&gt;;; Update the front buffer immedietely.
+&lt;/span&gt;  &lt;span class=&quot;paren2&quot;&gt;(&lt;span class=&quot;code&quot;&gt;copy-buffers sheet &lt;span class=&quot;paren3&quot;&gt;(&lt;span class=&quot;code&quot;&gt;buffer-1 sheet&lt;/span&gt;)&lt;/span&gt; &lt;span class=&quot;paren3&quot;&gt;(&lt;span class=&quot;code&quot;&gt;buffer-2 sheet&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;paren1&quot;&gt;(&lt;span class=&quot;code&quot;&gt;&lt;i&gt;&lt;span class=&quot;symbol&quot;&gt;defun&lt;/span&gt;&lt;/i&gt; activate-double-buffering &lt;span class=&quot;paren2&quot;&gt;(&lt;span class=&quot;code&quot;&gt;&lt;/span&gt;)&lt;/span&gt;
+  &lt;span class=&quot;comment&quot;&gt;;; Synchronize the back buffer with the front-buffer.
+&lt;/span&gt;  &lt;span class=&quot;paren2&quot;&gt;(&lt;span class=&quot;code&quot;&gt;copy-buffers sheet &lt;span class=&quot;paren3&quot;&gt;(&lt;span class=&quot;code&quot;&gt;buffer-2 sheet&lt;/span&gt;)&lt;/span&gt; &lt;span class=&quot;paren3&quot;&gt;(&lt;span class=&quot;code&quot;&gt;buffer-1 sheet&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Otherwise, if we turn the double buffering back on, the back buffer won't
+contain the data that was drawn when the output was single-buffered.&lt;/p&gt;
+
+&lt;h3&gt;Closing thoughts&lt;/h3&gt;
+
+&lt;p&gt;There are many techniques that makes this more performant. My main goal with
+this post was to emphasize the difference between the incremental and
+non-incremental rendering that was usually ommited in materials I've found on
+the Internet.&lt;/p&gt;
+
+&lt;p&gt;Interesting reads:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Bordered output bug fixes and improvements -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Gadget UX improvements (many of them) -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Text styles fixes and refactor -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Freetype text renderer improvements -- Elias Mårtenson&lt;/li&gt;
-&lt;li&gt;Extended input stream abstraction rewrite -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Implementation of presentation methods for dialog-views -- admich&lt;/li&gt;
-&lt;li&gt;Encapsulating stream missing methods implementation -- admich&lt;/li&gt;
-&lt;li&gt;indenting-output-stream fixes -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;drawing-tests demo rewrite -- José Ronquillo Rivera&lt;/li&gt;
-&lt;li&gt;Line wrap on the word boundaries -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;New margin implementation (extended text formatting) -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Presentation types and presentation translators refactor -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Input completion and accept methods bug fixes and reports -- Howard Shrobe&lt;/li&gt;
-&lt;li&gt;Clipboard implementation (and the selection translators) -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;CLIM-Fig demo improvements and bug fixes -- Christoph Keßler&lt;/li&gt;
-&lt;li&gt;The pointer implementation (fix the specification conformance) -- admich&lt;/li&gt;
-&lt;li&gt;Drei kill ring improvements -- Christoph Keßler&lt;/li&gt;
-&lt;li&gt;McCLIM manual improvements -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Frame icon and pretty name change extensions -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Cleanups and extensive testing -- Nisar Ahmad&lt;/li&gt;
-&lt;li&gt;pointer-tracking rewrite -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;drag-and-drop translators rewrite -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Complete rewrite of the inspector Clouseau -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Rewrite of the function distribute-event -- Daniel Kochma&amp;#324;ski and Jan Moringen&lt;/li&gt;
-&lt;li&gt;Adding new tests and organizing them in modules -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Various fixes to the delayed repaint mechanism -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;CLX backend performance and stability fixes -- Christoph Keßler&lt;/li&gt;
-&lt;li&gt;PS/PDF/Raster backends cleanups and improvements -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Drei regression fixes and stability improvements -- Nisar Ahmad&lt;/li&gt;
-&lt;li&gt;Geometry module refactor and improvements -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Separating McCLIM code into multiple modules -- Daniel Kochma&amp;#324;ski and Jan Moringen&lt;/li&gt;
-&lt;li&gt;Frames and frame managers improvements -- Jan Moringen and Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Frame reinitialization -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;PDF/PS backends functionality improvements -- admich&lt;/li&gt;
-&lt;li&gt;Menu code cleanup -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Pane geometry and graph formatting fixes -- Nisar Ahmad&lt;/li&gt;
-&lt;li&gt;Numerous CLX cleanups and bug fixes -- Daniel Kochma&amp;#324;ski and Jan Moringen&lt;/li&gt;
-&lt;li&gt;Render backend stability, performance and functionality fixes -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Presentation types more strict interpretation -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;External Continuous Integration support -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Continuous Integration support -- Nisar Ahmad&lt;/li&gt;
-&lt;li&gt;Improved macros for recording and table formatting -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Better option parsing for define-application-frame -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Separation between the event queue and the stream input buffer -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Examples cleanup -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Graph formatting cleanup -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Stream panes defined in define-application-frames refactor -- admich&lt;/li&gt;
-&lt;li&gt;Menu bar rewrite (keyboard navigation, click to activate) -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Thread-safe execute-frame-command function -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Mirroring code simplification for clx-derived backends -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;Arbitrary native transformations for sheets (i.e. zooming) -- Daniel Kochma&amp;#324;ski&lt;/li&gt;
-&lt;li&gt;extended-streams event matching improvements -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Render backend performance improvements -- death&lt;/li&gt;
-&lt;li&gt;drei fixes for various issues -- death&lt;/li&gt;
-&lt;li&gt;drei various cleanups -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;clim-debugger improvements -- Jan Moringen&lt;/li&gt;
-&lt;li&gt;Manual spelling fixes and proofreading -- contrapunctus&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;This is not an exhaustive list of changes. For more details, please consult the
-repository history. Many changes I've introduced during this iteration were a
-subject of a careful (and time-consuming) peer review from Jan Moringen which
-resulted in a better code quality. Continuous integration provided by Nisar
-Ahmad definitely made my life simpler. I'd like to thank all contributors for
-their time and energy spent on improving McCLIM.&lt;/p&gt;
-
-&lt;h2&gt;Pending work&lt;/h2&gt;
-
-&lt;p&gt;If you are working on some exciting improvement for McCLIM which is not ready,
-you may make a &amp;quot;draft&amp;quot; pull request in the McCLIM repository. Currently, there
-are three such branches:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;the SLIME-based &lt;a href=&quot;https://github.com/McCLIM/McCLIM/pull/1193&quot;&gt;backend&lt;/a&gt; for CLIM
-by Luke Gorrie&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;the dot-based graph layout
-&lt;a href=&quot;https://github.com/McCLIM/McCLIM/pull/1197&quot;&gt;extension&lt;/a&gt; by Eric Timmons&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;the xrender &lt;a href=&quot;https://github.com/McCLIM/McCLIM/pull/1196&quot;&gt;backend&lt;/a&gt; by Daniel
-Kochma&amp;#324;ski&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Other than that, I've recently implemented the polygon triangulation algorithm
-that is meant to be used in the xrender backend (but could be reused i.e. for
-opengl). Currently, I'm refining the new rendering for clx (xrender). After that,
-I want to introduce a portable double buffering and a new repaint queue. Having
-these things in place after extensive testing, I want to roll out a new release
-of McCLIM.&lt;/p&gt;
-
-&lt;p&gt;Sincerely yours,&lt;br /&gt;
-Daniel Kochma&amp;#324;ski&lt;/p&gt;</description>
+&lt;li&gt;&lt;p&gt;&lt;a href=&quot;https://wiki.osdev.org/Double_Buffering&quot;&gt;https://wiki.osdev.org/Double_Buffering&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&quot;https://emersion.fr/blog/2019/intro-to-damage-tracking/&quot;&gt;https://emersion.fr/blog/2019/intro-to-damage-tracking/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
 	
-	<pubDate>Tue, 13 Jul 2021 00:00:00 GMT</pubDate>
+	<pubDate>Sat, 01 Oct 2022 00:00:00 GMT</pubDate>
 </item>
 
 <item>
-	<title>Nicolas Hafner: Testing events - July Kandria Update</title>
-	<guid isPermaLink="true">https://reader.tymoon.eu/article/398</guid>
-	<link>https://reader.tymoon.eu/article/398</link>
+	<title>Joe Marshall: Observationally Functional</title>
+	<guid isPermaLink="true">http://funcall.blogspot.com/2022/09/observationally-functional.html</guid>
+	<link>http://funcall.blogspot.com/2022/09/observationally-functional.html</link>
 	
-	<description>&lt;img alt=&quot;https://studio.tymoon.eu/api/studio/file?id=2002&quot; src=&quot;https://studio.tymoon.eu/api/studio/file?id=2002&quot; /&gt;&lt;p&gt;Another month filled with a lot of different stuff! We have a lot of conferences coming up, there was a bunch to do for marketing, the game has seen a lot of visual and gameplay tweaks, and we've started doing a lot of direct playtesting. Finally, the music has also made a lot of progress and the first few tracks are now done!&lt;/p&gt;&lt;h2 id=&quot;GDC, Gamescom, and GIC&quot;&gt;GDC, Gamescom, and GIC&lt;/h2&gt;&lt;p&gt;Thanks to the very generous support from &lt;a class=&quot;external-link&quot; href=&quot;https://prohelvetia.ch/en/&quot;&gt;Prohelvetia&lt;/a&gt; we're part of the Swiss Games delegation to &lt;a class=&quot;external-link&quot; href=&quot;https://gdconf.com&quot;&gt;GDC&lt;/a&gt;, &lt;a class=&quot;external-link&quot; href=&quot;https://www.gamescom.global&quot;&gt;Gamescom&lt;/a&gt;, and &lt;a class=&quot;external-link&quot; href=&quot;https://gic.gd/&quot;&gt;GIC&lt;/a&gt;. GDC is coming up this month, and we have our own virtual booth set up for that. Given that both GDC and Gamescom are virtual this year, I honestly don't really know what to expect from them, it's going to be quite different. At least GIC is in person (Poznan, Poland) so I'm really looking forward to that!&lt;/p&gt;&lt;p&gt;So far we've invested quite a bit of time into looking at journalists to reach out to during GDC, and who knows, perhaps we'll also be contacted by publishers or something during the event. In any case, it's going to be an exciting week, for sure.&lt;/p&gt;&lt;p&gt;Gamescom/Devcom are coming up in August, right before the submission deadline for the Prohelvetia grant, so that's going to be a tight squeeze, too. September is gonna be a calmer month, as we've settled for a two weeks holiday for the team during that month. Then in October it's going to be GIC for a week.&lt;/p&gt;&lt;h2 id=&quot;Marketing&quot;&gt;Marketing&lt;/h2&gt;&lt;p&gt;Also thanks to Prohelvetia we now have direct mentoring from &lt;a class=&quot;external-link&quot; href=&quot;https://howtomarketagame.com&quot;&gt;Chris Zukowski&lt;/a&gt; with a monthly meeting for the next six months. His first advice was to focus a lot more on top of the funnel marketing (like imgur, reddit, festivals, influencers), and cut down on all the middle stuff we've been doing (like discord, mailing list, blogs, streams).&lt;/p&gt;&lt;p&gt;I actually quite like doing the weekly and monthly updates though, so I'm going to keep doing those. The Sunday streams have also proven quite productive for me, so I'll use them for that purpose too, rather than for any marketing intent. I am going to cut down drastically on Twitter though, as that does not seem to really bring us much of anything at all, and I'm going to stay away from Discord more in general (not just the &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/discord&quot;&gt;Kandria one&lt;/a&gt;.).&lt;/p&gt;&lt;p&gt;After some brief experiments with imgur (and &lt;a class=&quot;external-link&quot; href=&quot;https://imgur.com/gallery/VfeSh4f&quot;&gt;once even making it into most viral&lt;/a&gt;) I haven't returned to that yet though, as I've found it to be quite exhausting to figure out what to even post and how to post it.&lt;/p&gt;&lt;p&gt;We'll definitely have to try reaching out to influencers and journalists, but we're going to hold off on that until the september demo update is done, as a more polished demo should help a lot to make us look more presentable and respectable. We should also try out Reddit, but we haven't done the necessary research yet into how exactly to post on there without getting downvoted into oblivion.&lt;/p&gt;&lt;p&gt;The second advice Chris had for us was to do more....&lt;/p&gt;&lt;h2 id=&quot;Playtesting&quot;&gt;Playtesting&lt;/h2&gt;&lt;p&gt;We've started inviting people to do blind playtesting. The blind here meaning that they never played the game before, which gives us quite valuable insight into parts of the game that are confusing or annoying. We've done four sessions so far, and even with them being carried out over Discord, the feedback has been very useful.&lt;/p&gt;&lt;p&gt;I've also been inviting people for local playtesting, as being able to observe people in person is a lot better than doing it over the net. We haven't done any of that yet, but there's several appointments scheduled already. If you're near Zürich and would be up for a playtest session, please &lt;a class=&quot;external-link&quot; href=&quot;https://calendly.com/shinmera/kandria-playtest&quot;&gt;book a date&lt;/a&gt;!&lt;/p&gt;&lt;p&gt;And if you, like most, aren't close to Zürich, but would still like to help us out with testing, &lt;a class=&quot;external-link&quot; href=&quot;mailto:shinmera@tymoon.eu&quot;&gt;let me know&lt;/a&gt; anyway and we can arrange something over the net!&lt;/p&gt;&lt;h2 id=&quot;Tutorial&quot;&gt;Tutorial&lt;/h2&gt;&lt;p&gt;We finally finished a tutorial area for the game, giving it a proper starting point, and introducing people to the controls. It doesn't explain all of them in detail though, as I think we should instead keep the more intricate controls to challenges throughout the game, rather than trying to teach everything at once.&lt;/p&gt;&lt;p&gt;Designing the levels to teach the various control parts is going to be challenging, but I think ultimately it is going to be worth it, especially as it allows us to keep the tutorial in the beginning very short.&lt;/p&gt;&lt;p&gt;The only actual tutorial part still missing is a combat primer, for which we haven't worked out a good way of teaching it yet. I'm sure we'll find a way, though.&lt;/p&gt;&lt;h2 id=&quot;Tim&quot;&gt;Tim&lt;/h2&gt;&lt;p&gt;I took a holiday for part of this month, though otherwise it's been full steam ahead on the marketing research. I've added more reference games and potential contacts to our press &amp;amp; influencer document; while doing this I've taken into account the advice we got from Chris Zukowski, about not looking too closely at games with distinct differences to Kandria (e.g. Celeste has no combat; Dead Cells is a roguelike). I've also done more research on Steam short descriptions, and worked with Nick to redraft ours. It needs a few more edits, but it's nearly there.&lt;/p&gt;&lt;p&gt;I haven't totally forgotten the game though! With the new tutorial prologue in place, I added dialogue. This is now your first meeting with Catherine, after she reactivates you deep underground; but I've deliberately kept things short and sweet, as she guides you back up to the surface. The player has enough to think about at this stage without getting overwhelmed with dialogue; only once the tutorial segues into the settlement introduction from before, does the dialogue really begin.&lt;/p&gt;&lt;h2 id=&quot;Mikel&quot;&gt;Mikel&lt;/h2&gt;&lt;p&gt;Mikel's been very busy and completed 6 different versions of the region 1 track:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;&lt;a class=&quot;external-link&quot; href=&quot;https://filebox.tymoon.eu//file/TWpNeU9BPT0=&quot;&gt;Medium&lt;/a&gt; &lt;a class=&quot;external-link&quot; href=&quot;https://filebox.tymoon.eu//file/TWpNeU9RPT0=&quot;&gt;Medium Vocal&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;a class=&quot;external-link&quot; href=&quot;https://filebox.tymoon.eu//file/TWpNek1BPT0=&quot;&gt;Quiet&lt;/a&gt; &lt;a class=&quot;external-link&quot; href=&quot;https://filebox.tymoon.eu//file/TWpNek1RPT0=&quot;&gt;Quiet Vocal&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;a class=&quot;external-link&quot; href=&quot;https://filebox.tymoon.eu//file/TWpNeU5nPT0=&quot;&gt;Ambient&lt;/a&gt; &lt;a class=&quot;external-link&quot; href=&quot;https://filebox.tymoon.eu//file/TWpNeU53PT0=&quot;&gt;Ambient Vocal&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Which the game can use to do vertical mixing:&lt;/p&gt;&lt;h2 id=&quot;Roadmap&quot;&gt;Roadmap&lt;/h2&gt;&lt;p&gt;Let's look at the roadmap from &lt;a class=&quot;external-link&quot; href=&quot;https://reader.tymoon.eu/article/397&quot;&gt;last month&lt;/a&gt; with the updates from this month:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Build and add the tutorial sequence to the beginning of the game&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Finish the region 1 music tracks&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Add a fishing minigame&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Improve the UI for the game and editor&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Implement several editor improvements&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Compile data on journalists, influencers, and communities&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Implement a UI animation system&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Implement a cutscene system&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Polish the ProHelvetia submission material (partially done)&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Polish and revise the combat design (partially done)&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Implement a main menu, map, and other UI elements&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Reach out to journalists, streamers, and other communities&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Explore platforming items and mechanics&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Practise platforming level design&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Start work on the horizontal slice&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The first three are scheduled to be done by September 1st, and so far it looks quite doable. The events are going to jumble things up a bit, but I hope that we still have enough time scheduled around to get it all done in time.&lt;/p&gt;&lt;p&gt;Until then be sure to check our &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/#subscribe&quot;&gt;mailing list&lt;/a&gt; for weekly updates, and the &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/discord&quot;&gt;discord community&lt;/a&gt; for fan discussions!&lt;/p&gt;</description>
-	
-	<pubDate>Sat, 03 Jul 2021 19:08:41 GMT</pubDate>
-</item>
+	<description>&lt;p&gt;A couple of years back I wrote a Java microservice that talks to
+  Jenkins to find the state of a series of builds.  The code was
+  structured to be &amp;ldquo;observationally functional&amp;rdquo; &amp;mdash;
+  there were plenty of side effects, but the main data abstractions
+  behaved as if they were immutable as far as the abstract API was
+  concerned.  This allows us to treat code that uses these objects as
+  if it were pure functional code.&lt;/p&gt;
 
-<item>
-	<title>Quicklisp news: June 2021 Quicklisp dist update now available</title>
-	<guid isPermaLink="true">http://blog.quicklisp.org/2021/07/june-2021-quicklisp-dist-update-now.html</guid>
-	<link>http://blog.quicklisp.org/2021/07/june-2021-quicklisp-dist-update-now.html</link>
-	
-	<description>&lt;p&gt;&lt;b&gt;&amp;nbsp;New projects&lt;/b&gt;:&amp;nbsp;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/K1D77A/cl-megolm/&quot;&gt;cl-megolm&lt;/a&gt;&amp;nbsp;&amp;mdash; A copy of the python functionality provided as bindings for Olm. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/pokepay/cl-openapi-parser/&quot;&gt;cl-openapi-parser&lt;/a&gt;&amp;nbsp;&amp;mdash; OpenAPI 3.0.1 and 3.1.0 parser/validator &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/ghollisjr/cl-opencl-utils/&quot;&gt;cl-opencl-utils&lt;/a&gt;&amp;nbsp;&amp;mdash; OpenCL utility library built on cl-opencl &amp;mdash; GPLv3&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/dtenny/cl-sse/&quot;&gt;cl-sse&lt;/a&gt;&amp;nbsp;&amp;mdash; Use sse-server + a web service to serve SSE events to a browser. &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://yitzchak.github.io/trivial-ed-functions/&quot;&gt;trivial-ed-functions&lt;/a&gt;&amp;nbsp;&amp;mdash; A simple compatibility layer for *ed-functions* &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://yitzchak.github.io/trivial-inspector-hook/&quot;&gt;trivial-inspector-hook&lt;/a&gt;&amp;nbsp;&amp;mdash; A simple compatibility layer CDR6 &amp;mdash; MIT&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/fukamachi/webapi/&quot;&gt;webapi&lt;/a&gt;&amp;nbsp;&amp;mdash; CLOS-based wrapper builder for Web APIs &amp;mdash; BSD 2-Clause&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/codr7/whirlog/&quot;&gt;whirlog&lt;/a&gt;&amp;nbsp;&amp;mdash; a minimal versioned log structured relational DB &amp;mdash; MIT&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;b&gt;Updated projects&lt;/b&gt;: also-alsa, april, atomics, bdef, binding-arrows, bp, chirp, cl+ssl, cl-ana, cl-collider, cl-conllu, cl-cxx-jit, cl-data-structures, cl-environments, cl-form-types, cl-gamepad, cl-gserver, cl-heredoc, cl-incognia, cl-ipfs-api2, cl-kraken, cl-maxminddb, cl-mixed, cl-mock, cl-murmurhash, cl-naive-store, cl-ntp-client, cl-opencl, cl-patterns, cl-schedule, cl-smt-lib, cl-string-generator, cl-torrents, cl-utils, cl-webkit, clack-pretend, closer-mop, cluffer, clunit2, clx, cmd, common-lisp-jupyter, conium, consfigurator, core-reader, croatoan, defmain, deploy, dexador, djula, doc, easy-routes, eclector, fiveam-asdf, fresnel, functional-trees, gendl, generic-cl, gute, harmony, herodotus, hunchentoot-multi-acceptor, hyperluminal-mem, iolib, lack, lichat-protocol, lichat-tcp-client, lispqr, markup, mcclim, md5, mito, mnas-package, mnas-string, modularize-interfaces, multiposter, neural-classifier, numerical-utilities, nyxt, origin, osmpbf, overlord, plot, plump, portal, postmodern, py4cl2, qlot, quilc, quri, qvm, re, replic, sc-extensions, sel, serapeum, shasht, shop3, sly, smart-buffer, special-functions, spinneret, st-json, static-dispatch, static-vectors, stumpwm, sxql, tailrec, tfeb-lisp-hax, tooter, trivia, trivial-with-current-source-form, trucler, vellum, vk, wasm-encoder, woo, zippy.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Removed projects&lt;/b&gt;: with-c-syntax.&lt;/p&gt;&lt;p&gt;To get this update, use (ql:update-dist &quot;quicklisp&quot;). Enjoy!&lt;/p&gt;</description>
-	
-	<pubDate>Thu, 01 Jul 2021 21:47:00 GMT</pubDate>
-</item>
+&lt;p&gt;If a data structure is observationally functional, then regardless
+  of what the implementation does, there is no way to observe side
+  effects at the abstract level.  Primarily, this means that if you
+  call a function twice with the same arguments, you always get the
+  same answer.  (This implies, but it isn't obvious, that calling a
+  function should not mutate anything that would cause a different
+  function to change.)  This restriction has a lot of wiggle room.
+  You can certainly side effect anything local to the abstraction that
+  doesn't get returned to the caller.  You can side effect data until
+  the point it is returned to the caller.&lt;/p&gt;
 
-<item>
-	<title>Nicolas Hafner: Updates Galore - June Kandria Update</title>
-	<guid isPermaLink="true">https://reader.tymoon.eu/article/397</guid>
-	<link>https://reader.tymoon.eu/article/397</link>
+&lt;p&gt;The main data abstraction my microservice works with is a
+  representation of the build metadata tree on the Jenkins server.
+  The higher level code walks this tree looking for builds and
+  metadata.  The code maintains the illusion that the tree is a local
+  data structure, but the implementation of the tree contains URL
+  references to data that is stored on the Jenkins server.  As the
+  higher level code walks the tree, the lower level code fetches the
+  data from the Jenkins server on demand and caches it.&lt;/p&gt;
+
+&lt;p&gt;Writing the code this way allows me to separate the data transfer
+  and marshaling parts from the data traversal and analysis part.  The
+  tree, though it is mutated as it is traversed, is immutable in
+  the parts that have already been visited.  The caching code, which
+  actually mutates the tree, needs to be synchronized across multiple
+  threads, but the traversal code does not.  Nodes in the tree that
+  have already been visited are never mutated, so no synchronization
+  is needed.&lt;/p&gt;
+
+&lt;p&gt;Once the caching tree abstraction was written, the higher level
+  code simply walks the tree, selecting and filtering nodes, then
+  reading the field values in the nodes.  But the higher level code
+  can be treated as if it were pure functional because there are
+  no observable side effects.  An advantage of pure functional code is
+  that it is trivially thread safe, so my microservice can run hundreds
+  of threads in parallel, each walking separate parts of the Jenkins
+  tree and none interfering with the other.  The only part of the code
+  that uses synchronization is the tree caching code.&lt;/p&gt;
+
+&lt;p&gt;This implementation approach was quite fruitful.  Once the code was
+  tested with a single thread, it was obvious that multiple threads
+  ought to work (because they couldn't observe each other's side
+  effects) and when I turned the thread count up, no debugging was
+  necessary.  The code has been running continuously with dozens of
+  threads for the past couple of years with no timing,
+  synchronization, or race condition bugs.&lt;/p&gt;</description>
 	
-	<description>&lt;img alt=&quot;https://filebox.tymoon.eu//file/TWpNeU1RPT0=&quot; src=&quot;https://filebox.tymoon.eu//file/TWpNeU1RPT0=&quot; /&gt;&lt;p&gt;There's a lot of different news to talk about this month, so strap in!&lt;/p&gt;&lt;h2 id=&quot;The New Trailer&quot;&gt;The New Trailer&lt;/h2&gt;&lt;p&gt;The most important thing to come out of this month is the new trailer! Check it out if you haven't yet:&lt;/p&gt;&lt;p&gt;I'm overall really happy with how it came together, and we all had a part in the end result. I'd also like to give a special commendation to &lt;a class=&quot;external-link&quot; href=&quot;https://www.adoxtalks.com&quot;&gt;Elissa Park&lt;/a&gt; who did the amazing voice over for the trailer. It was a pleasure to work together!&lt;/p&gt;&lt;p&gt;It's also been great to finally get some custom music by Mikel into an official part of the game. He's also been working on the first music tracks that'll be in the game, and I've been working on a music system to support horizontal mixing with the tracks. I'm very excited to get all that together into the game and see how it all feels! I hope that by next month's update we'll have a short preview of that for you.&lt;/p&gt;&lt;h2 id=&quot;0.1.1 Release&quot;&gt;0.1.1 Release&lt;/h2&gt;&lt;p&gt;Meanwhile we also pushed out an update to the vertical slice release that makes use of the new linear quest system we put together. It should overall also be a lot more stable and includes many fixes for &lt;a class=&quot;external-link&quot; href=&quot;https://gitea.tymoon.eu/shinmera/kandria/src/branch/master/CHANGES.mess#L93&quot;&gt;issues people reported to us&lt;/a&gt;. Thanks!&lt;/p&gt;&lt;p&gt;As always, if you want to have a look at the demo yourself, you can do so &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/prototype&quot;&gt;free of charge&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;I think this will be the last patch we put out until September. I can't afford to backport fixes even if more bug reports come in, as the overhead of managing that is just too high. I can't just push out new versions that follow internal development either, as those are frequently in flight and have more regressions that we typically stamp out over time, but would in the meantime provide a more buggy experience.&lt;/p&gt;&lt;img alt=&quot;https://filebox.tymoon.eu//file/TWpNeU1BPT0=&quot; src=&quot;https://filebox.tymoon.eu//file/TWpNeU1BPT0=&quot; /&gt;We started working on fishing just recently!&lt;h2 id=&quot;Dev Streams&quot;&gt;Dev Streams&lt;/h2&gt;&lt;p&gt;I'm heavily considering doing regular weekly development streams, both to see if we can attract some more interest for the project, and to be more open about the process in general. I feel like we're already very open about everything with our weekly updates, but having an immediate insight into how the game is made is another thing entirely. I think it would be really cool to show that side of development off more often!&lt;/p&gt;&lt;p&gt;In order to coordinate what time would suit the most people, please fill out this &lt;a class=&quot;external-link&quot; href=&quot;https://doodle.com/poll/7gfcb8t38e34k8c2#calendar&quot;&gt;Doodle form&lt;/a&gt;. The exact dates don't matter, just watch for the day of the week and the time. Don't worry about the name it asks for either, it won't be public!&lt;/p&gt;&lt;p&gt;I'll probably close the poll in a weeks, so make sure to submit an answer soon if you're interested. Streams will happen both on &lt;a href=&quot;https://twitch.tv/shinmera&quot;&gt;https://twitch.tv/shinmera&lt;/a&gt; and &lt;a href=&quot;https://youtube.com/shinmera,&quot;&gt;https://youtube.com/shinmera,&lt;/a&gt; with both being reachable through the official stream page at &lt;a href=&quot;https://stream.shinmera.com&quot;&gt;https://stream.shinmera.com&lt;/a&gt; . See you there!&lt;/p&gt;&lt;h2 id=&quot;Palestinian Aid Bundle&quot;&gt;Palestinian Aid Bundle&lt;/h2&gt;&lt;p&gt;Some good folks have put together a bundle on itch.io gathering money for Palestinian aid. I'm very happy to say that our game, &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/eternia&quot;&gt;Eternia: Pet Whisperer&lt;/a&gt; is a part of this bundle!&lt;/p&gt;&lt;p&gt;If you want to support this cause and get a huge collection of amazing games in the process, &lt;a class=&quot;external-link&quot; href=&quot;https://itch.io/b/902/indie-bundle-for-palestinian-aid&quot;&gt;head on over to itch.io&lt;/a&gt;!&lt;/p&gt;&lt;h2 id=&quot;Tim&quot;&gt;Tim&lt;/h2&gt;&lt;p&gt;This month I had a varied mix of tasks: working on the script for the new trailer; updating the quests in the vertical slice demo to work closer to our original vision; researching press and influencer contacts as we plan more of Kandria's marketing.&lt;/p&gt;&lt;p&gt;The trailer came out great, and I'm really happy with the voice acting that Nick produced with Elissa Park. It was a great idea Nick had to use the character of Fi as the narrator here (originally we were going to use Catherine) - her serious outlook, and reflection on the events of the story, was just what we needed to fit the epic music from Mikel, and the epic gameplay and exploration that Nick captured on screen. The whole thing just screams epic.&lt;/p&gt;&lt;p&gt;The quests were vastly improved too. The first quest now uses Nick's new sequencing system, so that triggers fire automatically (and more robustly) when the player arrives at the correct location, and when combat encounters are completed. The logic is also much quicker to write, so linear quests will be much faster to produce in the future. The mushroom quest also had a big refactor; now you can organically collect mushrooms out in the world, rather than going to specific enabled points. You can even sell what you find to the trader, including those poisonous black knights. It really makes the world feel more interactive. There's been general tweaks to the other quests from playtesting, and I'll continue to refine them from my own playing and players' feedback up until the Pro Helvetia submission later in the year. I'm also planning to add a couple more sidequest diversions based on the new fishing (!) minigame being added at the moment; we think a combat-focused sidequest will work well too.&lt;/p&gt;&lt;p&gt;Finally on the marketing side, it's been rewarding to collect tons of potential press and influencer contacts we could approach in the future. I've basically been taking games that are strong influences and have similarities to Kandria - from hugely popular games like Celeste and Dead Cells, to lesser known ones like Kunai and Armed with Wings - then cataloguing key journalists and influencers who've streamed, made videos, or written about them. This will hopefully highlight some of the right people we can contact to help spread the word about the game.&lt;/p&gt;&lt;h2 id=&quot;Roadmap&quot;&gt;Roadmap&lt;/h2&gt;&lt;p&gt;Let's look at the roadmap from &lt;a class=&quot;external-link&quot; href=&quot;https://reader.tymoon.eu/article/396&quot;&gt;last month&lt;/a&gt; with the updates from this month:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Make the combat more flashy&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Finish a new trailer&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;s&gt;Revise the quest system's handling of linear quest lines&lt;/s&gt;&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Design and outline the factions for the rest of the game&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Develop the soundscape for Kandria and start working on the tracks for region 1&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;s&gt;Add a music system that can do layering and timed transitions&lt;/s&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Build and add the tutorial sequence to the beginning of the game&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;Finish the region 1 music tracks&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;Reach out to journalists, streamers, and other communities&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Polish the ProHelvetia submission material&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Polish and revise the combat design&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Explore platforming items and mechanics&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Practise platforming level design&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Start work on the horizontal slice&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;As always there's some smaller tasks that aren't in the overall roadmap. We seem to be doing pretty well keeping on track with what needs done, which is really good! It's all too easy to misjudge the time required to complete things, especially in games.&lt;/p&gt;&lt;p&gt;In any case, time is flying fast, and there's a lot to do. In the meantime be sure to check our &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/#subscribe&quot;&gt;mailing list&lt;/a&gt; for weekly updates, and the &lt;a class=&quot;external-link&quot; href=&quot;https://kandria.com/discord&quot;&gt;discord community&lt;/a&gt; for fan discussions!&lt;/p&gt;</description>
-	
-	<pubDate>Sun, 06 Jun 2021 15:49:46 GMT</pubDate>
+	<pubDate>Wed, 28 Sep 2022 16:59:00 GMT</pubDate>
 </item>
 
 

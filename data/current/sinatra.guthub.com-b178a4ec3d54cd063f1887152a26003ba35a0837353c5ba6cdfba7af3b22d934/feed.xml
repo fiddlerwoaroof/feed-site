@@ -1,0 +1,1249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ <title>Sinatra</title>
+ <link href="http://sinatra.guthub.com/feed.xml" rel="self">
+ <link href="http://sinatra.github.com/">
+ <updated>2022-10-28T16:00:29+00:00</updated>
+ <id>http://sinatrarb.com/</id>
+
+ 
+ <entry>
+   <title>Sinatra v2.1.0</title>
+   <link href="http://sinatra.github.com/2020/09/05/sinatra-2.1.0.html">
+   <published>2020-09-05T00:00:00+00:00</published>
+   <updated>2020-09-05T00:00:00+00:00</updated>
+   <author>
+     <name>Kunpei Sakai</name>
+     <uri>https://github.com/namusyaka</uri>
+   </author>
+   <id>http://sinatrarb.com/2020/09/05/sinatra-2.1.0</id>
+   <content type="html">&lt;p&gt;Today we would like to inform you that we have released Sinatra v2.1.0. It’s a big milestore for us and contains some bug fixes and new features.&lt;/p&gt;
+
+&lt;h2 id=&quot;releases&quot;&gt;Releases&lt;/h2&gt;
+
+&lt;p&gt;This release includes the release of the following gems:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra&lt;/code&gt;: v2.1.0&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra-contrib&lt;/code&gt;: v2.1.0&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt;: v2.1.0&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;key-updates&quot;&gt;Key Updates&lt;/h2&gt;
+
+&lt;h3 id=&quot;ruby-22-support-was-dropped&quot;&gt;Ruby 2.2. support was dropped&lt;/h3&gt;
+
+&lt;p&gt;Ruby 2.2 support is dropped from this version. We will no longer check the operation on Ruby 2.2.
+Please upgrade your ruby version if you’re still using Ruby 2.2.&lt;/p&gt;
+
+&lt;h3 id=&quot;migrating-from-thin-to-rainbows-in-our-development-environment&quot;&gt;Migrating from Thin to Rainbows in our development environment&lt;/h3&gt;
+
+&lt;p&gt;From this version, we migrated from thin to rainbows in our development environment. This does not mean that the stream block will be immediately broken.
+The change was triggered by &lt;a href=&quot;https://github.com/rack/rack/commit/98d9cf5834d4e27e34bbaa017cdfc68795763b55&quot;&gt;the removal of the thin handler in rack&lt;/a&gt;, but in fact thin hasn’t been maintained for a long time.&lt;/p&gt;
+
+&lt;h2 id=&quot;rainbows-on-the-stream-feature&quot;&gt;Rainbows on the stream feature&lt;/h2&gt;
+
+&lt;p&gt;Our stream feature has been tested by thin for many years. From this version, it is replaced with rainbows.
+This does not mean that the stream block will be immediately broken by thin.&lt;/p&gt;
+
+&lt;p&gt;However, we recommend migrating to rainbows if you want to use the stream feature.
+Please have a look at &lt;a href=&quot;https://github.com/sinatra/sinatra#streaming-responses&quot;&gt;our README&lt;/a&gt; to know how to integrate with Rainbows.&lt;/p&gt;
+
+&lt;h2 id=&quot;changes&quot;&gt;Changes&lt;/h2&gt;
+
+&lt;p&gt;Find out what’s new in v2.1.0 in &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/v2.1.0/CHANGELOG.md&quot;&gt;CHANGELOG&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;thank-you&quot;&gt;Thank you&lt;/h2&gt;
+
+&lt;p&gt;Thank you everyone who has contributed over the years to this project, and continues to ensure it lives on.
+In addition, want to give a special thanks to the key contributor for this release: &lt;a href=&quot;https://github.com/rkmathi&quot;&gt;@rkmathi&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;join-us&quot;&gt;Join us&lt;/h2&gt;
+
+&lt;p&gt;We are looking for fellows who can actively help with our development.
+I would be pleased if you could actively triage bugs on github, help with issues, and cooperate for &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1531&quot;&gt;v3.0.0&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Happy new year &amp; Sinatra 2.0.8!</title>
+   <link href="http://sinatra.github.com/2020/01/01/sinatra-2.0.8.html">
+   <published>2020-01-01T00:00:00+00:00</published>
+   <updated>2020-01-01T00:00:00+00:00</updated>
+   <author>
+     <name>Kunpei Sakai</name>
+     <uri>https://github.com/namusyaka</uri>
+   </author>
+   <id>http://sinatrarb.com/2020/01/01/sinatra-2.0.8</id>
+   <content type="html">&lt;p&gt;We would like to inform you that we have released Sinatra v2.0.8.&lt;/p&gt;
+
+&lt;h2 id=&quot;releases&quot;&gt;Releases&lt;/h2&gt;
+
+&lt;p&gt;This release includes the release of the following gems:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra&lt;/code&gt;: v2.0.8&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra-contrib&lt;/code&gt;: v2.0.8&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt;: v2.0.8&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;changes&quot;&gt;Changes&lt;/h2&gt;
+
+&lt;p&gt;Find out what’s new in v2.0.8 in &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/v2.0.8/CHANGELOG.md&quot;&gt;CHANGELOG&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;thank-you&quot;&gt;Thank you&lt;/h2&gt;
+
+&lt;p&gt;Thank you everyone who has contributed over the years to this project, and continues to ensure it lives on.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>A new maintainer and Sinatra 2.0.6!</title>
+   <link href="http://sinatra.github.com/2019/08/21/sinatra-2.0.6.html">
+   <published>2019-08-21T00:00:00+00:00</published>
+   <updated>2019-08-21T00:00:00+00:00</updated>
+   <author>
+     <name>Kunpei Sakai</name>
+     <uri>https://github.com/namusyaka</uri>
+   </author>
+   <id>http://sinatrarb.com/2019/08/21/sinatra-2.0.6</id>
+   <content type="html">&lt;p&gt;We would like to inform you that we have released Sinatra v2.0.6. Not only that, but we also have a great news for us!&lt;/p&gt;
+
+&lt;p&gt;Before we begin to touch release note, I want to introduce the great news.&lt;/p&gt;
+
+&lt;h2 id=&quot;welcome-to-the-team-jordan&quot;&gt;Welcome to the team, Jordan!&lt;/h2&gt;
+
+&lt;p&gt;Please join me in welcoming &lt;a href=&quot;https://github.com/jkowens&quot;&gt;Jordan Owens&lt;/a&gt; to the core team on Sinatra!
+He has already done a lot of contributions on our projects, including sinatra, sinatra-contrib and rack-protection.
+As you can see, the achievements he has made are very enormous.
+I’m convinced that by welcoming him to the team, Sinatra will become more wonderful.&lt;/p&gt;
+
+&lt;p&gt;Sinatra has a schedule for major renovations for v3.0.0, and I expect Jordan to show strong leadership and his great technical skill in that milestone.&lt;/p&gt;
+
+&lt;p&gt;Once more, welcome to the team, Jordan!&lt;/p&gt;
+
+&lt;h2 id=&quot;releases&quot;&gt;Releases&lt;/h2&gt;
+
+&lt;p&gt;This release includes the release of the following gems:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra&lt;/code&gt;: v2.0.6&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra-contrib&lt;/code&gt;: v2.0.6&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt;: v2.0.6&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;changes&quot;&gt;Changes&lt;/h2&gt;
+
+&lt;p&gt;Find out what’s new in v2.0.6 in &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/v2.0.6/CHANGELOG.md&quot;&gt;CHANGELOG&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;thank-you&quot;&gt;Thank you&lt;/h2&gt;
+
+&lt;p&gt;Thank you everyone who has contributed over the years to this project, and continues to ensure it lives on.
+In addition, want to give a special thanks to the key contributor for this release: &lt;a href=&quot;https://github.com/304&quot;&gt;@304&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;join-us&quot;&gt;Join us&lt;/h2&gt;
+
+&lt;p&gt;We are looking for fellows like Jordan who can actively help with our development.
+I would be pleased if you could actively triage bugs on github, help with issues, and cooperate for &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1531&quot;&gt;v3.0.0&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Sinatra 2.0.5</title>
+   <link href="http://sinatra.github.com/2018/12/23/sinatra-2.0.5.html">
+   <published>2018-12-23T00:00:00+00:00</published>
+   <updated>2018-12-23T00:00:00+00:00</updated>
+   <author>
+     <name>Kunpei Sakai</name>
+     <uri>https://github.com/namusyaka</uri>
+   </author>
+   <id>http://sinatrarb.com/2018/12/23/sinatra-2.0.5</id>
+   <content type="html">&lt;p&gt;We would like to inform you that we have released Sinatra v2.0.5.&lt;/p&gt;
+
+&lt;p&gt;Before we begin, I want to thank everyone who contributed, and continued to use and support the project.&lt;/p&gt;
+
+&lt;h2 id=&quot;releases&quot;&gt;Releases&lt;/h2&gt;
+
+&lt;p&gt;This release includes the release of the following gems:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra&lt;/code&gt;: v2.0.5&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra-contrib&lt;/code&gt;: v2.0.5&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt;: v2.0.5&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;erubi-support&quot;&gt;Erubi Support&lt;/h2&gt;
+
+&lt;p&gt;We officially began supporting Erubi.
+Please report something when combining Sinatra and Erubi if there is something wrong.&lt;/p&gt;
+
+&lt;p&gt;Thanks for the suggestion, &lt;a href=&quot;https://github.com/tkmru&quot;&gt;@tkmru&lt;/a&gt;!&lt;/p&gt;
+
+&lt;h2 id=&quot;changes&quot;&gt;Changes&lt;/h2&gt;
+
+&lt;p&gt;Find out what’s new in v2.0.5 in &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/v2.0.5/CHANGELOG.md&quot;&gt;CHANGELOG&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;thank-you&quot;&gt;Thank you&lt;/h2&gt;
+
+&lt;p&gt;Thank you everyone who has contributed over the years to this project, and continues to ensure it lives on.
+In addition, want to give a special thanks to the key contributors for this release: &lt;a href=&quot;https://github.com/jkowens&quot;&gt;@jkowens&lt;/a&gt;, &lt;a href=&quot;https://github.com/tkmru&quot;&gt;@tkmru&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;join-us&quot;&gt;Join us&lt;/h2&gt;
+
+&lt;p&gt;We are currently working on &lt;a href=&quot;https://github.com/sinatra/sinatra.github.com/pull/241&quot;&gt;discussing the release cycle&lt;/a&gt; and activating the community to make Sinatra development better.
+Sinatra has a lot of issues. Please join us if you’re interested in our development.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://sinatrarb.com/contributing.html&quot;&gt;Sinatra: Contributing&lt;/a&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Sinatra 2.0.2 and 2.0.3 are out</title>
+   <link href="http://sinatra.github.com/2018/06/09/sinatra-2.0.2-and-2.0.3.html">
+   <published>2018-06-09T00:00:00+00:00</published>
+   <updated>2018-06-09T00:00:00+00:00</updated>
+   <author>
+     <name>Kunpei Sakai</name>
+     <uri>https://github.com/namusyaka</uri>
+   </author>
+   <id>http://sinatrarb.com/2018/06/09/sinatra-2.0.2-and-2.0.3</id>
+   <content type="html">&lt;p&gt;We would like to inform you that we have released Sinatra v2.0.2 and v2.0.3.&lt;/p&gt;
+
+&lt;p&gt;Before we begin, I want to thank everyone who contributed, helped test pre-releases, and continues to use and support the project.&lt;/p&gt;
+
+&lt;h2 id=&quot;security-fix-cve-2018-11627&quot;&gt;Security Fix CVE-2018-11627&lt;/h2&gt;
+
+&lt;p&gt;Sinatra had a critical vulnerability since v2.0.0.
+The purpose of this release is to fix &lt;a href=&quot;https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-11627&quot;&gt;CVE-2018-11627&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The vulnerability is that XSS can be executed by using illegal parameters.
+&lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1428&quot;&gt;The issue&lt;/a&gt; was reported by &lt;a href=&quot;https://github.com/JokerCatz&quot;&gt;@JokerCatz&lt;/a&gt;.
+Thank you so much.&lt;/p&gt;
+
+&lt;p&gt;If you’re using Sinatra v2.0.x, please upgrade to v2.0.2 or later.’&lt;/p&gt;
+
+&lt;h2 id=&quot;releases&quot;&gt;Releases&lt;/h2&gt;
+
+&lt;p&gt;This release includes the release of the following gems, and associated versions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra&lt;/code&gt;: v2.0.2, v2.0.3&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sintra-contrib&lt;/code&gt;: v2.0.2, v2.0.3&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt;: v2.0.2, v2.0.3&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;what-is-the-difference-between-v203-and-v202-&quot;&gt;What is the difference between v2.0.3 and v2.0.2 ?&lt;/h2&gt;
+
+&lt;p&gt;In sinatra-contrib v2.0.2, &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1441&quot;&gt;a critical regression&lt;/a&gt; was found for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;backports&lt;/code&gt; gem.
+Version 2.0.3 fixes the issue by merging &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1442&quot;&gt;a patch&lt;/a&gt; sent by &lt;a href=&quot;https://github.com/marcandre&quot;&gt;author&lt;/a&gt; of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;backports&lt;/code&gt; gem.&lt;/p&gt;
+
+&lt;p&gt;We thank everyone who reported and confirmed the issue.&lt;/p&gt;
+
+&lt;h2 id=&quot;changes&quot;&gt;Changes&lt;/h2&gt;
+
+&lt;p&gt;Find out what’s new in v2.0.2 and v2.0.3 in &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/v2.0.3/CHANGELOG.md&quot;&gt;CHANGELOG.md&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;thank-you&quot;&gt;Thank you&lt;/h2&gt;
+
+&lt;p&gt;Thank you everyone who has contributed over the years to this project, and continues to ensure it lives on.
+Finally, I am deeply grateful to &lt;a href=&quot;https://github.com/iguchi1124&quot;&gt;Shota Iguchi&lt;/a&gt; who worked on the v2.0.2 improvement.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Rack::Protection v1.5.5 is out</title>
+   <link href="http://sinatra.github.com/2018/03/08/rack-protection-1.5.5.html">
+   <published>2018-03-08T00:00:00+00:00</published>
+   <updated>2018-03-08T00:00:00+00:00</updated>
+   <author>
+     <name>Kunpei Sakai</name>
+     <uri>https://github.com/namusyaka</uri>
+   </author>
+   <id>http://sinatrarb.com/2018/03/08/rack-protection-1.5.5</id>
+   <content type="html">&lt;p&gt;I have just released Rack Protection v1.5.5 for backporting security fix.&lt;/p&gt;
+
+&lt;h2 id=&quot;details&quot;&gt;Details&lt;/h2&gt;
+
+&lt;p&gt;The v1.5.5 contains a security fix for &lt;a href=&quot;https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-1000119&quot;&gt;CVE-2018-1000119&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;It was determined a timing attack vulnerability in the CSRF token checking that can result in signatures being exposed.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/sinatra/sinatra/commit/8aa6c42ef724f93ae309fb7c5668e19ad547eceb&quot;&gt;The original fix&lt;/a&gt; has already been merged at rack-protection v2.0.0.rc3. Therefore, there is no problem if you are using rack-protection v2.0.0.rc3 or later.&lt;/p&gt;
+
+&lt;p&gt;At first of all, we strongly recommend that you check the version of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt; you are currently using on your application.
+You can confirm that by looking at the version of rack-protection embedded in Gemfile.lock.&lt;/p&gt;
+
+&lt;p&gt;As a result, if you still are using rack-protection v1.5.4 or earlier, we would highly recommend to upgrade the gem.&lt;/p&gt;
+
+&lt;h2 id=&quot;thank-you&quot;&gt;Thank you&lt;/h2&gt;
+
+&lt;p&gt;Finally, I am deeply grateful to &lt;a href=&quot;https://github.com/jeltz&quot;&gt;Andreas Karlsson&lt;/a&gt; and &lt;a href=&quot;https://github.com/kseifriedredhat&quot;&gt;Kurt Seifried&lt;/a&gt; who worked on this issue.
+Thank you.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Sinatra 2.0.1 is out!</title>
+   <link href="http://sinatra.github.com/2018/02/19/sinatra-2.0.1.html">
+   <published>2018-02-19T00:00:00+00:00</published>
+   <updated>2018-02-19T00:00:00+00:00</updated>
+   <author>
+     <name>Kunpei Sakai</name>
+     <uri>https://github.com/namusyaka</uri>
+   </author>
+   <id>http://sinatrarb.com/2018/02/19/sinatra-2.0.1</id>
+   <content type="html">&lt;p&gt;I have just released Sinatra v2.0.1 and Mustermann v1.0.2.&lt;/p&gt;
+
+&lt;p&gt;Before we begin, I want to thank everyone who contributed, helped test pre-releases, and continues to use and support the project.&lt;/p&gt;
+
+&lt;h2 id=&quot;security-fix-cve-2018-7212&quot;&gt;Security Fix CVE-2018-7212&lt;/h2&gt;
+
+&lt;p&gt;The rack-protection-v2.0.1 contains a security fix for &lt;a href=&quot;https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7212&quot;&gt;CVE-2018-7212&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;It was determined a path traversal attack using backslashes was possible on Windows environment. We highly recommend you upgrade at least &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt; if you’re on Windows, or apply &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1379&quot;&gt;this patch&lt;/a&gt; provided by &lt;a href=&quot;https://github.com/orangetw&quot;&gt;Orange Tsai from DEVCORE&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you’re on older version of Sinatra, we have backported this patch to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt; in &lt;a href=&quot;https://rubygems.org/gems/rack-protection/versions/1.5.4&quot;&gt;v1.5.4&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;releases&quot;&gt;Releases&lt;/h2&gt;
+
+&lt;p&gt;Sinatra v2.0.1 includes the release of the following gems, and associated versions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra&lt;/code&gt;: v2.0.1&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra-contrib&lt;/code&gt;: v2.0.1&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt;: v2.0.1&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mustermann&lt;/code&gt;: v1.0.2&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mustermann-contrib&lt;/code&gt;: v1.0.2&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;sinatra-sinatra-contrib-and-rack-protection-v201&quot;&gt;sinatra, sinatra-contrib and rack-protection v2.0.1&lt;/h3&gt;
+
+&lt;p&gt;Find out what’s new in 2.0.1 in &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/v2.0.1/CHANGELOG.md#201--2018-02-17&quot;&gt;CHANGELOG.md&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;mustermann-and-mustermann-contrib-v102&quot;&gt;mustermann and mustermann-contrib v1.0.2&lt;/h3&gt;
+
+&lt;p&gt;Find out what’s new in 1.0.2 in &lt;a href=&quot;https://github.com/sinatra/mustermann/tree/v1.0.2#stable-releases&quot;&gt;CHANGELOG.md&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;thank-you&quot;&gt;Thank you&lt;/h2&gt;
+
+&lt;p&gt;Thank you everyone who has contributed over the years to this project, and continues to ensure it lives on.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Sinatra Two Point Oh!</title>
+   <link href="http://sinatra.github.com/2017/05/15/sinatra-two-point-oh.html">
+   <published>2017-05-15T00:00:00+00:00</published>
+   <updated>2017-05-15T00:00:00+00:00</updated>
+   <author>
+     <name>zzak</name>
+     <uri>https://twitter.com/_zzak</uri>
+   </author>
+   <id>http://sinatrarb.com/2017/05/15/sinatra-two-point-oh</id>
+   <content type="html">&lt;p&gt;Today, I’m pleased to &lt;strong&gt;FINALLY&lt;/strong&gt; announce that Sinatra 2.0 was &lt;strong&gt;released&lt;/strong&gt;!&lt;/p&gt;
+
+&lt;p&gt;If you &lt;a href=&quot;http://zzak.io/log/2016-04-18-the-road-to-sinatra-2.0.html&quot;&gt;haven’t been following along&lt;/a&gt;, the major version bump includes a lot of changes significant to the future of the project.&lt;/p&gt;
+
+&lt;p&gt;In this post, you will see the full details including what’s new, what’s gone, and everything packed into the two point oh release.&lt;/p&gt;
+
+&lt;p&gt;Before we begin, I have to thank everyone who contributed, helped test pre-releases, and continues to use and support the project.&lt;/p&gt;
+
+&lt;h2 id=&quot;releases&quot;&gt;Releases&lt;/h2&gt;
+
+&lt;p&gt;Sinatra 2.0 includes the release of the following gems, and associated verions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra&lt;/code&gt;: v2.0.0&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra-contrib&lt;/code&gt;: v2.0.0&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mustermann&lt;/code&gt;: v1.0.0&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mustermann-contrib&lt;/code&gt;: v1.0.0&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt;: v2.0.0&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can download all of these gems from &lt;a href=&quot;https://rubygems.org&quot;&gt;rubygems.org&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;major-features&quot;&gt;Major features&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Rack 2.0 support, Rack 1.x is no longer supported&lt;/li&gt;
+  &lt;li&gt;Ruby 2.2+ support, Ruby &amp;lt; 2.2 is no longer supported&lt;/li&gt;
+  &lt;li&gt;Sinatra router replaced with Mustermann&lt;/li&gt;
+  &lt;li&gt;Compatible with Rails 5! :trollface:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;sinatra-core&quot;&gt;Sinatra core&lt;/h2&gt;
+
+&lt;p&gt;Many of you have been waiting since before the &lt;a href=&quot;http://weblog.rubyonrails.org/2016/6/30/Rails-5-0-final/&quot;&gt;Rails 5 release&lt;/a&gt;, for a Sinatra 2.0 pre-release.&lt;/p&gt;
+
+&lt;p&gt;Before we get into the changes, I want to address something.&lt;/p&gt;
+
+&lt;h3 id=&quot;why-20-was-delayed&quot;&gt;Why 2.0 was delayed&lt;/h3&gt;
+
+&lt;p&gt;First, there &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1135&quot;&gt;was&lt;/a&gt; a &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1123&quot;&gt;ridiculous&lt;/a&gt; number of &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1124&quot;&gt;tickets&lt;/a&gt; asking &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1115&quot;&gt;for a release&lt;/a&gt;, so &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1117&quot;&gt;many&lt;/a&gt; that I &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1071&quot;&gt;actually&lt;/a&gt; lost &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1152&quot;&gt;count&lt;/a&gt; to be &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1133&quot;&gt;honest&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Let me just say, thank you everyone for your patience and I hope that this release is worth the wait!&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;To put it short.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;When I took on the challenge of releasing Sinatra 2.0, my goal was to not only bump minimum dependency requirements – but also make sure Sinatra is well maintained and provide the level of &lt;strong&gt;class&lt;/strong&gt; people have come to expect from the project and it’s &lt;a href=&quot;https://github.com/rkh&quot;&gt;previous maintainer&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;With that said, I hope the following features and changes that went into the release can live up to (not only mine) but everyone’s expectations.&lt;/p&gt;
+
+&lt;h3 id=&quot;features&quot;&gt;Features&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Use Mustermann for patterns &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1086&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/rkh&quot;&gt;Konstantin Haase&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Server now provides &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-q&lt;/code&gt; flag for quiet mode, which disables start/stop messages &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1153&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/304&quot;&gt;Vasiliy&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Session middleware can now be specified with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:session_store&lt;/code&gt; setting &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1161&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/jkowens&quot;&gt;Jordan Owens&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;APP_ENV&lt;/code&gt; is now preferred and recommended over &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RACK_ENV&lt;/code&gt; for setting environment &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/984&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/dmathieu&quot;&gt;Damien Mathieu&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Reel support &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/793&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/patriciomacadden&quot;&gt;Patricio Mac Adden&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;changes&quot;&gt;Changes&lt;/h3&gt;
+
+&lt;p&gt;The following notable changes are also included in this release.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Make route params available during error handling &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/895&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/jeremyevans&quot;&gt;Jeremy Evans&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Unify &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;not_found&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;error&lt;/code&gt; 404 behavior &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/896&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/jeremyevans&quot;&gt;Jeremy Evans&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Enable Ruby 2.3 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;frozen_string_literal&lt;/code&gt; feature &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1076&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/marshall-lee&quot;&gt;Vladimir Kochnev&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Add Sinatra::ShowExceptions::TEMPLATE and patched Rack::ShowExceptions to prefer Sinatra template &lt;a href=&quot;https://github.com/sinatra/sinatra/commit/57c2ebb854379fd28def61340ad0b35a8edea792&quot;&gt;commit&lt;/a&gt; by &lt;a href=&quot;https://github.com/zzak&quot;&gt;Zachary Scott&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::Runner is used internally for integration tests &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/840&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/apotonick&quot;&gt;Nick Sutterer&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Fix case-sensitivity issue in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uri&lt;/code&gt; method &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/889&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/rennex&quot;&gt;rennex&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rack::Utils.status_code&lt;/code&gt; to allow &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;status&lt;/code&gt; helper to use symbol as well as numeric codes &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/968&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/tobiashm&quot;&gt;Tobias H. Michaelsen&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Improved error handling for invalid params through Rack &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1070&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/jkowens&quot;&gt;Jordan Owens&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Ensure template is cached only once &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1021&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/raxoft&quot;&gt;Patrik Rak&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Use same &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;session_secret&lt;/code&gt; for classic and modular apps in development &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1245&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/stomar&quot;&gt;Marcus Stollsteimer&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Improve Session Secret documentation to encourage better security practices &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1218&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/grempe&quot;&gt;Glenn Rempe&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Exposed global and per-route options for Mustermann route parsing &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1233&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/mwpastore&quot;&gt;Mike Pastore&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Capture exception messages of raised NotFound and BadRequest &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1210&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/mwpastore&quot;&gt;Mike Pastore&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:strict_paths&lt;/code&gt; option for managing trailing slashes &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1273&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/namusyaka&quot;&gt;namusyaka&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Add full IndifferentHash implementation to params &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1279&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/mwpastore&quot;&gt;Mike Pastore&lt;/a&gt; and &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1262&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/JonMidhir&quot;&gt;John Hope&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now let’s take a look at the peripheral work that went into the release of Sinatra 2.0.&lt;/p&gt;
+
+&lt;h2 id=&quot;sinatracontrib&quot;&gt;Sinatra::Contrib&lt;/h2&gt;
+
+&lt;p&gt;This gem provides a bunch of helpful extensions for common patterns that can be applied to your Sinatra application. Take a look at the &lt;a href=&quot;http://www.sinatrarb.com/contrib/&quot;&gt;documentation&lt;/a&gt; for a list of what you get.&lt;/p&gt;
+
+&lt;p&gt;The biggest change to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra-contrib&lt;/code&gt; gem is that it is now bundled in the Sinatra source tree. &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1145&quot;&gt;Ticket&lt;/a&gt; by &lt;a href=&quot;https://github.com/zzak&quot;&gt;Zachary Scott&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Since the release, if you install the gem though you shouldn’t notice any difference. Alternitively you can install the gem from source, like so:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Gemfile
+github 'sinatra/sinatra' do
+  gem 'sinatra-contrib'
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will fetch the &lt;a href=&quot;https://github.com/sinatra/sinatra&quot;&gt;sinatra git source&lt;/a&gt; and install the gem from the tree.&lt;/p&gt;
+
+&lt;p&gt;Also, we’ve consolidated the bug trackers, and you can now find &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra-contrib&lt;/code&gt; related issues &lt;a href=&quot;https://github.com/sinatra/sinatra/labels/sinatra-contrib&quot;&gt;under this label&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;features-1&quot;&gt;Features&lt;/h3&gt;
+
+&lt;p&gt;Here are the new features in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sinatra::Contrib&lt;/code&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Sinatra::Contrib is now bundled in the Sinatra source tree &lt;a href=&quot;https&quot;&gt;PR&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::ContentFor added &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;clear_content_for&lt;/code&gt; method &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/152&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/kapowaz&quot;&gt;Ben Darlow&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::Namespace support for Mustermann
+  &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/207&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/304&quot;&gt;Vasiliy&lt;/a&gt;
+  and &lt;a href=&quot;https://github.com/jkowens&quot;&gt;Jordan Owens&lt;/a&gt; &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/208&quot;&gt;(PR)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::RequiredParams for permitting required query parameters &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/131&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/dtaniwaki&quot;&gt;Daisuke Taniwaki&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::Runner &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/122&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/apotonick&quot;&gt;Nick Sutterer&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::WebDAV &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/143&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/yegortimoshenko&quot;&gt;Yegor Timoshenko&lt;/a&gt;
+Originally submitted by &lt;a href=&quot;https://github.com/markbates&quot;&gt;Mark Bates&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::Reloader added &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;after_reload&lt;/code&gt; hook which allows manual reload changes when triggered
+&lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1150&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/stjhimy&quot;&gt;Jhimy Fernandes Villar&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;changes-1&quot;&gt;Changes&lt;/h3&gt;
+
+&lt;p&gt;And the following notable changes that went into the release.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Migrate specs to RSpec 3.4 &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/203&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/stjhimy&quot;&gt;Jhimy Fernandes Villar&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::ConfigFile allow ERB syntax in YML files &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/199&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/stjhimy&quot;&gt;Jhimy Fernandes Villar&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::ContentFor renders given block if specified key is not found
+&lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/121&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/micahredding&quot;&gt;Micah Redding&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::ContentFor can yield an immediate value, similar to ActionView &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/170&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/r7kamura&quot;&gt;Ryo Nakamura&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::LinkHeader to use “,\n” (comma, new-line) as delimiter &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/193&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/petedmarsh&quot;&gt;petedmarsh&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::Namespace allow using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;redirect_to&lt;/code&gt; in a namespace &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/180&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/stjhimy&quot;&gt;Jhimy Fernandes Villar&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::RespondWith swallow exception from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Tilt&lt;/code&gt; on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LoadError&lt;/code&gt; for missing template &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/pull/175&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/maafy6&quot;&gt;Matt Austin&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sinatra::RespondWith now raises a 500 error if formatting fails &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/commit/fe860ecbbfdb38da39d01b2b3ffc081e20e4eb8f&quot;&gt;commit&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Make Rack::Test a development dependency &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1232&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/mwpastore&quot;&gt;Mike Pastore&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Add explicit set method to contrib/cookies to override cookie settings &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1240&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/allenan&quot;&gt;Andrew Allen&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Avoid executing filters even if prefix matches with other namespace &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1253&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/namusyaka&quot;&gt;namusyaka&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;removals&quot;&gt;Removals&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Sinatra::Decompile is no longer necessary after added Mustermann support &lt;a href=&quot;https://github.com/sinatra/sinatra/commit/3c96ef05ea7a9487eabc5d4da466919bc411aa1b&quot;&gt;commit&lt;/a&gt; by &lt;a href=&quot;https://github.com/zzak&quot;&gt;Zachary Scott&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For full details, &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/compare/v1.4.7...fe860ec&quot;&gt;compare the pre-merged diff&lt;/a&gt; and &lt;a href=&quot;https://github.com/sinatra/sinatra-contrib/milestone/3&quot;&gt;milestone&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;rackprotection&quot;&gt;Rack::Protection&lt;/h2&gt;
+
+&lt;p&gt;This gem is designed to provide several middleware for protecting your applications against common web attacks. Take a look at the &lt;a href=&quot;http://www.sinatrarb.com/rack-protection/&quot;&gt;documentation&lt;/a&gt; for more information.&lt;/p&gt;
+
+&lt;p&gt;The biggest change to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt; gem is that it is now bundled in the Sinatra source tree. &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1167&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/zzak&quot;&gt;Zachary Scott&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Although I must admit, &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1149&quot;&gt;this&lt;/a&gt; change &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1110&quot;&gt;wasn’t&lt;/a&gt; without &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1163&quot;&gt;pitfalls&lt;/a&gt;, I apologize to everyone affected during the transition time.&lt;/p&gt;
+
+&lt;p&gt;Since the release, if you install the gem though you shouldn’t notice. Alternitively you can install the gem from source, like so:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Gemfile
+github 'sinatra/sinatra' do
+  gem 'rack-protection'
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will fetch the &lt;a href=&quot;https://github.com/sinatra/sinatra&quot;&gt;sinatra git source&lt;/a&gt; and install the gem from the tree.&lt;/p&gt;
+
+&lt;p&gt;Also, we’ve consolidated the bug trackers, and you can now find &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack-protection&lt;/code&gt; related issues &lt;a href=&quot;https://github.com/sinatra/sinatra/labels/rack-protection&quot;&gt;under this label&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;features-2&quot;&gt;Features&lt;/h3&gt;
+
+&lt;p&gt;Here are the new features in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rack::Protection&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Rack::Protection::ContentSecurityPolicy &lt;a href=&quot;https://github.com/sinatra/rack-protection/pull/75&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/mkristian&quot;&gt;Christian Meier&lt;/a&gt; with Level 2 and 3 Directives in &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1202&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/grempe&quot;&gt;Glenn Rempe&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Rack::Protection::HttpOrigin and AuthenticityToken added &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:allow_if&lt;/code&gt; option to specify allowable urls &lt;a href=&quot;https://github.com/sinatra/rack-protection/pull/108&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/nathanstitt&quot;&gt;Nathan Stitt&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Rack::Protection::CookieTossing &lt;a href=&quot;https://github.com/sinatra/rack-protection/pull/113&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/jkowens&quot;&gt;Jordan Owens&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Rack::Protection::AuthenticityToken prevent BREACH attack &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1171&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/jkowens&quot;&gt;Jordan Owens&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Added &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:without_session&lt;/code&gt; option to initializer to easily skip session-based protections &lt;a href=&quot;https://github.com/sinatra/sinatra/commit/46b1d85aee1461dff5d9893e61553020729bbf92&quot;&gt;commit&lt;/a&gt; by &lt;a href=&quot;https://github.com/zzak&quot;&gt;Zachary Scott&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;changes-2&quot;&gt;Changes&lt;/h3&gt;
+
+&lt;p&gt;Along with the following notable changes that went into the release.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Migrate spaces to RSpec 3 &lt;a href=&quot;https://github.com/sinatra/rack-protection/pull/87&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/mdesantis&quot;&gt;Maurizio De Santis&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Rack::Protection::StrictTransport &lt;a href=&quot;https://github.com/sinatra/rack-protection/pull/105&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/maciekm&quot;&gt;Maciej Moleda&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Rack::Protection::JsonCsrf closes body on prevented attack &lt;a href=&quot;https://github.com/sinatra/rack-protection/pull/78&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/rkh&quot;&gt;Konstantin Haase&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Use Rack::Utils.secure_compare when checking CSRF tokens &lt;a href=&quot;https://github.com/sinatra/rack-protection/commit/d8068e872b0f19ef9de25265552cb1b835270901&quot;&gt;commit&lt;/a&gt; by &lt;a href=&quot;https://github.com/jeltz&quot;&gt;Andreas Karlsson&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Rack::Protection::EscapedParams ensures Tempfile is untouched &lt;a href=&quot;https://github.com/sinatra/rack-protection/pull/99&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/droppedoncaprica&quot;&gt;Albert Engelbrecht&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Adds preload option to Rack:Protection:StrictTransport &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1209&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/errm&quot;&gt;Ed Robinson&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;allow_if&lt;/code&gt; option to bypass json csrf protection &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1265&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/jkowens&quot;&gt;Jordan Owens&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For full details, &lt;a href=&quot;https://github.com/sinatra/rack-protection/compare/v1.5.3...7e723a7&quot;&gt;compare the pre-merged diff&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;mustermann&quot;&gt;Mustermann&lt;/h2&gt;
+
+&lt;p&gt;Mustermann is a powerful library with many features and compatible &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;params&lt;/code&gt; parsing interface. It will replace the existing router in Sinatra for version 2.0.&lt;/p&gt;
+
+&lt;p&gt;Take a look at the &lt;a href=&quot;http://www.sinatrarb.com/mustermann/&quot;&gt;documentation&lt;/a&gt; for more information.&lt;/p&gt;
+
+&lt;p&gt;Apart from the features and changes to the core of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Mustermann&lt;/code&gt;, which I will list below, the biggest change in the first stable release is organizational.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mustermann-everything&lt;/code&gt; gem is deprecated&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mustermann-contrib&lt;/code&gt; has replaced it, including all non-core extensions&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Please check the &lt;a href=&quot;https://github.com/sinatra/mustermann/pull/53&quot;&gt;PR&lt;/a&gt; for the full list of included plugins, but I hope this change will make maintaining and releasing Mustermann much simpler from now on.&lt;/p&gt;
+
+&lt;h3 id=&quot;features-3&quot;&gt;Features&lt;/h3&gt;
+
+&lt;p&gt;Here are the latest features in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Mustermann&lt;/code&gt; version 1.0.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Rails patterns: Add Rails 5.0 compatibility mode, make it default. &lt;a href=&quot;https://github.com/sinatra/mustermann/commit/50ae34b84a6ee5ce8936e908e0076782d4a45c86&quot;&gt;commit&lt;/a&gt; by &lt;a href=&quot;https://github.com/rkh&quot;&gt;Konstantin Haase&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Add concatenation support (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Mustermann::Pattern#+&lt;/code&gt;). &lt;a href=&quot;https://github.com/sinatra/mustermann/commit/500a603fffe0594ab842d72addcc449eedd6d5be&quot;&gt;commit&lt;/a&gt; by &lt;a href=&quot;https://github.com/rkh&quot;&gt;Konstantin Haase&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Mustermann::Grape &lt;a href=&quot;https://github.com/sinatra/mustermann/pull/46&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/namusyaka&quot;&gt;namusyaka&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Implement shorthand for ({foo}&lt;/td&gt;
+          &lt;td&gt;{bar}) pattern &lt;a href=&quot;https://github.com/sinatra/mustermann/pull/43&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/namusyaka&quot;&gt;namusyaka&lt;/a&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Sinatra patterns: Allow &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;|&lt;/code&gt; outside of parens &lt;a href=&quot;https://github.com/sinatra/mustermann/commit/fb2026197b013828e90a53169c0379bb1d30a66d&quot;&gt;commit&lt;/a&gt; by &lt;a href=&quot;https://github.com/rkh&quot;&gt;Konstantin Haase&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Mustermann::Sinatra#|&lt;/code&gt; may now generate a Sinatra pattern instead of a real composite &lt;a href=&quot;https://github.com/sinatra/mustermann/commit/1962330cb73d334258e0088debcef406747cf5af&quot;&gt;commit&lt;/a&gt; by &lt;a href=&quot;https://github.com/rkh&quot;&gt;Konstantin Haase&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;changes-3&quot;&gt;Changes&lt;/h3&gt;
+
+&lt;p&gt;Along with the following notable changes that went into the release.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Moved non-core extensions to meta &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mustermann-contrib&lt;/code&gt; gem &lt;a href=&quot;https://github.com/sinatra/mustermann/pull/53&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/zzak&quot;&gt;Zachary Scott&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Move Tool::EqualityMap from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tool&lt;/code&gt; gem to Mustermann::EqualityMap &lt;a href=&quot;https://github.com/sinatra/mustermann/pull/49&quot;&gt;PR&lt;/a&gt; by &lt;a href=&quot;https://github.com/mikeastock&quot;&gt;Michael Stock&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Remove routers (they were out of scope for the main gem). &lt;a href=&quot;https://github.com/sinatra/mustermann/commit/387b1f8a6a76594a0025421e85f4f2c957e28b66&quot;&gt;commit&lt;/a&gt; by &lt;a href=&quot;https://github.com/rkh&quot;&gt;Konstantin Haase&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For the full details, &lt;a href=&quot;https://github.com/sinatra/mustermann/compare/v0.4.0...0d25e09&quot;&gt;compare the diff&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;wrapping-up&quot;&gt;Wrapping up&lt;/h2&gt;
+
+&lt;p&gt;In the end, there’s still more work to be done on the project and a bright future ahead.&lt;/p&gt;
+
+&lt;p&gt;At the time of writing this, there are almost &lt;a href=&quot;https://github.com/sinatra/sinatra/issues&quot;&gt;30 open issues&lt;/a&gt; and about &lt;a href=&quot;https://github.com/sinatra/sinatra/pulls&quot;&gt;10 pull requests&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;There are a number of places where Sinatra could improve, and although I’ve added a number of tickets for features, I’d like to end this by briefly listing some of these areas specifically.&lt;/p&gt;
+
+&lt;h3 id=&quot;logging&quot;&gt;Logging&lt;/h3&gt;
+
+&lt;p&gt;Currently, Sinatra uses &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rack::Logger&lt;/code&gt; middleware under the hood with a little bit extra.&lt;/p&gt;
+
+&lt;p&gt;This logger is &lt;a href=&quot;https://github.com/rack/rack/blob/master/lib/rack/logger.rb&quot;&gt;barebones&lt;/a&gt;, and I’m sure we could build a much nicer logging API by ourselves that would prove more useful for dealing with production services.&lt;/p&gt;
+
+&lt;h3 id=&quot;streaming&quot;&gt;Streaming&lt;/h3&gt;
+
+&lt;p&gt;There have been a &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1035&quot;&gt;number&lt;/a&gt; of &lt;a href=&quot;https://github.com/sinatra/sinatra/pull/1114&quot;&gt;discussions&lt;/a&gt; on streaming, but I feel this is something that could definitely be improved.&lt;/p&gt;
+
+&lt;p&gt;While, there are some &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/1140&quot;&gt;missing features&lt;/a&gt; mentioned, when this API was originally implemented Rack’s hijack api was &lt;a href=&quot;https://github.com/sinatra/sinatra/issues/604&quot;&gt;still unfinished&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I don’t exactly know the best route for this, but probably start with something in the Rack layer – like is &lt;a href=&quot;https://github.com/rack/rack/issues/1093&quot;&gt;already being discussed&lt;/a&gt;. Then we can provide an API on top of that inside Sinatra’s DSL. For added bonus, we could wrap something like &lt;a href=&quot;http://www.sinatrarb.com/contrib/streaming.html&quot;&gt;Sinatra::Streaming&lt;/a&gt; to make it really nice.&lt;/p&gt;
+
+&lt;h3 id=&quot;exception-handling&quot;&gt;Exception Handling&lt;/h3&gt;
+
+&lt;p&gt;The current implementation for error handling comes down to &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/8c2504c/lib/sinatra/base.rb#L1123-L1155&quot;&gt;“handle_exception!”&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This method to me looks like it’s begging for a refactor, and just the cause of a bad API design (sorry).&lt;/p&gt;
+
+&lt;p&gt;What I mean is, it could definitely be improved, and maybe it’s “bad design” but hey it works! Right!&lt;/p&gt;
+
+&lt;p&gt;Also take a look at &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/8c2504c/lib/sinatra/base.rb#L1157-L1171&quot;&gt;“error_block!”&lt;/a&gt; and &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/8c2504c/lib/sinatra/base.rb#L1173-L1176&quot;&gt;“dump_errors!”&lt;/a&gt;.. &lt;strong&gt;what!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;All of this along with a middleware, called &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/master/lib/sinatra/show_exceptions.rb&quot;&gt;“ShowExceptions”&lt;/a&gt;, for displaying errors both/either in plain-text and/or html.&lt;/p&gt;
+
+&lt;h3 id=&quot;wait-theres-more&quot;&gt;Wait there’s more!&lt;/h3&gt;
+
+&lt;p&gt;Without going into too much detail, route dispatch (including before/after filters) needs work. As well, &lt;a href=&quot;https://github.com/rkh&quot;&gt;@rkh&lt;/a&gt; has mentioned wanting to improve the &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/8c2504c/lib/sinatra/base.rb#L650-L889&quot;&gt;Template&lt;/a&gt; API.&lt;/p&gt;
+
+&lt;p&gt;There is also stuff like an implementation of &lt;a href=&quot;https://github.com/sinatra/sinatra/blob/8c2504c/lib/sinatra/base.rb#L1069-L1085&quot;&gt;“indifferent_params” and “indifferent_hash”&lt;/a&gt;, that could be upstreamed in Ruby.&lt;/p&gt;
+
+&lt;p&gt;At any rate, there’s more than a few things here as well as &lt;a href=&quot;https://gist.github.com/rkh/468571242a544df5eeb5&quot;&gt;&lt;strong&gt;a number of great ideas from @rkh himself&lt;/strong&gt;&lt;/a&gt; that should keep us busy for a while.&lt;/p&gt;
+
+&lt;h3 id=&quot;briefly-about-deprecations&quot;&gt;Briefly about deprecations&lt;/h3&gt;
+
+&lt;p&gt;One thing I want to say before I end this post, &lt;em&gt;please please please pleeeease&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Do not send PRs to remove deprecations or unfactored code without good reason.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I won’t consider any changes like this until we start thinking about &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;version 2.1&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;thank-you&quot;&gt;Thank you&lt;/h3&gt;
+
+&lt;p&gt;At any rate, I hope that Sinatra 2.0 is everything you hoped for and more, and apologize if your patch or bug wasn’t included in the release.&lt;/p&gt;
+
+&lt;p&gt;Thank you everyone who has contributed over the years to this project, and continues to ensure it lives on.&lt;/p&gt;
+
+&lt;p&gt;In the words of the great Nat King Cole, &lt;a href=&quot;https://www.youtube.com/watch?v=Fy_JRGjc1To&quot;&gt;you’re unforgettable&lt;/a&gt;.&lt;/p&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Sinatra 1.4.0, 1.3.6, 1.2.9 released!</title>
+   <link href="http://sinatra.github.com/2013/03/15/sinatra-1.4.0.html">
+   <published>2013-03-15T00:00:00+00:00</published>
+   <updated>2013-03-15T00:00:00+00:00</updated>
+   <author>
+     <name>Konstantin Haase</name>
+     <uri>http://rkh.im</uri>
+   </author>
+   <id>http://sinatrarb.com/2013/03/15/sinatra-1.4.0</id>
+   <content type="html">&lt;p&gt;I’ve just released Sinatra 1.4.0, 1.3.6 and 1.2.9.&lt;/p&gt;
+
+&lt;p&gt;Find out what’s new in 1.4 on &lt;a href=&quot;http://rkh.im/sinatra-1.4&quot;&gt;my blog&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>New feature release, Contrib and Recipes</title>
+   <link href="http://sinatra.github.com/2011/09/30/sinatra-1.3.0.html">
+   <published>2011-09-30T00:00:00+00:00</published>
+   <updated>2011-09-30T00:00:00+00:00</updated>
+   <author>
+     <name>Konstantin Haase</name>
+     <uri>http://rkh.im</uri>
+   </author>
+   <id>http://sinatrarb.com/2011/09/30/sinatra-1.3.0</id>
+   <content type="html">&lt;p&gt;We’re proud to announce two new releases today: 1.3.0 and 1.2.7. We’re also
+simultaneously releasing sinatra-contrib and would like to officially announce
+the recently launched Sinatra Recipes project. Read on for more goodness!&lt;/p&gt;
+
+&lt;h2 id=&quot;sinatra-130&quot;&gt;Sinatra 1.3.0&lt;/h2&gt;
+
+&lt;p&gt;We have a new feature release!&lt;/p&gt;
+
+&lt;p&gt;From our perspective, one of the biggest additions is a streaming API. A simple
+version of it ships with Sinatra directly and is extended in sinatra-contrib.
+The vanilla version looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;get '/' do
+  stream do |out|
+    out &amp;lt;&amp;lt; &quot;It's gonna be legen -\n&quot;
+    sleep 0.5
+    out &amp;lt;&amp;lt; &quot; (wait for it) \n&quot;
+    sleep 1
+    out &amp;lt;&amp;lt; &quot;- dary!\n&quot;
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The cool thing about this is that it abstracts away the differences between all
+the different Rack servers, no matter if those are evented (like Thin, Rainbows!
+or Ebb) or sequential (like Unicorn, Passenger or Mongrel). Only WEBRick has
+issues with it at the moment (you’ll get the response body all at once), but we
+are looking into this.&lt;/p&gt;
+
+&lt;p&gt;What is really interesting about this: If you run on an evented server, like
+Thin, you can keep the connection open and easily implement messaging services,
+Server-Sent Events and so on:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set :server, :thin
+connections = []
+
+get '/' do
+  # keep stream open
+  stream(:keep_open) { |out| connections &amp;lt;&amp;lt; out }
+end
+
+post '/' do
+  # write to all open streams
+  connections.each { |out| out &amp;lt;&amp;lt; params[:message] &amp;lt;&amp;lt; &quot;\n&quot; }
+  &quot;message sent&quot;
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It is worth mentioning that all this works without fibers (which, amongst other
+things, would significantly limit the stack size).&lt;/p&gt;
+
+&lt;p&gt;We added support for the PATCH HTTP verb, which you might be familiar with from
+the new GitHub API:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;patch '/' do
+  # ... modify a resource ...
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;A &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;logger&lt;/code&gt; helper for logging is available now, and if it writes to the logs
+depends on whether you enabled or disabled logging:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;configure(:test) { disable :logging }
+
+get '/' do
+  logger.info &quot;I just want to let you know: I'll take care of the request!&quot;
+  &quot;Hello World!&quot;
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erubis&lt;/code&gt; method has been deprecated. Sinatra will automatically use Erubis
+for rendering ERB templates if available.&lt;/p&gt;
+
+&lt;p&gt;There is more coming with this release, but the rest is mainly bug fixes and
+improving the behavior. For instance, Sinatra treats ETags and Last-Modified
+headers properly when they are used as optimistic locking for unsafe HTTP verbs.
+For more changes, see the 1.3.0
+&lt;a href=&quot;https://github.com/sinatra/sinatra/blob/v1.3.0/CHANGES&quot;&gt;change log&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Special thanks for helping with the 1.3.0 release go to:&lt;/p&gt;
+
+&lt;p&gt;Gabriel Andretta, michelc, burningTyger, Tim Felgentreff, Vasily Polovnyov,
+nashby, kenichi nakamura, Gaku Ueda, Gabriel Horner, Sylvain Desvé, Jacob
+Burkhart &amp;amp; Josh Lane, aibo (irc), Selman ULUG, Aviv Ben-Yosef, Paolo “Nusco”
+Perrotta, Marcos Toledo, Matthew Schinckel, Tim Preston, Davide D’Agostino,
+Simone Carletti, Peter Suschlik, Postmodern, F. Zhang, Rémy Coutable, and David
+Waite&lt;/p&gt;
+
+&lt;h2 id=&quot;sinatra-127&quot;&gt;Sinatra 1.2.7&lt;/h2&gt;
+
+&lt;p&gt;We will drop support for Rack prior to 1.3 and Ruby 1.8.6 with the Sinatra 1.3.0
+release. However, we will continue to supply Sinatra 1.2 with bug fixes until
+the End-Of-Life of Rack 1.2.x and Sinatra 1.2 will always remain compatible with
+the latest released 1.8.6 patchlevel.&lt;/p&gt;
+
+&lt;p&gt;For the backported patches, see the 1.2.7
+&lt;a href=&quot;https://github.com/sinatra/sinatra/blob/v1.2.7/CHANGES&quot;&gt;change log&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We’d like to thank everyone helping with the 1.2.7 release:&lt;/p&gt;
+
+&lt;p&gt;Emanuele Vicentini, Takanori Ishikawa, David Kellum, Gaku Ueda, Lee Reilly, Iain
+Barnett, pete, Luke Jahnke, John Wolfe, Andrew Armenia, Tim Felgentreff, and
+Alessandro Dal Grande&lt;/p&gt;
+
+&lt;h2 id=&quot;sinatra-contrib&quot;&gt;Sinatra-Contrib&lt;/h2&gt;
+
+&lt;p&gt;There are a lot of Sinatra extensions out there, and some of those are used by a
+large number of apps, like sinatra-content-for or sinatra-reloader. The
+maintainers of these extensions have to keep up with new Sinatra releases to
+make sure everything works fine. This poses an issue from time to time, especially
+since some of these extensions were relying on Sinatra internals. To fix this,
+we created the sinatra-contrib project (source code at
+https://github.com/sinatra/sinatra-contrib). This project contains a number of
+extensions that are probably useful for most Sinatra applications. Some are old
+extensions that have largely been rewritten to ensure the code quality
+developers are used to from Sinatra itself and to no longer rely on internals,
+like sinatra-namespace, and some are new additions of general interest, for
+example sinatra-respond-with.&lt;/p&gt;
+
+&lt;p&gt;Here is the promise: For every Sinatra release, starting with 1.3.0, there will
+&lt;em&gt;always&lt;/em&gt; be a fully compatible sinatra-contrib release. Documentation for all the
+extensions shipping with sinatra-contrib will be made available on the Sinatra
+website. I would not have managed to take care of this all by my self, so I’m
+really grateful that Gabriel Andretta jumped in to help with this project.&lt;/p&gt;
+
+&lt;p&gt;Documentation is available at &lt;a href=&quot;http://www.sinatrarb.com/contrib&quot;&gt;sinatrarb.com/contrib&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;sinatra-recipes&quot;&gt;Sinatra Recipes&lt;/h2&gt;
+
+&lt;p&gt;Zachary Scott recently launched the &lt;a href=&quot;http://recipes.sinatrarb.com/&quot;&gt;Recipes&lt;/a&gt;
+project. It contains community contributed recipes and techniques for Sinatra.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Sinatra Loves Dancer</title>
+   <link href="http://sinatra.github.com/2011/07/21/sinatra-loves-dancer.html">
+   <published>2011-07-21T00:00:00+00:00</published>
+   <updated>2011-07-21T00:00:00+00:00</updated>
+   <author>
+     <name>Konstantin Haase</name>
+     <uri>http://rkh.im</uri>
+   </author>
+   <id>http://sinatrarb.com/2011/07/21/sinatra-loves-dancer</id>
+   <content type="html">&lt;p&gt;&lt;em&gt;“The only cool PR is provided by one’s enemies. They toil incessantly and for free.” - Marshall McLuhan&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;There are &lt;a href=&quot;http://en.wikipedia.org/wiki/Sinatra_%28software%29#Sinatra_inspired_frameworks&quot;&gt;a lot of frameworks&lt;/a&gt; out there inspired by Sinatra. One of them is &lt;a href=&quot;http://www.perldancer.org/&quot;&gt;Dancer&lt;/a&gt;. Some unknown individual or group was posing as different members of the Sinatra core team on &lt;a href=&quot;http://cpanratings.perl.org/dist/Dancer&quot;&gt;CPAN ratings&lt;/a&gt;, a website to comment on the quality of Perl libraries.&lt;/p&gt;
+
+&lt;p&gt;Those comments were extremely rude and do not represent the opinion of any of the Sinatra developers. Quite the opposite, we love how Sinatra inspired so many of the libraries and are even proud to see Dancer being adopted by Perl developers.&lt;/p&gt;
+
+&lt;p&gt;We do not know what the agenda of this one individual is, and honestly, we do not care. The harm done by this person to the Dancer project, the Sinatra project and the people he posed as is unacceptable. The incident has been reported to the CPAN ratings team and we hope that those comments will be removed in due time.&lt;/p&gt;
+
+&lt;p&gt;If you are a Perl developer, we suggest you check out Dancer.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>What's New in Sinatra 1.2?</title>
+   <link href="http://sinatra.github.com/2011/03/03/sinatra-1.2.0.html">
+   <published>2011-03-03T00:00:00+00:00</published>
+   <updated>2011-03-03T00:00:00+00:00</updated>
+   <author>
+     <name>Konstantin Haase</name>
+     <uri>http://rkh.im</uri>
+   </author>
+   <id>http://sinatrarb.com/2011/03/03/sinatra-1.2.0</id>
+   <content type="html">&lt;p&gt;As announced on the &lt;a href=&quot;http://groups.google.com/group/sinatrarb/browse_thread/thread/515d1a5bf70b10a1&quot;&gt;mailing list&lt;/a&gt;, we
+have just released &lt;a href=&quot;https://rubygems.org/gems/sinatra/versions/1.2.0&quot;&gt;Sinatra
+1.2.0&lt;/a&gt;. Let’s have a closer
+look at the new features.&lt;/p&gt;
+
+&lt;h2 id=&quot;slim-support&quot;&gt;Slim support&lt;/h2&gt;
+
+&lt;p&gt;Sinatra now supports the &lt;a href=&quot;http://slim-lang.com/&quot;&gt;Slim Template Engine&lt;/a&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'sinatra'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'slim'&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;slim&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:index&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;cp&quot;&gt;__END__
+
+@@ index
+! doctype html
+html
+  head
+    title Sinatra With Slim
+  body
+    h1 Slim Is Fun!
+    a href=&quot;http://haml-lang.com/&quot; A bit like Haml, don't you think?&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;inline-markaby&quot;&gt;Inline Markaby&lt;/h2&gt;
+
+&lt;p&gt;Like Builder and Nokogiri templates, &lt;a href=&quot;http://markaby.rubyforge.org/&quot;&gt;Markaby&lt;/a&gt;
+can now be used directly inline:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'sinatra'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'markaby'&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;markaby&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;html&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;head&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Sinatra With Markaby&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h1&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Markaby Is Fun!&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;layout-engines&quot;&gt;Layout Engines&lt;/h2&gt;
+
+&lt;p&gt;Whenever you render a template, like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;some_page.haml&lt;/code&gt;, Sinatra will use a
+corresponding layout, like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;layout.haml&lt;/code&gt; for you. With the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:layout&lt;/code&gt; option it
+has always been possible to use a different layout, but it still had to be
+written in the same template language, Haml in our example. In 1.1 we introduced
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;markdown&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;textile&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rdoc&lt;/code&gt; templates. It is not possible to use those for
+layouts. We therefore added the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:layout_engine&lt;/code&gt; option, which easily allows you
+to combine one two different template engines:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'sinatra'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'rdiscount'&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# for all markdown files, use post.haml as layout&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:markdown&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:layout_engine&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:haml&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:layout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:post&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# use index.haml for readme&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;markdown&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:README&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:layout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:index&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/:post'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;markdown&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_sym&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This feature should also be handy when migrating from one template language to
+another, as it allows you to combine Erb with Haml, for instance.&lt;/p&gt;
+
+&lt;h2 id=&quot;conditional-filters&quot;&gt;Conditional Filters&lt;/h2&gt;
+
+&lt;p&gt;We introduced pattern matching filters in 1.1. Now they also support conditions:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;before&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:agent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/Song Bird/&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Those can also be combined with patterns, of course:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;after&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/api/*'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:provides&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:json&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;url-helper&quot;&gt;URL helper&lt;/h2&gt;
+
+&lt;p&gt;Usually Sinatra does not provide any view helper methods. Those are provided by
+extensions and would not suit Sinatra’s approach of a small but robust core.
+However, constructing URLs is a use case most people run into sooner or later.
+It is a bit complicated to construct URLs right. Consider this example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/foo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;a href='/bar'&amp;gt;Will you make it?&amp;lt;/a&amp;gt;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/bar'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;You made it!&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Feel free to run it. Works, doesn’t it? So, what is wrong with it?&lt;/p&gt;
+
+&lt;p&gt;Imagine your app is “mounted” by another Rack application, for instance in a
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.ru&lt;/code&gt; like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/there'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Sinatra&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Application&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyRailsApp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Application&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now the link to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/bar&lt;/code&gt; would end up in a request send to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MyRailsApp&lt;/code&gt; rather
+than to Sinatra. Injecting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;request.script_name&lt;/code&gt; would fix this, but be
+honest, how often do you do that?&lt;/p&gt;
+
+&lt;p&gt;Now, imagine these links are presented out of context, in an RSS feed or
+embedded on another host. In that case you might want to construct absolute
+URLs. This is even more cumbersome, as you most certainly either forget to
+handle reverse proxies, alternative ports/protocols or you end up with lots of
+URL related code all over the place, while what you should do is use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;url&lt;/code&gt;
+helper:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/foo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;a href='&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/bar'&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;'&amp;gt;You will make it!&amp;lt;/a&amp;gt;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/bar'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;You made it!&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Since you are likely going to use this with redirects, we also aliased the
+helper to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;to&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/foo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redirect&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/bar'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/bar'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;You made it!&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;named-captures-on-19&quot;&gt;Named Captures on 1.9&lt;/h2&gt;
+
+&lt;p&gt;Ruby 1.9 introduced &lt;a href=&quot;http://ruby.runpaint.org/regexps#captures&quot;&gt;named captures&lt;/a&gt;
+for regular expressions. Sinatra accepts regular expressions for matching paths.
+Now named captures will automatically end up populating &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;params&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;%r{/(?&amp;lt;year&amp;gt;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\d&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;{4})/(?&amp;lt;month&amp;gt;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\d&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;{2})/(?&amp;lt;day&amp;gt;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\d&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;{2})/?}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:month&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:day&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_i&lt;/span&gt;
+  &lt;span class=&quot;vi&quot;&gt;@posts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;pubished_on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;erb&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;templates-with-different-scopes&quot;&gt;Templates with different scopes&lt;/h2&gt;
+
+&lt;p&gt;All rendering methods now accept a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:scope&lt;/code&gt; options:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/:id'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;vi&quot;&gt;@post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# without scope&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;erb&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;%= @post.name %&amp;gt;&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# with scope&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;erb&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;%= name %&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:scope&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@post&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Note that all Sinatra helper methods and instance variables will &lt;em&gt;not&lt;/em&gt; be
+available.&lt;/p&gt;
+
+&lt;h2 id=&quot;configurable-redirects&quot;&gt;Configurable redirects&lt;/h2&gt;
+
+&lt;p&gt;In 1.1 we made sure all redirects were absolute URIs, to conform with RFC 2616
+(HTTP 1.1). This will result in issues for you if you have a broken Reverse
+Proxy configuration. If so, you should really fix your configuration. If you are
+unable to do so, a simple &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;disable :absolute_redirects&lt;/code&gt; will now give you back
+the 1.0 behavior. As shown above, you can now use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;to&lt;/code&gt; helper with redirect.
+If all your redirects are application local, you can now
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable :prefixed_redirects&lt;/code&gt; and skip the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;to&lt;/code&gt; altogether:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:prefixed_redirects&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/foo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redirect&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/bar'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/bar'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;You made it!&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We did not enable this per default to not break compatibility and to allow you
+redirects to other Rack endpoints.&lt;/p&gt;
+
+&lt;h2 id=&quot;overriding-template-lookup&quot;&gt;Overriding template lookup&lt;/h2&gt;
+
+&lt;p&gt;One popular feature request is supporting multiple view folders. But everyone
+wants different semantics. So, instead of choosing one way to go, we gave you
+means to implement your own lookup logic:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;helpers&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;find_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;looking for index.txt&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;views/index.txt&quot;&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;apparently, index.txt doesn't exist, let's try index.html&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;views/index.html&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;haml&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:foo&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Sinatra will call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;find_template&lt;/code&gt; to discover the template file. In the above
+example, we don’t care about what template engine to use or what name the
+template has. It will use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;views/index.txt&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;views/index.html&lt;/code&gt; for every
+template. Let’s have a look at the standard implementation:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;find_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;engine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Tilt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;mappings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;next&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;engine&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ext&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see, it will look in the views folder for a file named like the
+template with any of the file extensions registered for the template engine.&lt;/p&gt;
+
+&lt;p&gt;If all you want to change is the folder, you probably should just call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;super&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;find_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/b&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;More examples can be found in the
+&lt;a href=&quot;http://www.sinatrarb.com/intro#Looking%20Up%20Template%20Files&quot;&gt;readme&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;other-changes&quot;&gt;Other changes&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;send_file&lt;/code&gt; now takes a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:last_modified&lt;/code&gt; option&lt;/li&gt;
+  &lt;li&gt;improved error handling&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Blog revived</title>
+   <link href="http://sinatra.github.com/2011/03/03/blog-revived.html">
+   <published>2011-03-03T00:00:00+00:00</published>
+   <updated>2011-03-03T00:00:00+00:00</updated>
+   <author>
+     <name>Konstantin Haase</name>
+     <uri>http://rkh.im</uri>
+   </author>
+   <id>http://sinatrarb.com/2011/03/03/blog-revived</id>
+   <content type="html">&lt;p&gt;It has been quiet on this blog recently. Announcements, like the 1.0 and 1.1
+releases, have only been made on the mailing list. Plans are to change this and
+accompany mailing list announcements with in-depth articles about new feature
+releases.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>We Have a FAQ Now</title>
+   <link href="http://sinatra.github.com/2009/01/29/we-have-a-faq-now.html">
+   <published>2009-01-29T00:00:00+00:00</published>
+   <updated>2009-01-29T00:00:00+00:00</updated>
+   <author>
+     <name>Ryan Tomayko</name>
+     <uri>http://tomayko.com/about</uri>
+   </author>
+   <id>http://sinatrarb.com/2009/01/29/we-have-a-faq-now</id>
+   <content type="html">&lt;p&gt;Just getting started with Sinatra and wondering how to do something that should
+be obvious? &lt;a href=&quot;/faq.html&quot;&gt;Check out The FAQ&lt;/a&gt;. We culled a few weeks worth of IRC
+logs and mailing list threads to compile the initial set of entries and
+we’ll be adding to the list considerably over the coming weeks.&lt;/p&gt;
+
+&lt;p&gt;Have an idea for a FAQ entry? Fork the
+&lt;a href=&quot;https://github.com/sinatra/sinatra.github.com&quot;&gt;sinatra.github.com repository&lt;/a&gt;,
+add the entry to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;faq.markdown&lt;/code&gt;, and push. We’ll take care of the rest.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>What's New in Sinatra 0.9.0</title>
+   <link href="http://sinatra.github.com/2009/01/18/sinatra-0.9.0.html">
+   <published>2009-01-18T00:00:00+00:00</published>
+   <updated>2009-01-18T00:00:00+00:00</updated>
+   <author>
+     <name>Ryan Tomayko</name>
+     <uri>http://tomayko.com/about</uri>
+   </author>
+   <id>http://sinatrarb.com/2009/01/18/sinatra-0.9.0</id>
+   <content type="html">&lt;p&gt;This is the first in a series of 0.9.x releases designed to move Sinatra toward
+a rock solid 1.0. While we were able to add a touch of new hotness in this
+release, the major focus has been on getting the codebase shaped up for future
+development. Many longstanding bugs and minor annoyances were corrected along
+the way.&lt;/p&gt;
+
+&lt;p&gt;Sinatra’s internal classes and methods have changed significantly in this
+release. Most apps written for 0.3.x will work just fine under the new codebase
+but we’ve begun adding deprecation warnings for things slated to be ripped out
+completely in 1.0. &lt;strong&gt;Please test your apps before upgrading production
+environments to the 0.9.0 gem.&lt;/strong&gt; We’re committed to keeping existing apps
+running through 0.9.x so report compatibility issues through
+&lt;a href=&quot;/contributing.html&quot;&gt;the normal channels&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;With that out of the way, here are some of the new features to look out for
+in 0.9.0.&lt;/p&gt;
+
+&lt;h2 id=&quot;sinatrabase-and-proper-rack-citizenship&quot;&gt;Sinatra::Base and Proper Rack Citizenship&lt;/h2&gt;
+
+&lt;p&gt;Sinatra can now be used to build modular / reusable
+&lt;a href=&quot;http://rack.rubyforge.org/&quot;&gt;Rack&lt;/a&gt; applications and middleware components. This
+means that multiple Sinatra applications can now be run in isolation and
+co-exist peacefully with other Rack based frameworks.&lt;/p&gt;
+
+&lt;p&gt;Requiring &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;'sinatra/base'&lt;/code&gt; instead of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;'sinatra'&lt;/code&gt; causes a subset of Sinatra’s
+features to be loaded. No methods are added to the top-level and the
+command-line / auto-running features are disabled. Subclassing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sinatra::Base&lt;/code&gt;
+creates a Rack component with the familiar Sinatra DSL methods available in
+class scope. These classes can then be run as Rack applications or used as
+middleware components.&lt;/p&gt;
+
+&lt;p&gt;Proper documentation on this feature is in the works but here’s a quick example
+for illustration:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'sinatra/base'&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Sinatra&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# all options are available for the setting:&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:static&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:session&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:root&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;__FILE__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# each subclass has its own private middleware stack:&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rack&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Deflator&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# instance methods are helper methods and are available from&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# within filters, routes, and views:&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;em&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;em&amp;gt;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;lt;/em&amp;gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# routes are defined as usual:&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/hello/:person'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;Hello &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;em&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;That thing can be plugged in anywhere along a Rack pipeline. For instance,
+once Rails 2.3 ships, you’ll be able to use Sinatra apps to build
+&lt;a href=&quot;http://weblog.rubyonrails.org/2008/12/17/introducing-rails-metal&quot;&gt;Rails Metal&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Jesse Newland and Jon Crosby are
+&lt;a href=&quot;http://blog.joncrosby.me/post/72451217/a-world-of-middleware&quot;&gt;already experimenting&lt;/a&gt;.
+Very hot.&lt;/p&gt;
+
+&lt;h2 id=&quot;nested-params&quot;&gt;Nested Params&lt;/h2&gt;
+
+&lt;p&gt;Form parameters with subscripts are now parsed into a nested/recursive
+Hash structure. Here’s a form:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;form&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'POST'&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;action=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'/guestbook/'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'text'&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'person[name]'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'text'&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'person[email]'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;textarea&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'note'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/textarea&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It looks like this on the wire:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;person[name]=Frank&amp;amp;person[email]=frank@theritz.com&amp;amp;message=Stay%20cool
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Sinatra turns it into a nested Hash structure when accessed through
+the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;params&lt;/code&gt; method:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;post&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/guestbook/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; { :name =&amp;gt; 'Frank', :email =&amp;gt; 'frank@theritz.com' }&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;Hi &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;! Thanks for signing my guestbook.&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This was a massively popular feature requests. Thanks to
+&lt;a href=&quot;http://foca.tumblr.com/&quot;&gt;Nicolás Sanguinetti&lt;/a&gt; for the patch and
+&lt;a href=&quot;http://manveru.net/about_me&quot;&gt;Michael Fellinger&lt;/a&gt; for the original
+implementation.&lt;/p&gt;
+
+&lt;h2 id=&quot;routing-with-regular-expressions&quot;&gt;Routing with Regular Expressions&lt;/h2&gt;
+
+&lt;p&gt;The route declaration methods (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;put&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;post&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;put&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;delete&lt;/code&gt;) now
+take a Regexp as a pattern. Captures are made available to the route block
+at &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;params[:captures]&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;%r{/foo/(bar|baz)/(&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\d&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;+)}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# assuming: GET /foo/bar/42&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:captures&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; ['bar', 42]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;passing-on-a-route&quot;&gt;Passing on a Route&lt;/h2&gt;
+
+&lt;p&gt;We added a new request-level &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pass&lt;/code&gt; method that immediately exits the current
+block and passes control to the next matching route. For example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/shoot/:person'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;pass&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;sx&quot;&gt;%w[Kenny Sherrif]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;include?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;You shot &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/shoot/*'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;Missed!&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If no matching route is found after a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pass&lt;/code&gt;, a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NotFound&lt;/code&gt; exception is raised
+and the application 404s as if no route had matched in the first place.&lt;/p&gt;
+
+&lt;h2 id=&quot;refined-test-framework&quot;&gt;Refined Test Framework&lt;/h2&gt;
+
+&lt;p&gt;Sinatra’s testing support no longer depends on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Test::Unit&lt;/code&gt; (or any
+specific test framework for that matter). Requiring &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;'sinatra/test'&lt;/code&gt; brings in
+the &lt;a href=&quot;/api/classes/Sinatra/Test.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sinatra::Test&lt;/code&gt; module&lt;/a&gt; and the
+&lt;a href=&quot;/api/classes/Sinatra/TestHarness.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sinatra::TestHarness&lt;/code&gt; class&lt;/a&gt;, which can
+be used as necessary to simulate requests and make assertions about responses.&lt;/p&gt;
+
+&lt;p&gt;You can also require &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra/test/unit&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra/test/spec&lt;/code&gt;,
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra/test/rspec&lt;/code&gt;, or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sinatra/test/bacon&lt;/code&gt; to setup a framework-specific
+testing environment. See the section on “Testing” in the &lt;a href=&quot;/intro.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;README&lt;/code&gt;&lt;/a&gt;
+for examples.&lt;/p&gt;
+
+&lt;h2 id=&quot;more&quot;&gt;More&lt;/h2&gt;
+
+&lt;p&gt;See the &lt;a href=&quot;./changes.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CHANGES&lt;/code&gt;&lt;/a&gt; file for a comprehensive list of
+enhancements, bug fixes, and deprecations.&lt;/p&gt;
+</content>
+ </entry>
+ 
+</feed>

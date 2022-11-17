@@ -1,0 +1,898 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[Passenger - Phusion Blog]]></title><description><![CDATA[Pushing the state of art in web apps, microservices and devops.]]></description><link>https://blog.phusion.nl/</link><image><url>https://blog.phusion.nl/favicon.png</url><title>Passenger - Phusion Blog</title><link>https://blog.phusion.nl/</link></image><generator>Ghost 1.25</generator><lastBuildDate>Thu, 17 Nov 2022 06:03:10 GMT</lastBuildDate><atom:link href="https://blog.phusion.nl/tag/passenger/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Passenger 6.0.15]]></title><description><![CDATA[Version 6.0.15 of the Passenger application server has been released. This release adds Enterprise Linux 9 (RHEL, Rocky, Alma) packages, and improves Solaris support.]]></description><link>https://blog.phusion.nl/2022/09/19/passenger-6-0-15/</link><guid isPermaLink="false">63288773f634fc06a06683e4</guid><category><![CDATA[Passenger releases]]></category><category><![CDATA[Passenger]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Mon, 19 Sep 2022 16:44:52 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2022/09/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2022/09/passenger-space.png" alt="Passenger 6.0.15"><p>Version 6.0.15 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release adds Enterprise Linux 9 (RHEL, Rocky, Alma) packages, and improves Solaris support.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>Restore ability to build against upstream libev. Contributed by Antonio Terceiro. Closes <a href="https://github.com/phusion/passenger/issues/1544">GH-1544</a>.</li>
+<li>Improve rvm gemset detection. Closes <a href="https://github.com/phusion/passenger/issues/2420">GH-2420</a>.</li>
+<li>Fix watchdog error on disable-log-prefix flag. Contributed by Paul Hanyzewski. Closes <a href="https://github.com/phusion/passenger/issues/2363">GH-2363</a>.</li>
+<li>Upgrades Boost to 1.80.</li>
+<li>Fixed compilation on some platforms by explicitely using the stl queue. Closes <a href="https://github.com/phusion/passenger/issues/2440">GH-2440</a>.</li>
+<li>Raise an error in case rack gets an ENOBUFS error. Contributed by Mathieu Jobin.</li>
+<li>Fixes interaction between preload bundler option and setenv RUBYOPT option. Closes <a href="https://github.com/phusion/passenger/issues/2424">GH-2424</a>.</li>
+<li>Add rpm packages for el9 (RHEL, Rocky, Alma). Closes <a href="https://github.com/phusion/passenger/issues/2431">GH-2431</a>.</li>
+<li>Upgrade jsoncpp to 1.9.5.</li>
+<li>Improve Solaris support for 11.3 &amp; 11.4.</li>
+<li>Updated various library versions used in precompiled binaries (used for e.g. gem installs):
+<ul>
+<li>ccache: 4.6 → 4.6.3</li>
+<li>cmake: 3.23.1 → 3.24.2</li>
+<li>curl: 7.82.0 → 7.85.0</li>
+<li>git: 2.36.0 → 2.37.3</li>
+<li>gnupg: 2.3.5 → 2.3.7</li>
+<li>libiconv: 1.16 → 1.17</li>
+<li>libksba: 1.6.0 → 1.6.1</li>
+<li>openssl: 1.1.1n → 1.1.1q</li>
+<li>pinentry: 1.2.0 → 1.2.1</li>
+<li>rubygems: 3.3.12 → 3.3.22</li>
+</ul>
+</li>
+</ul>
+<h2 id="installing6015">Installing 6.0.15</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto6015">Upgrading to 6.0.15</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.15"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.15"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.15"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.15"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.15"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.15"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.15"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.15"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.15"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.14]]></title><description><![CDATA[<div class="kg-card-markdown"><p>Version 6.0.14 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release adds Ubuntu 22.04 &quot;Jammy&quot; packages, and removes Ubuntu 21.10 &quot;Impish&quot; packages.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2></div>]]></description><link>https://blog.phusion.nl/2022/05/10/passenger-6-0-14/</link><guid isPermaLink="false">627961e35f35a8067f5cffaf</guid><category><![CDATA[Passenger]]></category><category><![CDATA[Passenger releases]]></category><category><![CDATA[Featured posts]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Tue, 10 May 2022 18:07:13 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2022/05/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2022/05/passenger-space.png" alt="Passenger 6.0.14"><p>Version 6.0.14 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release adds Ubuntu 22.04 &quot;Jammy&quot; packages, and removes Ubuntu 21.10 &quot;Impish&quot; packages.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>Removes use of rexml in passenger restart command, because it was removed from Ruby 3. Closes <a href="https://github.com/phusion/passenger/issues/2415">GH-2415</a>.</p>
+</li>
+<li>
+<p>Adds Ubuntu 22.04 &quot;Jammy&quot; packages, and removes Ubuntu 21.10 &quot;Impish&quot; packages.</p>
+</li>
+<li>
+<p>Fixes a use after free regression introduced in 6.0.12.</p>
+</li>
+<li>
+<p>Fixed a warning about ERB.new argument deprecation in Ruby 3.1. Closes <a href="https://github.com/phusion/passenger/issues/2417">GH-2417</a>.</p>
+</li>
+<li>
+<p>Removed use of google apis from error pages for easier GDPR compliance.</p>
+</li>
+<li>
+<p>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</p>
+<ul>
+<li>cmake 3.22.3 → 3.23.1</li>
+<li>git 2.35.1 → 2.36.0</li>
+<li>gnupg 2.3.4 → 2.3.5</li>
+<li>libgcrypt 1.9.4 → 1.10.1</li>
+<li>libgpg_error 1.44 → 1.45</li>
+<li>ntbtls 0.3.0 → 0.3.1</li>
+<li>rubygems 3.3.9 → 3.3.12</li>
+<li>zlib 1.2.11 → 1.2.12</li>
+<li>ruby
+<ul>
+<li>2.6.9 → 2.6.10</li>
+<li>2.7.5 → 2.7.6</li>
+<li>3.0.3 → 3.0.4</li>
+<li>3.1.1 → 3.1.2</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="installing6014">Installing 6.0.14</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto6014">Upgrading to 6.0.14</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.14"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.14"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.14"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.14"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.14"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.14"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.14"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.14"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.14"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.13]]></title><description><![CDATA[Version 6.0.13 of the Passenger application server has been released. This release adds Rocky Linux and Alma Linux support, as well as FreeBSD 13.]]></description><link>https://blog.phusion.nl/2022/03/29/passenger-6-0-13/</link><guid isPermaLink="false">6241d846a3b14c0690c87f5a</guid><category><![CDATA[Passenger]]></category><category><![CDATA[Passenger releases]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Tue, 29 Mar 2022 18:32:10 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2022/03/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2022/03/passenger-space.png" alt="Passenger 6.0.13"><p>Version 6.0.13 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release adds Rocky Linux and Alma Linux support, as well as FreeBSD 13.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="addoptiontopreloadbundler">Add option to preload bundler</h2>
+<p>In order to ease the use of Ruby versions which come bundled with a version of a gem that also has an newer version published such as <code>io-wait</code> in Ruby 3.0.2, we added new Passenger config options to allow you to load bundler before your app is loaded. This is off by default and must be manually enabled in your config using the relevant choice from these options:</p>
+<ul>
+<li>Apache: <code>PassengerPreloadBundler</code></li>
+<li>Nginx: <code>passenger_preload_bundler</code></li>
+<li>Standalone: <code>--preload_bundler</code></li>
+</ul>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>Add WASM mime type, Closes <a href="https://github.com/phusion/passenger/issues/2398">GH-2398</a>.</p>
+</li>
+<li>
+<p>Fix compilation on FreeBSD 13. Closes <a href="https://github.com/phusion/passenger/issues/2402">GH-2402</a>.</p>
+</li>
+<li>
+<p>[Ruby] Fixes app process crash when ECONNRESET received.</p>
+</li>
+<li>
+<p>Fix automated fetching of pcre source for installer scripts.</p>
+</li>
+<li>
+<p>Bump preferred nginx 1.20.1 → 1.20.2.</p>
+</li>
+<li>
+<p>[Node] Suppresses the winston circular dependency warning.</p>
+</li>
+<li>
+<p>[RPMs] EL8 RPMs are now built on Rocky linux, and should be compatible with Alma, Rocky, CentOS, and RHEL.</p>
+</li>
+<li>
+<p>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</p>
+<ul>
+<li>ccache 4.4.2 → 4.6</li>
+<li>cmake 3.21.4 → 3.22.3</li>
+<li>curl 7.79.1 → 7.82.0</li>
+<li>git 2.33.1 → 2.35.1</li>
+<li>gnupg 2.3.3 → 2.3.4</li>
+<li>libgpg_error 1.42 → 1.44</li>
+<li>ntbtls 0.2.0 → 0.3.0</li>
+<li>openssl 1.1.1l → 1.1.1n</li>
+<li>rubygems 3.2.30 → 3.3.9</li>
+<li>zstd 1.5.0 → 1.5.2</li>
+<li>ruby
+<ul>
+<li>dropped 2.4.10</li>
+<li>dropped 2.5.9</li>
+<li>2.6.8 → 2.6.9</li>
+<li>2.7.4 → 2.7.5</li>
+<li>3.0.2 → 3.0.3</li>
+<li>added 3.1.1</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="installing6013">Installing 6.0.13</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto6013">Upgrading to 6.0.13</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.13"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.13"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.13"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.13"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.13"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.13"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.13"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.13"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.13"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Log4J Bulletin: Passenger not affected]]></title><description><![CDATA[<div class="kg-card-markdown"><p>TL:DR; Passenger is not affected.</p>
+<p>Passenger has no components written in Java and thus does not use log4j. As such, it is not affected by the log4j vulnerabilities (CVE-2021-45046 &amp; CVE-2021-44228, or any subsequently discovered issues with log4j).</p>
+</div>]]></description><link>https://blog.phusion.nl/2021/12/21/log4j-bulletin/</link><guid isPermaLink="false">61c09e70248a39066861e192</guid><category><![CDATA[Passenger]]></category><category><![CDATA[Security]]></category><category><![CDATA[Security advisory]]></category><category><![CDATA[Featured posts]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Mon, 20 Dec 2021 23:08:16 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2021/12/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2021/12/passenger-space.png" alt="Log4J Bulletin: Passenger not affected"><p>TL:DR; Passenger is not affected.</p>
+<p>Passenger has no components written in Java and thus does not use log4j. As such, it is not affected by the log4j vulnerabilities (CVE-2021-45046 &amp; CVE-2021-44228, or any subsequently discovered issues with log4j).</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.12]]></title><description><![CDATA[<div class="kg-card-markdown"><p>Version 6.0.12 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release adds Debian 11 Bullseye and Ubuntu 21.10 Impish Indri support.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>[Debian] Fix compilation on 32 bit</li></ul></div>]]></description><link>https://blog.phusion.nl/2021/11/05/passenger-6-0-12/</link><guid isPermaLink="false">6183f90f9a8c7706467f715a</guid><category><![CDATA[Passenger]]></category><category><![CDATA[Passenger releases]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Fri, 05 Nov 2021 17:57:51 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2021/11/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2021/11/passenger-space.png" alt="Passenger 6.0.12"><p>Version 6.0.12 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release adds Debian 11 Bullseye and Ubuntu 21.10 Impish Indri support.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>[Debian] Fix compilation on 32 bit arm. Contributed by Antonio Terceiro.</li>
+<li>[Debian] Add Bullseye Debian packages.</li>
+<li>Add formatted error messages to responses. Contributed by Mohammad Aboelnour.</li>
+<li>Fixes for running under WSL 1. Contributed by Luke Pearce. Closes <a href="https://github.com/phusion/passenger/issues/2036">GH-2036</a>.</li>
+<li>Upgrades Boost to 1.77. To go along with 32 bit arm fix.</li>
+<li>[MacOS] Fixes autodetection of openssl lib on Apple Silicon. Contributed by Taketo Takashima. Closes <a href="https://github.com/phusion/passenger/issues/2389">GH-2389</a>.</li>
+<li>Reconnect to mongoid databases after fork, like we do for ActiveRecord. Contributed by Mohammad Aboelnour.</li>
+<li>[Ubuntu] add missing <code>apache</code> name in instance registry dir detection.</li>
+<li>[Ubuntu] replace hirsute apt packages with impish.</li>
+<li>[Nginx] add new config option to choose the status code returned when application spawning fails. (passenger_spawn_exception_status_code).</li>
+<li>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</li>
+</ul>
+<ul>
+<li>ccache: 4.4.1 → 4.4.2</li>
+<li>cmake: 3.21.2 → 3.21.4</li>
+<li>curl: 7.78.0 → 7.79.1</li>
+<li>git: 2.33.0 → 2.33.1</li>
+<li>gnupg: 2.3.2 → 2.3.3</li>
+<li>rubygems: 3.2.27 → 3.2.30</li>
+<li>s3cmd: 2.1.0 → 2.2.0</li>
+</ul>
+<h2 id="installing6012">Installing 6.0.12</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto6012">Upgrading to 6.0.12</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.12"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.12"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.12"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.12"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.12"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.12"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.12"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.12"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.12"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.11]]></title><description><![CDATA[Version 6.0.11 of the Passenger application server has been released. This release fixes compatibility with old versions of GCC, as well as CentOS Stream.]]></description><link>https://blog.phusion.nl/2021/10/01/passenger-6-0-11/</link><guid isPermaLink="false">61560d5fbc26400671625e11</guid><category><![CDATA[Passenger releases]]></category><category><![CDATA[Passenger]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Fri, 01 Oct 2021 14:40:41 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2021/09/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2021/09/passenger-space.png" alt="Passenger 6.0.11"><p>Version 6.0.11 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release fixes compatibility with old versions of GCC, as well as CentOS Stream.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>Fix compilation on GCC 4.4, fixes a regression in 6.0.8 where Passenger would no longer compiler without a C++11 compiler.</p>
+</li>
+<li>
+<p>[MacOS] Additionally look for PCRE in the new location that Homebrew has split it's packages into.</p>
+</li>
+<li>
+<p>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</p>
+<ul>
+<li>ccache: 4.3 → 4.4.1</li>
+<li>cmake: 3.20.5 → 3.21.2</li>
+<li>curl: 7.77.0 → 7.78.0</li>
+<li>git: 2.32.0 → 2.33.0</li>
+<li>gnupg: 2.3.1 → 2.3.2</li>
+<li>libgcrypt: 1.9.3 → 1.9.4</li>
+<li>openssl: 1.1.1k → 1.1.1l</li>
+<li>pinentry: 1.1.1 → 1.2.0</li>
+<li>rubygems: 3.2.21 → 3.2.27</li>
+<li>rubies:
+<ul>
+<li>2.6.7 → 2.6.8</li>
+<li>2.7.3 → 2.7.4</li>
+<li>3.0.1 → 3.0.2</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="centosstream">CentOS Stream</h2>
+<p>CentOS Stream has a new version string format, which needed support added in our build scripts. Contributed by Taketo Takashima. Closes <a href="https://github.com/phusion/passenger/issues/2377">GH-2377</a>.</p>
+<h2 id="installing6011">Installing 6.0.11</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto6011">Upgrading to 6.0.11</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.11"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.11"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.11"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.11"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.11"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.11"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.11"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.11"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.11"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.10]]></title><description><![CDATA[<div class="kg-card-markdown"><p>Version 6.0.10 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release fixes compatibility with the CentOS 7 EPEL nginx package.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>[Debian/Ubuntu] Fix a regression in <code>passenger_system_</code></p></li></ul></div>]]></description><link>https://blog.phusion.nl/2021/07/14/passenger-6-0-10/</link><guid isPermaLink="false">60edad958ad81906aa4d00b7</guid><category><![CDATA[Passenger releases]]></category><category><![CDATA[Passenger]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Wed, 14 Jul 2021 15:48:42 GMT</pubDate><content:encoded><![CDATA[<div class="kg-card-markdown"><p>Version 6.0.10 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release fixes compatibility with the CentOS 7 EPEL nginx package.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>[Debian/Ubuntu] Fix a regression in <code>passenger_system_ruby</code> where Ruby 3 couldn't be found.</p>
+</li>
+<li>
+<p>[Nginx] The preferred PCRE version is now 8.45 (previously 8.44).</p>
+</li>
+<li>
+<p>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</p>
+<ul>
+<li>cmake 3.20.3 → 3.20.5</li>
+<li>git 2.31.1 → 2.32.0</li>
+<li>libksba 1.5.1 → 1.6.0</li>
+<li>rubygems 3.2.19 → 3.2.21</li>
+<li>pcre 8.44 → 8.45</li>
+</ul>
+</li>
+</ul>
+<h2 id="centosrhel7packages">CentOS/RHEL 7 Packages</h2>
+<p>Passenger's Nginx module package now depends on the latest EPEL Nginx (was 1.16.1 now 1.20.1). This fixes the <a href="https://github.com/phusion/passenger/issues/2364">GH-2364</a> issue.</p>
+<h2 id="installing6010">Installing 6.0.10</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto6010">Upgrading to 6.0.10</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="OS X"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Debian"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Ubuntu"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Heroku"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Red Hat"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="CentOS"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Ruby gem"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Tarball"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Ruby gem"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.9]]></title><description><![CDATA[<div class="kg-card-markdown"><p>Version 6.0.9 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release mostly improves compatibility with supported systems.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>Upgrades Boost to 1.76. Fixes a regression where some boost</p></li></ul></div>]]></description><link>https://blog.phusion.nl/2021/06/02/passenger-6-0-9/</link><guid isPermaLink="false">60b7cb3e59fd67067d19d5dc</guid><category><![CDATA[Passenger releases]]></category><category><![CDATA[Passenger]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Wed, 02 Jun 2021 18:32:15 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2021/06/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2021/06/passenger-space.png" alt="Passenger 6.0.9"><p>Version 6.0.9 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release mostly improves compatibility with supported systems.</p>
+<p>Passenger 6 introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>Upgrades Boost to 1.76. Fixes a regression where some boost headers for comatibility with older distros were missing.</p>
+</li>
+<li>
+<p>Make building on Apple Silcon using homebrew openssl work. Contributed by TheBerg.</p>
+</li>
+<li>
+<p>Properly support HTTP 418. Contributed by Thomas Pfister.</p>
+</li>
+<li>
+<p>Fix several C++ warnings about implicit copy operators/constructors.</p>
+</li>
+<li>
+<p>Bump preferred nginx 1.18.0 → 1.20.1.</p>
+</li>
+<li>
+<p>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</p>
+<ul>
+<li>ccache 4.2 → 4.3</li>
+<li>cmake 3.19.7 → 3.20.3</li>
+<li>curl 7.75.0 → 7.77.0</li>
+<li>git 2.31.0 → 2.31.1</li>
+<li>gnupg 2.2.27 → 2.3.1</li>
+<li>libgcrypt 1.9.2 → 1.9.3</li>
+<li>libksba 1.5.0 → 1.5.1</li>
+<li>ntbTLS added → 0.2.0</li>
+<li>zlib 1.4.9 → 1.5.0</li>
+<li>rubygems 3.2.15 → 3.2.19</li>
+<li>ruby:
+<ul>
+<li>2.3.8 → removed</li>
+<li>2.5.8 → 2.5.9</li>
+<li>2.6.6 → 2.6.7</li>
+<li>2.7.2 → 2.7.3</li>
+<li>3.0.0 → 3.0.1</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="ubuntupackages">Ubuntu Packages</h2>
+<p>Passenger 6.0.9 adds prebuilt packages for Ubuntu Hirsute, and removes<br>
+prebuilt packages for Ubuntu Groovy per our maintenance policy.</p>
+<h2 id="installing609">Installing 6.0.9</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto609">Upgrading to 6.0.9</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.9"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.9"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.9"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.9"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.9"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.9"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.9"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.9"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.9"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.8]]></title><description><![CDATA[Version 6.0.8 of the Passenger application server has been released. This release addresses several regressions, and provides better integration with systemd's PrivateTmp.]]></description><link>https://blog.phusion.nl/2021/04/01/passenger-6-0-8/</link><guid isPermaLink="false">6064a8dd5cedbe06898cce2a</guid><category><![CDATA[Passenger]]></category><category><![CDATA[Passenger releases]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Thu, 01 Apr 2021 19:39:38 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2021/03/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2021/03/passenger-space.png" alt="Passenger 6.0.8"><p>Version 6.0.8 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release addresses several regressions, and provides better integration with systemd's PrivateTmp.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>[Apache] Fixes crash when restarting Apache on CentOS 8. Closes <a href="https://github.com/phusion/passenger/issues/2318">GH-2318</a>.</li>
+<li>[Standalone] fix abort websockets on shutdown. Closes <a href="https://github.com/phusion/passenger/issues/2211">GH-2211</a>.</li>
+<li>Fixes application process titles. They are now properly set to something like &quot;Passenger RubyApp: ...&quot; instead of &quot;Passenger AppPreloader: ... (forking)&quot;.</li>
+<li>Updated various library versions used in precompiled binaries (used for e.g. gem installs)</li>
+<li>Upgrades Boost to 1.74.</li>
+</ul>
+<h2 id="betterprivatetmpcompatibility">Better PrivateTmp compatibility</h2>
+<p>Passenger 6.0.8 reduces the likelihood of a crash when using systemd PrivateTmp dir with Apache. As well as allowing <code>passenger-status</code> to detect the Passenger instance registry dir when systemd PrivateTmp dir is in use.</p>
+<h2 id="droppedprebuiltbinaries">Dropped Prebuilt Binaries</h2>
+<p>Passenger 6.0.8 does not provide CentOS 6, and Debian Jessie prebuilt binaries and packages. Both are EOL. In addition 32 bit prebuilt binaries, are no longer provided for any distro.</p>
+<h2 id="installing608">Installing 6.0.8</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto608">Upgrading to 6.0.8</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.8"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.8"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.8"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.8"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.8"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.8"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.8"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.8"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.8"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.7]]></title><description><![CDATA[<div class="kg-card-markdown"><p>Version 6.0.7 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release adds compatibility for Ubuntu Groovy, and addresses several regressions.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>Addresses regression introduced in 6.0.5 when</li></ul></div>]]></description><link>https://blog.phusion.nl/2020/11/18/passenger-6-0-7/</link><guid isPermaLink="false">5fb55a8ab256610687729459</guid><category><![CDATA[Passenger]]></category><category><![CDATA[Passenger releases]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Wed, 18 Nov 2020 19:16:47 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2020/11/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2020/11/passenger-space.png" alt="Passenger 6.0.7"><p>Version 6.0.7 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release adds compatibility for Ubuntu Groovy, and addresses several regressions.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>Addresses regression introduced in 6.0.5 when attempting to establish database connection after fork and activerecord is not configured in the expected way. Closes <a href="https://github.com/phusion/passenger/issues/2281">GH-2281</a>.</li>
+<li>Addresses regression introduced in 5.1.5 where hook scripts would fail to run. As a result the PASSENGER_ERROR_PAGE and PASSENGER_CONFIG_MANIFEST env vars have been removed from the passenger hook script environment.</li>
+<li>Match static rails assets on 8-digit content hash. Contributed by @mattozinga.</li>
+<li>Allow skipping the Apache/Nginx sections of the <code>passenger-memory-stats</code> output, through the <code>--no-apache</code> and <code>--no-nginx</code> commandline options. Closes <a href="https://github.com/phusion/passenger/issues/2306">GH-2306</a>. Contributed by Saverio Miroddi (@saveriomiroddi).</li>
+<li>Fixes an issue where <code>passenger-memory-stats</code> would throw an error if a process went away while it was running. Closes <a href="https://github.com/phusion/passenger/issues/2305">GH-2305</a>.</li>
+<li>Fixes a formatting issue with apr-1 include flags on macOS.</li>
+<li>Fixes a warning about <code>BOOST_*_ENDIAN</code> macros being deprecated by migrating to new suggested macros.</li>
+<li>Fixes an occasional issue with the node loader where the startup handshake would fail to record progress.</li>
+<li>Adds an option for specifying the address to bind ruby apps to, for sending requests directly to specific app instances:</li>
+</ul>
+<ul>
+<li>Standalone: direct_instance_request_address</li>
+<li>Nginx:      passenger_direct_instance_request_address</li>
+<li>Apache:     PassengerDirectInstanceRequestAddress</li>
+</ul>
+<ul>
+<li>
+<p>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</p>
+<ul>
+<li>ccache: 4.0 (was: 3.7.10)</li>
+<li>curl: 7.73.0 (was: 7.71.1)</li>
+<li>git: 2.29.1 (was: 2.27.0)</li>
+<li>gnupg: 2.2.23 (was: 2.2.21)</li>
+<li>libgpg_error: 1.39 (was: 1.38)</li>
+<li>ruby: 2.7.2 (was: 2.7.1)</li>
+<li>libassuan 2.5.4 (was: 2.5.3)</li>
+<li>libgcrypt 1.8.7 (was 1.8.6)</li>
+<li>OpenSSL 1.1.1h (was 1.0.2u)</li>
+</ul>
+</li>
+</ul>
+<h2 id="fixfordeferredportbindingwithssltls">Fix for deferred port binding with SSL/TLS</h2>
+<p>Passenger 6.0.7 also includes a fix for an interesting problem. When deferred port binding was introduced in Passenger Enterprise 5.1.11 it was to address a need for Passenger to not signal its readiness to accept requests to a load balancer until it had finished starting its apps. In the customer's use case the load balancer was terminating ssl and Passenger was simply serving http. However as use of this feature grew we were notified that when you used deferred port binding with SSL/TLS the communication between the proxy and Passenger would fail. After digging in, we found that the communication between Passenger and the proxy couldn't use the same SSL/TLS configuration as the proxy, so we had the proxy terminate the SSL/TLS and now everything works.</p>
+<p><img src="https://blog.phusion.nl/content/images/2020/11/deferredportbindingdiagram.png" alt="Passenger 6.0.7"></p>
+<h2 id="installing607">Installing 6.0.7</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto607">Upgrading to 6.0.7</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.7"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.7"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.7"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.7"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.7"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.7"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.7"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.7"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.7"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.6]]></title><description><![CDATA[<div class="kg-card-markdown"><p>Version 6.0.6 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release is mainly focused on compatibility with the new Ubuntu Focal Nginx package release.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>Update gemspec with up</p></li></ul></div>]]></description><link>https://blog.phusion.nl/2020/07/14/passenger-6-0-6/</link><guid isPermaLink="false">5f0d0f811864660663ae4167</guid><category><![CDATA[Passenger]]></category><category><![CDATA[Passenger releases]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Tue, 14 Jul 2020 06:11:20 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2020/07/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2020/07/passenger-space.png" alt="Passenger 6.0.6"><p>Version 6.0.6 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release is mainly focused on compatibility with the new Ubuntu Focal Nginx package release.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>Update gemspec with up to date metadata.</p>
+</li>
+<li>
+<p>Reverts the addition of the 'etc' gem to the Passenger gemspec, because it broke on normal ruby installs. Closes <a href="https://github.com/phusion/passenger/issues/2283">GH-2283</a>.</p>
+</li>
+<li>
+<p>Builds Ubuntu focal Nginx dynamic module package against Nginx 1.18.0. Closes <a href="https://github.com/phusion/passenger/issues/2291">GH-2291</a>.</p>
+</li>
+<li>
+<p>No longer providing prebuilt Ruby 2.1 or 2.2 binaries, they have been EOL for years and rubygems no longer supports them.</p>
+</li>
+<li>
+<p>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</p>
+<ul>
+<li>ccache 3.7.10 (was 3.7.9)</li>
+<li>Curl 7.71.1 (was 7.69.1)</li>
+<li>Git 2.27.0 (was 2.26.2)</li>
+<li>GnuPG 2.2.21 (was 2.2.20)</li>
+<li>libgpg_error 1.38 (was 1.37)</li>
+<li>libgcrypt 1.8.6 (was 1.8.5)</li>
+<li>RubyGems 3.1.4 (was 3.0.8)</li>
+</ul>
+</li>
+</ul>
+<h2 id="installing606">Installing 6.0.6</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto606">Upgrading to 6.0.6</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.6"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.6"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.6"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.6"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.6"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.6"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.6"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.6"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.6"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.5]]></title><description><![CDATA[<div class="kg-card-markdown"><p>Version 6.0.5 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release contains several packaging changes, a couple new options, and several bugfixes.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="packagingchanges">Packaging Changes:</h2>
+<p>Passenger 6.0.5 adds Ubuntu 20.</p></div>]]></description><link>https://blog.phusion.nl/2020/05/29/passenger-6-0-5/</link><guid isPermaLink="false">5ecec80773136706774a4559</guid><category><![CDATA[Passenger releases]]></category><category><![CDATA[Passenger]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Fri, 29 May 2020 15:46:16 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2020/05/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2020/05/passenger-space.png" alt="Passenger 6.0.5"><p>Version 6.0.5 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release contains several packaging changes, a couple new options, and several bugfixes.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="packagingchanges">Packaging Changes:</h2>
+<p>Passenger 6.0.5 adds Ubuntu 20.04 &quot;Focal&quot; packages as well as CentOS/RHEL 8 packages, and removes Ubuntu 19.04 &quot;Disco&quot; packages.</p>
+<p>Note that the nginx package provided for CentOS/RHEL 8 is named <code>nginx-mod-http-passenger</code> and will integrate with the official CentOS/RHEL 8 Nginx package from the System AppStream repository.</p>
+<p>Passenger 6.0.5 also changes how the Nginx packages on CentOS 7 work. We now provide a dynamic module instead of a full Nginx install, which integrates with the Nginx package available from the EPEL repo. Users of the Nginx integration mode can use the following commands to switch to the new dynamic module based integration (and the system Nginx):</p>
+<pre><code>sudo yum remove -y nginx nginx-filesystem
+sudo yum clean all &amp;&amp; sudo yum update
+sudo yum install nginx-mod-http-passenger
+</code></pre>
+<h2 id="newoptions">New Options:</h2>
+<p>We added an option for specifying the attributes on the sticky session cookie:</p>
+<table>
+<thead>
+<tr>
+<th>Integration</th>
+<th>Option</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apache</td>
+<td><code>PassengerStickySessionsCookieAttributes &quot;SameSite=Lax; Secure;&quot;</code></td>
+</tr>
+<tr>
+<td>Nginx</td>
+<td><code>passenger_sticky_sessions_cookie_attributes &quot;SameSite=Lax; Secure;&quot;</code></td>
+</tr>
+<tr>
+<td>Standalone</td>
+<td><code>--sticky-sessions-cookie-attributes &quot;SameSite=Lax; Secure;&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<p>And for Nginx, we added a config option: <code>passenger_temp_path</code> to set the path used for the disk backed response cache; making Passenger more sandbox friendly.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>[Enterprise] Fixed a regression (introduced in 5.0.0) where Flying Passenger could not update the Passenger configuration. Closes <a href="https://github.com/phusion/passenger/issues/1554">GH-1554</a>.</p>
+</li>
+<li>
+<p>Fixes the encoding name for xml output from the <code>passenger-status --show=xml</code> command. Closes <a href="https://github.com/phusion/passenger/issues/2248">GH-2248</a>.</p>
+</li>
+<li>
+<p>Adds the 'etc' gem as an explicit dependency. Closes <a href="https://github.com/phusion/passenger/issues/2124">GH-2124</a>.</p>
+</li>
+<li>
+<p>Adds a user agent to the passenger pre-spawn script. Closes <a href="https://github.com/phusion/passenger/issues/1534">GH-1534</a>.</p>
+</li>
+<li>
+<p>Fixes a compilation issue on FreeBSD. Closes <a href="https://github.com/phusion/passenger/issues/2240">GH-2240</a>.</p>
+</li>
+<li>
+<p>Fixes an issue where rack bodies may not be processed correctly.</p>
+</li>
+<li>
+<p>Improves the database reconnection speed in forked processes. closes <a href="https://github.com/phusion/passenger/issues/2253">GH-2253</a>.</p>
+</li>
+<li>
+<p>[Apache] Protects the path info and script name passed to the app from modifications done by mod_security. Closes <a href="https://github.com/phusion/passenger/issues/2198">GH-2198</a>.</p>
+</li>
+<li>
+<p>Ensures baseuri is set per request, even if config is loaded from cache. Closes <a href="https://github.com/phusion/passenger/issues/2117">GH-2117</a>.</p>
+</li>
+<li>
+<p>Make temp dir toucher cleanup code more resilient to permissions issues.</p>
+</li>
+<li>
+<p>[Nginx] Bumps the preferred Nginx version to 1.18.0 (previously 1.17.3).</p>
+</li>
+<li>
+<p>[Nginx] The preferred PCRE version is now 8.44 (previously 8.43).</p>
+</li>
+<li>
+<p>Removed deprecated rubyforge gemspec property. Contributed by @olleolleolle.</p>
+</li>
+<li>
+<p>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</p>
+<ul>
+<li>ccache 3.7.9 (was 3.7.3)</li>
+<li>Curl 7.69.1 (was 7.66.0)</li>
+<li>Git 2.26.2 (was 2.23.0)</li>
+<li>GnuPG 2.2.20 (was 2.2.17)</li>
+<li>libgpg_error 1.37 (was 1.36)</li>
+<li>OpenSSL 1.0.2u (was 1.0.2t)</li>
+<li>PCRE 8.44 (was 8.43)</li>
+<li>s3cmd 2.1.0 (was 2.0.2)</li>
+<li>RubyGems 3.0.8 (was 3.0.6)</li>
+<li>Rubies:
+<ul>
+<li>2.4.6 -&gt; 2.4.10</li>
+<li>2.5.5 -&gt; 2.5.8</li>
+<li>2.6.3 -&gt; 2.6.6</li>
+</ul>
+<ul>
+<li>2.7.1</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="installing605">Installing 6.0.5</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto605">Upgrading to 6.0.5</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.5"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.5"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.5"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.5"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.5"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.5"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.5"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.5"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.5"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.4 Debian 10 Buster]]></title><description><![CDATA[<div class="kg-card-markdown"><p>Version 6.0.4 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This is a minor release that only adds Debian 10 &quot;Buster&quot; packages.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="whatsnext">What's next?</h2>
+<p><a href="https://wiki.centos.org/About/Building_8#head-516d5e6556bb8523b52fba246953d32831582480">CentOS 8</a> will be released shortly</p></div>]]></description><link>https://blog.phusion.nl/2019/09/18/passenger-6-0-4-debian-10-buster/</link><guid isPermaLink="false">5d804409ada0b80652865059</guid><category><![CDATA[Passenger releases]]></category><category><![CDATA[Passenger]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Wed, 18 Sep 2019 03:09:58 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2019/09/passenger-space-1.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2019/09/passenger-space-1.png" alt="Passenger 6.0.4 Debian 10 Buster"><p>Version 6.0.4 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This is a minor release that only adds Debian 10 &quot;Buster&quot; packages.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="whatsnext">What's next?</h2>
+<p><a href="https://wiki.centos.org/About/Building_8#head-516d5e6556bb8523b52fba246953d32831582480">CentOS 8</a> will be released shortly and we will release an update to support that distro then.</p>
+<h2 id="installing604">Installing 6.0.4</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto604">Upgrading to 6.0.4</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.4 Debian 10 Buster"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.4 Debian 10 Buster"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.4 Debian 10 Buster"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.4 Debian 10 Buster"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.4 Debian 10 Buster"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.4 Debian 10 Buster"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.4 Debian 10 Buster"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.4 Debian 10 Buster"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.4 Debian 10 Buster"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.3 Restarting the Releases]]></title><description><![CDATA[Version 6.0.3 of the Passenger application server has been released. As you may have noted this release took much longer than usual and delayed support for Ubuntu 19.04, we have our CI system back up and running, and can cut releases again.]]></description><link>https://blog.phusion.nl/2019/09/12/passenger-6-0-3/</link><guid isPermaLink="false">5d7a899cada0b80652865053</guid><category><![CDATA[Passenger releases]]></category><category><![CDATA[Passenger]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Thu, 12 Sep 2019 19:17:27 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2019/09/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2019/09/passenger-space.png" alt="Passenger 6.0.3 Restarting the Releases"><p>Version 6.0.3 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. As you may have noted this release took much longer than usual and delayed support for Ubuntu 19.04, we have our CI system back up and running, and can cut releases again.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="specifyspawndirlocation">Specify Spawn Dir Location</h2>
+<p>Passenger 6.0.3 adds an option to specify the app spawn directory during startup, which is specifically useful for CageFS users. Contributed by @plmnikulin.</p>
+<pre><code>- Apache: `PassengerSpawnDir`
+- Nginx: `passenger_spawn_dir`
+</code></pre>
+<p>This addition closes issue <a href="https://github.com/phusion/passenger/issues/2145">GH-2145</a>.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>[Nginx] Bumps the preferred Nginx version to 1.17.3 (previously 1.15.8).</p>
+</li>
+<li>
+<p>[Nginx] The preferred PCRE version is now 8.43 (previously 8.42).</p>
+</li>
+<li>
+<p>Adds Ubuntu 19.04 &quot;Disco&quot; packages, and removes Ubuntu 18.10 &quot;Cosmic&quot; and Ubuntu 14.04 &quot;Trusty&quot; packages.</p>
+</li>
+<li>
+<p>Changes minimum supported macOS version to 10.12 Sierra.</p>
+</li>
+<li>
+<p>Improves container detection and fixes a compilation warning in GCC 8+. Closes <a href="https://github.com/phusion/passenger/issues/2186">GH-2186</a>.</p>
+</li>
+<li>
+<p>Allowed externally specifying an app instance to send a request to. Contributed by Mark R. James (@mrj).</p>
+</li>
+<li>
+<p>Fixed an incompatibility with sending requests to specific app instances, when using the rails web-console gem. Contributed by Mark R. James (@mrj).</p>
+</li>
+<li>
+<p>Fixed a regression (introduced in 5.1.9) where some hooks were not called. Closes <a href="https://github.com/phusion/passenger/issues/2103">GH-2103</a>. Contributed by Mark R. James (@mrj).</p>
+</li>
+<li>
+<p>Fixes compilation with clang 8 (latest macOS update) by updating vendored boost library from 1.67 to 1.69.</p>
+</li>
+<li>
+<p>Reverts a regression introduced in 6.0.2 where Passenger would crash if it had to use the disk backed response cache. Closes <a href="https://github.com/phusion/passenger/issues/2189">GH-2189</a>.</p>
+</li>
+<li>
+<p>[Nginx] Adds an option <code>passenger_buffer_upload</code> to allow buffering uploaded data in Passenger before forwarding it to the app. As a workaround for apps that cannot handle chunked data.</p>
+</li>
+<li>
+<p>[Enterprise] When using deferred port binding, no longer binds port if all apps do not start up.</p>
+</li>
+<li>
+<p>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</p>
+<ul>
+<li>PCRE 8.43 (was 8.42)</li>
+<li>Curl 7.65.1 (was 7.64.0)</li>
+<li>ccache 3.7.3 (was 3.6)</li>
+<li>Git 2.22.0 (was 2.20.1)</li>
+<li>OpenSSL 1.0.2s (was 1.0.2q)</li>
+<li>RubyGems 3.0.6 (was 3.0.2)</li>
+<li>GnuPG 2.2.16 (was 2.2.13)</li>
+<li>libgcrypt 1.8.5 (was 1.8.4)</li>
+<li>libgpg_error 1.36 (was 1.35)</li>
+<li>libiconv 1.16 (was 1.15)</li>
+<li>Ruby:
+<ul>
+<li>2.4.5 -&gt; 2.4.6</li>
+<li>2.5.3 -&gt; 2.5.5</li>
+<li>2.6.1 -&gt; 2.6.3</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="whatsnext">What's next?</h2>
+<p>You may have noticed we didn't add packages for Debian Buster in this release. We have to make some changes to our buildbox first and didn't want to further delay this release until that was done. A release supporting Debian Buster (and <a href="https://wiki.centos.org/About/Building_8#head-516d5e6556bb8523b52fba246953d32831582480">CentOS 8</a> if it's out by then) will be released shortly.</p>
+<h2 id="installing603">Installing 6.0.3</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto603">Upgrading to 6.0.3</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.3 Restarting the Releases"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.3 Restarting the Releases"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.3 Restarting the Releases"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.3 Restarting the Releases"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.3 Restarting the Releases"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.3 Restarting the Releases"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.3 Restarting the Releases"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.3 Restarting the Releases"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.3 Restarting the Releases"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item><item><title><![CDATA[Passenger 6.0.2: Community makes everything better]]></title><description><![CDATA[Version 6.0.2 of the Passenger application server has been released. Most notably, this release allows you to disable the prefix added to your app's logs when they are written to Passenger's log.]]></description><link>https://blog.phusion.nl/2019/02/25/passenger-6-0-2-community-makes-everything-better/</link><guid isPermaLink="false">5c741245d809e807ab902601</guid><category><![CDATA[Passenger]]></category><category><![CDATA[Passenger releases]]></category><dc:creator><![CDATA[Camden Narzt]]></dc:creator><pubDate>Mon, 25 Feb 2019 19:44:06 GMT</pubDate><media:content url="https://blog.phusion.nl/content/images/2019/02/passenger-space.png" medium="image"/><content:encoded><![CDATA[<div class="kg-card-markdown"><img src="https://blog.phusion.nl/content/images/2019/02/passenger-space.png" alt="Passenger 6.0.2: Community makes everything better"><p>Version 6.0.2 of the <a href="https://www.phusionpassenger.com/passenger6">Passenger</a> application server has been released. This release contains many community provided patches, and bugfixes which would only have been possible with the diagnostic help of our users. So we'd like to say thank you very much to everyone who contributed! Most notably, this release allows you to disable the prefix added to your app's logs when they are written to Passenger's log.</p>
+<p>Passenger 6, introduced Generic Language Support, or: the ability to support any and all arbitrary apps.</p>
+<h2 id="disableapplogprefix">Disable app log prefix</h2>
+<p>Passenger 6.0.2 has a new option to disable prefixing application logs with &quot;App PID stdout&quot;.</p>
+<ul>
+<li>Apache: <code>PassengerDisableLogPrefix</code></li>
+<li>Nginx: <code>passenger_disable_log_prefix</code></li>
+<li>Standalone: <code>--disable-log-prefix</code></li>
+</ul>
+<p><a href="https://github.com/phusion/passenger/issues/1915">GH-1915</a> is now resolved.</p>
+<h2 id="updatesimprovements">Updates &amp; improvements</h2>
+<ul>
+<li>
+<p>Allow compilation to work when Apple messed up their system ruby headers.</p>
+</li>
+<li>
+<p>Only try to read pid 1's <code>/proc</code> files as root, in container detection. Closes <a href="https://github.com/phusion/passenger/issues/2168">GH-2168</a>.</p>
+</li>
+<li>
+<p>Add support for identifying the Passenger instance by PID. Closes <a href="https://github.com/phusion/passenger/issues/2146">GH-2146</a>. Contributed by Saverio Miroddi (@saveriomiroddi).</p>
+</li>
+<li>
+<p>[Ruby] Made Passenger more resiliant to Rack bugs. Closes <a href="https://github.com/phusion/passenger/issues/2150">GH-2150</a>.</p>
+</li>
+<li>
+<p>[Nginx] Do not touch Nginx's <code>proxy_temp_path</code> var in Passenger's Nginx modules. Closes <a href="https://github.com/phusion/passenger/issues/2075">GH-2075</a>. Contributed by Roman Berestnikov-Sivolov (@ROMB).</p>
+</li>
+<li>
+<p>Updated various library versions used in precompiled binaries (used for e.g. gem installs):</p>
+<ul>
+<li>Curl: 7.63.0 → 7.64.0</li>
+<li>Ruby: 2.6.0 → 2.6.1</li>
+<li>RubyGems 3.0.1 → 3.0.2</li>
+<li>ccache 3.5 → 3.6</li>
+<li>GnuPG 2.2.12 → 2.2.13</li>
+<li>libassuan 2.5.2 → 2.5.3</li>
+<li>libgpg_error 1.33 → 1.35</li>
+</ul>
+</li>
+</ul>
+<h2 id="installing602">Installing 6.0.2</h2>
+<p>Please see the <a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html">installation guide</a> for advice on getting started with Passenger. Coming from a language other than Ruby, Python, Meteor or Node? Even if we didn't write a specific tutorial for your language, we made a <a href="https://www.phusionpassenger.com/docs/advanced_guides/gls/generic_guide.html">generic guide</a> that shows you the steps.</p>
+<h2 id="upgradingto602">Upgrading to 6.0.2</h2>
+<p>We strongly advise staying up to date with the latest version.</p>
+<table class="passenger-install-table">
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/apple-small.png" alt="Passenger 6.0.2: Community makes everything better"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#osx">OS X</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/debian-small.png" alt="Passenger 6.0.2: Community makes everything better"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Debian</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/ubuntu-small.png" alt="Passenger 6.0.2: Community makes everything better"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#debian_ubuntu">Ubuntu</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/heroku-small.png" alt="Passenger 6.0.2: Community makes everything better"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#heroku">Heroku</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/redhat-small.png" alt="Passenger 6.0.2: Community makes everything better"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">Red Hat</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos"><img src="https://blog.phusion.nl/content/images/2015/05/centos-small.png" alt="Passenger 6.0.2: Community makes everything better"><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#redhat_centos">CentOS</a></a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/rubygems-small.png" alt="Passenger 6.0.2: Community makes everything better"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#rubygems">Ruby gem</a></td>
+    <td><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball"><img src="https://blog.phusion.nl/wp-content/uploads/2013/10/tarball-small.png" alt="Passenger 6.0.2: Community makes everything better"></a><br><a href="https://www.phusionpassenger.com/docs/advanced_guides/install_and_upgrade/standalone/upgrade.html#source_tarball">Tarball</a></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/phusion/passenger-docker#upgrading_passenger"><img src="https://blog.phusion.nl/content/images/2015/03/docker-small.png" alt="Passenger 6.0.2: Community makes everything better"></a><br><a href="https://github.com/phusion/passenger-docker#upgrading_passenger">Docker</a></td>
+  </tr>
+</table>
+<p>Please be aware that you can enjoy <a href="https://www.phusionpassenger.com/enterprise">enterprise features</a> and sponsor the open source development directly by <a href="https://www.phusionpassenger.com/get_it_now">buying Phusion Passenger Enterprise</a>.</p>
+</div>]]></content:encoded></item></channel></rss>

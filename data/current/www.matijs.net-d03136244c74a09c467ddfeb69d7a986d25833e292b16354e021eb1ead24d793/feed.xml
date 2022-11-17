@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xml:lang="en" xmlns="http://www.w3.org/2005/Atom">
+  <id>tag:www.matijs.net,2005:/blog/articles</id>
+  <link rel="alternate" type="text/html" href="http://www.matijs.net/blog">
+  <link rel="self" type="application/atom+xml" href="https://www.matijs.net/blog/articles.atom">
+  <title>Toxic Elephant</title>
+  <subtitle type="html">Don't bury it in your back yard!</subtitle>
+  <updated>2022-04-08T05:53:21Z</updated>
+  <generator uri="https://publify.github.io" version="9.2.5">Publify</generator>
+  <entry>
+    <id>urn:uuid:a13ee1c7-27ff-41a5-8fba-997a674364a3</id>
+    <published>2022-04-07T12:01:24Z</published>
+    <updated>2022-04-08T05:53:21Z</updated>
+    <link rel="alternate" type="text/html" href="http://www.matijs.net/blog/2022/04/07/let-s-do-some-old-school-blogging">
+    <author>
+      <name>matijs</name>
+    </author>
+    <title type="html">Let's do some old-school blogging</title>
+    <category term="meta" scheme="https://www.matijs.net/blog/tag/meta"/>
+    <content type="html">&lt;p&gt;Remember that blog comes from weblog, and (I believe) originally was supposed to (also) mean a log of interesting stuff one encountered around the web, as opposed to a collection of largish articles about a specific subject. Remember that before Twitter, the small posts were also posted on blogs.&lt;/p&gt;
+&lt;p&gt;Let’s do some old-school blogging and post small stuff about random subjects, mostly links.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>urn:uuid:fb810fae-19a7-4bcc-822d-62781656337b</id>
+    <published>2021-12-11T09:26:07Z</published>
+    <updated>2021-12-11T09:27:01Z</updated>
+    <link rel="alternate" type="text/html" href="http://www.matijs.net/blog/2021/12/11/a-few-things-i-don-t-like-about-asciidoc">
+    <author>
+      <name>matijs</name>
+    </author>
+    <title type="html">A few things I don't like about AsciiDoc</title>
+    <category term="asciidoc" scheme="https://www.matijs.net/blog/tag/asciidoc"/>
+    <category term="software" scheme="https://www.matijs.net/blog/tag/software"/>
+    <category term="text" scheme="https://www.matijs.net/blog/tag/text"/>
+    <category term="processing" scheme="https://www.matijs.net/blog/tag/processing"/>
+    <content type="html">&lt;p&gt;&lt;a href=&quot;https://docs.asciidoctor.org/asciidoc/latest/&quot;&gt;AsciiDoc&lt;/a&gt; is nice because a lot
+is possible. However, there are a lot of surprising edge cases that make it
+less great as an easy to read and write documentation format.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Some list markers support nesting, others do not&lt;/p&gt;
+&lt;p&gt;If you use a dash (&lt;code&gt;-&lt;/code&gt;) as a list marker, that works fine until you want to
+create nested lists. Then, it turns out you should be using &lt;code&gt;*&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Outdenting lists has very weird syntax.&lt;/p&gt;
+&lt;p&gt;To outdent a list, you have to add a number of empty lines equal to the
+number of outdents plus one, followed by an empty line with a &lt;code&gt;+&lt;/code&gt;. This is
+too specific for a human-readable format.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Escaping only works where it is needed.&lt;/p&gt;
+&lt;p&gt;Wherever an asterisk leads to bolding, you can escape it using a &lt;code&gt;\&lt;/code&gt; to create a literal
+asterisk. However, when the use of an asterisk does not lead to bolding, adding the &lt;code&gt;\&lt;/code&gt;
+will just lead to a literal &lt;code&gt;\&lt;/code&gt; in the output. Predicting where this will
+happen is tricky so you have to constantly look at the actual output.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <id>urn:uuid:c8a66c75-0ac5-40e0-a100-8cf2cbea23c2</id>
+    <published>2020-10-10T14:32:42Z</published>
+    <updated>2020-10-10T14:32:42Z</updated>
+    <link rel="alternate" type="text/html" href="http://www.matijs.net/blog/2020/10/10/some-development-automation">
+    <author>
+      <name>matijs</name>
+    </author>
+    <title type="html">Some development automation</title>
+    <content type="html">&lt;p&gt;For a long time, part of my weekend routine has been updating the dependencies of all my open source &lt;a href=&quot;https://www.ruby-lang.org/en/&quot;&gt;Ruby&lt;/a&gt; projects. I had set up some tooling to automatically run &lt;a href=&quot;https://bundler.io/&quot;&gt;&lt;code&gt;bundle outdated&lt;/code&gt;&lt;/a&gt; on all my project directories and make a nice report. For good measure, it would also run &lt;a href=&quot;https://docs.rubocop.org/&quot;&gt;RuboCop&lt;/a&gt; and tell me if any work was needed on that front.&lt;/p&gt;
+&lt;p&gt;I would then go through the list of needed work, adjust the dependencies (using &lt;a href=&quot;https://github.com/mvz/keep_up&quot;&gt;KeepUp&lt;/a&gt; where possible), activate new RuboCop cops, fix new RuboCop offenses, create pull requests, wait for builds to be done and then merge. There actually was a certain satisfaction in keeping things up-to-date, keeping things neat.&lt;/p&gt;
+&lt;p&gt;A few weeks ago, I’d had enough. The process of keeping things up-to-date was starting to become tedious, and it was keeping me from writing actual new software. Having had good experience at work with &lt;a href=&quot;https://dependabot.com/&quot;&gt;Dependabot&lt;/a&gt; I decided to automate dependency updates for all my open source repo’s.&lt;/p&gt;
+&lt;p&gt;After some experimenting I made the following changes to my repositories:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;I added a separate named RuboCop job as part of each repository’s Travis CI configuration. To do this requires using the &lt;code&gt;jobs&lt;/code&gt; key instead of &lt;code&gt;rvm&lt;/code&gt;, like so:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;jobs:
+  include:
+    - rvm: 2.5
+    - rvm: 2.6
+    - rvm: 2.7
+    - rvm: 2.7
+      name: &quot;RuboCop&quot;
+      script: bundle exec rubocop
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I configured GitHub’s native version of Dependabot to create pull requests daily, using a file &lt;code&gt;.github/dependabot.yml&lt;/code&gt; in each repository:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;version: 2
+updates:
+- package-ecosystem: bundler
+  directory: &quot;/&quot;
+  schedule:
+    interval: daily
+    time: &quot;04:23&quot;
+  open-pull-requests-limit: 10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All this means is that the manual part has been reduced to just checking that the builds are green for the pull requests produced by Dependabot, and potentially any new issues found by newer versions of RuboCop.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>urn:uuid:b2b90157-631a-48a7-a457-f91b2a35b3f6</id>
+    <published>2020-03-29T08:38:39Z</published>
+    <updated>2020-03-29T08:39:51Z</updated>
+    <link rel="alternate" type="text/html" href="http://www.matijs.net/blog/2020/03/29/government">
+    <author>
+      <name>matijs</name>
+    </author>
+    <title type="html">Government</title>
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;Actually, problems only get solved because people roll up their sleeves and do shit, and government is the collective coordinating apparatus that helps us know what shit needs to get done and who needs to do it.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Current Affairs, &lt;a href=&quot;https://www.currentaffairs.org/2020/03/everything-has-changed-overnight&quot;&gt;Everything has changed overnight&lt;/a&gt;, &lt;a href=&quot;https://mastodon.social/@AnnieGal/103898955906408464&quot;&gt;via @AnnieGal@mastodon.social&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>urn:uuid:31440dae-18df-4bee-b8a0-bbce4a833e35</id>
+    <published>2020-03-20T13:08:33Z</published>
+    <updated>2020-03-20T13:08:33Z</updated>
+    <link rel="alternate" type="text/html" href="http://www.matijs.net/blog/2020/03/20/releasing">
+    <author>
+      <name>matijs</name>
+    </author>
+    <title type="html">Releasing</title>
+    <category term="software" scheme="https://www.matijs.net/blog/tag/software"/>
+    <category term="development" scheme="https://www.matijs.net/blog/tag/development"/>
+    <content type="html">&lt;p&gt;Automating away your library release process because you find it boring and tedious is the worst thing you can do. People rely on your releases to be meaningful, have meaningful version numbers, and meaningful release notes. Yes, these take time. But your releases are when your users are reminded that you exist. At other times, your library is just quietly doing its thing. Releases are when your users take notice. They want to read your change log, look at the version number to see if they need to pay attention. You’re in the spotlight. This is your performance. Give your releases some love.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>urn:uuid:4c70ae50-2829-4ca4-8c79-ecd0ce8d5e47</id>
+    <published>2018-12-31T15:46:20Z</published>
+    <updated>2019-04-23T07:21:41Z</updated>
+    <link rel="alternate" type="text/html" href="http://www.matijs.net/blog/2018/12/31/opinions-about-ruby-gem-development-2018-edition">
+    <author>
+      <name>matijs</name>
+    </author>
+    <title type="html">Opinions about Ruby gem development, 2018 edition</title>
+    <category term="opinions" scheme="https://www.matijs.net/blog/tag/opinions"/>
+    <category term="development" scheme="https://www.matijs.net/blog/tag/development"/>
+    <category term="ruby" scheme="https://www.matijs.net/blog/tag/ruby"/>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;Your next release should nearly always come from the &lt;code&gt;master&lt;/code&gt; branch.&lt;/li&gt;
+&lt;li&gt;When updating your feature branch, prefer &lt;code&gt;git rebase master&lt;/code&gt; over &lt;code&gt;git merge master&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;When merging your feature into &lt;code&gt;master&lt;/code&gt;, prefer merge bubbles over squash merges and fast-forwards.&lt;/li&gt;
+&lt;li&gt;
+&lt;code&gt;bundle exec rake&lt;/code&gt; should run your tests.&lt;/li&gt;
+&lt;li&gt;You still should not check in &lt;code&gt;Gemfile.lock&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Use RuboCop. Running just &lt;code&gt;rubocop&lt;/code&gt; should do the right thing. If you need a specific version, add it to the Gemfile. In that case, &lt;code&gt;bundle exec rubocop&lt;/code&gt; should do the right thing.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <id>urn:uuid:1432b8b9-ff78-432b-8ec5-18a20ac641f9</id>
+    <published>2018-09-20T09:03:17Z</published>
+    <updated>2019-04-23T07:21:41Z</updated>
+    <link rel="alternate" type="text/html" href="http://www.matijs.net/blog/2018/09/20/betting">
+    <author>
+      <name>matijs</name>
+    </author>
+    <title type="html">Betting</title>
+    <category term="programming" scheme="https://www.matijs.net/blog/tag/programming"/>
+    <content type="html">&lt;p&gt;I happened upon
+&lt;a href=&quot;http://slatestarcodex.com/2018/09/19/book-review-the-black-swan/#comment-670327&quot;&gt;this comment&lt;/a&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;But more important, it just doesn’t work sensibly to explain why many people
+decline modest bets (e.g. that someone not on the brink of starvation would
+decline a 50/50 lose $100 vs gain $110) bet.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;You can look at this bet in two ways. The first is the single bet. Then, you
+can think about how bad you feel about losing $100, versus how good you feel
+about gaining $110.&lt;/p&gt;
+&lt;p&gt;The second way is as a repeated bet. And I think this is how people do think
+about it: If I bet yesterday, why not bet today? Or, I lost yesterday, I need
+to bet again today to ‘make up for it’.&lt;/p&gt;
+&lt;p&gt;Emotions aside, the reason given that the bet is a good one, is that &lt;em&gt;in the
+long run&lt;/em&gt; the better will come out ahead. But how long is the long run?&lt;/p&gt;
+&lt;p&gt;Let’s fire up &lt;code&gt;irb&lt;/code&gt;. (I’ve reformatted the lines a bit to fit in an article layout.)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; def bet; rand &amp;lt; 0.5 ? -100 : 110; end
+&amp;gt;&amp;gt; count = 0; sum = 0; while sum &amp;lt; 1; count+= 1; sum += bet; end; [count, sum]
+=&amp;gt; [81, 90] # Oops!
+&amp;gt;&amp;gt; min = 0; count = 0; sum = 0; \
+ &amp;gt;  while sum &amp;lt; 1; count+= 1; sum += bet; min = sum if sum &amp;lt; min; end; \
+ &amp;gt;  [count, min, sum]
+=&amp;gt; [35, -530, 70] # OOPS!
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Maybe you can spare $100, but can you spare $530? (Not to mention the fact that
+many people can’t spare $100.).&lt;/p&gt;
+&lt;p&gt;Or even $1340, leading to a $50 win after 136 bets?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;=&amp;gt; [136, -1340, 50]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What are the chances of a repeated bet ruining you before you gain &lt;em&gt;anything at all&lt;/em&gt;?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; def compound_bet; min = 0; count = 0; sum = 0; \
+ &amp;gt;   while sum &amp;lt; 1; count+= 1; sum += bet; min = sum if sum &amp;lt; min; end; \
+ &amp;gt;   [count, min, sum]; end
+&amp;gt;&amp;gt; def killer_bet(threshold); count, min, sum = compound_bet; min &amp;lt; -threshold; end
+&amp;gt;&amp;gt; def killer_chance(threshold); 100000.times.select { killer_bet(threshold) }.count / 1000.0; end
+&amp;gt;&amp;gt; killer_chance(500) #=&amp;gt; 8.017
+&amp;gt;&amp;gt; killer_chance(1000) #=&amp;gt; 3.532
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A betting scheme with a 3.5% chance of losing $1000 doesn’t sound so good…&lt;/p&gt;
+&lt;p&gt;(The commenter goes on to point to &lt;a href=&quot;http://faculty.som.yale.edu/florianederer/behavioral/Rabin_Thaler.pdf&quot;&gt;an article&lt;/a&gt; that actually doesn’t make the
+claim that the given debt is a ‘modest debt’, and seems far more interesting
+than that.)&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>urn:uuid:481c040e-9857-4aa7-bb5e-abcde1ccd929</id>
+    <published>2018-07-25T06:59:14Z</published>
+    <updated>2019-04-23T07:21:41Z</updated>
+    <link rel="alternate" type="text/html" href="http://www.matijs.net/blog/2018/07/25/no-one-understands-semver">
+    <author>
+      <name>matijs</name>
+    </author>
+    <title type="html">No-one understands SemVer</title>
+    <category term="programming" scheme="https://www.matijs.net/blog/tag/programming"/>
+    <category term="annoyance" scheme="https://www.matijs.net/blog/tag/annoyance"/>
+    <category term="SemVer" scheme="https://www.matijs.net/blog/tag/semver"/>
+    <content type="html">&lt;p&gt;I started reading &lt;a href=&quot;http://technosophos.com/2018/07/04/be-nice-and-write-stable-code.html&quot;&gt;this&lt;/a&gt;, and came upon this line:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Many people claim to know how SemVer works, but have never read the specification.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;And I thought: Yes! This is exactly the problem. Everyone talks about &lt;a href=&quot;https://semver.org/&quot;&gt;SemVer&lt;/a&gt;, but no-one reads the specification, so the discussions don’t make sense. Finally, someone is going to Make Things Clear!&lt;/p&gt;
+&lt;p&gt;…&lt;/p&gt;
+&lt;p&gt;And then I read this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note: Stop trying to justify your refactoring with the “public but internal” argument. If the language spec says it’s public, it’s public. Your intentions have nothing to do with it.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;What!? This person complains about people not reading the specifications, and then proceeds to contradict the &lt;em&gt;very&lt;/em&gt; &lt;em&gt;first&lt;/em&gt; article of the SemVer specification? &lt;a href=&quot;https://semver.org/#spec-item-1&quot;&gt;Here it is&lt;/a&gt; (highlight mine):&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Software using Semantic Versioning MUST declare a public API. &lt;strong&gt;This API could be declared in the code itself or exist strictly in documentation&lt;/strong&gt;. However it is done, it should be precise and comprehensive.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Whether the language spec says it’s public has little to do with it.&lt;/p&gt;
+&lt;p&gt;Now, there’s a discussion going on on Hacker News about this article, and clearly I’m &lt;a href=&quot;https://news.ycombinator.com/item?id=17597538&quot;&gt;not the only one&lt;/a&gt; bothered by the quote above, but the commenters are focused on whether languages allow you to control what part of your API is exposed, rather than what the SemVer spec actually says.&lt;/p&gt;
+&lt;p&gt;No-one understands SemVer.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <id>urn:uuid:d9d9122c-498d-4c1c-9bed-d252acf106af</id>
+    <published>2018-06-06T12:47:21Z</published>
+    <updated>2021-08-22T12:02:26Z</updated>
+    <link rel="alternate" type="text/html" href="http://www.matijs.net/blog/2018/06/06/importing-gtg-tasks-into-taskwarrior">
+    <author>
+      <name>matijs</name>
+    </author>
+    <title type="html">Importing GTG tasks into Taskwarrior</title>
+    <category term="code" scheme="https://www.matijs.net/blog/tag/code"/>
+    <category term="getting" scheme="https://www.matijs.net/blog/tag/getting"/>
+    <category term="things" scheme="https://www.matijs.net/blog/tag/things"/>
+    <category term="gnome" scheme="https://www.matijs.net/blog/tag/gnome"/>
+    <category term="happymapper" scheme="https://www.matijs.net/blog/tag/happymapper"/>
+    <content type="html">&lt;p&gt;I used to use &lt;a href=&quot;https://launchpad.net/gtg&quot;&gt;Getting Things Gnome&lt;/a&gt; (GTG) to keep my TODO list. However, the project seems dead right in the middle of its Gtk+ 3.0 port, so I’ve been looking around for an alternative. After much consideration, I decided on &lt;a href=&quot;https://taskwarrior.org/&quot;&gt;Taskwarrior&lt;/a&gt;. I wanted to keep my old tasks and couldn’t find a nice way to export them from GTG, let alone import them into Taskwarrior. So in the end I decided to create my own exporter.&lt;/p&gt;
+&lt;p&gt;Getting Things Gnome keeps your tasks in some simple XML files in a known location. &lt;a href=&quot;https://github.com/mvz/happymapper&quot;&gt;HappyMapper&lt;/a&gt; is ideal for this. I started out using its automatic mapping, but as my understanding of the GTG format deepened, I switched to explicit mapping of a Task’s attributes and elements.&lt;/p&gt;
+&lt;p&gt;On the other side, Taskwarrior can import simple JSON files that are super easy to create using &lt;a href=&quot;http://ruby-doc.org/stdlib-2.5.1/libdoc/json/rdoc/index.html&quot;&gt;JSON&lt;/a&gt; from the standard library. The script below will output this format to STDOUT. It’s up to you to use &lt;code&gt;task import&lt;/code&gt; to process it further.&lt;/p&gt;
+&lt;p&gt;I implemented this as a spike, so there are no tests, but I like to think the design I ended up with is quite testable. I get annoyed whenever code becomes cluttered, or top-level instance variables start to appear. So I tend to quickly split off classes that have a distinct responsibility. I may yet convert this to a real gem and see how easy it is to bring everything under test.&lt;/p&gt;
+&lt;p&gt;Finally, before showing the code, I should warn you that it’s probably a good idea to back up your existing Taskwarrior data before playing with this.&lt;/p&gt;
+&lt;p&gt;Here’s the code:&lt;/p&gt;
+&lt;div class=&quot;CodeRay&quot;&gt;&lt;pre&gt;&lt;span class=&quot;CodeRay&quot;&gt;&lt;span class=&quot;doctype&quot;&gt;#!/usr/bin/env ruby&lt;/span&gt;
+&lt;p&gt;require &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;happymapper&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;/span&gt;
+require &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;Task&lt;/span&gt;
+include &lt;span class=&quot;constant&quot;&gt;HappyMapper&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;attribute &lt;span class=&quot;symbol&quot;&gt;:id&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;String&lt;/span&gt;
+attribute &lt;span class=&quot;symbol&quot;&gt;:status&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;String&lt;/span&gt;
+attribute &lt;span class=&quot;symbol&quot;&gt;:tags&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;String&lt;/span&gt;
+attribute &lt;span class=&quot;symbol&quot;&gt;:uuid&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;String&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;element &lt;span class=&quot;symbol&quot;&gt;:title&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;String&lt;/span&gt;
+element &lt;span class=&quot;symbol&quot;&gt;:startdate&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;String&lt;/span&gt;
+element &lt;span class=&quot;symbol&quot;&gt;:duedate&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;String&lt;/span&gt;
+element &lt;span class=&quot;symbol&quot;&gt;:modified&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;DateTime&lt;/span&gt;
+element &lt;span class=&quot;symbol&quot;&gt;:donedate&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;String&lt;/span&gt;
+has_many &lt;span class=&quot;symbol&quot;&gt;:subtasks&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;String&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;tag&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;subtask&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;/span&gt;
+element &lt;span class=&quot;symbol&quot;&gt;:content&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;String&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;TaskList&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;initialize&lt;/span&gt;(tasks)
+&lt;span class=&quot;instance-variable&quot;&gt;@tasks&lt;/span&gt; = tasks&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;span class=&quot;instance-variable&quot;&amp;gt;@tasks_hash&amp;lt;/span&amp;gt; = {}
+&amp;lt;span class=&quot;instance-variable&quot;&amp;gt;@tasks&amp;lt;/span&amp;gt;.each &amp;lt;span class=&quot;keyword&quot;&amp;gt;do&amp;lt;/span&amp;gt; |task|
+  &amp;lt;span class=&quot;instance-variable&quot;&amp;gt;@tasks_hash&amp;lt;/span&amp;gt;[task.id] = task
+&amp;lt;span class=&quot;keyword&quot;&amp;gt;end&amp;lt;/span&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;each_task&lt;/span&gt;(&amp;amp;block)
+&lt;span class=&quot;instance-variable&quot;&gt;@tasks&lt;/span&gt;.each &amp;amp;block
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;find&lt;/span&gt;(task_id)
+&lt;span class=&quot;instance-variable&quot;&gt;@tasks_hash&lt;/span&gt;[task_id]
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;root_task&lt;/span&gt;(task)
+parent = &lt;span class=&quot;instance-variable&quot;&gt;@tasks&lt;/span&gt;.find { |it| it.subtasks.include? task.id }
+parent &amp;amp;&amp;amp; root_task(parent) || task
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;TaskProcessor&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;initialize&lt;/span&gt;(task_list, handler)
+&lt;span class=&quot;instance-variable&quot;&gt;@task_list&lt;/span&gt; = task_list
+&lt;span class=&quot;instance-variable&quot;&gt;@handler&lt;/span&gt; = handler
+&lt;span class=&quot;instance-variable&quot;&gt;@processed&lt;/span&gt; = {}
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;process&lt;/span&gt;
+&lt;span class=&quot;instance-variable&quot;&gt;@processed&lt;/span&gt;.clear
+&lt;span class=&quot;instance-variable&quot;&gt;@task_list&lt;/span&gt;.each_task &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |task|
+&lt;span class=&quot;keyword&quot;&gt;next&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;instance-variable&quot;&gt;@processed&lt;/span&gt;[task.id]
+root = &lt;span class=&quot;instance-variable&quot;&gt;@task_list&lt;/span&gt;.root_task(task)
+process_task root
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;span class=&quot;instance-variable&quot;&amp;gt;@task_list&amp;lt;/span&amp;gt;.each_task &amp;lt;span class=&quot;keyword&quot;&amp;gt;do&amp;lt;/span&amp;gt; |task|
+  raise &amp;lt;span class=&quot;string&quot;&amp;gt;&amp;lt;span class=&quot;delimiter&quot;&amp;gt;&amp;amp;quot;&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;content&quot;&amp;gt;Task &amp;lt;/span&amp;gt;&amp;lt;span class=&quot;inline&quot;&amp;gt;&amp;lt;span class=&quot;inline-delimiter&quot;&amp;gt;#{&amp;lt;/span&amp;gt;task.id&amp;lt;span class=&quot;inline-delimiter&quot;&amp;gt;}&amp;lt;/span&amp;gt;&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;content&quot;&amp;gt; not processed&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;delimiter&quot;&amp;gt;&amp;amp;quot;&amp;lt;/span&amp;gt;&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;keyword&quot;&amp;gt;unless&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;instance-variable&quot;&amp;gt;@processed&amp;lt;/span&amp;gt;[task.id]
+&amp;lt;span class=&quot;keyword&quot;&amp;gt;end&amp;lt;/span&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;predefined-constant&quot;&gt;self&lt;/span&gt;.&lt;span class=&quot;function&quot;&gt;process&lt;/span&gt;(tasks, handler)
+new(tasks, handler).process
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;private&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;process_task&lt;/span&gt;(task, level = &lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;)
+&lt;span class=&quot;instance-variable&quot;&gt;@handler&lt;/span&gt;.handle(task, level)
+&lt;span class=&quot;instance-variable&quot;&gt;@processed&lt;/span&gt;[task.id] = &lt;span class=&quot;predefined-constant&quot;&gt;true&lt;/span&gt;
+process_subtasks task.subtasks, level + &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;process_subtasks&lt;/span&gt;(subtask_ids, level)
+subtask_ids.each &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |task_id|
+raise &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;Task &lt;/span&gt;&lt;span class=&quot;inline&quot;&gt;&lt;span class=&quot;inline-delimiter&quot;&gt;#{&lt;/span&gt;task_id&lt;span class=&quot;inline-delimiter&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt; already processed&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;instance-variable&quot;&gt;@processed&lt;/span&gt;[task_id]
+task = &lt;span class=&quot;instance-variable&quot;&gt;@task_list&lt;/span&gt;.find(task_id)
+process_task task, level
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;TaskWarriorExporter&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;initialize&lt;/span&gt;(task_list)
+&lt;span class=&quot;instance-variable&quot;&gt;@task_list&lt;/span&gt; = task_list
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;handle&lt;/span&gt;(task, level)
+status = &lt;span class=&quot;keyword&quot;&gt;case&lt;/span&gt; task.status
+&lt;span class=&quot;keyword&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;Dismiss&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;deleted&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;Done&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;completed&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;Active&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;pending&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;
+raise &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;Unknown: &lt;/span&gt;&lt;span class=&quot;inline&quot;&gt;&lt;span class=&quot;inline-delimiter&quot;&gt;#{&lt;/span&gt;task.status&lt;span class=&quot;inline-delimiter&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;data = {
+  &amp;lt;span class=&quot;key&quot;&amp;gt;description&amp;lt;/span&amp;gt;: task.title,
+  &amp;lt;span class=&quot;key&quot;&amp;gt;status&amp;lt;/span&amp;gt;: status,
+  &amp;lt;span class=&quot;key&quot;&amp;gt;uuid&amp;lt;/span&amp;gt;: task.uuid,
+}
+&amp;lt;span class=&quot;keyword&quot;&amp;gt;if&amp;lt;/span&amp;gt; task.duedate
+  &amp;lt;span class=&quot;keyword&quot;&amp;gt;if&amp;lt;/span&amp;gt; task.duedate == &amp;lt;span class=&quot;string&quot;&amp;gt;&amp;lt;span class=&quot;delimiter&quot;&amp;gt;'&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;content&quot;&amp;gt;soon&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;delimiter&quot;&amp;gt;'&amp;lt;/span&amp;gt;&amp;lt;/span&amp;gt;
+    data[&amp;lt;span class=&quot;symbol&quot;&amp;gt;:priority&amp;lt;/span&amp;gt;] = &amp;lt;span class=&quot;string&quot;&amp;gt;&amp;lt;span class=&quot;delimiter&quot;&amp;gt;'&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;content&quot;&amp;gt;H&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;delimiter&quot;&amp;gt;'&amp;lt;/span&amp;gt;&amp;lt;/span&amp;gt;
+  &amp;lt;span class=&quot;keyword&quot;&amp;gt;else&amp;lt;/span&amp;gt;
+    data[&amp;lt;span class=&quot;symbol&quot;&amp;gt;:due&amp;lt;/span&amp;gt;] = task.duedate
+  &amp;lt;span class=&quot;keyword&quot;&amp;gt;end&amp;lt;/span&amp;gt;
+&amp;lt;span class=&quot;keyword&quot;&amp;gt;end&amp;lt;/span&amp;gt;
+data[&amp;lt;span class=&quot;symbol&quot;&amp;gt;:end&amp;lt;/span&amp;gt;] = task.donedate &amp;lt;span class=&quot;keyword&quot;&amp;gt;if&amp;lt;/span&amp;gt; task.donedate
+data[&amp;lt;span class=&quot;symbol&quot;&amp;gt;:scheduled&amp;lt;/span&amp;gt;] = task.startdate &amp;lt;span class=&quot;keyword&quot;&amp;gt;if&amp;lt;/span&amp;gt; task.startdate
+
+entry = guess_entry(task)
+data[&amp;lt;span class=&quot;symbol&quot;&amp;gt;:entry&amp;lt;/span&amp;gt;] = entry
+
+subtask_uuids = task.subtasks.map &amp;lt;span class=&quot;keyword&quot;&amp;gt;do&amp;lt;/span&amp;gt; |subtask_id|
+  &amp;lt;span class=&quot;instance-variable&quot;&amp;gt;@task_list&amp;lt;/span&amp;gt;.find(subtask_id).uuid
+&amp;lt;span class=&quot;keyword&quot;&amp;gt;end&amp;lt;/span&amp;gt;
+&amp;lt;span class=&quot;keyword&quot;&amp;gt;if&amp;lt;/span&amp;gt; subtask_uuids.any?
+  data[&amp;lt;span class=&quot;symbol&quot;&amp;gt;:depends&amp;lt;/span&amp;gt;] = subtask_uuids.join(&amp;lt;span class=&quot;string&quot;&amp;gt;&amp;lt;span class=&quot;delimiter&quot;&amp;gt;'&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;content&quot;&amp;gt;,&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;delimiter&quot;&amp;gt;'&amp;lt;/span&amp;gt;&amp;lt;/span&amp;gt;)
+&amp;lt;span class=&quot;keyword&quot;&amp;gt;end&amp;lt;/span&amp;gt;
+data[&amp;lt;span class=&quot;symbol&quot;&amp;gt;:tags&amp;lt;/span&amp;gt;] = task.tags &amp;lt;span class=&quot;keyword&quot;&amp;gt;unless&amp;lt;/span&amp;gt; task.tags.empty?
+&amp;lt;span class=&quot;keyword&quot;&amp;gt;if&amp;lt;/span&amp;gt; task.content
+  data[&amp;lt;span class=&quot;symbol&quot;&amp;gt;:annotations&amp;lt;/span&amp;gt;] = [ { &amp;lt;span class=&quot;key&quot;&amp;gt;entry&amp;lt;/span&amp;gt;: entry, &amp;lt;span class=&quot;key&quot;&amp;gt;description&amp;lt;/span&amp;gt;: task.content } ]
+&amp;lt;span class=&quot;keyword&quot;&amp;gt;end&amp;lt;/span&amp;gt;
+puts data.to_json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;private&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;guess_entry&lt;/span&gt;(task)
+dates = [task.duedate, task.donedate, task.startdate].compact.
+reject { |it| &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;%w(&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;someday soon&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;)&lt;/span&gt;&lt;/span&gt;.include? it }.
+sort
+dates.first || task.modified.to_s
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;projects_file = &lt;span class=&quot;constant&quot;&gt;File&lt;/span&gt;.expand_path &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;~/.local/share/gtg/projects.xml&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;’&lt;/span&gt;&lt;/span&gt;
+projects = &lt;span class=&quot;constant&quot;&gt;HappyMapper&lt;/span&gt;.parse &lt;span class=&quot;constant&quot;&gt;File&lt;/span&gt;.read projects_file
+tasks_file = projects.backend.path
+tasks = &lt;span class=&quot;constant&quot;&gt;Task&lt;/span&gt;.parse &lt;span class=&quot;constant&quot;&gt;File&lt;/span&gt;.read tasks_file
+task_list = &lt;span class=&quot;constant&quot;&gt;TaskList&lt;/span&gt;.new tasks&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;constant&quot;&gt;TaskProcessor&lt;/span&gt;.process(task_list, &lt;span class=&quot;constant&quot;&gt;TaskWarriorExporter&lt;/span&gt;.new(task_list))&lt;/p&gt;&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</content>
+  </entry>
+  <entry>
+    <id>urn:uuid:def98e00-94a2-49ab-b1ee-c7e133f78f2f</id>
+    <published>2017-07-31T13:50:13Z</published>
+    <updated>2019-04-23T07:21:41Z</updated>
+    <link rel="alternate" type="text/html" href="http://www.matijs.net/blog/2017/07/31/current-thoughts-on-smart-contracts">
+    <author>
+      <name>matijs</name>
+    </author>
+    <title type="html">Current thoughts on smart contracts</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;Writing a contract such that the law is powerless to reverse it is
+anti-democratic. Libertarians will probably love it, but in canceling out the
+‘oppressive’ state it also cancels any protections offered by the state.&lt;/li&gt;
+&lt;li&gt;Trust is a fundamental basis of human interaction. Creating a trustless way
+of cooperating allows agents to not be held accountable for actions performed
+outside the contract.&lt;/li&gt;
+&lt;li&gt;Instead of the lame excuse ‘the law allows me to be an asshole’, we’ll get
+‘the smart contract allows me to be an asshole’.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+</feed>

@@ -1,0 +1,1135 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en_US"><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://nts.strzibny.name/feed.xml" rel="self" type="application/atom+xml"><link href="https://nts.strzibny.name/" rel="alternate" type="text/html" hreflang="en_US"><updated>2022-09-11T14:45:37+00:00</updated><id>https://nts.strzibny.name/feed.xml</id><title type="html">Notes to self</title><subtitle>Josef Strzibny's publication on software engineering, technical leadership, business, and bootstrapping</subtitle><author><name>strzibny</name></author><entry><title type="html">Why I don’t enjoy RSpec all that much</title><link href="https://nts.strzibny.name/why-not-rspec/" rel="alternate" type="text/html" title="Why I don't enjoy RSpec all that much"><published>2022-09-11T00:00:00+00:00</published><updated>2022-09-11T00:00:00+00:00</updated><id>https://nts.strzibny.name/why-i-dont-enjoy-rspec-all-that-much</id><content type="html" xml:base="https://nts.strzibny.name/why-not-rspec/">&lt;p&gt;One of the reasons I prefer testing with Minitest is the dissatisfaction with my everyday RSpec work. Here are things I don’t like about typical RSpec test suites and how to fix them.&lt;/p&gt;
+
+&lt;p&gt;Please take the post with a grain of salt. If you enjoy writing RSpec this way, keep enjoying it! Some things are personal, and it’s okay.&lt;/p&gt;
+
+&lt;h2 id=&quot;shared-examples&quot;&gt;Shared examples&lt;/h2&gt;
+
+&lt;p&gt;I think the shared examples feature deserves the first spot. While I am confident that the idea to DRY your tests comes from a well-intentioned place, the reality is that it’s a confusing part of the test that is hard to debug.&lt;/p&gt;
+
+&lt;p&gt;What is a shared example? It’s a reusable generic example like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;shared_examples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:calculator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:klass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;described_class&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;expression&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is_expected&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Above I defined a test for calculators that takes &lt;code class=&quot;highlighter-rouge&quot;&gt;options&lt;/code&gt; on initialization and passes an &lt;code class=&quot;highlighter-rouge&quot;&gt;expression&lt;/code&gt; to the &lt;code class=&quot;highlighter-rouge&quot;&gt;calc&lt;/code&gt; method. Then checks the &lt;code class=&quot;highlighter-rouge&quot;&gt;result&lt;/code&gt;. Notice how you scan the whole example to know what you have to provide to make the test work.&lt;/p&gt;
+
+&lt;p&gt;Once prepared, we can now test any instance of a class with just a few lines of code:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;describe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MyBrandNewCalc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;it_behaves_like&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:calculator&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:expression&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5 + 5&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;I kept the example simple enough to follow if you don’t know how shared examples work, but you can imagine that the shared test can be much bigger and more convoluted.&lt;/p&gt;
+
+&lt;p&gt;So what are my troubles with that?&lt;/p&gt;
+
+&lt;p&gt;First, is the inability to see where the test failed:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;...
+
+rspec ./spec/lib/my_brand_new_calc_spec.rb[1:2:5:1:1:1:1]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Second, is trying to connect and compute values provided in the test and the shared example to see what’s passed in the end.&lt;/p&gt;
+
+&lt;p&gt;Third, is figuring out how to debug and rerun a failed test like that.&lt;/p&gt;
+
+&lt;p&gt;And it seems like I am not alone in &lt;a href=&quot;https://twitter.com/strzibnyj/status/1519664857481629696&quot;&gt;these feelings&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/uploads/rspec_shared_examples.png&quot; alt=&quot;rspec_shared_examples&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Note you can use RSpec without shared examples, so maybe don’t?&lt;/p&gt;
+
+&lt;h2 id=&quot;indirect-references&quot;&gt;Indirect references&lt;/h2&gt;
+
+&lt;p&gt;The second on the list is the extraction of &lt;code class=&quot;highlighter-rouge&quot;&gt;subject&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;is_expected&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;described_class&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I mean, I get it. We are like scientists in a lab. We have a test &lt;code class=&quot;highlighter-rouge&quot;&gt;subject&lt;/code&gt; that will go through many tests, so we never lose sight of what we are testing… or do we?&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;describe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MyBrandNewCalc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:expression&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;described_class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;expression&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;#calc&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:expression&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5 + 5&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is_expected&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When seeing a small example like this, it might not be immediately apparent what the problems are.&lt;/p&gt;
+
+&lt;p&gt;But imagine a long test and arriving somewhere in the middle:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;#calc&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:expression&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5 + 5&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is_expected&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;What is the subject? What really is referred in &lt;code class=&quot;highlighter-rouge&quot;&gt;is_expected&lt;/code&gt;? Is the subject a class, instance of a class, or expression?&lt;/p&gt;
+
+&lt;p&gt;What if the test looked like this?&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;#calc&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:calculator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyBrandNewCalc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;returns 10&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;5 + 5&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Suddenly I know what’s being run, and things are 100% clear. Just don’t make me think more than necessary.&lt;/p&gt;
+
+&lt;p&gt;Note you can use RSpec without this kind of indirection, as I demonstrated.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I use and prefer Minitest precisely because it’s so bare bone. I can think about the domain problems rather than trying to make sense of the test suite. It’s a feature. Minitest is also a Rails default which has other benefits.&lt;/p&gt;
+
+&lt;p&gt;I hope to blog more about how I write Minitest, so stay tuned. In the meantime, check out my &lt;a href=&quot;https://businessclasskit.com/&quot;&gt;Rails kit&lt;/a&gt;, which uses 100% Minitest.&lt;/p&gt;</content><author><name>{&quot;picture&quot;=&gt;&quot;/img/author.jpg&quot;, &quot;twitter&quot;=&gt;&quot;strzibnyj&quot;}</name></author><category term="ruby"/><category term="rails"/><category term="testing"/><summary type="html">One of the reasons I prefer testing with Minitest is the dissatisfaction with my everyday RSpec work. Here are things I don’t like about typical RSpec test suites and how to fix them.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://nts.strzibny.name/og_filter"/><media:content medium="image" url="https://nts.strzibny.name/og_filter" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">gem-compare’s new contributors</title><link href="https://nts.strzibny.name/gem-compare-new-contributors/" rel="alternate" type="text/html" title="gem-compare's new contributors"><published>2022-07-18T00:00:00+00:00</published><updated>2022-07-18T00:00:00+00:00</updated><id>https://nts.strzibny.name/full-file-diffs-with-gem-compare-120</id><content type="html" xml:base="https://nts.strzibny.name/gem-compare-new-contributors/">&lt;p&gt;gem-compare v1.2.0, new contributors, and 200+ GitHub starts.&lt;/p&gt;
+
+&lt;p&gt;My little RubyGems plugin got some new contributions. Read the &lt;a href=&quot;https://nts.strzibny.name/gem-compare-1.0/&quot;&gt;v1.0 announcement&lt;/a&gt; to know what’s the gem about.&lt;/p&gt;
+
+&lt;h2 id=&quot;new-files-diff&quot;&gt;New files diff&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/dentarg&quot;&gt;Patrik Ragnarsson&lt;/a&gt; improved the full file diff originally contributed by &lt;a href=&quot;https://github.com/deckar01&quot;&gt;Jared Deckard&lt;/a&gt; to show new files in full as well:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gem compare devise-otp 0.3.0 0.4.0 &lt;span class=&quot;nt&quot;&gt;--diff&lt;/span&gt;
+Fetching devise-otp-0.3.0.gem
+Fetching devise-otp-0.4.0.gem
+Compared versions: &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0.3.0&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;0.4.0&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  DIFFERENT files:
+    0.3.0-&amp;gt;0.4.0:
+      &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; Deleted:
+            app/controllers/devise_otp/devise/credentials_controller.rb
+            app/controllers/devise_otp/devise/tokens_controller.rb
+            app/views/devise/credentials/refresh.html.erb
+            app/views/devise/credentials/show.html.erb
+            app/views/devise/tokens/_token_secret.html.erb
+            app/views/devise/tokens/_trusted_devices.html.erb
+            app/views/devise/tokens/recovery.html.erb
+            app/views/devise/tokens/recovery_codes.text.erb
+            app/views/devise/tokens/show.html.erb
+            &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;/dummy/db/test.sqlite3-journal
+      &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; Added:
+        CHANGELOG.md
+                &lt;span class=&quot;nt&quot;&gt;---&lt;/span&gt; /tmp/20220717-279202-gynrzj 2022-07-17 18:53:27.136313771 +0200
+                +++ /tmp/d20220717-279202-27e0vz/devise-otp-0.4.0/CHANGELOG.md  2022-07-17 18:53:27.127313703 +0200
+                @@ &lt;span class=&quot;nt&quot;&gt;-0&lt;/span&gt;,0 +1,17 @@
+                +# Changelog
+                +
+                +## 0.4.0
+                +
+                +Breaking changes:
+                +
+                +- rename &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;Devise::Otp&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; to &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;Devise::OTP&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+                +- change &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;credentials&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; directory to &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;otp_credentials&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+                +- change &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;tokens&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; directory to &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;otp_tokens&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+                +
+                +Other improvements:
+                +
+                +- Fix file permissions
+                +
+                +## 0.3.0
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;group-bit&quot;&gt;Group bit&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Patrik together with &lt;a href=&quot;https://github.com/ekohl&quot;&gt;Ewoud Kohl&lt;/a&gt; allowed to skip the comparison of a group bit in files’ permissions. This is to avoid often appearing 644 vs 664 changes.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;jruby-support&quot;&gt;JRuby support&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jsvd&quot;&gt;João Duarte&lt;/a&gt; replaced &lt;code class=&quot;highlighter-rouge&quot;&gt;curb&lt;/code&gt; with &lt;code class=&quot;highlighter-rouge&quot;&gt;URI.open&lt;/code&gt; making gem-compare working with other Ruby implementations such as JRuby.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;upgrades&quot;&gt;Upgrades&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Patrik updated the test suite to Minitest 5.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ci&quot;&gt;CI&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Patrik contributed a GitHub workflow to run the test suite on new pull requests.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;thanks&quot;&gt;Thanks&lt;/h2&gt;
+
+&lt;p&gt;Thanks to Patrik, Ewoud and João for improving gem-compare for everybody. I released v1.2.0 yesterday.&lt;/p&gt;
+
+&lt;p&gt;We also reached 200+ stars on &lt;a href=&quot;https://github.com/fedora-ruby/gem-compare&quot;&gt;GitHub&lt;/a&gt;!&lt;/p&gt;</content><author><name>{&quot;picture&quot;=&gt;&quot;/img/author.jpg&quot;, &quot;twitter&quot;=&gt;&quot;strzibnyj&quot;}</name></author><category term="ruby"/><summary type="html">gem-compare v1.2.0, new contributors, and 200+ GitHub starts.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://nts.strzibny.name/og_filter"/><media:content medium="image" url="https://nts.strzibny.name/og_filter" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Migrating Rails cookies to the new JSON serializer</title><link href="https://nts.strzibny.name/migrating-rails-cookies-to-json/" rel="alternate" type="text/html" title="Migrating Rails cookies to the new JSON serializer"><published>2022-06-26T00:00:00+00:00</published><updated>2022-06-26T00:00:00+00:00</updated><id>https://nts.strzibny.name/migrating-rails-cookies-to-the-new-json-serializer</id><content type="html" xml:base="https://nts.strzibny.name/migrating-rails-cookies-to-json/">&lt;p&gt;How to move from Marshal to the new Rails 7 default JSON serializer.&lt;/p&gt;
+
+&lt;p&gt;I was recently upgrading &lt;a href=&quot;https://phrase.com/&quot;&gt;Phrase&lt;/a&gt; to Rails 7. Big upgrades like that are usually being done with the most minimal changes, and this one wasn’t an exception. However, every major and minor version of Rails brings some new defaults that can accumulate over time, leaving you with some debt to pay.&lt;/p&gt;
+
+&lt;p&gt;Today I want to talk about the JSON serializer for cookies that became the default starting with Rails 7.0.&lt;/p&gt;
+
+&lt;h2 id=&quot;marshal-vs-json&quot;&gt;Marshal vs JSON&lt;/h2&gt;
+
+&lt;p&gt;So what’s up with the new JSON serializer? The previous cookie serializer conveniently used Marshal to convert any Ruby object into a byte stream and allowed us to store pretty much anything as long as it fit 4096 bytes (browser’s limit). This same flexibility is also why marshaling is not considered secured and the reason behind the Rails 7 change to save cookies as JSON.&lt;/p&gt;
+
+&lt;p&gt;The main problem of this change is that your current users have a bunch of cookies already saved in their browsers, so if you changed the serializer without changing your cookies, you could find yourself with a broken application.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-plan&quot;&gt;The plan&lt;/h2&gt;
+
+&lt;p&gt;The plan to change the cookies to JSON consists of:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Upgrading to Rails 7 while keeping the old Marshal serializer&lt;/li&gt;
+  &lt;li&gt;Making a list of cookies and their data types&lt;/li&gt;
+  &lt;li&gt;Converting data types when reading the cookies&lt;/li&gt;
+  &lt;li&gt;Moving to the &lt;code class=&quot;highlighter-rouge&quot;&gt;:hybrid&lt;/code&gt; serializer&lt;/li&gt;
+  &lt;li&gt;Changing the way we save cookies&lt;/li&gt;
+  &lt;li&gt;Moving from &lt;code class=&quot;highlighter-rouge&quot;&gt;:hybrid&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;:json&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;upgrading-to-rails-7&quot;&gt;Upgrading to Rails 7&lt;/h2&gt;
+
+&lt;p&gt;Rails has us covered when it comes to upgrading to version 7. After running &lt;code class=&quot;highlighter-rouge&quot;&gt;rails app:update&lt;/code&gt; we’ll get a new initializer with all new Rails 7 defaults in one place. We are interested in the following part:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config/initializers/new_framework_defaults_7_0.rb&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# If you're upgrading and haven't set `cookies_serializer` previously, your cookie serializer&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# was `:marshal`. Convert all cookies to JSON, using the `:hybrid` formatter.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# If you're confident all your cookies are JSON formatted, you can switch to the `:json` formatter.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Continue to use `:marshal` for backward compatibility with old cookies.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# If you have configured the serializer elsewhere, you can remove this.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# See https://guides.rubyonrails.org/action_controller_overview.html#cookies for more information.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Rails.application.config.action_dispatch.cookies_serializer = :hybrid&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Because we don’t know what would happen to our code getting JSON cookies, we need to start with the old default. We set your serializer to &lt;code class=&quot;highlighter-rouge&quot;&gt;:marshal&lt;/code&gt; and continue with the upgrade:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;action_dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cookies_serializer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:marshal&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This allows us to upgrade Rails and safely revert the upgrade if needed. Once on Rails 7, we can attempt to fix our cookies.&lt;/p&gt;
+
+&lt;h2 id=&quot;cookies-list&quot;&gt;Cookies list&lt;/h2&gt;
+
+&lt;p&gt;Since every cookie can be saved and read differently, we need to identify all cookies (including signed and session cookies) in the application. This can start with a simple search for &lt;code class=&quot;highlighter-rouge&quot;&gt;cookies&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;session&lt;/code&gt;, but let’s not forget that our dependencies might use cookies too. You should have a look for and check cookie storage in your browser’s dev tools. Make a list and group cookies by data type you are saving. Your marketing and legal department might also be interested in this.&lt;/p&gt;
+
+&lt;p&gt;The list can look like the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;
+# Cookies
+
+## Strings
+
+- cookies[:language]
+
+## Integers
+
+- session[:oauth_access_token_id]
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;converting-data-types&quot;&gt;Converting data types&lt;/h2&gt;
+
+&lt;p&gt;The main problem when upgrading to JSON is that cookies will end up with different data types. So we should prepare a list of the data types we found and ensure we understand how the value will change.&lt;/p&gt;
+
+&lt;p&gt;If you are unsure what will happen, set a cookie in your controller and read it back using the new default:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# in config&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;action_dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cookies_serializer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:json&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# in a controller&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;cookies&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;key: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;value&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cookies&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;inspect&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I’ll note some main data types and how we have to change the code reading the values from these cookies.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Strings&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;Strings in Marshal will be strings in JSON. Change is not required.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Atoms&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;Atoms won’t stay atoms but would be converted to strings. The fix is to call &lt;code class=&quot;highlighter-rouge&quot;&gt;to_sym&lt;/code&gt; on the value from the cookie.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Booleans&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;Booleans won’t stay booleans but will be returned as strings. The fix is to cast the returned values using &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveModel::Type::Boolean.new.cast&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Integers&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;Integers won’t stay integers but will be returned as strings. The fix is to call &lt;code class=&quot;highlighter-rouge&quot;&gt;.to_i&lt;/code&gt; on returned values.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Hashes&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;Hashes will stay hashes but atom keys will end up being strings. The fix is to convert such a cookie to &lt;code class=&quot;highlighter-rouge&quot;&gt;HashWithIndifferentAccess&lt;/code&gt;. Note that hashes can contain values that might need change as well.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Ruby objects&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;The last category is all the other Ruby objects and won’t stay the same. For example, &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport::Duration&lt;/code&gt; would be returned as a string in seconds.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In the end, things will be JSON, so if you need a more complicated structure, convert it to JSON, and then you can pass it to the cookie.&lt;/p&gt;
+
+&lt;h2 id=&quot;moving-forward&quot;&gt;Moving forward&lt;/h2&gt;
+
+&lt;p&gt;Once we update how we read our cookies, we can switch to the &lt;code class=&quot;highlighter-rouge&quot;&gt;:hybrid&lt;/code&gt; mode and deploy our change.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;action_dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cookies_serializer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:hybrid&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The main work is done. Give yourself a break!&lt;/p&gt;
+
+&lt;h2 id=&quot;saving-cookies&quot;&gt;Saving cookies&lt;/h2&gt;
+
+&lt;p&gt;To properly finish up, we should go back to every cookie and make sure we are already saving it with the expected data type. This will improve clarity. So instead of keeping an integer, we can call &lt;code class=&quot;highlighter-rouge&quot;&gt;.to_s&lt;/code&gt; and pass a string explicitly.&lt;/p&gt;
+
+&lt;h2 id=&quot;leaving-hybrid-mode&quot;&gt;Leaving hybrid mode&lt;/h2&gt;
+
+&lt;p&gt;After a reasonable time in production, we can now remove the &lt;code class=&quot;highlighter-rouge&quot;&gt;:hybrid&lt;/code&gt; option from the configuration (you can delete the whole setting). You have made it!&lt;/p&gt;</content><author><name>{&quot;picture&quot;=&gt;&quot;/img/author.jpg&quot;, &quot;twitter&quot;=&gt;&quot;strzibnyj&quot;}</name></author><category term="ruby"/><category term="rails"/><summary type="html">How to move from Marshal to the new Rails 7 default JSON serializer.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://nts.strzibny.name/og_filter"/><media:content medium="image" url="https://nts.strzibny.name/og_filter" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Understanding ViewComponent concepts by building a button</title><link href="https://nts.strzibny.name/understanding-viewcomponent-concepts/" rel="alternate" type="text/html" title="Understanding ViewComponent concepts by building a button"><published>2022-05-22T00:00:00+00:00</published><updated>2022-05-23T00:00:00+00:00</updated><id>https://nts.strzibny.name/understanding-viewcomponent-concepts-by-building-a-button</id><content type="html" xml:base="https://nts.strzibny.name/understanding-viewcomponent-concepts/">&lt;p&gt;The ViewComponent library from GitHub is becoming a popular answer to building design systems in server-rendered Rails applications. Let’s understand the basics by creating a fancy component button.&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-in-the-component&quot;&gt;What’s in the component&lt;/h2&gt;
+
+&lt;p&gt;For the purposes of this post, a component is an encapsulation of a reusable piece of a view template responsible for its rendering. Components can technically be unique, but the core idea is to build common reusable parts and stay away from one-off components. Think buttons, alerts, or icons.&lt;/p&gt;
+
+&lt;p&gt;At its core, a component in a &lt;a href=&quot;https://viewcomponent.org/&quot;&gt;ViewComponent&lt;/a&gt; system is just a piece of Ruby code. It’s an object that calls its &lt;code class=&quot;highlighter-rouge&quot;&gt;call&lt;/code&gt; method for rendering content:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LinkButtonComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# def initialize&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# end&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# def call&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can render such a component with the &lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt; helper:&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- in a template --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;LinkButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# in a controller&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;show&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;LinkButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Without providing a &lt;code class=&quot;highlighter-rouge&quot;&gt;call&lt;/code&gt; method, the component will simply take and render the block you provide:&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- in a template --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;LinkButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;My button&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_path&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But you can always define what’s going to be rendered by overriding &lt;code class=&quot;highlighter-rouge&quot;&gt;call&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LinkButtonComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;My button&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_path&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Instead of a Rails view tag, you could also provide HTML directly with &lt;code class=&quot;highlighter-rouge&quot;&gt;raw&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;html_safe&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;templates&quot;&gt;Templates&lt;/h2&gt;
+
+&lt;p&gt;Since components should stay flexible, I’ll change the above component to accept the label as argument while keeping the &lt;code class=&quot;highlighter-rouge&quot;&gt;link_to&lt;/code&gt; inside it:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LinkButtonComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@url&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- later --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;LinkButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Click me!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;However, components are usually not just Ruby classes. They usually feature an accompanying template.&lt;/p&gt;
+
+&lt;p&gt;The following demonstrates how the &lt;code class=&quot;highlighter-rouge&quot;&gt;call&lt;/code&gt; method renders its counterpart template by default:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# link_button_component.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LinkButtonComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- link_button_component.html.erb --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@url&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Templates can also use methods from the components to keep things more tidy or flexible:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# link_button_component.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LinkButtonComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;SIZES&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;:small&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;:medium&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;:large&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;freeze&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;size: :medium&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;choose_size&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;SIZES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:medium&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# If not using the template&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# def call&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#   link_to @label, @url, class: choose_size&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- link_button_component.html.erb --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;choose_size&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- later --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;LinkButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;label: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Click me!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;url: &lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After passing our generic data via an initializer, we can decide whether it is more sense to override the &lt;code class=&quot;highlighter-rouge&quot;&gt;call&lt;/code&gt; method or provide a template. We can still call methods from the component in both cases.&lt;/p&gt;
+
+&lt;h2 id=&quot;content&quot;&gt;Content&lt;/h2&gt;
+
+&lt;p&gt;A key part of realizing when building components is to realize that the passed block is saved in the &lt;code class=&quot;highlighter-rouge&quot;&gt;@content&lt;/code&gt; variable, and &lt;code class=&quot;highlighter-rouge&quot;&gt;@content&lt;/code&gt; is what’s rendered if there is no template. The link button above didn’t need any of that, so let’s turn the component into a &lt;code class=&quot;highlighter-rouge&quot;&gt;button_tag&lt;/code&gt; wrapper and pass the inner content as a block:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# button_component.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ButtonComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@attrs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- button_component.html.erb --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;button_tag&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@attrs&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;content&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- later --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;button&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}))&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  Click me!
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here “Click me!” is passed as a block that’s accessible as &lt;code class=&quot;highlighter-rouge&quot;&gt;@content&lt;/code&gt; within the component class and as &lt;code class=&quot;highlighter-rouge&quot;&gt;content&lt;/code&gt; in the template. Since &lt;code class=&quot;highlighter-rouge&quot;&gt;data&lt;/code&gt; is required, it’s passed explicitly, but any other &lt;code class=&quot;highlighter-rouge&quot;&gt;button_tag&lt;/code&gt; argument is just carried over by leveraging the double splat operator.&lt;/p&gt;
+
+&lt;p&gt;If we have a small piece of content, we can also call &lt;code class=&quot;highlighter-rouge&quot;&gt;with_content&lt;/code&gt; on the component:&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;button&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{})).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Click me!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;@content&lt;/code&gt; can also be provided or modified by us. An example could be providing a default with &lt;code class=&quot;highlighter-rouge&quot;&gt;before_render&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# button_component.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ButtonComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@attrs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;before_render&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@content&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Click me!&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- later --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;button&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}))&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;slots&quot;&gt;Slots&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://viewcomponent.org/guide/slots.html&quot;&gt;Slots&lt;/a&gt; are the butter for ViewComponent. They extend the content capabilities of a component to define additional named content areas. A button could have one icon slot, a group of buttons could have many button slots, or an alert could have a headline slot.&lt;/p&gt;
+
+&lt;p&gt;Let’s say that our button should accept an icon and a label slot. Since they are both unique, we define them using &lt;code class=&quot;highlighter-rouge&quot;&gt;renders_one&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# button_component.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ButtonComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;renders_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:icon&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;renders_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:label&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@attrs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;A basic slot can render what’s passed to it (and we can find out if it’s passed with &lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt; method):&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- button_component.html.erb --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;button_tag&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@attrs&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;icon?&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;button-icon&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;icon&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- later --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;button&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}))&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_icon&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;i&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bi bi-alt&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/i&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_label&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+    Click me!
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;A lot of times, though, we would delegate the slot to a component:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# button_component.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ButtonComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;renders_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:icon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;IconComponent&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;IconComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:classes&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;classes: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@classes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;classes&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;content_tag&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;classes&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@attrs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Notice that the component is inside. If you make a component like that, you need to reference it with a string instead of a symbol. The template doesn’t look that different (the icon component could still accept a block):&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;button&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}))&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_icon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;classes: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;bi bi-alt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_label&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+    Click me!
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Finally, let’s create a button group that will group any number of these buttons:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# button_group_component.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ButtonGroupComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;renders_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:buttons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ButtonComponent&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Here we define the slots with &lt;code class=&quot;highlighter-rouge&quot;&gt;renders_many&lt;/code&gt;. Don’t forget the name is now plural.&lt;/p&gt;
+
+&lt;p&gt;In the component template, though, the usage is practically the same as for single slots:&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- button_group_component.html.erb --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;buttons&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buttons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;button&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;button&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;And the same is true for regular templates:&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ButtonGroupComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_button&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_label&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+      Click me!
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_button&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_label&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+      Click me too!
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;There are other nice ways to work with collections, so make sure to read the linked documentation.&lt;/p&gt;
+
+&lt;h2 id=&quot;conditionals&quot;&gt;Conditionals&lt;/h2&gt;
+
+&lt;p&gt;As a last concept for this introduction, I want to mention conditional rendering. Now that we have a button group, we could extend it to be rendered only for admins if necessary. The rendering is controlled with &lt;code class=&quot;highlighter-rouge&quot;&gt;render?&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# button_group_component.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ButtonGroupComponent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;renders_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:buttons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ButtonComponent&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;render?&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;admin?&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If &lt;code class=&quot;highlighter-rouge&quot;&gt;render?&lt;/code&gt; is evaluated to &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;, nothing gets rendered. No more conditionals inside views:&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ButtonGroupComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;user: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Current&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  ...
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;testing&quot;&gt;Testing&lt;/h2&gt;
+
+&lt;p&gt;ViewComponent has a decent &lt;a href=&quot;https://viewcomponent.org/guide/testing.html&quot;&gt;testing guide&lt;/a&gt;. The core idea is that we render components inline and then assert by semantic elements or classes:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;test_helper&quot;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ButtonComponentTest&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveSupport&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TestCase&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TestHelpers&lt;/span&gt;
+
+  &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;renders a basic component&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;render_inline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ButtonComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}))&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assert_selector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;button&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;text: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Click me!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Or, in case of slots:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;test_helper&quot;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ButtonGroupComponentTest&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveSupport&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TestCase&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ViewComponent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TestHelpers&lt;/span&gt;
+
+  &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;renders buttons&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;render_inline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ButtonGroupComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;user: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_button&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;action: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;click-&amp;gt;action&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Ok&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;assert_selector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;button[data-action=&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;click-&amp;gt;action&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;text: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Ok&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>{&quot;picture&quot;=&gt;&quot;/img/author.jpg&quot;, &quot;twitter&quot;=&gt;&quot;strzibnyj&quot;}</name></author><category term="ruby"/><category term="rails"/><summary type="html">The ViewComponent library from GitHub is becoming a popular answer to building design systems in server-rendered Rails applications. Let’s understand the basics by creating a fancy component button.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://nts.strzibny.name/og_filter"/><media:content medium="image" url="https://nts.strzibny.name/og_filter" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">A hybrid development Docker Compose setup for Rails</title><link href="https://nts.strzibny.name/hybrid-docker-compose-rails/" rel="alternate" type="text/html" title="A hybrid development Docker Compose setup for Rails"><published>2022-05-08T00:00:00+00:00</published><updated>2022-05-08T00:00:00+00:00</updated><id>https://nts.strzibny.name/a-hybrid-developer-docker-compose-setup-for-rails</id><content type="html" xml:base="https://nts.strzibny.name/hybrid-docker-compose-rails/">&lt;p&gt;Lots of developers choose between dockerizing their development setup or leaving it as is. There is also a viable hybrid approach in combining Docker Compose with native processes.&lt;/p&gt;
+
+&lt;p&gt;I am usually in the camp of running things directly or creating Vagrant environments that closely resemble what I normally run. I also think a lot between introducing more layers than I need, so I usually run without Docker if I can.&lt;/p&gt;
+
+&lt;p&gt;Nevertheless, I realized that running a Docker Compose setup alongside your regular Puma and Sidekiq processes is actually a pretty nice sweet spot to be in. It’s what we use at Phrase.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-but-why&quot;&gt;Why, but why&lt;/h2&gt;
+
+&lt;p&gt;The arguments for dockerizing the whole development environment are usually in terms of matching production. That means running the same versions of databases, utilities, and services. Having it formalized also means that every team member can immediatelly start working or return to a working setup.&lt;/p&gt;
+
+&lt;p&gt;I understand this argument a lot as it’s the reason I usually had a &lt;a href=&quot;/tag/vagrant&quot;&gt;Vagrant&lt;/a&gt; environment around for my own projects. Even when I developed without a virtual machine, I would write a Vagrantfile to be able to run things in case of anything breaking. So I get it.&lt;/p&gt;
+
+&lt;p&gt;But it’s not the same with Docker. Dockerizing an entire development setup requires a bit different mindset in my opinion. And while leaving virtual machines behind sounds like an improvement, performance might still suffer.&lt;/p&gt;
+
+&lt;p&gt;This &lt;a href=&quot;https://twitter.com/strzibnyj/status/1522950331419799553&quot;&gt;makes you think&lt;/a&gt; if dockerizing everything is worth it. Seems like full Docker setups are a minority for this reason.&lt;/p&gt;
+
+&lt;p&gt;Can we not go overboard and still enjoy some Docker, though? What’s an alternative?&lt;/p&gt;
+
+&lt;p&gt;The alternative is installating Ruby, Rails, and system utilities as usual while dockerizing the rest. This way we solve the annoying part of managing different databases at the cost of not solving the parity in system dependencies.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;It’s not perfect, but it’s simple&lt;/strong&gt;. It’s getting 80% of benefits for 20% of effort. The end result should be running &lt;code class=&quot;highlighter-rouge&quot;&gt;bin/dev&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;bin/rails test&lt;/code&gt; as usual. Not a single command would have to run within a container.&lt;/p&gt;
+
+&lt;h2 id=&quot;implementation&quot;&gt;Implementation&lt;/h2&gt;
+
+&lt;p&gt;There are three steps to turn a regular setup to a hybrid Docker Compose one. We’ll write the &lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose.yml&lt;/code&gt; specification of our databases, update the ports in Rails configuration files, and finally include Docker Compose in our &lt;code class=&quot;highlighter-rouge&quot;&gt;Procfile.dev&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The Docker Compose file for a typical new Rails application with a relational database and Redis server might look like the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# docker-compose.yml&lt;/span&gt;
+version: &lt;span class=&quot;s1&quot;&gt;'3.7'&lt;/span&gt;
+
+services:
+  postgres:
+    image: postgres:14.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 54320:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  redis:
+    image: redis:5.0.4
+    &lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt;: redis-server /etc/redis.conf
+    ports:
+      - 63790:6379
+    volumes:
+      - redis:/data
+
+volumes:
+  redis:
+  postgres:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The first thing you might notice is that it’s very short and understandable. Two database services, each with a volume for data and ports we expose to the host. The PostgreSQL server is run with a default password while we can omit a password for Redis.&lt;/p&gt;
+
+&lt;p&gt;Remember that some other services or databases might require different development and test entries, but this is not necessary here as we can use the same servers for both environments (the database name will differ).&lt;/p&gt;
+
+&lt;p&gt;Running with this Compose setup is as easy as typing &lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose up&lt;/code&gt; and updating your Rails configuration.&lt;/p&gt;
+
+&lt;p&gt;If you have to run Docker with &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo&lt;/code&gt;, add your user to the &lt;em&gt;docker&lt;/em&gt; group first:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;gpasswd &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$USER&lt;/span&gt; docker
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;newgrp docker
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;And start Docker Compose:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker-compose up
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose up&lt;/code&gt; should download the database images and start these two services for you.&lt;/p&gt;
+
+&lt;p&gt;Now that your databases are ready, update the Rails configuration:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config/database.yml&lt;/span&gt;
+&lt;span class=&quot;ss&quot;&gt;development:
+  &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;username: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;password: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# 5432 for local, 54320 for Docker Compose&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;port: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;54320&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;host: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0.0.0.0&quot;&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;database: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app_development&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# config/cable.yml&lt;/span&gt;
+&lt;span class=&quot;ss&quot;&gt;development:
+  adapter: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# 6379 for local, 63790 for Docker Compose&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;url: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:/&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localhost&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;63790&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;At this point you should be able to run &lt;code class=&quot;highlighter-rouge&quot;&gt;bin/rails s&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;bin/rails test&lt;/code&gt; and other usual commands against these new databases.&lt;/p&gt;
+
+&lt;p&gt;Finally, to put these things together, we’ll update &lt;code class=&quot;highlighter-rouge&quot;&gt;Procfile.dev&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;Procfile.dev
+web: bin/rails server &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 3000
+css: yarn build:css &lt;span class=&quot;nt&quot;&gt;--watch&lt;/span&gt;
+live_reload: bin/guard
+js: yarn build &lt;span class=&quot;nt&quot;&gt;--watch&lt;/span&gt;
+services: docker-compose up
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;If we now want to start Rails in development, all we have to do is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;bin/dev&lt;/code&gt; as usual.&lt;/p&gt;
+
+&lt;p&gt;We haven’t solved everything with the new setup, but we gained a lot for very little effort. I think that’s the setup I’ll go with in &lt;a href=&quot;https://businessclasskit.com/&quot;&gt;my kit&lt;/a&gt;.&lt;/p&gt;</content><author><name>{&quot;picture&quot;=&gt;&quot;/img/author.jpg&quot;, &quot;twitter&quot;=&gt;&quot;strzibnyj&quot;}</name></author><category term="docker"/><category term="linux"/><category term="rails"/><summary type="html">Lots of developers choose between dockerizing their development setup or leaving it as is. There is also a viable hybrid approach in combining Docker Compose with native processes.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://nts.strzibny.name/og_filter"/><media:content medium="image" url="https://nts.strzibny.name/og_filter" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">How to avoid sleep in Rails system tests</title><link href="https://nts.strzibny.name/avoid-sleep-rails-system-tests/" rel="alternate" type="text/html" title="How to avoid sleep in Rails system tests"><published>2022-04-24T00:00:00+00:00</published><updated>2022-04-27T00:00:00+00:00</updated><id>https://nts.strzibny.name/how-to-avoid-sleep-in-rails-system-tests</id><content type="html" xml:base="https://nts.strzibny.name/avoid-sleep-rails-system-tests/">&lt;p&gt;Writing system tests can be sometimes tricky because we want to assert a reality that’s not yet rendered. Ad-hoc sleeping is something that can mostly address the problem, but it’s not the most elegant solution and should be avoided if possible.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-problem&quot;&gt;The problem&lt;/h2&gt;
+
+&lt;p&gt;When we write a test with Capybara, we might request an action that takes a bit longer to manifest.&lt;/p&gt;
+
+&lt;p&gt;Imagine a form submit that updates a record:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fill_in&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;with: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo bar&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;click_on&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Update&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# test the expectation&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;has_content?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Success&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;In this case, Capybara has us covered. &lt;code class=&quot;highlighter-rouge&quot;&gt;has_content?&lt;/code&gt; will wait.&lt;/p&gt;
+
+&lt;p&gt;What about if we want to assert the opposite?&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;assert_not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;has_content?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Failure&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;This code won’t work as expected, unfortunately. A natural quick fix could be using &lt;code class=&quot;highlighter-rouge&quot;&gt;sleep&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;assert_not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;has_content?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Failure&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Similarly, the same issue is true for other assertions:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;assert_not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;has_css?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;.flash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;the-fix&quot;&gt;The fix&lt;/h2&gt;
+
+&lt;p&gt;Fix is mostly easy. It’s important to use the Capybara alternatives for asserting the negative:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# will wait&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;has_no_content?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Success&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# will wait&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;has_no_css?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;.flash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In a similar fashion, we should rely on &lt;code class=&quot;highlighter-rouge&quot;&gt;has_no_field?&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;has_no_link?&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;has_no_table?&lt;/code&gt;, and other Capybara negative assertions.&lt;/p&gt;
+
+&lt;p&gt;We can also adjust the maximum waiting time with &lt;code class=&quot;highlighter-rouge&quot;&gt;default_max_wait_time&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;default_max_wait_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;MAX_WAIT_TIME_IN_SECONDS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_i&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If we need to increase this number just for one test, there is &lt;code class=&quot;highlighter-rouge&quot;&gt;using_wait_time&lt;/code&gt; that takes the number of seconds:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# in test&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;using_wait_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;has_no_css?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;.flash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If we need to use &lt;code class=&quot;highlighter-rouge&quot;&gt;sleep&lt;/code&gt; with something else than Capybara helpers, we can write a helper sleeping up to a predefined wait time:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ApplicationSystemTestCase&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActionDispatch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;SystemTestCase&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;wait_until&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;time: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;default_max_wait_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;until&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# in test&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;wait_until&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;time: &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;2.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;page_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_path&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;We cannot really avoid sleeping in Rails system tests, but we should let Capybara do the heavy lifting and skip polluting our tests with random &lt;code class=&quot;highlighter-rouge&quot;&gt;sleep&lt;/code&gt; calls. Also, &lt;code class=&quot;highlighter-rouge&quot;&gt;sleep&lt;/code&gt; is a tool. If you open a Capybara test suite, you’ll find ad-hoc &lt;code class=&quot;highlighter-rouge&quot;&gt;sleep&lt;/code&gt; calls.&lt;/p&gt;</content><author><name>{&quot;picture&quot;=&gt;&quot;/img/author.jpg&quot;, &quot;twitter&quot;=&gt;&quot;strzibnyj&quot;}</name></author><category term="ruby"/><category term="rails"/><category term="testing"/><summary type="html">Writing system tests can be sometimes tricky because we want to assert a reality that’s not yet rendered. Ad-hoc sleeping is something that can mostly address the problem, but it’s not the most elegant solution and should be avoided if possible.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://nts.strzibny.name/og_filter"/><media:content medium="image" url="https://nts.strzibny.name/og_filter" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">One year of sales</title><link href="https://nts.strzibny.name/one-year-of-sales/" rel="alternate" type="text/html" title="One year of sales"><published>2022-04-09T00:00:00+00:00</published><updated>2022-04-09T00:00:00+00:00</updated><id>https://nts.strzibny.name/one-year-of-sales</id><content type="html" xml:base="https://nts.strzibny.name/one-year-of-sales/">&lt;p&gt;A breakdown of selling 640 copies of my first product Deployment from Scratch.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-idea&quot;&gt;The idea&lt;/h2&gt;
+
+&lt;p&gt;I don’t know exactly when was the first time I thought I could write a book, but at some point, I found myself at the crossroad of continuing my job as a CTO of a small startup or &lt;strong&gt;take some time off&lt;/strong&gt; to improve my health (sitting jobs are not healthy!). I chose to prioritize my health and do something on my own. I felt that starting a SaaS business was a big task, so I decided it would be an excellent time to start with a book.&lt;/p&gt;
+
+&lt;p&gt;I chose a topic that combines my &lt;strong&gt;Linux background from Red Hat&lt;/strong&gt; with being a web application developer. I was not thinking of any topic I might like for a simple reason. I had no real following online, so the only thing that could help me sell was my credentials and being a little &lt;strong&gt;unique in my approach&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;I felt that despite there being a lot of DevOps books, their focus is always on a particular tool or cloud. So I chose to explain everything &lt;strong&gt;without any high-level tools&lt;/strong&gt;, which I think is a good way to learn and sometimes completely enough. It’s how I deploy my projects, after all.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/uploads/cover.png&quot; alt=&quot;cover&quot; width=&quot;200&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And that’s how the idea of &lt;a href=&quot;https://deploymentfromscratch.com/&quot;&gt;Deployment from Scratch&lt;/a&gt; was born. I called it VPS for Makers back in October 2018.&lt;/p&gt;
+
+&lt;h2 id=&quot;validation&quot;&gt;Validation&lt;/h2&gt;
+
+&lt;p&gt;Once committed, I announced the start with &lt;a href=&quot;https://nts.strzibny.name/i-am-writing-an-introductory-book-to-web-application-deployment/&quot;&gt;this post&lt;/a&gt;. The post goes over a few of the book’s main topics, and you can notice that my idea was to keep the book lighter and smaller. The feedback I gathered later from the mailing list made me build a vast resource of 500+ pages (yes, people wanted more, not less).&lt;/p&gt;
+
+&lt;p&gt;I then posted &lt;a href=&quot;https://www.reddit.com/r/ruby/comments/9mp204/i_am_writing_a_book_on_rubyrails_deployment_to_vps/&quot;&gt;an announcement&lt;/a&gt; to the Ruby subreddit, which I am a regular of. In the end, I didn’t start with a question but instead said I’ll attempt to do it. Of course, I could have still abandoned the idea if there was no interest.&lt;/p&gt;
+
+&lt;h2 id=&quot;early-marketing&quot;&gt;Early Marketing&lt;/h2&gt;
+
+&lt;p&gt;There is nothing like marketing too early.&lt;/p&gt;
+
+&lt;p&gt;You signed up for two jobs if you decided to write a book. Writing and marketing. And marketing is likely even more vital if you want people to find and read your work. Luckily I was writing a blog for many years, so I had at least one marketing channel. Once I decided to write it, I put the information and links everywhere on my blog and social media.&lt;/p&gt;
+
+&lt;p&gt;Note that I had a minimal following which, minus the bots was almost non-existent. Nevertheless, use what you can, and try to grow your marketing channels alongside your writing. Yes, it’s even more challenging this way, but you want a sale in the end, don’t you? I wanted. So apart from posting on my blog as usual, I also begin to tweet regularly.&lt;/p&gt;
+
+&lt;p&gt;I wrote a dedicated post before on &lt;a href=&quot;https://nts.strzibny.name/how-i-reached-200-subscribers-for-my-upcoming-book/&quot;&gt;how I got the first 200 subscribers&lt;/a&gt; for my book. It took me 493 days and involved renaming the book twice.&lt;/p&gt;
+
+&lt;h2 id=&quot;writing&quot;&gt;Writing&lt;/h2&gt;
+
+&lt;p&gt;I started writing in &lt;strong&gt;October 2018&lt;/strong&gt;. I did five months of full-time writing in Prague before accepting a part-time contracting job. Initially, I thought five months might be enough for me to write it, but the scope quickly grew, and the progress was slow. Because of that, my writing continued during my adventures in Colombia, Mexico, Panama, Vietnam, Albania, North Macedonia, and Serbia.&lt;/p&gt;
+
+&lt;p&gt;In the end, I counted a more than one year of full-time work on the book. Yes, it might also be due to me not being that good or not writing 8/h a day, I’ll admit. But I want to stress that it was a significant undertaking on my side, not a weekend project. I also only wrote bachelor’s and master’s theses as long-form texts before, and they were far shorter. Only the master thesis was in English.&lt;/p&gt;
+
+&lt;p&gt;So writing the book was hard. And pretty chaotic by using a big Trello board and TODO comments everywhere. I also changed the way I built the book PDF along the way by abandoning gitbook and adopting Pandoc. Part of me is surprised I had something that looked coherent in the end. I also relied heavily on Grammarly Pro and volunteers that were interested in proofreading since English is my second language.&lt;/p&gt;
+
+&lt;h2 id=&quot;alpha&quot;&gt;Alpha&lt;/h2&gt;
+
+&lt;p&gt;2.5+ years in, I finally started to sell the alpha version of the book. Starting &lt;strong&gt;April 2021&lt;/strong&gt; while enjoying the seaside in Durrës, Albania, I started to sell to a mailing list of 600+, and made 20 sales over the first 24 hours. I finished selling &lt;strong&gt;80 copies&lt;/strong&gt; that first month, which roughly translates into &lt;strong&gt;$2000&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;After a few alpha versions, I made a beta version as I was closer to the final release. I was able to sell &lt;strong&gt;178&lt;/strong&gt; copies before the final release in the end. It helped me a lot mentally that I might not face a zero. Of course, money in the bank helps too. If you can, do some pre-sale or pre-release sales. It will do wonders.&lt;/p&gt;
+
+&lt;p&gt;I didn’t do a pre-sale, and I am super happy about the decision. I wouldn’t want to keep people waiting for three years to receive a product from me. It could break my spirit (which was low at times). So I did a pre-release of something that could be a book already (the first ten chapters that worked together) while having most of the rest done.&lt;/p&gt;
+
+&lt;p&gt;Most of the marketing continued to be growing my mailing list with my blog and some tweeting.&lt;/p&gt;
+
+&lt;h2 id=&quot;release&quot;&gt;Release&lt;/h2&gt;
+
+&lt;p&gt;As authors, we never want to finish. There is always something to improve or to get back to. I finished while still having an entire Trello board with ideas and references to check. But at some point, you have to say enough is enough. I &lt;a href=&quot;https://nts.strzibny.name/deployment-from-scratch-1st-edition/&quot;&gt;announced&lt;/a&gt; the 1st edition release on my blog on &lt;strong&gt;1st September&lt;/strong&gt; and used Reddit to announce it to a few communities.&lt;/p&gt;
+
+&lt;p&gt;The first and main one was a Ruby subreddit. I knew I’ll do it from the beginning. They were a few reasons for it, but the main one was that I actually used a post to this community as part of my validation. So then, when I finished, I posted &lt;a href=&quot;https://www.reddit.com/r/ruby/comments/pg3c9c/i_posted_on_this_subreddit_3_years_ago_about_my/&quot;&gt;the announcement&lt;/a&gt; as follows:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/uploads/ruby_annon.png&quot; alt=&quot;ruby_annon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Posting on Reddit is a hit or miss, and self-promotion is certainly thrown upon. But creating a detailed post that continues after three years was highly rated for what can be considered an advertisement. I guess that most developers also know they do not have that much money in writing and thus appreciate if someone puts in the work.&lt;/p&gt;
+
+&lt;p&gt;The alpha version was also a reason I got invited by Jeremy Jung to the &lt;a href=&quot;https://www.se-radio.net/2021/09/episode-477-josef-strzibny-on-self-hosting-applications/&quot;&gt;Software Engineering Radio&lt;/a&gt; podcast which then aired during this release month. Good timing.&lt;/p&gt;
+
+&lt;p&gt;The release month ended with &lt;strong&gt;96&lt;/strong&gt; sales and &lt;strong&gt;$3950&lt;/strong&gt; in the bank, mostly from the mailing list, but several Reddit announcements helped. Some, of course, ended up with zero attention. Also, if you plan to self-promote on Reddit, be a real Reddit user first. I spend time on Reddit and try to follow the rules.&lt;/p&gt;
+
+&lt;h2 id=&quot;post-release&quot;&gt;Post-release&lt;/h2&gt;
+
+&lt;p&gt;After the release I got lucky two more times. First time, I got invited to another podcast. We did an episode with Jason Swett from his &lt;a href=&quot;https://www.codewithjason.com/podcast/9639054-122-deployment-from-scratch-with-josef-strzibny/&quot;&gt;The Code with Jason Podcast&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Second time was a successfull submission to the &lt;strong&gt;SHOW HN&lt;/strong&gt; section of Hacker News. HN is a place I visit daily, and I even made it to the homepage before few times. So I knew HN front page brings you a lot of traffic, although I never benefited from it apart from boosting my ego. People come to read your post and leave. I never got to the front page by posting myself, either.&lt;/p&gt;
+
+&lt;p&gt;Still, it was a place to try my luck. In December 2021, I found myself sitting in my Airbnb in Dar es Salaam, and I decided it was time to pull the trigger. The timing appeared to be perfect. Almost too perfect since the few good comments were attacked for being ingenuine. But it didn’t stop the post from success. 300+ upvotes brought me &lt;strong&gt;100 sales in a day&lt;/strong&gt; and &lt;strong&gt;another 50&lt;/strong&gt; the next day.&lt;/p&gt;
+
+&lt;h2 id=&quot;numbers&quot;&gt;Numbers&lt;/h2&gt;
+
+&lt;p&gt;Sales of digital products come with spikes of virality (usually when they release), but go down over time. My best month is the one when I posted to Hacker News in December 2021, a few months after the official announcement. I made &lt;strong&gt;$8930&lt;/strong&gt; in sales. In the lowest months, I made &lt;strong&gt;$640&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/uploads/graph.png&quot; alt=&quot;graph&quot; width=&quot;500&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Since I worked on the book &lt;strong&gt;for a full year&lt;/strong&gt; in terms of hours (spread in three), you could say it earned me a salary equivalent of &lt;strong&gt;~ $2000&lt;/strong&gt; (before tax). So it’s not that much from a salary perspective especially considering how hard it was. But despite that, it feels amazing. I was basically able to write and market a technical book. I am proud of myself for that.&lt;/p&gt;
+
+&lt;h2 id=&quot;self-publishing&quot;&gt;Self-publishing&lt;/h2&gt;
+
+&lt;p&gt;As you figured out by now, I am self-publishing. I wonder how much I would get with a publisher, but I just don’t believe I would achieve such numbers for myself. Could they really find thousands and thousands of customers for you? The support would certainly be appreciated as I had to depend on volunteers. But I did find people that helped me a lot. In a way, it would be easier, but I also enjoyed the challenge and being my own boss. I would likely self-publish again, but there might be a case or time when going with a publisher is a better choice.&lt;/p&gt;
+
+&lt;h2 id=&quot;technicalities&quot;&gt;Technicalities&lt;/h2&gt;
+
+&lt;p&gt;If you are a fellow dev, you might have to consider writing a book yourself. And so, apart from the odds of success, you might want to know-how. If you make a deal with a publisher, they would likely have a system in place for you to use. But if you are going to self-publish, it’s up to you. I wrote my book in &lt;strong&gt;Markdown and LaTex&lt;/strong&gt;. I then built the PDF using &lt;strong&gt;Pandoc&lt;/strong&gt;. I also used a lot of &lt;strong&gt;Ruby&lt;/strong&gt;, which I already wrote about in &lt;a href=&quot;https://nts.strzibny.name/ruby-for-ebook-publishing/&quot;&gt;Ruby for ebook publishing&lt;/a&gt;. I would make my whole setup public if it weren’t such a mess as it is. I did the technical illustrations with &lt;a href=&quot;https://app.diagrams.net/&quot;&gt;draw.io&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-next&quot;&gt;What’s next&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/uploads/customers.png&quot; alt=&quot;customers&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I don’t know how many more books I can sell, but I gave myself a little goal to make it to a thousand copies this year. So far, it looks like I won’t make it, but I am &lt;strong&gt;not giving up&lt;/strong&gt;. I have some updates planned for the book – I will probably expand the text on containers, secret management, and database failovers. As for marketing, there are still things to try. I can still form partnerships, find affiliates, or try advertising. I am also considering selling the standalone PDF, which would allow me to sell at a much better price. We’ll see.&lt;/p&gt;
+
+&lt;h2 id=&quot;final-thoughts&quot;&gt;Final thoughts&lt;/h2&gt;
+
+&lt;p&gt;I guess the final thought should be whether this is something I would do again. After all, it was a lot of work over a couple of years. Maybe the single most &lt;strong&gt;mentally challenging&lt;/strong&gt; thing I did, even (although I might be saying this only because I forgot all of the pain of studying informatics at this point). Still, writing a technical book in one’s line of work is also satisfying. Seeing the final result, the 5-star ratings, or emails as well.&lt;/p&gt;
+
+&lt;p&gt;I say I would do it again. Perhaps a bit differently if I would know beforehand it might take so long. However, I don’t think I would go through it again once I did it. I plan to continue the work in some capacity, but I wouldn’t be able to roll out a similar book again. I would write a novel instead (hah).&lt;/p&gt;</content><author><name>{&quot;picture&quot;=&gt;&quot;/img/author.jpg&quot;, &quot;twitter&quot;=&gt;&quot;strzibnyj&quot;}</name></author><category term="ruby"/><category term="rails"/><category term="python"/><category term="django"/><category term="books"/><summary type="html">A breakdown of selling 640 copies of my first product Deployment from Scratch.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://nts.strzibny.name/og_filter"/><media:content medium="image" url="https://nts.strzibny.name/og_filter" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">gem-compare goes 1.0</title><link href="https://nts.strzibny.name/gem-compare-1.0/" rel="alternate" type="text/html" title="gem-compare goes 1.0"><published>2022-03-21T00:00:00+00:00</published><updated>2022-03-21T00:00:00+00:00</updated><id>https://nts.strzibny.name/gem-compare-goes-10</id><content type="html" xml:base="https://nts.strzibny.name/gem-compare-1.0/">&lt;p&gt;It took forever, but gem-compare hits 1.0!&lt;/p&gt;
+
+&lt;p&gt;What is &lt;a href=&quot;https://github.com/fedora-ruby/gem-compare&quot;&gt;gem-compare&lt;/a&gt;, you ask? gem-compare is a RubyGems plugin that can compare gem versions. I originally created it to vet new gem versions I packaged for Fedora, but it’s useful for all kinds of tasks. The main use-cases for gem-compare are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;checking accidental permission changes&lt;/li&gt;
+  &lt;li&gt;checking for files that shouldn’t make the release&lt;/li&gt;
+  &lt;li&gt;checking for unwanted dependency changes&lt;/li&gt;
+  &lt;li&gt;tracking license changes&lt;/li&gt;
+  &lt;li&gt;reviewing new code&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://thehackernews.com/2022/03/popular-npm-package-updated-to-wipe.html&quot;&gt;Have you heard&lt;/a&gt; about the npm package that wiped out people’s disk space based on geolocation? gem-compare can help you prevent bad upgrades in the Ruby eco-system.&lt;/p&gt;
+
+&lt;h2 id=&quot;usage&quot;&gt;Usage&lt;/h2&gt;
+
+&lt;p&gt;After installation (that needs curl header files), you can start comparing:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gem &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;gem-compare
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gem compare rails 6.2.0 7.0.0 &lt;span class=&quot;nt&quot;&gt;-k&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;-k&lt;/code&gt; option will keep the gem files if you need to work with them.&lt;/p&gt;
+
+&lt;p&gt;By default all kinds of comparisons are run, but you can specify what you need:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gem compare &lt;span class=&quot;nt&quot;&gt;--help&lt;/span&gt;
+Usage: gem compare GEMNAME VERSION &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;VERSION ...] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;options]
+
+  Options:
+    &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--all&lt;/span&gt;                        Show every comparison
+    &lt;span class=&quot;nt&quot;&gt;-k&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--keep-all&lt;/span&gt;                   Keep downloaded and extracted gem files
+    &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--no-color&lt;/span&gt;                   Do not colorize output
+        &lt;span class=&quot;nt&quot;&gt;--platform&lt;/span&gt; PLATFORM          Specify the platform of gem to compare
+    &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--param&lt;/span&gt; PARAM                Compare only a given paramater
+    &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--runtime&lt;/span&gt;                    Compare only runtime dependencies
+    &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--development&lt;/span&gt;                Compare only development dependencies
+    &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--files&lt;/span&gt;                      Compare only files &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;runtime
+    &lt;span class=&quot;nt&quot;&gt;-F&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--diff&lt;/span&gt;                       Diff file contents
+    &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--gemfiles&lt;/span&gt;                   Compare only Gemfiles
+    &lt;span class=&quot;nt&quot;&gt;-b&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--brief&lt;/span&gt;                      Include only important changes &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the report
+    &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt;, &lt;span class=&quot;nt&quot;&gt;--sources&lt;/span&gt; SOURCES            Use different &lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;URIs &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;gems &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;separated by comma&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Note that you can compare as many versions at once as you want.&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-new&quot;&gt;What’s new&lt;/h2&gt;
+
+&lt;p&gt;gem-compare stayed long time at &lt;code class=&quot;highlighter-rouge&quot;&gt;0.0.7&lt;/code&gt;, but last weekend I updated the project for RubyGems 3.x and finally released &lt;code class=&quot;highlighter-rouge&quot;&gt;1.0&lt;/code&gt;. And that’s not everything, because &lt;code class=&quot;highlighter-rouge&quot;&gt;1.0&lt;/code&gt; brings a nice new feature which I want to highlight.&lt;/p&gt;
+
+&lt;p&gt;It’s now possible to compare whole file diffs with the &lt;code class=&quot;highlighter-rouge&quot;&gt;--diff&lt;/code&gt; option:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/uploads/diff-feature.png&quot; alt=&quot;diff-feature&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;github&quot;&gt;GitHub&lt;/h2&gt;
+
+&lt;p&gt;So go ahead and make &lt;a href=&quot;https://github.com/fedora-ruby/gem-compare&quot;&gt;gem-compare&lt;/a&gt; part of your release and upgrade workflows :). Contributions welcome.&lt;/p&gt;</content><author><name>{&quot;picture&quot;=&gt;&quot;/img/author.jpg&quot;, &quot;twitter&quot;=&gt;&quot;strzibnyj&quot;}</name></author><category term="fedora"/><category term="ruby"/><summary type="html">It took forever, but gem-compare hits 1.0!</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://nts.strzibny.name/img/ruby.png"/><media:content medium="image" url="https://nts.strzibny.name/img/ruby.png" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Rails restricted paths validator for URL slugs</title><link href="https://nts.strzibny.name/restricted-paths-validator-url-slugs/" rel="alternate" type="text/html" title="Rails restricted paths validator for URL slugs"><published>2022-03-05T00:00:00+00:00</published><updated>2022-03-05T00:00:00+00:00</updated><id>https://nts.strzibny.name/restrictred-paths</id><content type="html" xml:base="https://nts.strzibny.name/restricted-paths-validator-url-slugs/">&lt;p&gt;When we move from model IDs to slugs, we have to pay attention to controller actions’ names collision.&lt;/p&gt;
+
+&lt;p&gt;A while back, I wrote about the simplest method to &lt;a href=&quot;https://nts.strzibny.name/alternative-ids-rails/&quot;&gt;implement slugs&lt;/a&gt; in Rails. While the implementation is easy, it’s not everything we have to pay attention to. Once we move from IDs to slugs, we need to make sure our users don’t choose slugs that would break the application.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;/teams/:slug&lt;/code&gt; path could override or be overriden by &lt;code class=&quot;highlighter-rouge&quot;&gt;/teams/controller_action_name&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The following snipped would be a good start as alphanumeric restrictions are good for a URL identifier:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Team&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;validates&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:slug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;presence: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;uniqueness: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;length: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;minimum: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;maximum: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;format: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;with: &lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/\A[a-zA-Z0-9]+\Z/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But it’s not enough. The entered slugs could still collide with regular application paths. What if someone choose the name of your controller action? Or something you want to reserve for the future?&lt;/p&gt;
+
+&lt;p&gt;To combat this, we could write a custom validator for this purpose:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/validators/restricted_paths_validator.rb&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RestrictedPathsValidator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveModel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Validator&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;RESTRICTED_PATHS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;TeamsController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;action_methods&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;admin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;admins&quot;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;validate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;record&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RESTRICTED_PATHS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;include?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;record&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;slug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;record&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;add&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:slug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:restricted_path&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then include it in your model:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;c1&quot;&gt;# Avoid slug conflicts with routes&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;validates_with&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;RestrictedPathsValidator&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The validator is restricting all current actions from the controller and more paths can be added on top.&lt;/p&gt;
+
+&lt;p&gt;If we want to provide a custom error message, we can add an I18n entry for &lt;code class=&quot;highlighter-rouge&quot;&gt;activerecord.errors.messages.restricted_path&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;ss&quot;&gt;en:
+  activerecord:
+    errors:
+      messages:
+        restricted_path: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;allowed&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>{&quot;picture&quot;=&gt;&quot;/img/author.jpg&quot;, &quot;twitter&quot;=&gt;&quot;strzibnyj&quot;}</name></author><category term="rails"/><summary type="html">When we move from model IDs to slugs, we have to pay attention to controller actions’ names collision.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://nts.strzibny.name/img/rails.png"/><media:content medium="image" url="https://nts.strzibny.name/img/rails.png" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Why and how to start with the system Ruby modular packages</title><link href="https://nts.strzibny.name/ruby-modular-packages/" rel="alternate" type="text/html" title="Why and how to start with the system Ruby modular packages"><published>2022-02-20T00:00:00+00:00</published><updated>2022-02-20T00:00:00+00:00</updated><id>https://nts.strzibny.name/ruby-modular-packages</id><content type="html" xml:base="https://nts.strzibny.name/ruby-modular-packages/">&lt;p&gt;Modular packages fixes the biggest complain of a single system Ruby package by giving you more options. Let’s see how to install different Ruby versions from modular packages in Fedora, CentOS Stream or Rocky Linux.&lt;/p&gt;
+
+&lt;p&gt;Although I am a fan of chruby (read my comparison of ruby-build with &lt;a href=&quot;https://nts.strzibny.name/ruby-build-and-ruby-install/&quot;&gt;ruby-install&lt;/a&gt;), long compile times is something I dread. A lot of times, I just used &lt;a href=&quot;https://nts.strzibny.name/on-managing-ruby-versions/&quot;&gt;system packages&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;System packages are fast to install (no compilation!) and easy to maintain (free security updates!), but there was one thing that prevents most to use them: a single version in the repository. This is exactly what modular packages are trying to fix.&lt;/p&gt;
+
+&lt;p&gt;Since Fedora 28 times we got one extra RPM repository called &lt;strong&gt;Fedora Modular&lt;/strong&gt;. It’s a repository that lets you install this modular packages and should be installed for you by default. The repository is called &lt;strong&gt;AppStream&lt;/strong&gt; on RHEL, CentOS Stream, and Rocky Linux. But essentially it’s the same thing.&lt;/p&gt;
+
+&lt;p&gt;With &lt;code class=&quot;highlighter-rouge&quot;&gt;dnf module list&lt;/code&gt; we can see all available modules. I’ll limit it to Ruby:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;dnf module list | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;ruby
+ruby    2.7      default &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;d]      An interpreter of object-oriented scripting language               
+ruby    3.0      default &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;d]      An interpreter of object-oriented scripting language
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Now we are talking! Instead of just one version we got two; one of the 2.7.x line and one with the new Ruby 3.0. Yes, we don’t get every single Ruby because the maitainance burden would be too high, but now have options.&lt;/p&gt;
+
+&lt;p&gt;Note that the output above is from fresh Fedora 35. Also note that there is still a system Ruby available in the base &lt;code class=&quot;highlighter-rouge&quot;&gt;ruby&lt;/code&gt; package. But back to modules.&lt;/p&gt;
+
+&lt;p&gt;The output above list the &lt;strong&gt;module name&lt;/strong&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;ruby&lt;/code&gt;) and &lt;strong&gt;stream&lt;/strong&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;2.7&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;3.0&lt;/code&gt;), so the version is not really a version but rather a stream.&lt;/p&gt;
+
+&lt;p&gt;To install a modular package we enable a module and install it:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf module &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;module-name
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf module &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;module-name
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Alternatively we specify the stream we want:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf module &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;module-name:stream
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf module &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;module-name:stream
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;So to install Ruby 2.7, I first install the &lt;code class=&quot;highlighter-rouge&quot;&gt;2.7&lt;/code&gt; stream of the &lt;code class=&quot;highlighter-rouge&quot;&gt;ruby&lt;/code&gt; module:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf module &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;ruby:2.7
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf module &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;ruby:2.7
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;The command &lt;code class=&quot;highlighter-rouge&quot;&gt;module install&lt;/code&gt; will install the default profile (set of packages). Once the stream is enabled, it’s also possible to install its RPM packages with usual &lt;code class=&quot;highlighter-rouge&quot;&gt;dnf install&lt;/code&gt;. Stream packages would be prefered to base system packages.&lt;/p&gt;
+
+&lt;p&gt;Once done, we should be able to use Ruby 2.7:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ruby &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
+ruby 2.7.4p191 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2021-07-07 revision a21a3b7d23&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;x86_64-linux]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Compiling Ruby is my single longest step in updating my servers or rebuilding my Docker containers. With modular packages, we get Ruby almost instantly.&lt;/p&gt;
+
+&lt;p&gt;We could later remove the module with:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf module remove module-name
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Once we want to switch to a different stream, we have to run &lt;code class=&quot;highlighter-rouge&quot;&gt;reset&lt;/code&gt; before enabling the new stream and &lt;code class=&quot;highlighter-rouge&quot;&gt;distro-sync&lt;/code&gt; afterwards:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf module reset module-name
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf module &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;module-name:stream
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf module &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;module-name:stream
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;dnf distro-sync
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;!--
+# dnf module reset module-name
+# dnf module enable module-name:stream
+# dnf module install module-name:stream
+# dnf distro-sync
+
+# dnf module enable module-name:stream
+# dnf module install module-name:stream
+
+
+To simplify installation, modules usually define one or more installation pro-
+files that represent a specific use case. PostgreSQL streams can offer client
+and server profiles, others can split the -devel packages. There might be a
+default profile.
+To install a profile:
+# dnf module install module-name:stream/profile
+--&gt;
+
+&lt;p&gt;While modularity offers more versions, streams of one module are not meant to be used together. You need to decide what version you
+want, rather than using them to develop many projects at once.&lt;/p&gt;</content><author><name>{&quot;picture&quot;=&gt;&quot;/img/author.jpg&quot;, &quot;twitter&quot;=&gt;&quot;strzibnyj&quot;}</name></author><category term="fedora"/><category term="centos"/><category term="linux"/><summary type="html">Modular packages fixes the biggest complain of a single system Ruby package by giving you more options. Let’s see how to install different Ruby versions from modular packages in Fedora, CentOS Stream or Rocky Linux.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://nts.strzibny.name/img/linux.png"/><media:content medium="image" url="https://nts.strzibny.name/img/linux.png" xmlns:media="http://search.yahoo.com/mrss/"/></entry></feed>

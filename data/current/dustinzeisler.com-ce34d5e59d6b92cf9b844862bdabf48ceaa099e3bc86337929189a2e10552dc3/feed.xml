@@ -1,0 +1,1048 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dustin Zeisler</title>
+    <description/>
+    <link>http://dustinzeisler.com/</link>
+    <atom:link href="http://dustinzeisler.com/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 13 Jul 2020 03:18:17 +0000</pubDate>
+    <lastBuildDate>Mon, 13 Jul 2020 03:18:17 +0000</lastBuildDate>
+    <generator>Jekyll v3.8.7</generator>
+    
+      
+      <item>
+          <title>AWS Lambda + Ruby = Podcast [tutorial]</title>
+          <description>&lt;p&gt;Learn how to write a Lambda function in Ruby to create a Podcast feed.&lt;/p&gt;
+
+&lt;p&gt;As of &lt;a href=&quot;https://aws.amazon.com/about-aws/whats-new/2018/11/aws-lambda-supports-ruby/&quot;&gt;Nov 29, 2018&lt;/a&gt; you can write server-less
+functions with Ruby! You can now use your favorite Ruby tools and libraries when developing lambda functions.&lt;/p&gt;
+
+&lt;p&gt;In case your not familiar with lambda here is how &lt;a href=&quot;https://docs.aws.amazon.com/lambda/latest/dg/welcome.html&quot; target=&quot;_blank&quot;&gt;amazon&lt;/a&gt; describes it.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“AWS Lambda is a compute service that lets you run code without provisioning or managing servers. AWS Lambda executes your code only when needed and scales automatically, from a few requests per day to thousands per second. You pay only for the compute time you consume - there is no charge when your code is not running. With AWS Lambda, you can run code for virtually any type of application or backend service - all with zero administration. AWS Lambda runs your code on a high-availability compute infrastructure and performs all of the administration of the compute resources, including server and operating system maintenance, capacity provisioning and automatic scaling, code monitoring and logging.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Let’s give this a try and build something. I’m going to show you how to build a podcast feed using plain Ruby in the Lambda service. I will also use S3 to host the podcast mp3s.&lt;/p&gt;
+
+&lt;h3 id=&quot;create-function&quot;&gt;Create Function&lt;/h3&gt;
+&lt;p&gt;Create an account with &lt;a href=&quot;https://aws.amazon.com/s3&quot; target=&quot;_blank&quot;&gt;AWS&lt;/a&gt;, if you have Amazon shopping account, you can use the same login.&lt;/p&gt;
+
+&lt;p&gt;Now let’s setup the Lambda function. Open up the &lt;a href=&quot;https://aws.amazon.com/lambda/&quot; target=&quot;_blank&quot;&gt;Lambda Console&lt;/a&gt;.&lt;/p&gt;
+
+&lt;details style=&quot;padding-bottom:10px&quot;&gt;
+    &lt;summary style=&quot;text-decoration-line:underline;cursor:pointer&quot;&gt;See Video&lt;/summary&gt;
+    &lt;video controls=&quot;&quot; poster=&quot;/assets/aws-lambda-podcast-in-ruby/lambda-ruby-isometric-black@2x.png&quot;&gt;
+        &lt;source type=&quot;video/mp4&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/create-lambda-function.mp4&quot; /&gt;
+        &lt;source type=&quot;video/webm&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/create-lambda-function.webm&quot; /&gt;
+        I'm sorry; your browser doesn't support HTML5 video in WebM with VP8/VP9 or MP4 with H.264.
+    &lt;/video&gt;
+&lt;/details&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Click “Create Function”&lt;/li&gt;
+  &lt;li&gt;Give the function a name “music-podcast”&lt;/li&gt;
+  &lt;li&gt;Select runtime “Ruby 2.5”&lt;/li&gt;
+  &lt;li&gt;Click create function (this will take a moment)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;add-code-for-function&quot;&gt;Add code for Function&lt;/h3&gt;
+
+&lt;p&gt;This code will be triggered later when uploading new episodes. When run it generates feed.xml file and saves it to your s3 bucket.&lt;/p&gt;
+
+&lt;details style=&quot;padding-bottom:10px&quot;&gt;
+    &lt;summary style=&quot;text-decoration-line:underline;cursor:pointer&quot;&gt;See Video&lt;/summary&gt;
+    &lt;video controls=&quot;&quot; poster=&quot;/assets/aws-lambda-podcast-in-ruby/lambda-ruby-isometric-black@2x.png&quot;&gt;
+        &lt;source type=&quot;video/mp4&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/add-code-for-lambda.mp4&quot; /&gt;
+        &lt;source type=&quot;video/webm&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/add-code-for-lambda.webm&quot; /&gt;
+        I'm sorry; your browser doesn't support HTML5 video in WebM with VP8/VP9 or MP4 with H.264.
+    &lt;/video&gt;
+&lt;/details&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;/assets/aws-lambda-podcast-in-ruby/lambda_function.rb&quot;&gt;Download function&lt;/a&gt; code and copy/paste into the online editor. Replace the contents of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lambda_function.rb&lt;/code&gt; with what was downloaded.&lt;/li&gt;
+  &lt;li&gt;Click orange “Save” button.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;create-s3-bucket&quot;&gt;Create S3 Bucket&lt;/h3&gt;
+
+&lt;p&gt;Open up the &lt;a href=&quot;https://s3.console.aws.amazon.com/s3&quot; target=&quot;_blank&quot;&gt;S3 Console&lt;/a&gt;.&lt;/p&gt;
+
+&lt;details style=&quot;padding-bottom:10px&quot;&gt;
+    &lt;summary style=&quot;text-decoration-line:underline;cursor:pointer&quot;&gt;See Video&lt;/summary&gt;
+    &lt;video controls=&quot;&quot; poster=&quot;/assets/aws-lambda-podcast-in-ruby/lambda-ruby-isometric-black@2x.png&quot;&gt;
+        &lt;source type=&quot;video/mp4&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/create-s3-bucket.mp4&quot; /&gt;
+        &lt;source type=&quot;video/webm&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/create-s3-bucket.webm&quot; /&gt;
+        I'm sorry; your browser doesn't support HTML5 video in WebM with VP8/VP9 or MP4 with H.264.
+    &lt;/video&gt;
+&lt;/details&gt;
+
+&lt;p&gt;Create a public S3 bucket for hosting the podcast files.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Name it &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;music-podcast&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Use the same Region as the lambda function.&lt;/li&gt;
+  &lt;li&gt;Allow public access&lt;/li&gt;
+  &lt;li&gt;Use the default storage option.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;connect-s3-trigger&quot;&gt;Connect S3 Trigger&lt;/h3&gt;
+
+&lt;p&gt;Create a trigger for the function to run every time an object is uploaded into the bucket “music-podcast/episodes”.
+This way the xml feed can be rebuilt when new files are added without any additional steps.&lt;/p&gt;
+
+&lt;details style=&quot;padding-bottom:10px&quot;&gt;
+    &lt;summary style=&quot;text-decoration-line:underline;cursor:pointer&quot;&gt;See Video&lt;/summary&gt;
+    &lt;video controls=&quot;&quot; poster=&quot;/assets/aws-lambda-podcast-in-ruby/lambda-ruby-isometric-black@2x.png&quot;&gt;
+        &lt;source type=&quot;video/mp4&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/set-s3-trigger.mp4&quot; /&gt;
+        &lt;source type=&quot;video/webm&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/set-s3-trigger.webm&quot; /&gt;
+        I'm sorry; your browser doesn't support HTML5 video in WebM with VP8/VP9 or MP4 with H.264.
+    &lt;/video&gt;
+&lt;/details&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;In the designer, pane scroll down to S3.&lt;/li&gt;
+  &lt;li&gt;In the pane select bucket &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;music-podcast&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Add a Prefix of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;episodes/&lt;/code&gt; to watch for changes within this directory.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;give-function-s3-rights-to-bucket&quot;&gt;Give Function S3 rights to bucket&lt;/h4&gt;
+
+&lt;details style=&quot;padding-bottom:10px&quot;&gt;
+    &lt;summary style=&quot;text-decoration-line:underline;cursor:pointer&quot;&gt;See Video&lt;/summary&gt;
+    &lt;video controls=&quot;&quot; poster=&quot;/assets/aws-lambda-podcast-in-ruby/lambda-ruby-isometric-black@2x.png&quot;&gt;
+        &lt;source type=&quot;video/mp4&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/add-s3-right-to-lambda.mp4&quot; /&gt;
+        &lt;source type=&quot;video/webm&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/add-s3-right-to-lambda.webm&quot; /&gt;
+        I'm sorry; your browser doesn't support HTML5 video in WebM with VP8/VP9 or MP4 with H.264.
+    &lt;/video&gt;
+&lt;/details&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Click on your function &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;music-podcast&lt;/code&gt; within the Designer pane.&lt;/li&gt;
+  &lt;li&gt;Scroll past your code to a pane labeled “Execution role”&lt;/li&gt;
+  &lt;li&gt;Click link “View the music-podcast-role-xxxxxxx”. This will open up IAM.&lt;/li&gt;
+  &lt;li&gt;From IAM click the blue button “Attach policies”&lt;/li&gt;
+  &lt;li&gt;In the search box type “s3”&lt;/li&gt;
+  &lt;li&gt;Check “AmazonS3FullAccess”&lt;/li&gt;
+  &lt;li&gt;Click Attach policy.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;create-s3-user-with-rights-to-upload-to-bucket&quot;&gt;Create S3 user with rights to upload to bucket&lt;/h3&gt;
+
+&lt;p&gt;The lambda function code is going to need user credentials to read from the bucket to get the episode files and then to post back the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;feed.xml&lt;/code&gt;.&lt;/p&gt;
+
+&lt;details style=&quot;padding-bottom:10px&quot;&gt;
+    &lt;summary style=&quot;text-decoration-line:underline;cursor:pointer&quot;&gt;See Video&lt;/summary&gt;
+    &lt;video controls=&quot;&quot; poster=&quot;/assets/aws-lambda-podcast-in-ruby/lambda-ruby-isometric-black@2x.png&quot;&gt;
+        &lt;source type=&quot;video/mp4&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/create-iam-user-s3.mp4&quot; /&gt;
+        &lt;source type=&quot;video/webm&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/create-iam-user-s3.webm&quot; /&gt;
+        I'm sorry; your browser doesn't support HTML5 video in WebM with VP8/VP9 or MP4 with H.264.
+    &lt;/video&gt;
+&lt;/details&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Go to &lt;a href=&quot;https://aws.amazon.com/iam&quot; target=&quot;_blank&quot;&gt;IAM&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Click Users&lt;/li&gt;
+  &lt;li&gt;Add User&lt;/li&gt;
+  &lt;li&gt;User name of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;podcaster&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Only click “Programmatic access”&lt;/li&gt;
+  &lt;li&gt;Click “Next: Permissions”&lt;/li&gt;
+  &lt;li&gt;Click “Attach existing policies directly”&lt;/li&gt;
+  &lt;li&gt;Search “s3” and check it.&lt;/li&gt;
+  &lt;li&gt;Click through steps and create user.&lt;/li&gt;
+  &lt;li&gt;Make sure to copy down the “Access key ID” and the “Secret access key”. You can add it to the 
+&lt;a href=&quot;/assets/aws-lambda-podcast-in-ruby/secrets.yml&quot; download=&quot;secrets.yml&quot;&gt;secrets.yml&lt;/a&gt;
+next we will upload that to our function.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;create-secretsyml-in-lambda-console&quot;&gt;Create secrets.yml in Lambda Console&lt;/h3&gt;
+
+&lt;p&gt;Let give your function a way to access those newly created credentials.&lt;/p&gt;
+
+&lt;details style=&quot;padding-bottom:10px&quot;&gt;
+    &lt;summary style=&quot;text-decoration-line:underline;cursor:pointer&quot;&gt;See Video&lt;/summary&gt;
+    &lt;video controls=&quot;&quot; poster=&quot;/assets/aws-lambda-podcast-in-ruby/lambda-ruby-isometric-black@2x.png&quot;&gt;
+        &lt;source type=&quot;video/mp4&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/create-secret-in-lambda.mp4&quot; /&gt;
+        &lt;source type=&quot;video/webm&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/create-secret-in-lambda.webm&quot; /&gt;
+        I'm sorry; your browser doesn't support HTML5 video in WebM with VP8/VP9 or MP4 with H.264.
+    &lt;/video&gt;
+&lt;/details&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Create a new file in your lambda function “secrets.yml”&lt;/li&gt;
+  &lt;li&gt;Paste in the contents that you copied from the last step.&lt;/li&gt;
+  &lt;li&gt;Click save.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;setup-the-podcast&quot;&gt;Setup The Podcast&lt;/h3&gt;
+
+&lt;p&gt;To have a podcast you must have some recordings preferable in mp3 format. Let’s assume that you don’t have them yet, but you need some filler episodes to test this out. So I’m going to use some &lt;a href=&quot;http://www.amclassical.com/piano/&quot;&gt;Classical Music&lt;/a&gt; license under Creative Commons.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.amclassical.com/mp3/amclassical_beethoven_fur_elise.mp3&quot;&gt;Beethoven: Für Elise&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.amclassical.com/mp3/amclassical_joplin_the_entertainer_rag.mp3&quot;&gt;Joplin: The Entertainer Rag&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.amclassical.com/mp3/amclassical_twopart_invention_in_c_minor.mp3&quot;&gt;Bach: Two-part Invention in C minor&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Each directory will represent a episode number with the mp3 and some metadata in it.&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/music-podcast/episodes/1
+  ↳ audio.mp3
+     metadata.json
+/music-podcast/episodes/2
+  ↳ audio.mp3
+     metadata.json
+/music-podcast/episodes/3
+  ↳ audio.mp3
+     metadata.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;a href=&quot;/assets/aws-lambda-podcast-in-ruby/metadata.json&quot; download=&quot;metadata.json&quot;&gt;JSON metadata&lt;/a&gt; will look something like this.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;title&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Episode 1: Beethoven: Für Elise&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;description&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Beethoven: Für Elise&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;published&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2019-05-01&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you don’t want to create all these files and directors yourself download my &lt;a href=&quot;/assets/aws-lambda-podcast-in-ruby/episodes.zip&quot; download=&quot;episodes.zip&quot;&gt;example episodes&lt;/a&gt; to get started.&lt;/p&gt;
+
+&lt;details style=&quot;padding-bottom:10px&quot;&gt;
+    &lt;summary style=&quot;text-decoration-line:underline;cursor:pointer&quot;&gt;See Video&lt;/summary&gt;
+    &lt;video controls=&quot;&quot; poster=&quot;/assets/aws-lambda-podcast-in-ruby/lambda-ruby-isometric-black@2x.png&quot;&gt;
+        &lt;source type=&quot;video/mp4&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/upload-episodes-to-s3.mp4&quot; /&gt;
+        &lt;source type=&quot;video/webm&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/upload-episodes-to-s3.webm&quot; /&gt;
+        I'm sorry; your browser doesn't support HTML5 video in WebM with VP8/VP9 or MP4 with H.264.
+    &lt;/video&gt;
+&lt;/details&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Upload the episodes directory to the root of the music-podcast bucket.&lt;/li&gt;
+  &lt;li&gt;Make sure to set it as &lt;em&gt;public&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;public-feed-url&quot;&gt;Public Feed URL&lt;/h3&gt;
+
+&lt;p&gt;Shortly after you will see the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;feed.xml&lt;/code&gt; appear in the root of the bucket. 
+&lt;a href=&quot;/assets/aws-lambda-podcast-in-ruby/feed.xml&quot; download=&quot;feed.xml&quot;&gt;, here is what mine looks like.
+&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Get the public URL to publish.&lt;/p&gt;
+
+&lt;details style=&quot;padding-bottom:10px&quot;&gt;
+    &lt;summary style=&quot;text-decoration-line:underline;cursor:pointer&quot;&gt;See Video&lt;/summary&gt;
+    &lt;video controls=&quot;&quot; poster=&quot;/assets/aws-lambda-podcast-in-ruby/lambda-ruby-isometric-black@2x.png&quot;&gt;
+        &lt;source type=&quot;video/mp4&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/public-feed-s3-url.mp4&quot; /&gt;
+        &lt;source type=&quot;video/webm&quot; src=&quot;/assets/aws-lambda-podcast-in-ruby/public-feed-s3-url.webm&quot; /&gt;
+        I'm sorry; your browser doesn't support HTML5 video in WebM with VP8/VP9 or MP4 with H.264.
+    &lt;/video&gt;
+&lt;/details&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Click on the bucket &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;music-podcast&lt;/code&gt; and then &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;feed.xml&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Scroll to the bottom and copy the link under “Object URL”&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;all-done&quot;&gt;All Done!&lt;/h3&gt;
+
+&lt;p&gt;You can play around, add a few other episodes, edit the metadata, and see the feed re-built.&lt;/p&gt;
+
+&lt;p&gt;Let me know in the comments what you think you might build with Lambda using Ruby.&lt;/p&gt;
+
+&lt;h4 id=&quot;ps&quot;&gt;P.S&lt;/h4&gt;
+
+&lt;p&gt;&lt;em&gt;Special Thanks to Jake Mauer and Lolo Zhang for creating my logo.&lt;/em&gt;&lt;/p&gt;
+</description>
+          <pubDate>Fri, 31 May 2019 00:00:00 +0000</pubDate>
+          <link>http://dustinzeisler.com/ruby/2019/05/31/aws-lambda-podcast-in-ruby.html</link>
+          <guid isPermaLink="true">http://dustinzeisler.com/ruby/2019/05/31/aws-lambda-podcast-in-ruby.html</guid>
+          
+          <category>ruby</category>
+          
+          <category>AWS</category>
+          
+          <category>Podcast</category>
+          
+          <category>Lambda</category>
+          
+          
+          <category>Ruby</category>
+          
+        </item>
+      
+    
+      
+      <item>
+          <title>The Power of Ruby Structs</title>
+          <description>&lt;p&gt;I invite you to explore beyond ActiveRecord models and into the world of PORO (Plain Old Ruby Objects). These are the building block of any Object Oriented Language and especially Ruby. I’m going to focus on Value Objects, which holders of some collection of data or attributes. The collection could model a person, an account, an address, or more abstractly an error, and many more. You should keep in mind as a general principle that these objects should have a well-defined purpose or identity and contain no more information than what is needed.&lt;/p&gt;
+
+&lt;p&gt;A simple and common way to pass around a collection of attributes is with a Hash. It’s flexible for taking any number of key-value pairs created with ease and manipulatable. It can be passed back and forth between objects. So why would want to use anything else? The ability to decouple different parts of the code and get a quicker understanding of objects being passed around. All the of these also can lead to better truthful tests. For example, if there is one part of the code responsible for populating a Hash, that represents a person and another part that takes it as an input. If you were testing those two parts in isolation, you’d have one test that asserts that object 1 emmets the correct Hash. You’d commonly copy and paste that person Hash into the next test of object 2. The test would pass all is good. Then a feature request comes along that requires changing the key name in the person Hash and because it was a copy and paste job object 2 test still passes, but then you run it in production and things are broken. If you would have instead used a defined object like a Struct changing its interface would have given you feedback in all the place it was used. This sets up an interface object between any interacting objects.&lt;/p&gt;
+
+&lt;p&gt;The simplest way to get started, and which also happens to be the most flexible, is with an initializer and attr_readers.&lt;/p&gt;
+
+&lt;h2 id=&quot;handwritten-version&quot;&gt;Handwritten Version&lt;/h2&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:age&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@age&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Dave&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;Dave&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;With this version, you are in control of everything, and you can see exactly what is happening, nothing is hidden behind some particular DSL. If you want to make a keyword optional def initialize(name:, age: nil) you can add a default argument of nil or any other value that makes sense as a default.&lt;/p&gt;
+
+&lt;h2 id=&quot;struct&quot;&gt;Struct&lt;/h2&gt;
+
+&lt;p&gt;The next Ruby construct I want to talk about is &lt;a href=&quot;https://ruby-doc.org/core-2.5.1/Struct.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Struct&lt;/code&gt;&lt;/a&gt;. It removes some of the boilerplate necessary in the handwritten version.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Dave&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Wow, that’s a lot less code! In the past, I’ve passed on using Struct because it only supported positional arguments, which I find less clear and harder to refactor in the future.&lt;/p&gt;
+
+&lt;h3 id=&quot;with-keyword-arguments&quot;&gt;With Keyword Arguments&lt;/h3&gt;
+
+&lt;p&gt;But a new feature is available &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;keyword_init: true&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;keyword_init: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Dave&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Sadly we lose the feature of required keywords, they all work as being optional.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; nil&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Then again we gain a lot of other features, all of which are possible in the Handwritten version, but with a whole lot less code. I’m going to go through some more included features and show you how to add these feature in the Handwritten version.&lt;/p&gt;
+
+&lt;h3 id=&quot;inspectable&quot;&gt;Inspectable&lt;/h3&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Dave&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; #&amp;lt;struct Person name=&quot;Dave&quot;, age=29&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Compare that to our handwritten version &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#&amp;lt;Person:0x00007fe0650913f0&amp;gt;&lt;/code&gt;. Not very readable or useful in most cases. Of course, there is a way to overwrite this string representation by defining your own &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#to_s&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:age&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;#&amp;lt;Person name=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;inspect&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;, age=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;inspect&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Results in:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;Person name=&quot;Dave&quot;, age=29&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;enumerable&quot;&gt;Enumerable&lt;/h3&gt;
+
+&lt;h4 id=&quot;each&quot;&gt;Each&lt;/h4&gt;
+
+&lt;p&gt;Yields the value of each struct member in order.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;joe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Dave&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;joe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;Dave&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; 29&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The Handwritten version would require you to write a conversion method &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#to_h&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:age&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;to_h&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From there you could call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#to_h&lt;/code&gt; and that would enable you to invoke all enumerable methods or to include the Enumerable module and also define an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#each&lt;/code&gt; method if want direct access to call these methods.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Enumerable&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:age&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;to_h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;to_h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#each&lt;/code&gt; method delegates to the hash version of the object. You could also refactor that to use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Forwardable&lt;/code&gt; module.&lt;/p&gt;
+
+&lt;h4 id=&quot;each-pair&quot;&gt;Each Pair&lt;/h4&gt;
+
+&lt;p&gt;Yields the name and value of each struct member in order.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:address&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;keyword_init: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;joe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Joe Smith&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;address: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;123 Maple, Anytown NC&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;zip: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12345&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;joe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each_pair&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; =&amp;gt; &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; name =&amp;gt; Joe Smith&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; address =&amp;gt; 123 Maple, Anytown NC&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; zip =&amp;gt; 12345&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;equality&quot;&gt;Equality&lt;/h3&gt;
+
+&lt;p&gt;Here’s an example from the Ruby documentation showing how the comparison works with Structs.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Customer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:address&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;joe&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Customer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Joe Smith&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;123 Maple, Anytown NC&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12345&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;joejr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Customer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Joe Smith&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;123 Maple, Anytown NC&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12345&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;jane&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Customer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Jane Doe&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;456 Elm, Anytown NC&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12345&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;joe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;joejr&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; true&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;joe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jane&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; false&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This is how you would add that feature to your own handwritten object by defining the spaceship operator &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#&amp;lt;=&amp;gt;&lt;/code&gt; and including the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; module.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Comparable&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:age&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;to_h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;to_h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_h&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;adding-methods&quot;&gt;Adding Methods&lt;/h3&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Customer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:address&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;greeting&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;!&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Customer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Dave&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;123 Main&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;greeting&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;Hello Dave!&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This is the recommended way to customize a struct. Subclassing an anonymous struct creates an extra anonymous class that will never be used.&lt;/p&gt;
+
+&lt;h3 id=&quot;members&quot;&gt;Members&lt;/h3&gt;
+
+&lt;p&gt;Here is a bonus trick. If ever have a larger set of data and you want to selectively pull from it without individually referencing each key &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#members&lt;/code&gt; could be useful.&lt;/p&gt;
+
+&lt;p&gt;If I try to put more than what this struct expect I get an argument error. (Remember that keywords and hashes are interchangeable)&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Dave&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;address: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;1001 S Main St&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; unknown keywords: address (ArgumentError)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;So here is the brute force method of only inputting the attributes that are relevant.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;person_hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Dave&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;address: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;1001 S Main St&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person_hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person_hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In most simple cases you’ll want to use this approach even though it more verbose than the next example.&lt;/p&gt;
+
+&lt;p&gt;And now the dynamic method.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;person_hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Dave&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;address: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;1001 S Main St&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person_hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;members&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;include?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)})&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You can do the same thing with the Handwritten version by grabbing the method proc and getting its parameters.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;members&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;instance_method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parameters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;members&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; name&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person_hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;members&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;include?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)})&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It works, but who wants to see that kind of code in their project?&lt;/p&gt;
+
+&lt;p&gt;If you have any thoughts on Ruby Structs or the handwriting versio feel free to leave a comment.&lt;/p&gt;
+</description>
+          <pubDate>Wed, 20 Feb 2019 00:00:00 +0000</pubDate>
+          <link>http://dustinzeisler.com/ruby/2019/02/20/ruby-struct.html</link>
+          <guid isPermaLink="true">http://dustinzeisler.com/ruby/2019/02/20/ruby-struct.html</guid>
+          
+          <category>ruby</category>
+          
+          <category>objects</category>
+          
+          
+          <category>Ruby</category>
+          
+        </item>
+      
+    
+      
+      <item>
+          <title>Visualize Ruby Execution</title>
+          <description>&lt;p&gt;In my &lt;a href=&quot;/ruby/2018/06/18/visualize-ruby.html&quot;&gt;last post&lt;/a&gt;, I showed how Ruby code could be transformed into a flowchart using &lt;a href=&quot;https://en.wikipedia.org/wiki/Static_program_analysis&quot;&gt;static analysis&lt;/a&gt;, which is done with the gem &lt;a href=&quot;https://github.com/zeisler/visualize_ruby&quot;&gt;VisualizeRuby&lt;/a&gt;. Building upon that  I’ve added the ability to show the execution path on the flowchart. It highlights each corresponding node for each line of code executed. For building flowcharts with Ruby code I’ve got a neat &lt;a href=&quot;https://visualize-ruby.herokuapp.com&quot;&gt;demo page&lt;/a&gt;, but to add the execution path to this demo would be a security issue, see &lt;a href=&quot;https://en.wikipedia.org/wiki/Arbitrary_code_execution&quot;&gt;remote code execution vulnerability&lt;/a&gt;. Since there is not an easy way to make that happen safely, you’ll have to follow along at home on your own computer’s.&lt;/p&gt;
+
+&lt;p&gt;Follow the installation instructions on &lt;a href=&quot;https://github.com/zeisler/visualize_ruby&quot;&gt;github&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s talk about a use case for this. I used to work for a lending company and wrote their decision logic. The business was always asking for high grain details of how a decision was made. Even though there were individual rules that gave their owns results, there were often intermediate values or decisions that were not exposed. For example, there was a bankruptcy rule that could decline for 3 different reasons and each of those having their own conditions and in-memory computed values. Being able to present this on a flowchart would have clearly shown why a particular decision was made. This view into the logic would give non-technical persons access to understand better and verify it’s correctness. It also gives the ability to audit individual applications that need further investigation.&lt;/p&gt;
+
+&lt;p&gt;The following is a modified version of that decision rule to show the execution path.
+&lt;script&gt;
+  RubyCode.load(
+    &quot;https://raw.githubusercontent.com/zeisler/visualize_ruby/master/spec/examples/bankruptcy_rule.rb&quot;, 
+    &quot;bankruptcy_rule&quot;
+  )
+&lt;/script&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code id=&quot;bankruptcy_rule&quot;&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Assigning ruby_code to a Pathname loads the file and builds the graph from the ruby source. Trace can also take a Pathname, but also a block. I’m sending in some stub data to exercise the code and finally setting the output_path.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;VisualizeRuby&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;vb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ruby_code&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Pathname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;examples/bankruptcy_rule.rb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;vb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;trace&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;BankruptcyRule&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;credit_report: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;OpenStruct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;fico: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;800&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;bankruptcies:  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;OpenStruct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;closed_date: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;years&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ago&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;eligible?&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;vb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;output_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;examples/bankruptcy_rule.png&quot;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# file name with media extension.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The resulting file shows nodes in green tracing the execution path. Then each step is numbered to avoid confusion when nodes and edges are traced more that once. Notice how method calls are in-lined, rather than represented in their own dashed box graph. Making it more cohesive while still maintaining the original idiomatic ruby in the source as to not make the user have to change the ruby code to make it look better on the graph. There may be some API to allow some control over this behavior in the future.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://raw.githubusercontent.com/zeisler/visualize_ruby/master/spec/examples/bankruptcy_rule.png&quot;&gt;&lt;img src=&quot;https://raw.githubusercontent.com/zeisler/visualize_ruby/master/spec/examples/bankruptcy_rule.png&quot; alt=&quot;bankruptcy_rule&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This project is still in beta, and it may not support all types of Ruby code. The execution highlighter works reasonably well, but it in an alpha state. I continue to work on this project and improve its abilities.&lt;/p&gt;
+
+&lt;p&gt;Let me know your thoughts and any compelling use cases you may come up.&lt;/p&gt;
+</description>
+          <pubDate>Tue, 07 Aug 2018 00:00:00 +0000</pubDate>
+          <link>http://dustinzeisler.com/ruby/2018/08/07/visualize-ruby-execution.html</link>
+          <guid isPermaLink="true">http://dustinzeisler.com/ruby/2018/08/07/visualize-ruby-execution.html</guid>
+          
+          <category>ruby flowcharts</category>
+          
+          
+          <category>Ruby</category>
+          
+        </item>
+      
+    
+      
+      <item>
+          <title>Visualize Ruby with Flowcharts</title>
+          <description>&lt;p&gt;See Ruby control flow and methods calls as flow charts. 
+Helps developers better understand code and explain it to the non-technical. By using the DSL you already know, Ruby.&lt;/p&gt;
+
+&lt;p&gt;Play around with a live &lt;a href=&quot;https://visualize-ruby.herokuapp.com&quot;&gt;Ruby editor demo&lt;/a&gt; and see the flow chart being formed on the right.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://visualize-ruby.herokuapp.com/&quot;&gt;&lt;img src=&quot;/images/visualize_ruby_demo.png&quot; alt=&quot;Visualize Ruby Demo&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Write a Ruby class and see method interactions.
+&lt;a href=&quot;https://visualize-ruby.herokuapp.com/&quot;&gt;&lt;img src=&quot;/images/visualize_ruby_demo_class.png&quot; alt=&quot;Visualize Ruby Demo&quot; /&gt;&lt;/a&gt;
+Works with procedural code and bare methods. 
+This is experimental project and does not support all types of code.&lt;/p&gt;
+
+&lt;p&gt;Under the hood this is using &lt;a href=&quot;http://www.graphviz.org/&quot;&gt;GraphViz&lt;/a&gt; and &lt;a href=&quot;https://github.com/whitequark/parser&quot;&gt;parser gem&lt;/a&gt;. 
+&lt;a href=&quot;https://github.com/whitequark/parser&quot;&gt;Parser&lt;/a&gt; is used to transform the code to an &lt;a href=&quot;https://en.wikipedia.org/wiki/Abstract_syntax_tree&quot;&gt;AST&lt;/a&gt; 
+and based on each type converts those to &lt;a href=&quot;http://www.graphviz.org/&quot;&gt;GraphViz&lt;/a&gt; nodes and edges to create the flow chart.&lt;/p&gt;
+
+&lt;p&gt;It’s open source, &lt;a href=&quot;https://github.com/zeisler/visualize_ruby&quot;&gt;visualize_ruby&lt;/a&gt;. Feedback and pull-request are welcome.&lt;/p&gt;
+</description>
+          <pubDate>Mon, 18 Jun 2018 00:00:00 +0000</pubDate>
+          <link>http://dustinzeisler.com/ruby/2018/06/18/visualize-ruby.html</link>
+          <guid isPermaLink="true">http://dustinzeisler.com/ruby/2018/06/18/visualize-ruby.html</guid>
+          
+          <category>ruby flowcharts</category>
+          
+          
+          <category>Ruby</category>
+          
+        </item>
+      
+    
+      
+      <item>
+          <title>Custom Ruby Collections with ActiveRecord Like Scopes [Video]</title>
+          <description>&lt;p&gt;&lt;a href=&quot;http://guides.rubyonrails.org/active_record_querying.html#scopes&quot;&gt;ActiveRecord Scopes&lt;/a&gt; can be nice to use and a useful way to think about data. 
+Chaining methods together in logical filters to get the desired results without having to think about the structure of the data.
+ActiveRecord is tided to doing database queries, but to do that you must have a database. Have you ever wanted use this kind of syntax on a set of custom in-memory objects or an array of hashes?
+Now let’s not let ActiveRecord have all the fun we can do the same thing in plain old Ruby and I’ll show you how.&lt;/p&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/dqU3IhYpyRc&quot; frameborder=&quot;0&quot; allow=&quot;autoplay; encrypted-media&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Here I’ve got an ActiveRecord Person, notice that it is singular because in ActiveRecord a Class represent a collection of people and a single person.
+We can’t very well just create new collections because the source is a single database instance.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:minors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:adults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:tall&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:short&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tall&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;minors&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &amp;lt;Relations ...&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In our Ruby world why not have many different collections instance we are not limited by a single database.
+So in this example I have made a distinction between a collection of People and a single person.&lt;/p&gt;
+
+&lt;p&gt;The People class, defined below, is going to represent the 
+definition of collection of persons. Here I stub out some methods that I will define later just to get the shape of what the
+classes interface is going to look like.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;People&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;minors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;adults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tall&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;short&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here is a person with the attributes of age and height. I set the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#to_s&lt;/code&gt; method so that when the objects are sent to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#puts&lt;/code&gt;
+it displays more than just the object id, but lists out the attributes.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:age&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@age&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;#Person age: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;, height: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I create the initializer so that it sets the collection array to an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attr_reader :to_a&lt;/code&gt;. This will allow conversion of this object into a simple
+array if need. First let’s start with the create method. For this to have chainable methods ie. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;People#adults#tall&lt;/code&gt; each
+method call needs to return a new instance of a People collection. Here I’ve filled out the operation needed to return
+the desired result using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#reject&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#select&lt;/code&gt; on the Array of Persons.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;People&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:to_a&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@to_a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;minors&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;create&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;to_a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;19&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;adults&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;create&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;to_a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reject&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;minors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;include?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tall&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;create&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;to_a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here I’ve created an array that will be used as the input into our new &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;People&lt;/code&gt; class.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;person_array&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;height: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;19&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;height: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;45&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;height: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;height: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;age: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;height: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;tall_people&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;People&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tall&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tall_people&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; [&amp;lt;#Person age: 45, height: 6&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#     &amp;lt;#Person age: 16, height: 5&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#     &amp;lt;#Person age: 32, height: 5&amp;gt;]&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tall_people&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;minors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [&amp;lt;#Person age: 16, height: 5&amp;gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Check out the &lt;a href=&quot;https://github.com/zeisler/active_enumerable&quot;&gt;ActiveEnumerable&lt;/a&gt; Gem for a DSL to do the same thing and a whole lot more ActiveRecord query like methods on custom Ruby Collections.&lt;/p&gt;
+
+</description>
+          <pubDate>Sun, 11 Feb 2018 00:00:00 +0000</pubDate>
+          <link>http://dustinzeisler.com/ruby/2018/02/11/custom-collection-with-scopes.html</link>
+          <guid isPermaLink="true">http://dustinzeisler.com/ruby/2018/02/11/custom-collection-with-scopes.html</guid>
+          
+          <category>ruby</category>
+          
+          <category>objects</category>
+          
+          <category>rails</category>
+          
+          <category>active_record</category>
+          
+          <category>video</category>
+          
+          
+          <category>Ruby</category>
+          
+        </item>
+      
+    
+      
+      <item>
+          <title>ActiveMocker 2.6 Released</title>
+          <description>&lt;p&gt;103rd release of ActiveMocker! See change log for details.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/zeisler/active_mocker/blob/master/CHANGELOG.md#260---2017-12-01&quot;&gt;ChangeLog&lt;/a&gt;&lt;/p&gt;
+
+&lt;meta http-equiv=&quot;refresh&quot; content=&quot;0; url=https://github.com/zeisler/active_mocker/blob/master/CHANGELOG.md#260---2017-12-01&quot; /&gt;
+
+</description>
+          <pubDate>Tue, 12 Dec 2017 00:00:00 +0000</pubDate>
+          <link>http://dustinzeisler.com/activemocker/2017/12/12/active-mocker-2_6-release.html</link>
+          <guid isPermaLink="true">http://dustinzeisler.com/activemocker/2017/12/12/active-mocker-2_6-release.html</guid>
+          
+          <category>testing ruby rails active_record</category>
+          
+          
+          <category>ActiveMocker</category>
+          
+        </item>
+      
+    
+      
+      <item>
+          <title>Refactoring Towards Immutable Objects in Ruby [Video]</title>
+          <description>&lt;p&gt;Learn how to refactor from a mutable object into an immutable one while still being able to make changes to state. 
+I’ll start with an Account class and show how you would let it emit new objects instead of changing the previous one.
+ I walk step by step through the refactor process and talk about its possible advantages.&lt;/p&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/IIG8oDf4iz8&quot; frameborder=&quot;0&quot; gesture=&quot;media&quot; allow=&quot;encrypted-media&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Account&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:balance&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;balance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@balance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;balance&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@name&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;deposited&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;amount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;updated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;balance: &lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@balance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;amount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;withdrawn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;amount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;updated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;balance: &lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@balance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;amount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;updated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;balance: &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;balance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;balance: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;balance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;account&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;balance: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Checking&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;account2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;deposited&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;account3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;account2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;withdrawn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;99&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;balance&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;account3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;balance&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/intent/retweet?tweet_id=940461542880854016&quot;&gt;Retweet Post&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Edited 2017-12-20 to fix warnings &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circular argument reference&lt;/code&gt; for Ruby &amp;gt;= 2.2&lt;/p&gt;
+</description>
+          <pubDate>Mon, 11 Dec 2017 00:00:00 +0000</pubDate>
+          <link>http://dustinzeisler.com/refactoring/2017/12/11/refactor-towards-immutable-objects-ruby.html</link>
+          <guid isPermaLink="true">http://dustinzeisler.com/refactoring/2017/12/11/refactor-towards-immutable-objects-ruby.html</guid>
+          
+          <category>mutable</category>
+          
+          <category>ruby</category>
+          
+          <category>objects</category>
+          
+          <category>refactoring</category>
+          
+          <category>video</category>
+          
+          
+          <category>Refactoring</category>
+          
+        </item>
+      
+    
+      
+      <item>
+          <title>Freeze Ruby Constants [Video]</title>
+          <description>&lt;p&gt;An intro video to Ruby constants their enforcement pitfalls and how to fix them and why you should care in your code.&lt;/p&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/7-gTux21c_U?rel=0&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;In computer programming, a constant is a value that cannot be altered by the program during normal execution, i.e., the value is constant. - &lt;a href=&quot;https://en.wikipedia.org/wiki/Constant_(computer_programming)&quot;&gt;Wikipedia&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This is what happens in Ruby when redefining a constant with another object.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;A_CONST&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:first_value&lt;/span&gt; 
+&lt;span class=&quot;no&quot;&gt;A_CONST&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:new_value&lt;/span&gt; &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It outputs a warning.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;ss&quot;&gt;warning: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;initialized&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;constant&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;A_CONST&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you’re not paying attention to warnings in Ruby then enforcing constants is not possible. I would recommend that you listen to this warning and fix them when they come up.&lt;/p&gt;
+
+&lt;p&gt;If the constant is attempted to be reassigned dynamically for example with a method this is not just a warning, but a syntax error.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;A_CONST&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;SyntaxError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dynamic&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;constant&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;assignment&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;A_CONST&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+         &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It can still be done dynamically it just needs different syntax, but this will also produce a runtime warning.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;const_set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:A_CONST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;ss&quot;&gt;warning: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;initialized&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;constant&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;A_CONST&lt;/span&gt;
+&lt;span class=&quot;ss&quot;&gt;warning: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;previous&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;definition&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;A_CONST&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;was&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;here&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;when-warnings-are-not-enough&quot;&gt;When Warnings Are Not Enough&lt;/h2&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;COMPANY_OWNER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Dustin Zeisler&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;What happens when some code is written while not paying attention and does a destructive action on the String?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;COMPANY_OWNER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;gsub!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;i&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;Dustn Zesler&quot;&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;COMPANY_OWNER&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;Dustn Zesler&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The String object is still technically the same object, so no Ruby warnings will happen. This does not meet the expectation of what a constant value should be. Is there anything that we can do about it? Glad you asked this is where &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#freeze&lt;/code&gt; comes in.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;COMPANY_OWNER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Dustin Zeisler&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;freeze&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;COMPANY_OWNER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;frozen?&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; true&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;COMPANY_OWNER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;gsub!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;i&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;RuntimeError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;can&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;modify&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frozen&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;String&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If this is not a common mistake you feel you are going to make it also has performance improvements, see &lt;a href=&quot;https://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2&quot;&gt;www.sitepoint.com/unraveling-string-key-performance-ruby-2-2&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;note-alternative-for-stringfreeze&quot;&gt;Note: Alternative for String#freeze&lt;/h3&gt;
+&lt;hr /&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;With the release of Ruby 2.3, strings can be frozen by default without the use of #freeze. By adding the following magic comment at the top of a file all string literals will default to frozen.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&quot;https://til.hashrocket.com/posts/7b306cafde-defaulting-to-frozen-string-literals&quot;&gt;til.hashrocket.com&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Other common mutable objects in Ruby are Hash and Array. If these objects are being set as a constant I would recommend also freezing them.&lt;/p&gt;
+
+&lt;p&gt;There is no built-in way to unfreeze an object, but if you really want to here is a &lt;a href=&quot;https://stackoverflow.com/a/35633368/3251319&quot;&gt;StackOverflow&lt;/a&gt; post on how to do it.&lt;/p&gt;
+
+&lt;p&gt;If you like this sort of thing subscribe to get new posts delivered directly to your inbox.&lt;/p&gt;
+
+</description>
+          <pubDate>Sun, 26 Nov 2017 00:00:00 +0000</pubDate>
+          <link>http://dustinzeisler.com/ruby/2017/11/26/freeze-ruby-constants.html</link>
+          <guid isPermaLink="true">http://dustinzeisler.com/ruby/2017/11/26/freeze-ruby-constants.html</guid>
+          
+          <category>ruby</category>
+          
+          <category>best-practices</category>
+          
+          <category>video</category>
+          
+          
+          <category>ruby</category>
+          
+        </item>
+      
+    
+      
+      <item>
+          <title>Refactoring with Hash Defaults</title>
+          <description>&lt;p&gt;I’m going to give you a primer on how to set default values when accessing non-existing keys. Then I’ll give you some advice on how this could improve your code.&lt;/p&gt;
+
+&lt;h2 id=&quot;set-default-in-the-initializer&quot;&gt;Set default in the initializer&lt;/h2&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:key_not_found&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:cat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; :key_not_found&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;set-default-on-an-instance&quot;&gt;Set default on an instance&lt;/h2&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;fish: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;default&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; nil&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:default_key&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:fish&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; 100&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; :default_key&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Be aware if this is exposed as public API it may not do what end users are expecting, so either keep the hash with defaults set isolated or be very sure you think about the issues it could cause.&lt;/p&gt;
+
+&lt;p&gt;Side note don’t depend on using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nil&lt;/code&gt; as an indicator of a key not being present because if the value it’s self is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nil&lt;/code&gt; then your code has miss understood the meaning.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;dog: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; nil&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you need to know if a key is realy present use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hash#key?&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;dog: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;key?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; true&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;That feels better.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-about-setting-a-proc&quot;&gt;What about setting a proc&lt;/h3&gt;
+&lt;p&gt;You can set the default to a proc, but that’s not what you would want a proc for.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;proc&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; #&amp;lt;Proc:0x401b3948@-:6&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;default_proc&quot;&gt;default_proc&lt;/h3&gt;
+&lt;p&gt;The first option looks the most natural to Ruby.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# Option 1&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Option 2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;default_proc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;proc&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; 4&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;cat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;catcat&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;why-do-you-want-to-do-this&quot;&gt;Why do you want to do this?&lt;/h2&gt;
+&lt;p&gt;You can read this stuff for yourself in the Ruby documentation, but what I want to bring you is knowledge in how to apply these tools in your own code.&lt;/p&gt;
+
+&lt;h3 id=&quot;refactor-case-statement-to-data-structure&quot;&gt;Refactor case statement to data structure.&lt;/h3&gt;
+
+&lt;p&gt;Let’s say we’ve got a method that returns the sales tax for a certain state. We know there is no sales tax in Oregon and that sales tax is higher in California and were making the assumption about the rest of the US.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sales_tax&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;state&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;OR&quot;&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CA&quot;&lt;/span&gt;
+    &lt;span class=&quot;mf&quot;&gt;0.10&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;mf&quot;&gt;0.05&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Moving things away from conditionals can make adding new branches easier. In some sense, this is removing branch logic from your code and you can think of the hash as data that your code uses as an input. If you’re following a test-driven approach every line in your code should have test coverage, but you won’t always test every possible out come from a data source.&lt;/p&gt;
+
+&lt;p&gt;So, let’s put into practice what we just learned and see how it can help us refactor.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;SALES_TAX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.05&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;merge!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;s2&quot;&gt;&quot;OR&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+    &lt;span class=&quot;s2&quot;&gt;&quot;CA&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.10&lt;/span&gt; 
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;freeze&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;SALES_TAX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CA&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 0.1&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;SALES_TAX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;NV&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 0.05&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Nice, we’ve setup a frozen constant that works the same as the case statement in the previous code.&lt;/p&gt;
+
+&lt;p&gt;An alternative to this is to keep the else condition, or better use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#fetch&lt;/code&gt; with a default, but still move the specific cases into a data structure.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;SALES_TAX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+  &lt;span class=&quot;s2&quot;&gt;&quot;OR&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+  &lt;span class=&quot;s2&quot;&gt;&quot;CA&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.10&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;freeze&lt;/span&gt;
+  
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sales_tax&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;SALES_TAX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.05&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This hash could get large and when it does you might want to move it to a YAML file. The goal here is to reducing churn of the Ruby file and separating data from logic. If you can make Ruby files unchanging it makes them more stable. When the data needs changing it can be changed independently of the code. If the YAML file was changing all the time I might consider moving that to a database leading to no churn in the repository.&lt;/p&gt;
+
+&lt;p&gt;The best solution depends on the use case. I give you the tools it’s your responsibility to use them wisely.&lt;/p&gt;
+
+&lt;p&gt;Code responsibly!&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Post edited 2017-11-14 to address &lt;a href=&quot;https://www.reddit.com/r/ruby/comments/7cp207/refactoring_with_hash_defaults/&quot;&gt;Reddit comments&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+</description>
+          <pubDate>Fri, 10 Nov 2017 00:00:00 +0000</pubDate>
+          <link>http://dustinzeisler.com/refactoring/2017/11/10/refactor-with-hash-default.html</link>
+          <guid isPermaLink="true">http://dustinzeisler.com/refactoring/2017/11/10/refactor-with-hash-default.html</guid>
+          
+          <category>ruby</category>
+          
+          <category>hash</category>
+          
+          <category>refactoring</category>
+          
+          
+          <category>refactoring</category>
+          
+        </item>
+      
+    
+      
+      <item>
+          <title>Postgres Regex Parsing</title>
+          <description>&lt;p&gt;For some reason a Ruby array of BigDecimals was being inserted into a String column in our Portgres DB. With a lot of trying out different things and some help from another software developer and DBA we came up with a solution to parse out the numbers. The goal was to convert a string of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[&quot;83000.0&quot;, &quot;119000.0&quot;]&lt;/code&gt; to an PG array &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{83000.0, 119000.0}&lt;/code&gt;. It Take some regex, but it’s doable.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span class=&quot;n&quot;&gt;string_to_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;regexp_replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;&quot;83000.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;119000.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'[&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\[\]&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&quot; ]'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'g'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;','&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;  &lt;span class=&quot;n&quot;&gt;string_to_array&lt;/span&gt;   
+&lt;span class=&quot;c1&quot;&gt;--------------------&lt;/span&gt;
+ &lt;span class=&quot;err&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;83000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;119000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;breaking-apart-the-parts&quot;&gt;Breaking apart the parts:&lt;/h3&gt;
+
+&lt;p&gt;Clean up string and remove square brackets.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span class=&quot;n&quot;&gt;regexp_replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;&quot;83000.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;119000.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'[&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\[\]&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&quot; ]'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'g'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Split string into array by comma&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span class=&quot;n&quot;&gt;string_to_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&quot;83000.0&quot;, &quot;119000.0&quot;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;','&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;I would’nt recommend this for use in production, but works great for some ad hoc querying.&lt;/p&gt;
+</description>
+          <pubDate>Fri, 02 Jun 2017 00:00:00 +0000</pubDate>
+          <link>http://dustinzeisler.com/sql/2017/06/02/pg-regexp.html</link>
+          <guid isPermaLink="true">http://dustinzeisler.com/sql/2017/06/02/pg-regexp.html</guid>
+          
+          <category>Postgres SQL regexp</category>
+          
+          
+          <category>SQL</category>
+          
+        </item>
+      
+    
+  </channel>
+</rss>

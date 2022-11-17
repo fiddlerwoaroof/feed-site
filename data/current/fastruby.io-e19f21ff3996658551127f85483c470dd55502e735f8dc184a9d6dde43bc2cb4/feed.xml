@@ -1,0 +1,1154 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="https://fastruby.io/blog/rss.xml" rel="self" type="application/atom+xml"><link href="https://fastruby.io/blog/" rel="alternate" type="text/html"><updated>2022-11-11T14:50:34-05:00</updated><id>https://fastruby.io/blog/rss.xml</id><title type="html">The Rails Tech Debt Blog</title><subtitle>FastRuby.io | Rails Upgrade Service</subtitle><author><name>OmbuLabs</name></author><entry><title type="html">How to extend Rails associations</title><link href="https://fastruby.io/blog/rails/how-to-extend-rails-associations.html" rel="alternate" type="text/html" title="How to extend Rails associations"><published>2022-11-11T05:00:00-05:00</published><updated>2022-11-11T05:00:00-05:00</updated><id>https://fastruby.io/blog/rails/how-to-extend-rails-associations</id><content type="html" xml:base="https://fastruby.io/blog/rails/how-to-extend-rails-associations.html">&lt;p&gt;You might have extended classes or instances in Rails, but do you know you can also extend Rails associations?&lt;/p&gt;
+&lt;blockquote&gt;
+
+  &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Account&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:people&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;extending&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;FindOrCreateByNameExtension&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+&lt;/blockquote&gt;
+
+&lt;!--more--&gt;
+
+&lt;h3 id=&quot;what-exactly-does-extending-an-association-do&quot;&gt;What exactly does extending an association do?&lt;/h3&gt;
+
+&lt;p&gt;The proxy objects that control access to associations can be extended through anonymous
+modules. This is especially beneficial for adding new finders, creators, and other
+factory-type methods that are only used as part of an association.&lt;/p&gt;
+
+&lt;p&gt;Let’s look at the following code, Here we are adding a new finder method called &lt;code class=&quot;highlighter-rouge&quot;&gt;find_or_create_by_name&lt;/code&gt; on this association with &lt;code class=&quot;highlighter-rouge&quot;&gt;Person&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Account&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:people&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;find_or_create_by_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;find_or_create_by_first_name_and_last_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;people&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find_or_create_by_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;David Heinemeier Hansson&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first_name&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;David&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;last_name&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;Heinemeier Hansson&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This method can only be used as part of this association. if you try to access this method through the &lt;code class=&quot;highlighter-rouge&quot;&gt;Person&lt;/code&gt; object directly you will not get it. It is available only when you access it through the association.&lt;/p&gt;
+
+&lt;p&gt;If you have a business requirement that says you want to create a new Person by name when it’s for an existing Account, this provides a straightforward solution.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Not available as a class method&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;005&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/find_or_create_by_name/&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Not accessible directly through an instance of that class&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;010&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/find_or_create_by_name/&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Accessible through association&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;011&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;people&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/find_or_create_by_name/&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:find_or_create_by_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If you need to share the same method between many associations, you can use a named extension module.&lt;/p&gt;
+
+&lt;p&gt;You can put the finder method inside a module, like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;FindOrCreateByNameExtension&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;find_or_create_by_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;find_or_create_by_first_name_and_last_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;On Rails 4.0 and above, you can use the following syntax to add your extension module:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Account&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:people&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;extending&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;FindOrCreateByNameExtension&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Company&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:people&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;extending&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;FindOrCreateByNameExtension&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;On Rails 3.2 and lower versions, use the following syntax:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Account&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:people&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:extend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;FindOrCreateByNameExtension&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;applying-conditions-in-an-extension-module&quot;&gt;Applying conditions in an extension module&lt;/h3&gt;
+
+&lt;p&gt;If you have some condition applied to an association, you can chain that condition in an extension module like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# before:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:clinic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;clinic_id: &lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@clinic_id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: :person_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :person_id&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# After:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:clinic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;extending&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MultiAssociation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;OnTestId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;clinic_id: &lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@clinic_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: :person_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :person_id&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now you know how to use extension modules with associations.&lt;/p&gt;
+
+&lt;p&gt;Happy Learning!&lt;/p&gt;</content><author><name>ashwini</name></author><category term="rails"/><summary type="html">You might have extended classes or instances in Rails, but do you know you can also extend Rails associations? class Account &amp;lt; ActiveRecord::Base has_many :people, -&amp;gt; { extending FindOrCreateByNameExtension } end</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://fastruby.io/blog/how-to-extend-rails-associations.jpg"/><media:content medium="image" url="https://fastruby.io/blog/how-to-extend-rails-associations.jpg" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">How to Split Rails Routes?</title><link href="https://fastruby.io/blog/rails/how-to-split-rails-routes.html" rel="alternate" type="text/html" title="How to Split Rails Routes?"><published>2022-11-10T05:00:00-05:00</published><updated>2022-11-10T05:00:00-05:00</updated><id>https://fastruby.io/blog/rails/how-to-split-rails-routes</id><content type="html" xml:base="https://fastruby.io/blog/rails/how-to-split-rails-routes.html">&lt;p&gt;In this article I’ll discuss a strategy for different readability: a simple way to split your routes file on a Ruby on Rails project.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;Usually, when we work on large Ruby on Rails applications, those come with a huge routes file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;config/routes.rb&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This can lead to a bad developer experience or a “your file has too many lines” linter warning.&lt;/p&gt;
+
+&lt;p&gt;Before jumping into code examples, it’s important to note that the processing order in &lt;code class=&quot;highlighter-rouge&quot;&gt;routes.rb&lt;/code&gt; is top to bottom.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Rails 6.1&lt;/em&gt; brought back the &lt;a href=&quot;https://github.com/rails/rails/pull/37892/files&quot; target=&quot;_blank&quot;&gt;feature&lt;/a&gt; that allows you to load external routes file from the router, as it was &lt;a href=&quot;https://github.com/rails/rails/commit/5e7d6bba79393de0279917f93b82f3b7b176f4b5&quot; target=&quot;_blank&quot;&gt;removed&lt;/a&gt; in 2012.&lt;/p&gt;
+
+&lt;p&gt;Check out your project’s version to make sure it’s compatible with this simple solution below.&lt;/p&gt;
+
+&lt;p&gt;Let’s say we have our project with this structure:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/images/controllers-for-route-splitting.png&quot; alt=&quot;Controllers folder example&quot; /&gt;
+&lt;em&gt;Controllers folder example&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Ideally this project will have namespaced controllers structured in routes like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config/routes.rb&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;draw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;root&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;to: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;home#index&quot;&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;devise_for&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:users&lt;/span&gt;
+
+ &lt;span class=&quot;n&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:api&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# resources&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+ &lt;span class=&quot;n&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:admin&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# resources&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+ &lt;span class=&quot;n&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:blog&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# resources&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Keeping a nice and useful rails-way of interpretation, these routes file can be easily split using high-level namespaces into other files.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config/routes/admin.rb&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:admin&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+ &lt;span class=&quot;c1&quot;&gt;# resources&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config/routes/api.rb&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:api&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+ &lt;span class=&quot;c1&quot;&gt;# resources&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config/routes/blog.rb&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:blog&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+ &lt;span class=&quot;c1&quot;&gt;# resources&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And finally:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config/routes.rb&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;draw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;root&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;to: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;home#index&quot;&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;devise_for&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:users&lt;/span&gt;
+
+ &lt;span class=&quot;n&quot;&gt;draw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:admin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Will load route file located in `config/routes/admin.rb`&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;draw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:api&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Will load route file located in `config/routes/api.rb`&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;draw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:blog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Will load route file located in `config/routes/blog.rb`&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;older-rails-versions&quot;&gt;Older Rails versions&lt;/h3&gt;
+
+&lt;p&gt;If you’re running your rails project at 2.x version your router probably uses &lt;code class=&quot;highlighter-rouge&quot;&gt;ActionController::Routing&lt;/code&gt; to draw your routes. At rails 3.0 or higher the router drawer will be defined by each application namespaced within your Application module.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;VERSION&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MAJOR&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+ &lt;span class=&quot;no&quot;&gt;YourAppName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;draw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+ &lt;span class=&quot;no&quot;&gt;ActionController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Routing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;draw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;You can use this quote if you’re on a &lt;a href=&quot;https://www.fastruby.io/blog/upgrade-rails/dual-boot/dual-boot-with-rails-6-0-beta.html&quot; target=&quot;_blank&quot;&gt;dual boot&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;It’s possible your project might need this to load external files:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# application.rb&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;paths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;config/routes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;root&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;config/routes/*.rb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://edgeguides.rubyonrails.org/routing.html#don-t-use-this-feature-unless-you-really-need-it&quot; target=&quot;_blank&quot;&gt;Rails docs&lt;/a&gt; does not recommend route splitting, unless you really need it. It’s up to your project to decide how long files should be and how routes file should be listed. Developers will have different experiences and different points of view about this, check with your team to see what they think about this.&lt;/p&gt;</content><author><name>hmdros</name></author><category term="rails"/><summary type="html">In this article I’ll discuss a strategy for different readability: a simple way to split your routes file on a Ruby on Rails project.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://fastruby.io/blog/how-to-split-rails-routes.jpg"/><media:content medium="image" url="https://fastruby.io/blog/how-to-split-rails-routes.jpg" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Dual Booting with Engines and Gems</title><link href="https://fastruby.io/blog/ruby/dual-boot/dual-booting-gems.html" rel="alternate" type="text/html" title="Dual Booting with Engines and Gems"><published>2022-11-03T05:27:42-04:00</published><updated>2022-11-03T05:27:42-04:00</updated><id>https://fastruby.io/blog/ruby/dual-boot/dual-booting-gems</id><content type="html" xml:base="https://fastruby.io/blog/ruby/dual-boot/dual-booting-gems.html">&lt;p&gt;Gems are a central part in a Rails application, they help us add new functionality to our apps so we don’t have to reinvent the wheel, but also allows us to extract code to better organize the codebase and to share logic between multiple apps. In many cases, we have custom made gems, and we need to ensure they will work properly with the two Rails versions we run when we use the &lt;a href=&quot;https://www.fastruby.io/blog/upgrade-rails/dual-boot/dual-boot-with-rails-6-0-beta.html&quot; target=&quot;\_blank&quot;&gt;Dual Boot technique&lt;/a&gt; during upgrades. But… How do you dual boot the gems?&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;the-problem&quot;&gt;The Problem&lt;/h2&gt;
+
+&lt;p&gt;When we think about dual booting an application, we usually target specific versions of a gem in our main &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; when we know which one is compatible with the different Rails versions we are using. For example, in one of our applications we have this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Gemfile&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;jekyll&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;~&amp;gt; 4.0.1&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;jekyll&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;~&amp;gt; 3.7.4&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We know that we need a different version of the &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll&lt;/code&gt; gem for each case.&lt;/p&gt;
+
+&lt;p&gt;The problem comes when the gem is not a public gem but an internal gem that is not yet compatible with the new Rails version.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;a href=&quot;https://guides.rubyonrails.org/engines.html&quot; target=&quot;\_blank&quot;&gt;Engines&lt;/a&gt; are a more specific case of a gem, so we’ll talk about gems in this article and the same ideas apply.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;non-dual-booting-approaches&quot;&gt;Non-Dual Booting Approaches&lt;/h3&gt;
+
+&lt;p&gt;If the gem lives in a separate repository, one approach we can take is to update the gem’s main branch to only work with the new Rails version and then use the &lt;code class=&quot;highlighter-rouge&quot;&gt;if next?&lt;/code&gt; conditional to use different versions/commits/tags for each Rails version:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;custom-gem&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;github: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;my/repo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;ref: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;some-commit-sha&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;custom-gem&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;github: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;my/repo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;ref: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;some-older-commit-sha&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is the simplest approach, but the caveat is that, during the upgrade process, we won’t be able to submit fixes or updates to the gem used by the current Rails version, since the main branch will only be compatible with the new version of Rails.&lt;/p&gt;
+
+&lt;p&gt;To prevent that, another slightly different approach is to create a separate branch in the gem’s repository, the main branch being compatible with the current Rails version and the new branch being compatible with the new Rails version and it gets merged at the end of the upgrade. Then, in the Gemfile, we can specify different branches for the source of the gem:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;custom-gem&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;github: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;my/repo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;branch: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;new-rails&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;custom-gem&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;github: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;my/repo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;branch: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;main&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This allows us to continue adding code to the gem that’s used by the app in production. But the caveat, in this case, is that we have to keep the branches in sync, so the new branch also includes the changes done in the main branch.&lt;/p&gt;
+
+&lt;h2 id=&quot;dual-booting-a-gem&quot;&gt;Dual Booting a Gem&lt;/h2&gt;
+
+&lt;p&gt;If you noticed, those are the same two problems Dual Booting aims to solve when upgrading a Rails application, so we can borrow the dual booting idea and apply it to a gem: The gem adds compatibility with the next Rails version, without losing compatibility with the current one, allowing us to modify the gem at any point during the upgrade process ensuring that the latest version of the gem is compatible with both Rails versions.&lt;/p&gt;
+
+&lt;h3 id=&quot;loosen-the-rails-restrictions&quot;&gt;Loosen the Rails Restrictions&lt;/h3&gt;
+
+&lt;p&gt;The first limitation we typically see during our upgrades is the &lt;code class=&quot;highlighter-rouge&quot;&gt;gemspec&lt;/code&gt; file of the gem adding a strict dependency on the current Rails version. For example, in a Rails 5.2 application we tend to see custom gems with something like this in its gemspec:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# custom_gem.gemspec&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;add_dependency&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rails&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;~&amp;gt; 5.2.4&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If we try to dual boot the main application with Rails 6.0, &lt;a href=&quot;https://bundler.io&quot; target=&quot;\_blank&quot;&gt;Bundler&lt;/a&gt; won’t be able to resolve a matching version of &lt;code class=&quot;highlighter-rouge&quot;&gt;custom_gem&lt;/code&gt; that is compatible, so we have to loosen this dependency. We don’t go too far, like with dual booting, we move up to the next minor version:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# custom_gem.gemspec&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;add_dependency&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rails&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;gt;= 5.2.4&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt; 6.1.0&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;We allow any patch version newer than Rails 5.2.4 and up to any patch version of Rails 6.0&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Now Bundler will be able to resolve this because our gem reports being compatible with both Rails 5.2 and 6.0. But this is not enough, we have to actually make the gem compatible with Rails 5.2 and 6.0.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Note that we DID NOT add conditionals in the &lt;code class=&quot;highlighter-rouge&quot;&gt;gemspec&lt;/code&gt; file! we will add that in the corresponding &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;conditional-code&quot;&gt;Conditional Code&lt;/h3&gt;
+
+&lt;p&gt;When dual booting, we ideally want to update the code to be compatible with the new Rails version in a way that the same also works with the current Rails version (we call them backwards-compatible changes). This is not always possible, so in many cases we have to add a conditional to execute different code for each Rails version. We can do the same in the gem:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~=&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/^6.0/&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# some rails 6.0 specific code&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# some rails 5.2 specific code&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;test-suite-inside-the-engine&quot;&gt;Test Suite Inside the Engine&lt;/h3&gt;
+
+&lt;h3 id=&quot;testing-with-a-dummy-app&quot;&gt;Testing With a Dummy App&lt;/h3&gt;
+
+&lt;p&gt;If the gem includes standalone tests (tests that run independent from the main Rails application), we typically test them using a dummy Rails application (this is really common for Engines). When that’s the case, we can dual boot the dummy application the same way we dual boot the main application, and then run the tests once for each Rails version. That way we can test that our code changes are safe in both Rails versions.&lt;/p&gt;
+
+&lt;h3 id=&quot;tests-without-a-dummy-app&quot;&gt;Tests Without a Dummy App&lt;/h3&gt;
+
+&lt;p&gt;In some cases, the dependency is not with the Rails gem but with some railtie (like &lt;code class=&quot;highlighter-rouge&quot;&gt;active_support&lt;/code&gt; for example). In those cases the gem probably won’t have a dummy Rails application to run the tests since it doesn’t need a complete app, but it can still have tests. In these cases, we also have a &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; and a &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;, and we can apply the dual boot idea here. There’s one detail to keep in mind… in this cases, the &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; may look like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Gemfile&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://rubygems.org&quot;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;gemspec&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can still dual boot this, we can create the &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.next&lt;/code&gt; symlink and add conditionals:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Gemfile&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://rubygems.org&quot;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;next?&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;basename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;__FILE__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Gemfile.next&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;gemspec&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;active_support&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;~&amp;gt; 6.0.5&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;active_support&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;~&amp;gt; 5.2.4&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The strict version specified in the conditionals will tell Bundler which version of the game to use for each &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; file. This file is not used by the main application when using the gem, this is only used for the gem’s standalone tests (or when the gem is meant to also be run as a standalone application).&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Note that the versions used there must be within the range specified in the &lt;code class=&quot;highlighter-rouge&quot;&gt;gemspec&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Then we can generate the new &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock.next&lt;/code&gt; (&lt;a href=&quot;https://www.fastruby.io/blog/ruby/dual-boot/generating-gemfile-next-lock.html&quot; target=&quot;\_blank&quot;&gt;don’t do it from scratch!&lt;/a&gt;) and run the tests with different sets of gems:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rspec
+
+&lt;span class=&quot;c&quot;&gt;# and&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;BUNDLE_GEMFILE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;Gemfile.next bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rspec
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;updated-gemfilelock&quot;&gt;Updated Gemfile.lock&lt;/h3&gt;
+
+&lt;p&gt;Since the Gemfile changed, we also need running &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle install&lt;/code&gt; to keep the &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; in sync, because the gem’s dependencies restrictions changed. We don’t want to change any other gem except the one we are updating, so the changes in the Gemfile should be minimal and only reflect the new loosen restrictions and nothing more. For example, this is the expected change:&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    custom_gem (0.1.0)
+&lt;span class=&quot;gd&quot;&gt;-      rails (= 5.2.4.4)
+&lt;/span&gt;&lt;span class=&quot;gi&quot;&gt;+      rails (&amp;gt;= 5.2.4, &amp;lt;= 6.1.0)
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;There should be no update for the Rails version gem in the &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; file, &lt;a href=&quot;https://www.fastruby.io/blog/ruby/dual-boot/generating-gemfile-next-lock.html&quot;&gt;gems versions should only be updated in the &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.next.lock&lt;/code&gt;&lt;/a&gt;. We want to make sure the application setup is not modified by our changes during the upgrade for the current Rails version.&lt;/p&gt;
+
+&lt;h3 id=&quot;testing-the-engine-in-the-main-app-test-suite&quot;&gt;Testing the Engine in the Main App Test Suite&lt;/h3&gt;
+
+&lt;p&gt;In some cases, the gems don’t have standalone tests and the functionality is tested within the main application test suite. When that happens, we use those tests to verify the compatibility.&lt;/p&gt;
+
+&lt;h2 id=&quot;custom-gems-inside-the-main-app-repo&quot;&gt;Custom Gems Inside the Main App Repo&lt;/h2&gt;
+
+&lt;p&gt;When engines and gems live inside the main application repository, we can only apply the dual boot technique, since we can’t target a gem in the same source using a different commit hash or branch.&lt;/p&gt;
+
+&lt;h2 id=&quot;bonus-tip-support-more-rails-versions&quot;&gt;Bonus Tip: Support More Rails Versions&lt;/h2&gt;
+
+&lt;p&gt;In some cases, a gem needs to be updated to support more than one Rails version. We can still apply the same technique, we use the &lt;code class=&quot;highlighter-rouge&quot;&gt;next&lt;/code&gt; naming convention because it fits a dual boot scenario, but we can always use the same idea and use a different name for the &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.next&lt;/code&gt; for each Rails version, and we can loosen the dependency even more:&lt;/p&gt;
+
+&lt;p&gt;We can have the main &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; file, then symlink a &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile-5-2&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile-6-0&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile-6-1&lt;/code&gt; (and so on), and we can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;BUNDLE_GEMFILE&lt;/code&gt; env variable to pick which tests to run and to add conditionals in the Gemfile.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Rails upgrades for applications with custom gems have been more common for us over the last few months, and it is important for us to handle upgrades in a way that is less disruptive to our clients’ workflow. Being able to dual boot the custom gems so our clients can continue working on them during the upgrade process and, at the same time, not having to keep an extra upgrade branch in sync is a win for all. It also gives the client the confidence that the changes we are doing are always compatible, and, if they need to change something on that gem during the upgrade, they can already test their changes against the next Rails version without waiting for the upgrade, helping them adapt their code for the future.&lt;/p&gt;</content><author><name>arieljuod</name></author><category term="ruby"/><category term="dual-boot"/><summary type="html">Gems are a central part in a Rails application, they help us add new functionality to our apps so we don’t have to reinvent the wheel, but also allows us to extract code to better organize the codebase and to share logic between multiple apps. In many cases, we have custom made gems, and we need to ensure they will work properly with the two Rails versions we run when we use the Dual Boot technique during upgrades. But… How do you dual boot the gems?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://fastruby.io/blog/dual-booting-gems.jpg"/><media:content medium="image" url="https://fastruby.io/blog/dual-booting-gems.jpg" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">SoundCloud Upgrades Monolithic Ruby and Rails System, Improves Security and Performance</title><link href="https://fastruby.io/blog/case-study/soundcloud-upgrades-monolithic-ruby-and-rails-system.html" rel="alternate" type="text/html" title="SoundCloud Upgrades Monolithic Ruby and Rails System, Improves Security and Performance"><published>2022-10-10T05:00:00-04:00</published><updated>2022-10-10T05:00:00-04:00</updated><id>https://fastruby.io/blog/case-study/soundcloud-upgrades-monolithic-ruby-and-rails-system</id><content type="html" xml:base="https://fastruby.io/blog/case-study/soundcloud-upgrades-monolithic-ruby-and-rails-system.html">&lt;p&gt;SoundCloud is the world’s largest music and audio platform. With a diverse creator community, the platform is renowned for its unique content and features, including the ability for artists to share music and connect directly with fans.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h3 id=&quot;background&quot;&gt;Background&lt;/h3&gt;
+
+&lt;p&gt;Founded in 2007, SoundCloud is the world’s largest music and audio platform. With a diverse creator community, the platform is renowned for its unique content and features, including the ability for artists to share music and connect directly with fans. SoundCloud, headquartered in Berlin and with locations worldwide, is used by music and audio creators to share and monetize their content with a global audience, as well as to receive detailed stats and feedback from the community.&lt;/p&gt;
+
+&lt;h3 id=&quot;here-was-our-challenge&quot;&gt;Here was our challenge:&lt;/h3&gt;
+
+&lt;p&gt;Jake Maizel, VP of Infrastructure Engineering, is responsible for ensuring the integrity of the IT systems within SoundCloud. From data centers and cloud relationships to internal systems and the runtime environment, Jake and his team support the company’s equipment, services, networking, and operational security, among other things.&lt;/p&gt;
+
+&lt;p&gt;As part of the continual improvement process, a decision was made to update an internal portion of their application to enhance security and modernize the code.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“We developed our original application in 2008 in Ruby on Rails, but it was a monolithic system. Over the last several years, we weren’t able to upgrade the application, install security patches, or the dependency code around it because of potential business risks,” said Jake. “Security and privacy were our main concerns, and our goals were to upgrade to a supported version and then move to the most current version of Ruby and Rails.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;SoundCloud’s IT team is focused on bringing value in the form of features for its users and didn’t have the time or capacity to tackle the upgrade. Jake decided to seek outside help and reached out to us. After a few technical conversations, we were brought on board to upgrade the application. “I was impressed with the depth of technical knowledge at OmbuLabs,” said Jake. “Their engagement model had an independent approach which fit exactly what we were looking for.”&lt;/p&gt;
+
+&lt;p&gt;Our challenge was to seamlessly upgrade the company’s brittle and outdated Ruby and Rails versions while ensuring there would be zero disruptions to internal business processes. Operationally, there was a significant time zone difference between Berlin and the U.S. East Coast, which required careful balancing and coordination in the project management process.&lt;/p&gt;
+
+&lt;h3 id=&quot;heres-how-we-solved-it&quot;&gt;Here’s how we solved it:&lt;/h3&gt;
+
+&lt;p&gt;The project involved two phases, beginning with an initial four-week engagement. The first priority was to upgrade the application to fully supported software versions and install security patches. We met with the SoundCloud team, gathered insights into the code base, and gleaned valuable intel for each step in the upgrade curve. Then, we provided a written roadmap to guide the implementation process.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“The roadmap was invaluable and provided key thinking on how the project would be executed,” noted Jake. “We knew ahead of time what resources on our side would be required, how much time the project would take, the impact on production, and how it would be tested.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Once it was determined that the security patches were up to date, the next step was to upgrade Ruby and Rails to more modern versions.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“I was impressed with the depth of technical knowledge at OmbuLabs. Their engagement model had an independent approach which fit exactly what we were looking for.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Weekly face-to-face meetings were scheduled over Zoom to share knowledge, exchange information, and answer questions about upcoming activities during high-bandwidth and low-latency discussions. We also created a Slack channel to manage the day-to-day activities, including requests for PR (pull request) review, and used GitHub for code review.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“The project management and communication were very efficient and effective despite the time zone difference,” said Jake. “We were able to balance the longer-term, deeper discussions with the day-to-day needs of asking and answering questions.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;see-the-results&quot;&gt;See the results:&lt;/h3&gt;
+
+&lt;p&gt;Within eight months, both phases were successfully completed with zero disruptions or outages during the rollout process. “It was a big lift moving from Ruby version 1.9 to 2.5 and Rails from 2.3 to 6.1,” noted Jake. “A small percentage of users had a few hiccups, but it wasn’t anything significant, and that was pretty impressive considering the scale of changes that were being made.”&lt;/p&gt;
+
+&lt;h4 id=&quot;as-a-result-of-the-upgrade-there-were-a-multitude-of-benefits-including&quot;&gt;As a result of the upgrade, there were a multitude of benefits, including:&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Airtight security and privacy with up-to-date patches and versions&lt;/li&gt;
+  &lt;li&gt;Increased memory capacity by 25%&lt;/li&gt;
+  &lt;li&gt;More efficient use of resources, fewer application servers required&lt;/li&gt;
+  &lt;li&gt;Lower costs for cloud and on-premises infrastructure&lt;/li&gt;
+  &lt;li&gt;Reduced start-up time impact&lt;/li&gt;
+  &lt;li&gt;Easier to scale up or down&lt;/li&gt;
+  &lt;li&gt;Improved CPU speed and heightened Kubernetes performance&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“Everything is extremely stable now,” said Jake. “I never hear about any problems, which is the complete opposite of how it used to be, and this is incredible.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The engineering team was ecstatic about the upgrade, as they knew the value of moving to a modern version from a security perspective. Potential risks melted away and the development process became much easier in a modern environment.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“When we launched, there were a lot of thumbs up. We had talked about doing this for a long time, and to finally get it done was a big deal. I’m happy we made the investment and were able to reach our target,” said Jake.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;project-type&quot;&gt;Project type:&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Ruby and Rails upgrades&lt;/li&gt;
+  &lt;li&gt;Security patch installation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;built-using&quot;&gt;Built using:&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Ruby on Rails&lt;/li&gt;
+  &lt;li&gt;Timeline: 8 months&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Want to build something amazing with OmbuLabs? Check out our &lt;a href=&quot;https://www.ombulabs.com/design-sprint&quot;&gt;one-week Design Sprint service&lt;/a&gt;! We can take you from idea to prototype in 5 days. 🚀&lt;/p&gt;</content><author><name>etagwerker</name></author><category term="case-study"/><summary type="html">SoundCloud is the world’s largest music and audio platform. With a diverse creator community, the platform is renowned for its unique content and features, including the ability for artists to share music and connect directly with fans.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://fastruby.io/blog/soundcloud-upgrades-monolithic-ruby-and-rails-system.jpg"/><media:content medium="image" url="https://fastruby.io/blog/soundcloud-upgrades-monolithic-ruby-and-rails-system.jpg" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Securely using SSH keys in Docker to access private Github repositories</title><link href="https://fastruby.io/blog/docker/docker-ssh-keys.html" rel="alternate" type="text/html" title="Securely using SSH keys in Docker to access private Github repositories"><published>2022-09-20T05:00:00-04:00</published><updated>2022-09-20T05:00:00-04:00</updated><id>https://fastruby.io/blog/docker/docker-ssh-keys</id><content type="html" xml:base="https://fastruby.io/blog/docker/docker-ssh-keys.html">&lt;p&gt;If you search online for using SSH keys with Docker, to access private Github repositories, you will get a lot of search results, but the solutions you’ll find are almost all out of date, insecure, or fragmentary (i.e. they provide a small snippet of information but not a complete solution). Given how popular both Docker and Github are, I found this quite surprising. We recently had to set up Docker with a Rails application that fetches gems from private repositories. We’re also using Docker Compose, which added to the challenge. &lt;a href=&quot;https://github.com/docker/docker.github.io/issues/12378&quot;&gt;This comment on the Docker project&lt;/a&gt;, which is from February 2021, unfortunately is still accurate:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;There are several questions and answers out there about how to pull from a private repository (using the hosts ssh key &amp;amp; config). A lot of them are not working, not secure or unanswered&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;After several hours of research and testing, we have a good solution to share. But first let’s take a look at the different approaches to consider.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;option-1-pass-your-keys-directly-to-the-container&quot;&gt;Option 1: Pass your keys directly to the container&lt;/h2&gt;
+
+&lt;p&gt;Don’t do this! You don’t want to upload your ssh keys to Github or anywhere else, as part of the Docker image. Older solutions you’ll find online will recommend copying your keys into the container, and then deleting them at the end of the setup work. This is not a good idea. &lt;a href=&quot;https://docs.docker.com/engine/reference/builder/#arg&quot;&gt;Your keys can be recovered by somebody examining the history of the image&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/images/passing-secrets-to-docker.png&quot; alt=&quot;Passing secrets to Docker&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;option-2-using-multi-stage-builds&quot;&gt;Option 2: Using multi-stage builds&lt;/h2&gt;
+
+&lt;p&gt;A good overview of this solution is described in the post &lt;a href=&quot;https://vsupalov.com/build-docker-image-clone-private-repo-ssh-key/&quot;&gt;Access Private Repositories from Your Dockerfile Without Leaving Behind Your SSH Keys&lt;/a&gt;. However, as noted in an update to that article, this approach is now considered out of date. It’s also fairly involved, as it requires passing your credentials to an “intermediate” container, before creating the final container, and then “squashing” the intermediate container (this eliminates your ssh keys from the history). We briefly attempted this approach, but had trouble getting it working, and we wanted to try newer, less complex approaches.&lt;/p&gt;
+
+&lt;h2 id=&quot;option-3-using-docker-secrets&quot;&gt;Option 3: Using Docker secrets&lt;/h2&gt;
+
+&lt;p&gt;A newer feature of Docker is &lt;a href=&quot;https://docs.docker.com/engine/swarm/secrets/&quot;&gt;secrets&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;…a secret is a blob of data, such as a password, SSH private key, SSL certificate, or another piece of data that should not be transmitted over a network or stored unencrypted in a Dockerfile or in your application’s source code. You can use Docker secrets to centrally manage this data and securely transmit it to only those containers that need access to it. Secrets are encrypted during transit and at rest in a Docker swarm. A given secret is only accessible to those services which have been granted explicit access to it, and only while those service tasks are running.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;You’ll notice mention of Docker &lt;em&gt;swarm&lt;/em&gt; and &lt;em&gt;services&lt;/em&gt;. The documentation goes on to say “Docker secrets are only available to swarm services, not to standalone containers.”&lt;/p&gt;
+
+&lt;p&gt;We were intrigued by the idea of using secrets, but didn’t want to add the complexity of swarm services. We came across the post &lt;a href=&quot;https://medium.com/trabe/use-your-local-ssh-keys-inside-a-docker-container-ea1d117515dc&quot;&gt;Use Your local SSH Keys Inside a Docker Container&lt;/a&gt; which says: “Docker secrets are meant to be used with Docker Swarm, not with standalone containers. Fear not. Docker compose does support secrets, so using a compose file similar to this will do the trick…” We spent a good deal of time trying this approach, but could not get it to work. The author goes on to say his team is using swarm services, so it’s possible the solution presented is untested - or it’s of course possible we missed something in our attempts 😉&lt;/p&gt;
+
+&lt;h2 id=&quot;option-4-passing-a-reference-to-your-keys-as-a-command-line-argument-&quot;&gt;Option 4: Passing a reference to your keys as a command line argument 🎉&lt;/h2&gt;
+
+&lt;p&gt;This is what worked for us. First, make sure your ssh key has been added to your ssh agent. If you’re not familiar with this, the &lt;a href=&quot;https://support.atlassian.com/bitbucket-cloud/docs/set-up-an-ssh-key/&quot;&gt;Set up an SSH key&lt;/a&gt; documentation from BitBucket provides a good overview. Note the &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh-add&lt;/code&gt; command on MacOS since Monterey (12.0) uses &lt;code class=&quot;highlighter-rouge&quot;&gt;--apple-use-keychain&lt;/code&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;-K&lt;/code&gt;, for example:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ssh-add &lt;span class=&quot;nt&quot;&gt;--apple-use-keychain&lt;/span&gt; ~/.ssh/id_ed25519
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then, include the following in your Dockerfile:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;RUN &lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 0700 ~/.ssh &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; ssh-keyscan github.com &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.ssh/known_hosts
+RUN &lt;span class=&quot;nt&quot;&gt;--mount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;ssh bundle &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;If you’re wondering about the &lt;code class=&quot;highlighter-rouge&quot;&gt;--mount=type=ssh&lt;/code&gt; option, &lt;a href=&quot;https://docs.docker.com/develop/develop-images/build_enhancements/&quot;&gt;the Docker documentation&lt;/a&gt; has a good explanation:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[It] will set the SSH_AUTH_SOCK environment variable for that command to the value provided by the host to &lt;code class=&quot;highlighter-rouge&quot;&gt;docker build&lt;/code&gt;, which will cause any programs in the RUN command which rely on SSH to automatically use that socket. Only the commands in the Dockerfile that have explicitly requested SSH access by defining type=ssh mount will have access to SSH agent connections. The other commands will have no knowledge of any SSH agent being available.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;From this point, there are two possible ways to proceed:&lt;/p&gt;
+
+&lt;h3 id=&quot;option-4a-using-dockerfile-only&quot;&gt;Option 4a: Using Dockerfile only&lt;/h3&gt;
+
+&lt;p&gt;If you’re not using Docker Compose, you can call &lt;code class=&quot;highlighter-rouge&quot;&gt;docker build&lt;/code&gt; like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;DOCKER_BUILDKIT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1 docker build &lt;span class=&quot;nt&quot;&gt;--ssh&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.ssh/name_of_your_ssh_key &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;option-4b-using-docker-compose&quot;&gt;Option 4b: Using Docker Compose&lt;/h3&gt;
+
+&lt;p&gt;To use the &lt;code class=&quot;highlighter-rouge&quot;&gt;–ssh&lt;/code&gt; option with Docker Compose, you will need to be on at least Docker Compose v2.5. You can check with &lt;code class=&quot;highlighter-rouge&quot;&gt;docker compose version&lt;/code&gt;. If you are on a Mac using Homebrew, you can upgrade with &lt;code class=&quot;highlighter-rouge&quot;&gt;brew install docker-compose&lt;/code&gt; (as of August 2022, 2.5 is the current version on Homebrew). Then you can run:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker compose build &lt;span class=&quot;nt&quot;&gt;--ssh&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.ssh/name_of_your_ssh_key
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here are sample &lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose.yml&lt;/code&gt; files for reference. Replace your_app with an appropriate name for your application. Note we want the Docker compose file to run the tests automatically. You may want yours to do something else.&lt;/p&gt;
+
+&lt;h4 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h4&gt;
+&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ruby:2.1.10 # this is for an old project&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 0700 ~/.ssh &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; ssh-keyscan github.com &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.ssh/known_hosts
+&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; . /your_app&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;WORKDIR&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; /your_app&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;--mount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;ssh bundle &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;docker-composeyml&quot;&gt;docker-compose.yml&lt;/h4&gt;
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3.8&quot;&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bash -c &quot;bundle exec rspec&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;your_app&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.:/your_app&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>mtoppa</name></author><category term="docker"/><summary type="html">If you search online for using SSH keys with Docker, to access private Github repositories, you will get a lot of search results, but the solutions you’ll find are almost all out of date, insecure, or fragmentary (i.e. they provide a small snippet of information but not a complete solution). Given how popular both Docker and Github are, I found this quite surprising. We recently had to set up Docker with a Rails application that fetches gems from private repositories. We’re also using Docker Compose, which added to the challenge. This comment on the Docker project, which is from February 2021, unfortunately is still accurate: There are several questions and answers out there about how to pull from a private repository (using the hosts ssh key &amp;amp; config). A lot of them are not working, not secure or unanswered After several hours of research and testing, we have a good solution to share. But first let’s take a look at the different approaches to consider.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://fastruby.io/blog/using-ssh-keys-in-docker.jpg"/><media:content medium="image" url="https://fastruby.io/blog/using-ssh-keys-in-docker.jpg" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">What Does load_defaults Do?</title><link href="https://fastruby.io/blog/rails/what-does-load-defaults-do.html" rel="alternate" type="text/html" title="What Does load_defaults Do?"><published>2022-09-15T05:00:00-04:00</published><updated>2022-09-15T05:00:00-04:00</updated><id>https://fastruby.io/blog/rails/what-does-load-defaults-do</id><content type="html" xml:base="https://fastruby.io/blog/rails/what-does-load-defaults-do.html">&lt;p&gt;Let’s begin with a simple question:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Have you seen &lt;code class=&quot;highlighter-rouge&quot;&gt;config.load_defaults 6&lt;/code&gt; in any application?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;6&lt;/strong&gt; is an argument and could vary, I’m just giving an example.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;While upgrading a Rails application from 5.1 to 6.0 we had an “easy” question.&lt;/p&gt;
+
+&lt;h2 id=&quot;should-we-run-the-rails-appupdate-command&quot;&gt;Should We Run the &lt;code class=&quot;highlighter-rouge&quot;&gt;rails app:update&lt;/code&gt; Command?&lt;/h2&gt;
+
+&lt;p&gt;The quick answer is: yes, we should, why not?!&lt;/p&gt;
+
+&lt;p&gt;After running the &lt;code class=&quot;highlighter-rouge&quot;&gt;rails app:update&lt;/code&gt; command,
+there are many file changes that the command did for us.&lt;/p&gt;
+
+&lt;p&gt;It was time to run the test suite, and guess what? Everything failed.
+The next step forward was to undo all the changes and start with a single configuration change we thought would be easy and safe.
+Then we added the &lt;code class=&quot;highlighter-rouge&quot;&gt;config.load_defaults 6.0&lt;/code&gt; line and ran the test suite again.
+It was still failing.&lt;/p&gt;
+
+&lt;p&gt;Just to double-check, we commented that line back and ran the test suite.
+Everything was passing, so that little line was ruining everything.&lt;/p&gt;
+
+&lt;p&gt;We decided to focus on &lt;code class=&quot;highlighter-rouge&quot;&gt;config.load_defaults 6.0&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;We searched for &lt;code class=&quot;highlighter-rouge&quot;&gt;def load_defaults&lt;/code&gt; in &lt;a href=&quot;https://github.com/rails/rails/blob/9510783d610ea25f5572e0f2caf34702051a9536/railties/lib/rails/application/configuration.rb#L89&quot;&gt;rails core&lt;/a&gt;
+to see what &lt;code class=&quot;highlighter-rouge&quot;&gt;load_defaults&lt;/code&gt; does.
+Take your time to understand it.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Tip: You can easily navigate the rails repository using &lt;a href=&quot;https://github.dev/rails/rails&quot;&gt;https://github.dev/rails/rails&lt;/a&gt;
+&lt;a href=&quot;https://github.com/github/dev&quot;&gt;More about GitHub editor&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;If you are not able to navigate to the rails core code, I added the &lt;code class=&quot;highlighter-rouge&quot;&gt;load_defaults&lt;/code&gt; method below.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;c1&quot;&gt;# rails/railties/lib/rails/application/configuration.rb&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;load_defaults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target_version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target_version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.0&quot;&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# rails 5.0 default configuration&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.1&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;load_defaults&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.0&quot;&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# rails 5.1 default configuration&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.2&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;load_defaults&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.1&quot;&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# rails 5.2 default configuration&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;6.0&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;load_defaults&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.2&quot;&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# rails 6 default configuration&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;6.1&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;load_defaults&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;6.0&quot;&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# rails 6.1 default configuration&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;7.0&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;load_defaults&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;6.1&quot;&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# rails 7 default configuration&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;7.1&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;load_defaults&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;7.0&quot;&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# rails 7.1 default configuration&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Unknown version &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target_version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;inspect&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;vi&quot;&gt;@loaded_config_version&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target_version&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The first thing that caught my attention was the fact that it calls the same
+&lt;code class=&quot;highlighter-rouge&quot;&gt;load_defaults&lt;/code&gt; method recursively with the previous rails version as an argument.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;load_defaults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target_version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target_version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.1&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;load_defaults&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.0&quot;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# here&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.2&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;load_defaults&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.1&quot;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# here&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;6.0&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;load_defaults&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;5.2&quot;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# here&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;That means it will load the default configuration for the version you indicated and also &lt;strong&gt;all the previous versions as a fallback&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Example:
+If you use &lt;code class=&quot;highlighter-rouge&quot;&gt;config.load_defaults(&quot;6.1&quot;)&lt;/code&gt; in your Rails application, it will implement &lt;code class=&quot;highlighter-rouge&quot;&gt;load_defaults&lt;/code&gt; for version &lt;code class=&quot;highlighter-rouge&quot;&gt;6.0&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;5.2&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;5.1&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;5.0&lt;/code&gt; as a fallback.&lt;/p&gt;
+
+&lt;p&gt;Which is good, because you won’t need to add all those configuration lines in your own project.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-does-load_defaults-do&quot;&gt;What Does &lt;code class=&quot;highlighter-rouge&quot;&gt;load_defaults&lt;/code&gt; Do?&lt;/h2&gt;
+
+&lt;p&gt;In simple words, the &lt;code class=&quot;highlighter-rouge&quot;&gt;load_defaults&lt;/code&gt; method is loading default rails configurations
+starting from Rails 5 up to Rails 7.1 (since it’s currently the latest version).
+You can inspect each configuration and what they
+do &lt;a href=&quot;https://guides.rubyonrails.org/configuring.html#versioned-default-values&quot;&gt;over here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;so-why-does-my-application-fail&quot;&gt;So, Why Does My Application Fail?&lt;/h2&gt;
+
+&lt;p&gt;After reviewing the application,
+we noticed &lt;code class=&quot;highlighter-rouge&quot;&gt;config.load_defaults&lt;/code&gt; had been removed in a previous update,
+when we added it back, it threw an error because the &lt;code class=&quot;highlighter-rouge&quot;&gt;load_defaults&lt;/code&gt; method for
+the current version of Rails enabled &lt;code class=&quot;highlighter-rouge&quot;&gt;config.belongs_to_required_by_default = true&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Changing &lt;code class=&quot;highlighter-rouge&quot;&gt;config.belongs_to_required_by_default&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt; did the trick to solve the issue.&lt;/p&gt;
+
+&lt;h2 id=&quot;should-we-use-it&quot;&gt;Should We Use It?&lt;/h2&gt;
+
+&lt;p&gt;This is such a great question, the quick answer is maybe! LOL.&lt;/p&gt;
+
+&lt;p&gt;The longer answer is:
+&lt;strong&gt;How have you used the rails configurations before?&lt;/strong&gt;
+If you have always been using the &lt;code class=&quot;highlighter-rouge&quot;&gt;load_defaults&lt;/code&gt; config,
+it seems to be &lt;strong&gt;safe&lt;/strong&gt; to use in your next update.&lt;/p&gt;
+
+&lt;p&gt;If you haven’t used it, first make sure to read every single rule in the
+&lt;a href=&quot;https://guides.rubyonrails.org/configuring.html#default-values-for-target-version-7-0&quot;&gt;default values section&lt;/a&gt;
+and double-check your application is compatible with all of them.&lt;/p&gt;
+
+&lt;p&gt;I hope this can help you at some point, until next time.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You only fail when you stop trying - Unknown&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name>juan</name></author><category term="rails"/><summary type="html">Let’s begin with a simple question: Have you seen config.load_defaults 6 in any application? 6 is an argument and could vary, I’m just giving an example.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://fastruby.io/blog/what-does-load-defaults-do.jpg"/><media:content medium="image" url="https://fastruby.io/blog/what-does-load-defaults-do.jpg" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">You should be a Scholar or Guide at RubyConf or RailsConf!</title><link href="https://fastruby.io/blog/rubyconf/rubyconf-scholars-and-guides.html" rel="alternate" type="text/html" title="You should be a Scholar or Guide at RubyConf or RailsConf!"><published>2022-09-08T12:00:00-04:00</published><updated>2022-09-08T12:00:00-04:00</updated><id>https://fastruby.io/blog/rubyconf/rubyconf-scholars-and-guides</id><content type="html" xml:base="https://fastruby.io/blog/rubyconf/rubyconf-scholars-and-guides.html">&lt;p&gt;The &lt;a href=&quot;https://rubyconf.org/scholarships&quot; target=&quot;\_blank&quot;&gt;Opportunity Scholars &amp;amp; Guides program&lt;/a&gt; is one of the least known and also one of the best aspects of RubyConf and RailsConf:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Opportunity Scholars (Scholars) are new to the Ruby community and looking to make professional connections. Scholars are typically students, new professionals, and/or members of underrepresented tech communities (women, BIPOC, etc.) interested in starting a career in the technology sector. Scholars are paired with a Guide (mentor) who can help them get the most out of the conference, and offer insight and advice on Ruby programming and working as a developer… Due to the generous donation from our conference sponsors and supporters, we are delighted to offer a limited amount of financial support for Scholars’ transportation and/or accommodation.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/assets/images/rubyconf-scholars-and-guides.png&quot; alt=&quot;The RubyConf 2018 Scholars and Guides&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;At RailsConf in Portland this past May, I served as a Guide for the 3rd time. All the Guides are volunteers, and it’s a way for us to give back to the Ruby and Rails communities. We help Scholars with career advice, introducing them to people at the conference, helping them pick talks to attend, and in general being a friendly face and someone they can reach out to during the conference with questions. This means there’s some effort involved with being a Guide, and it’s important to make it part of your daily plan at the conference. You need to communicate with your Scholar, plan when and where to meet, ask about their interests and how you can help, etc.&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;I volunteered to be a guide at RubyConf this year, and I just met my scholar Lori - my first new &lt;a href=&quot;https://twitter.com/hashtag/RubyFriend?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#RubyFriend&lt;/a&gt; today! &lt;a href=&quot;https://t.co/RXSmyZDJiC&quot;&gt;https://t.co/RXSmyZDJiC&lt;/a&gt;&lt;/p&gt;&amp;mdash; Michael Toppa (@mtoppa) &lt;a href=&quot;https://twitter.com/mtoppa/status/1196455346837053443?ref_src=twsrc%5Etfw&quot;&gt;November 18, 2019&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;So why volunteer? The first time I decided to do it, I was thinking back to when I started in the industry, in the mid 90s. I didn’t have a CS degree, meetups and conferences were far less prevalent at that time, and while there were resources such as USENET discussion forums, they weren’t anything like Stack Overflow or the other online resources we have today. So, beyond my coworkers, I didn’t have a sense of being part of community. I never had a mentor, and I did most of my learning on my own (through books and on the job). Luckily for me, the tooling for web development was less complex back then, so over the years I was able to incrementally grow my skills as the tech ecosystem gradually became more complex. Compared to people entering the industry now, they face a steeper and more intimidating learning curve than I did, but they also have larger and more vibrant communities to help them. However, figuring out how to engage with and become part of a community, especially as a newcomer at a large tech conference, isn’t necessarily obvious or easy.&lt;/p&gt;
+
+&lt;p&gt;I first learned about the existence of the Scholars &amp;amp; Guides program at RailsConf in 2017, when my employer at the time (ActBlue) provided travel funding for many of the scholars to attend. So I volunteered to be a guide at the next opportunity, which was the following year at RubyConf in Los Angeles. It was a tremendously rewarding experience, which inspired me to volunteer two more times since then. Each Scholar I’ve worked with has had a unique set of interests and skills, and they each had different goals for what they wanted to get from their conference experience. One was focused on technical learning, one was focused on career opportunities, and another was re-entering the field after 20 years away from coding.&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;We’re happy to help! &lt;a href=&quot;https://twitter.com/hashtag/railsconf?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#railsconf&lt;/a&gt; &lt;a href=&quot;https://t.co/0Mz7ExPFZo&quot;&gt;https://t.co/0Mz7ExPFZo&lt;/a&gt;&lt;/p&gt;&amp;mdash; Michael Toppa (@mtoppa) &lt;a href=&quot;https://twitter.com/mtoppa/status/857705817503432704?ref_src=twsrc%5Etfw&quot;&gt;April 27, 2017&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;The people who run the program are also volunteers, and every year they do a lot of work to make it a success. Beyond reviewing all the applications from Scholars and Guides and figuring out all the financing and logistics, they arrange a reception for us the night before the conference, we have reserved front row seating for the keynotes, a dedicated Slack channel, and we have reserved tables together for lunch. These provide opportunities for all the Scholars and Guides to get to know each other, and we form our own community, within the larger community of the conference.&lt;/p&gt;
+
+&lt;p&gt;So if you’re an experienced member of the Ruby and Rails community, consider volunteering as a Guide, and share your experience and wisdom with a Scholar! Or if you’re someone who is new to the community, and you’d like to attend RubyConf or RailsConf, consider applying to be a Scholar. This Fall, you have two options for RubyConf:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;There’s RubyConf in Houston, Texas from November 29 - December 1, and &lt;a href=&quot;https://rubyconf.org/scholarships&quot; target=&quot;\_blank&quot;&gt;the deadline for Scholar and Guide applications is September 20&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;There’s also a “RubyConf Mini” in Providence, RI from November 15-17. &lt;a href=&quot;http://www.rubyconfmini.com/scholarships&quot; target=&quot;\_blank&quot;&gt;The deadline for Scholar applications is September 17 and the deadline for Guide applications is September 20&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If you’re primarily interested in RailsConf, the next one will be in Atlanta, Georgia, April 24-26, 2023. Keep an eye on &lt;a href=&quot;https://railsconf.org&quot; target=&quot;\_blank&quot;&gt;railsconf.org&lt;/a&gt; when it gets closer. You can also follow &lt;a href=&quot;https://twitter.com/RailsConf&quot;&gt;@RailsConf&lt;/a&gt; and &lt;a href=&quot;https://twitter.com/RubyConf&quot; target=&quot;\_blank&quot;&gt;@RubyConf&lt;/a&gt; on Twitter.&lt;/p&gt;</content><author><name>mtoppa</name></author><category term="rubyconf"/><summary type="html">The Opportunity Scholars &amp;amp; Guides program is one of the least known and also one of the best aspects of RubyConf and RailsConf: Opportunity Scholars (Scholars) are new to the Ruby community and looking to make professional connections. Scholars are typically students, new professionals, and/or members of underrepresented tech communities (women, BIPOC, etc.) interested in starting a career in the technology sector. Scholars are paired with a Guide (mentor) who can help them get the most out of the conference, and offer insight and advice on Ruby programming and working as a developer… Due to the generous donation from our conference sponsors and supporters, we are delighted to offer a limited amount of financial support for Scholars’ transportation and/or accommodation.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://fastruby.io/blog/rubyconf-scholars-and-guides.jpg"/><media:content medium="image" url="https://fastruby.io/blog/rubyconf-scholars-and-guides.jpg" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Create a custom Rubocop cop</title><link href="https://fastruby.io/blog/rubocop/code-quality/create-a-custom-rubocop-cop.html" rel="alternate" type="text/html" title="Create a custom Rubocop cop"><published>2022-09-07T15:00:00-04:00</published><updated>2022-09-07T15:00:00-04:00</updated><id>https://fastruby.io/blog/rubocop/code-quality/create-a-custom-rubocop-cop</id><content type="html" xml:base="https://fastruby.io/blog/rubocop/code-quality/create-a-custom-rubocop-cop.html">&lt;p&gt;Recently I worked on a client project that required me to implement good code conventions across the project.
+One of the tasks besides implementing the Rubocop standard cops was to write a custom cop for two different &lt;code class=&quot;highlighter-rouge&quot;&gt;Datetime&lt;/code&gt; methods,
+so in this article I will explain how I created a custom &lt;a href=&quot;https://rubocop.org/&quot; target=&quot;\_blank&quot;&gt;Rubocop&lt;/a&gt; cop that solved that problem.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;what-is-rubocop&quot;&gt;What is rubocop?&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;RuboCop is a Ruby static code analyzer (a.k.a. linter) and code formatter. Out of the box it will enforce many of the guidelines outlined in the community Ruby Style Guide. Apart from reporting the problems discovered in your code, RuboCop can also automatically fix many of them for you.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;why-a-custom-cop&quot;&gt;Why a custom cop?&lt;/h2&gt;
+
+&lt;p&gt;You might be wondering: “Why would I have a custom cop if out of the box Rubocop has most of the cops I will need?”&lt;/p&gt;
+
+&lt;p&gt;Well, there are times when the rubocop standards are not enough to cover organization, company or project standards that you came up with and you want to enforce them in the same way Rubocop enforces the Ruby standards.&lt;/p&gt;
+
+&lt;h2 id=&quot;creating-a-cop-for-datetimenow&quot;&gt;Creating a cop for Datetime.now&lt;/h2&gt;
+
+&lt;p&gt;In this section I will create a cop to check the usage of &lt;code class=&quot;highlighter-rouge&quot;&gt;Datetime.now&lt;/code&gt; and propose the use of &lt;code class=&quot;highlighter-rouge&quot;&gt;Datetime.current&lt;/code&gt; instead.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;If you want to learn more about the differences between Datetime &lt;code class=&quot;highlighter-rouge&quot;&gt;current&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;now&lt;/code&gt; &lt;a href=&quot;https://jcxia.com/blog/A-DateTime-bug&quot; target=&quot;\_blank&quot;&gt;check this article&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;First I create a class that inherits from &lt;code class=&quot;highlighter-rouge&quot;&gt;Rubocop::Cop::Base&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;CustomCops&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DateTimeNowUsage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RuboCop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Cop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;on_send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# do stuff with the AST node&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;I am puting our class inside the &lt;code class=&quot;highlighter-rouge&quot;&gt;CustomCops&lt;/code&gt; module just to namespace things and avoid future name collisions with Rubocop standard cops if ever…&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;the-def_node_matcher-method&quot;&gt;The def_node_matcher method&lt;/h2&gt;
+
+&lt;p&gt;Rubocop has a macro called &lt;code class=&quot;highlighter-rouge&quot;&gt;def_node_matcher&lt;/code&gt; that receives a name and a pattern to match the Ruby &lt;a href=&quot;https://www.twilio.com/blog/abstract-syntax-trees&quot; target=&quot;\_blank&quot;&gt;AST&lt;/a&gt; node you want to mark as an “offense”.&lt;/p&gt;
+
+&lt;p&gt;There’s several ways to get the AST node matcher for &lt;code class=&quot;highlighter-rouge&quot;&gt;def_node_matcher&lt;/code&gt;, I could use the &lt;a href=&quot;https://github.com/rubocop/rubocop-ast/blob/master/docs/modules/ROOT/pages/node_pattern.adoc&quot; target=&quot;\_blank&quot;&gt;Node Pattern&lt;/a&gt; or simply pass the &lt;code class=&quot;highlighter-rouge&quot;&gt;node source&lt;/code&gt; string to it.&lt;/p&gt;
+
+&lt;p&gt;I used the &lt;code class=&quot;highlighter-rouge&quot;&gt;ruby-parse&lt;/code&gt; gem to get the node source string of my offensing code. i.e:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gem intsall ruby-parse
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ruby-parse &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Datetime.now&quot;&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;send
+  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;const nil :Datetime&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; :now&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then I use the output as a patttern in &lt;code class=&quot;highlighter-rouge&quot;&gt;def_node_matcher&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;CustomCops&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DateTimeNowUsage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RuboCop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Cop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;def_node_matcher&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:on_datetime_now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;~&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;PATTERN&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+      # ruby-parse output
+      (send (... :Datetime) :now)
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;    PATTERN&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;on_send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# do stuff with the AST node&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;NOTE: I am using &lt;code class=&quot;highlighter-rouge&quot;&gt;(send (... :Datetime) :now)&lt;/code&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;(send (const nil :Datetime) :now)&lt;/code&gt;. This is because the &lt;code class=&quot;highlighter-rouge&quot;&gt;const node&lt;/code&gt;, when I tested it, was actually an &lt;code class=&quot;highlighter-rouge&quot;&gt;Object&lt;/code&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;nil&lt;/code&gt;, as ruby-parse showed us. I noticed this because the pattern was not being matched by Rubocop when I tried to run the custom cop. With the &lt;code class=&quot;highlighter-rouge&quot;&gt;...&lt;/code&gt; it will match any node.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;add-the-offense&quot;&gt;Add the offense&lt;/h2&gt;
+
+&lt;p&gt;Now, when rubocop finds any occurence of &lt;code class=&quot;highlighter-rouge&quot;&gt;Datetime.now&lt;/code&gt; I want to add it as a “Rubocop offense”.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;CustomCops&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DateTimeNowUsage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RuboCop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Cop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;MSG&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;You are using `Datetime.now` please replace it with `Datetime.current`&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;def_node_matcher&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:on_datetime_now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;~&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;PATTERN&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+      # ruby-parse output
+      (send (... :Datetime) :now)
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;    PATTERN&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;on_send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;on_datetime_now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;add_offense&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;message: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MSG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;auto-correct&quot;&gt;Auto correct&lt;/h2&gt;
+
+&lt;p&gt;Ok. If you have followed all the steps you should have a custom Rubocop cop that will trigger an offense when you use &lt;code class=&quot;highlighter-rouge&quot;&gt;Datetime.now&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rubocop &lt;span class=&quot;nt&quot;&gt;--only&lt;/span&gt; CustomCops/DateTimeNowUsage
+
+Inspecting 138 files
+.........C.....................................................................................................C..........................
+
+Offenses:
+
+app/controllers/roadmap_payments_controller.rb:3:5: C: CustomCops/DateTimeNowUsage: You are using Datetime.now please replace it with Datetime.current
+    Datetime.now
+    ^^^^^^^^^^^^
+^^^^^^^^^^^^
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But we can make it better, we could add the &lt;code class=&quot;highlighter-rouge&quot;&gt;autocorrect&lt;/code&gt; feature that rubocop has built in.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;CustomCops&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DateTimeNowUsage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RuboCop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Cop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;kp&quot;&gt;extend&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RuboCop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Cop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;AutoCorrector&lt;/span&gt;
+
+    &lt;span class=&quot;no&quot;&gt;MSG&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;You are using `Datetime.now` please replace it with `Datetime.current`&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;def_node_matcher&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:on_datetime_now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;~&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;PATTERN&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+      (send (... :Datetime) :now)
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;    PATTERN&lt;/span&gt;
+
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;on_send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;on_datetime_now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;add_offense&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;message: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MSG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corrector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;corrector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Datetime.current&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, if we run our cop with the autocorrect flag, the cop will update our code with &lt;code class=&quot;highlighter-rouge&quot;&gt;Datetime.current&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;✗ rubocop &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--only&lt;/span&gt; CustomCops/DateTimeNowUsage
+
+Inspecting 138 files
+.........C........................................................................................................................
+........
+
+Offenses:
+
+app/controllers/roadmap_payments_controller.rb:3:5: C: &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Corrected] CustomCops/DateTimeNowUsage: You are using Datetime.now please replace it with Datetime.current
+    Datetime.now
+    ^^^^^^^^^^^^
+
+138 files inspected, 1 offense detected, 1 offense corrected
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Learning about an &lt;a href=&quot;https://www.twilio.com/blog/abstract-syntax-trees&quot; target=&quot;\_blank&quot;&gt;AST&lt;/a&gt; and Rubocop internals could seem intimidating, but Rubocop has great documentation. You can learn more about it &lt;a href=&quot;https://docs.rubocop.org/rubocop/development.html&quot; target=&quot;\_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading. I hope you find this blog post helpful!&lt;/p&gt;</content><author><name>bronzdoc</name></author><category term="rubocop"/><category term="code-quality"/><summary type="html">Recently I worked on a client project that required me to implement good code conventions across the project. One of the tasks besides implementing the Rubocop standard cops was to write a custom cop for two different Datetime methods, so in this article I will explain how I created a custom Rubocop cop that solved that problem.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://fastruby.io/blog/how-to-create-rubocop-cop.png"/><media:content medium="image" url="https://fastruby.io/blog/how-to-create-rubocop-cop.png" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">How to Manually Release a Gem in rubygems.com</title><link href="https://fastruby.io/blog/gem/release/how-to-manually-release-a-gem-in-rubygems.html" rel="alternate" type="text/html" title="How to Manually Release a Gem in rubygems.com"><published>2022-08-26T05:00:00-04:00</published><updated>2022-08-26T05:00:00-04:00</updated><id>https://fastruby.io/blog/gem/release/how-to-manually-release-a-gem-in-rubygems</id><content type="html" xml:base="https://fastruby.io/blog/gem/release/how-to-manually-release-a-gem-in-rubygems.html">&lt;p&gt;I’ve always wanted to create a gem that becomes popular enough to be well known
+and everybody speaks about it. Unfortunately, until now it has been only a dream.
+In the meantime, I’ve learned how to create and release gems manually and
+I’d like to share that with you. Maybe somehow your gem could be the next most
+popular gem and I’ll be super proud of that if your first step was to read this blog post.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;index&quot;&gt;Index&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#create-a-gem&quot;&gt;Create a Gem&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#release-a-gem-manually&quot;&gt;Release a Gem Manually&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#extra-info&quot;&gt;Extra Info&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#naming-a-gem&quot;&gt;Naming a Gem&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#removing-a-gem&quot;&gt;Removing a Gem&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;create-a-gem&quot;&gt;Create a Gem&lt;/h2&gt;
+
+&lt;p&gt;While writing the &lt;a href=&quot;#release-a-gem-manually&quot;&gt;Release a Gem Manually section&lt;/a&gt; I realized that you may not have your gem yet.
+That is the reason I’ll share with you how to create it.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Everywhere you see &lt;code class=&quot;highlighter-rouge&quot;&gt;fastruby_test&lt;/code&gt;, feel free to replace it with your gem’s name&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;A gem could be generated by manually creating each file or using a command.
+Let’s use the command.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bundle gem  fastruby_test
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above command will prompt you with several questions and the answers those depend on your preferences.
+In our case we picked:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;RSpec for testing&lt;/li&gt;
+  &lt;li&gt;GitHub for CI&lt;/li&gt;
+  &lt;li&gt;MIT as license&lt;/li&gt;
+  &lt;li&gt;Yes, include the changelog file&lt;/li&gt;
+  &lt;li&gt;Add rubocop as a linter.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;tree
+&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+├── bin
+│   ├── console
+│   └── setup
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
+├── fastruby_test.gemspec
+├── Gemfile
+├── lib
+│   ├── fastruby_test
+│   │   └── version.rb
+│   └── fastruby_test.rb
+├── LICENSE.txt
+├── Rakefile
+├── README.md
+└── spec
+    ├── fastruby_test_spec.rb
+    └── spec_helper.rb
+
+4 directories, 13 files
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Nice! You just created a new Gem!
+Isn’t it incredibly easy? It’s time to prepare the gem to be deployed.&lt;/p&gt;
+
+&lt;p&gt;Let’s run the RSpec tests and linter with the &lt;code class=&quot;highlighter-rouge&quot;&gt;rake&lt;/code&gt; command&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;fastruby_test
+rake
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It returns that the &lt;code class=&quot;highlighter-rouge&quot;&gt;fastruby_test.gemspec&lt;/code&gt; is not valid.
+You need to open that file and change the items that have the &lt;code class=&quot;highlighter-rouge&quot;&gt;TODO:&lt;/code&gt; word, like so:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;require_relative&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;lib/fastruby_test/version&quot;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Gem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt;          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;fastruby_test&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;version&lt;/span&gt;       &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;FastrubyTest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;VERSION&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;authors&lt;/span&gt;       &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Juan Vasquez&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;email&lt;/span&gt;         &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;juan@ombulabs.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;summary&lt;/span&gt;       &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;This is an interesting gem&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;description&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;This is an interesting gem's description&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;homepage&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://github.com/fastruby/fastruby_test&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;license&lt;/span&gt;       &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;MIT&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;required_ruby_version&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;gt;= 2.6.0&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;allowed_push_host&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://rubygems.org&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;homepage_uri&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;homepage&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;source_code_uri&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;homepage&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;changelog_uri&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;homepage&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/blob/master/CHANGELOG.md&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# Specify which files should be added to the gem when it is released.&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# The `git ls-files -z` loads the files in the RubyGem that have been added into git.&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;files&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;chdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;expand_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__dir__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;sb&quot;&gt;`git ls-files -z`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reject&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;__FILE__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;%r{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\A&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;(?:(?:test|spec|features)/|&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;(?:git|travis|circleci)|appveyor)}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;bindir&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;exe&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;executables&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;files&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;grep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;%r{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\A&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;exe/}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;basename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;require_paths&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lib&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# Uncomment to register a new dependency of your gem&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# spec.add_dependency &quot;example-gem&quot;, &quot;~&amp;gt; 1.0&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# For more information and examples about making a new gem, checkout our&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# guide at: https://bundler.io/guides/creating_gem.html&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Once you fixed the &lt;code class=&quot;highlighter-rouge&quot;&gt;gemspec&lt;/code&gt; file,
+run the tests again and you will see that the test is still failing.
+This is due to the scaffold creating a failing test by default.
+Let’s remove it or fix it.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;FastrubyTest&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;has a version number&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;FastrubyTest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;VERSION&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;not_to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;be&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;does something useful&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rspec
+FastrubyTest
+  has a version number
+  does something useful
+
+Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.00172 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files took 0.05799 seconds to load&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+2 examples, 0 failures
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;release-a-gem-manually&quot;&gt;Release a Gem Manually&lt;/h2&gt;
+
+&lt;p&gt;You’ll need to have a &lt;a href=&quot;https://rubygems.org&quot;&gt;rubygems.org&lt;/a&gt; account.
+If you haven’t created one yet, &lt;a href=&quot;https://rubygems.org/sign_up&quot;&gt;here&lt;/a&gt; you have the link to do it.&lt;/p&gt;
+
+&lt;p&gt;Then we need to login to &lt;a href=&quot;https://rubygems.org&quot;&gt;rubygems.org&lt;/a&gt; from the command line,
+by running the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem signin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It will prompt you to answer some questions, be aware that you cannot mark everything as &lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Enter your RubyGems.org credentials.
+Don't have an account yet? Create one at https://rubygems.org/sign_up
+   Email:   me@example.com
+Password:   your_secure_password
+
+API Key name [computer-name-20220727155644]:
+Please select scopes you want to enable for the API key (y/n)
+index_rubygems [y/N]:   y
+push_rubygem [y/N]:   y
+yank_rubygem [y/N]:   y
+add_owner [y/N]:   y
+remove_owner [y/N]:   y
+access_webhooks [y/N]:   y
+show_dashboard [y/N]:   n
+
+You have enabled multi-factor authentication. Please enter OTP code.
+Code:   000000
+Signed in with API key: computer-name-20220727155644.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Just to confirm you added it successfully, go to the following
+route &lt;a href=&quot;https://rubygems.org/profile/api_keys&quot;&gt;https://rubygems.org/profile/api_keys&lt;/a&gt;
+and the new api key’s name should be there.&lt;/p&gt;
+
+&lt;p&gt;The next step is to build the gem, running the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem build fastruby_test
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;gem build fastruby_test&lt;/code&gt; command created a new file,
+in my case it’s called &lt;code class=&quot;highlighter-rouge&quot;&gt;fastruby_test-0.1.0.gem&lt;/code&gt; (the version could vary on your side).&lt;/p&gt;
+
+&lt;p&gt;Let’s push it to the &lt;a href=&quot;https://rubygems.org&quot;&gt;https://rubygems.org&lt;/a&gt; page with the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem push fastruby_test-0.1.0.gem
+
+Pushing gem to https://rubygems.org...
+Successfully registered gem: fastruby_test &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.1.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If everything was good, you should be able to navigate to the gem
+url &lt;a href=&quot;https://rubygems.org/gems/fastruby_test&quot;&gt;https://rubygems.org/gems/fastruby_test&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;And we are done. That’s it. We are planning on posting an automated release in
+the future, let’s keep in touch if you are interested.&lt;/p&gt;
+
+&lt;h2 id=&quot;extra-info&quot;&gt;Extra Info&lt;/h2&gt;
+
+&lt;h2 id=&quot;naming-a-gem&quot;&gt;Naming a Gem&lt;/h2&gt;
+
+&lt;p&gt;I wanted to jump into the &lt;a href=&quot;#generate-a-gem&quot;&gt;Generate a Gem&lt;/a&gt; section but
+&lt;strong&gt;naming your gem&lt;/strong&gt; is a super important step. Before you pick a name for your gem,
+do a quick search on &lt;a href=&quot;https://rubygems.org/&quot;&gt;https://rubygems.org/&lt;/a&gt; and
+&lt;a href=&quot;https://github.com/&quot;&gt;https://github.com/&lt;/a&gt; to see if someone else has taken it
+or run the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem search next_rails
+&lt;span class=&quot;c&quot;&gt;# where `next_rails` is your desired gem name&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Every published gem must have a unique name.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;removing-a-gem&quot;&gt;Removing a Gem&lt;/h2&gt;
+
+&lt;p&gt;Because of several reasons you may want/need to remove a gem’s release.
+Take into account that we won’t be able to use the same previous gem’s version.
+In our case it was only for learning purposes.&lt;/p&gt;
+
+&lt;p&gt;You can execute the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem yank fastruby_test &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; 0.1.1
+
+Yanking gem from https://rubygems.org...
+Successfully deleted gem: fastruby_test &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.1.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>juan</name></author><category term="gem"/><category term="release"/><summary type="html">I’ve always wanted to create a gem that becomes popular enough to be well known and everybody speaks about it. Unfortunately, until now it has been only a dream. In the meantime, I’ve learned how to create and release gems manually and I’d like to share that with you. Maybe somehow your gem could be the next most popular gem and I’ll be super proud of that if your first step was to read this blog post.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://fastruby.io/blog/how-to-manually-release-a-gem-in-rubygems.jpg"/><media:content medium="image" url="https://fastruby.io/blog/how-to-manually-release-a-gem-in-rubygems.jpg" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">An introduction to software quality</title><link href="https://fastruby.io/blog/code-quality/an-intro-to-software-quality.html" rel="alternate" type="text/html" title="An introduction to software quality"><published>2022-08-16T05:00:00-04:00</published><updated>2022-08-16T05:00:00-04:00</updated><id>https://fastruby.io/blog/code-quality/an-intro-to-software-quality</id><content type="html" xml:base="https://fastruby.io/blog/code-quality/an-intro-to-software-quality.html">&lt;p&gt;At FastRuby.io, we talk a lot about software quality. It’s how we determine whether a client is a good fit for an upgrade. The less technical debt a codebase has, the easier it is to maintain, and the more likely a Rails upgrade will go smoothly. But what determines whether software is “good quality”? In this article, we will talk about what software quality is, and explain the metrics that people use when talking about how to measure it.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;what-is-software-quality&quot;&gt;What is software quality?&lt;/h2&gt;
+
+&lt;p&gt;What software quality actually means can depend on who you ask. According to &lt;a href=&quot;https://en.wikipedia.org/wiki/Software_quality&quot;&gt;Wikipedia&lt;/a&gt;, which gets its definition from the former ISO/IEC 9126-1 (current ISO/IEC 25010) standard, software quality refers to two different metrics:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Functional quality: how well software conforms to its functional requirements, i.e. it does what it is supposed to do&lt;/li&gt;
+  &lt;li&gt;Structural quality: how maintainable a piece of software is&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The first metric is fairly straightforward so, in this article, we will talk about the second metric: the structural quality of software, or rather, its maintainability.&lt;/p&gt;
+
+&lt;h3 id=&quot;maintainable-software&quot;&gt;Maintainable software&lt;/h3&gt;
+
+&lt;p&gt;What does it mean to have “maintainable” software? This definition seems to be more widely accepted. Maintainable software is easy to understand and modify. It tends to have two main characteristics:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Code coverage: this refers to how much of your application is covered by tests. The more of your application is covered by tests, the easier it is to add features, refactor, or upgrade existing code.&lt;/li&gt;
+  &lt;li&gt;Code quality: this is the amount of technical debt a project has. Technical debt refers to the use of non-optimal solutions, for example, poor quality code, poor design, non-scalable solutions, etc. Technical debt is bad because so much developer time can be eaten up maintaining it, therefore costing businesses money.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;code-coverage&quot;&gt;Code Coverage&lt;/h4&gt;
+
+&lt;p&gt;The first characteristic of maintainable software is code coverage. Code coverage is measured through the use of dynamic analysis tools. In general, these tools execute the code line by line and calculate what percentage of it is covered by the test suite. Some tools can calculate different coverage measurements. For example, Ruby’s &lt;a href=&quot;https://ruby-doc.org/stdlib-3.1.2/libdoc/coverage/rdoc/Coverage.html&quot;&gt;coverage&lt;/a&gt; library, which is the backbone of &lt;a href=&quot;https://github.com/simplecov-ruby/simplecov&quot;&gt;SimpleCov&lt;/a&gt;, provides the following measurements:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;line coverage - the number of times each line was executed&lt;/li&gt;
+  &lt;li&gt;oneshot lines coverage - which lines are executed&lt;/li&gt;
+  &lt;li&gt;branches coverage - how many times each branch within each conditional in the code is executed&lt;/li&gt;
+  &lt;li&gt;methods coverage - how many times each method in the mode is executed&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;code-quality&quot;&gt;Code Quality&lt;/h4&gt;
+
+&lt;p&gt;The second characteristic of maintainable software is code quality. Code quality is measured through the use of static analysis tools. A static code analysis program reads through each line of code in an application and assigns a complexity score to every file in a project. Some metrics that static analysis programs measure are:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;churn: a measure of how often a file changes. Churn is important to track because the frequency of how much a file changes can signify problems - lack of understanding of the problem that the code is trying to solve, poor design, code that is too complex.&lt;/li&gt;
+  &lt;li&gt;complexity: how hard it is to understand and reason through code. Like churn, how difficult a piece of code is to understand can signify problems. Complexity can make code harder to modify, and easier to break. Some measurements of complexity include:
+    &lt;ul&gt;
+      &lt;li&gt;cyclomatic complexity: this is a count of the linearly independent paths through a piece of code&lt;/li&gt;
+      &lt;li&gt;the ABC metric: the number of assignments, branches, and conditionals in a piece of code&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;code smells: a piece of code that can indicate a potential problem. Some examples of code smells are: bloated code, incorrectly applied design patterns, excessive coupling. Code smells can contribute to technical debt.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;One example of a static analysis program is &lt;a href=&quot;https://github.com/whitesmith/rubycritic&quot;&gt;RubyCritic&lt;/a&gt;. RubyCritic is a wrapper around the tools &lt;a href=&quot;https://github.com/troessner/reek&quot;&gt;Reek&lt;/a&gt;, &lt;a href=&quot;https://github.com/seattlerb/flay&quot;&gt;Flay&lt;/a&gt;, and &lt;a href=&quot;https://github.com/seattlerb/flog&quot;&gt;Flog&lt;/a&gt;, three tools that analyze the code according to these metrics.&lt;/p&gt;
+
+&lt;h3 id=&quot;putting-it-all-together&quot;&gt;Putting It All Together&lt;/h3&gt;
+
+&lt;p&gt;Now that we have some definitions for software quality metrics, we can put them together to create an overall picture of a project’s quality. If you have read Michael Feathers’ article &lt;a href=&quot;https://www.agileconnection.com/article/getting-empirical-about-refactoring&quot;&gt;Getting Empirical about Refactoring&lt;/a&gt; or Sandi Metz’ article &lt;a href=&quot;https://sandimetz.com/blog/2017/9/13/breaking-up-the-behemoth&quot;&gt;Breaking Up the Behemoth&lt;/a&gt;, you might have seen this file churn vs. complexity graph:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://www.stickyminds.com/sites/default/files/article/XDD16679imagelistfilename2.jpg&quot; alt=&quot;file churn vs complexity graph&quot; /&gt;
+&lt;em&gt;Complexity graph courtesy of Michael Feathers&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Here’s how the quadrants break down:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Ideally, we want to have files in the lower left quadrant: files with low churn and low complexity don’t change very often and they’re easy to understand.&lt;/li&gt;
+  &lt;li&gt;Upper left quadrant: these are files with low churn and high complexity. It’s probably best to not touch these, since they do important stuff.&lt;/li&gt;
+  &lt;li&gt;Lower right quadrant: files with high churn and low complexity. These are the files that need to be changed often, usually stuff like config files and locals, etc.&lt;/li&gt;
+  &lt;li&gt;Upper right quadrant: files with high churn and high complexity. These are the files that probably should be refactored.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;In this article, we talked about what software quality means, particularly when it comes to maintainable software. We learned what code coverage and code quality mean, and the difference between churn and complexity. Finally, we put together all our definitions and took a look at the file churn vs. complexity graph with a better understanding.&lt;/p&gt;
+
+&lt;p&gt;If you would like to learn more, here are some resources that helped me understand the topics we covered above (both by FastRuby.io’s founder Ernesto Tagwerker):&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.fastruby.io/blog/code-quality/churn-vs-complexity-vs-coverage.html&quot;&gt;Churn vs. Complexity vs. Code Coverage&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=ZyU6K6eR-_A&quot;&gt;Escaping the Tar Pit&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>gelseyt</name></author><category term="code-quality"/><summary type="html">At FastRuby.io, we talk a lot about software quality. It’s how we determine whether a client is a good fit for an upgrade. The less technical debt a codebase has, the easier it is to maintain, and the more likely a Rails upgrade will go smoothly. But what determines whether software is “good quality”? In this article, we will talk about what software quality is, and explain the metrics that people use when talking about how to measure it.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://fastruby.io/blog/an-introduction-to-software-quality.jpg"/><media:content medium="image" url="https://fastruby.io/blog/an-introduction-to-software-quality.jpg" xmlns:media="http://search.yahoo.com/mrss/"/></entry></feed>

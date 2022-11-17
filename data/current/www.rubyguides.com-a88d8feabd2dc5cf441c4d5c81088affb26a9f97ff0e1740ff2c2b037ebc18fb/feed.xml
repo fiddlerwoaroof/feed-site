@@ -1,0 +1,1354 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:georss="http://www.georss.org/georss" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+
+<channel>
+	<title>RubyGuides</title>
+	<atom:link href="https://www.rubyguides.com/feed/" rel="self" type="application/rss+xml"/>
+	<link>https://www.rubyguides.com</link>
+	<description>Ruby Programming Tutorials</description>
+	<lastBuildDate>Sat, 11 Sep 2021 12:03:18 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.6.10</generator>
+<site xmlns="com-wordpress:feed-additions:1">136159382</site>	<item>
+		<title>Ruby Hash – Definition, Examples &amp; Methods: The Ultimate Guide</title>
+		<link>https://www.rubyguides.com/2020/05/ruby-hash-methods/</link>
+		
+		<dc:creator><![CDATA[Jesus Castello]]></dc:creator>
+		<pubDate>Tue, 12 May 2020 17:44:34 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[ruby]]></category>
+		<guid isPermaLink="false">https://www.rubyguides.com/?p=14220</guid>
+
+					<description><![CDATA[<p>What is a Ruby hash? A hash is a data structure used to store data in the form of UNIQUE key-value pairs. Unlike arrays, there are no numerical indexes, you access the hash values with keys. Examples include: A list of country names &#38; their corresponding country codes (like ES ⇾ Spain) A dictionary, where [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/05/ruby-hash-methods/">Ruby Hash &#8211; Definition, Examples &#038; Methods: The Ultimate Guide</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></description>
+										<content:encoded><![CDATA[<p>What is a Ruby hash?</p>
+<p>A hash is a <a href="https://www.rubyguides.com/2019/04/ruby-data-structures/" target="_blank" rel="noopener">data structure</a> used to store data in the form of UNIQUE key-value pairs. Unlike arrays, there are no numerical indexes, you access the hash values with keys.</p>
+<p><strong>Examples include</strong>:</p>
+<ul>
+<li>A list of country names &amp; their corresponding country codes (like ES ⇾ Spain)</li>
+<li>A dictionary, where every word has a list of possible definitions</li>
+<li>A domain name &amp; it&#8217;s IP address</li>
+</ul>
+<p>Using a hash in your Ruby programs can speed up your code when used in the right situation.</p>
+<p><strong>In other words</strong>:</p>
+<p>You have data that is (or can be transformed into) a dictionary-like format, where data can be grouped by keys &amp; associated values.</p>
+<h2>How to Create a Hash</h2>
+<p>Ok.</p>
+<p>We get the general idea of what a hash is, but how do you create one?</p>
+<p><strong>Like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">{}
+</pre>
+<p>That&#8217;s an empty hash!</p>
+<p><strong>A hash with three key/value pairs looks like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">{ a: 1, b: 2, c: 3 }
+</pre>
+<p>Where <code>a</code> is a key, and <code>1</code> is the corresponding value for that key. Notice that the key-value pairs are separated by commas.</p>
+<p><strong>Now</strong>:</p>
+<p>Let&#8217;s look at how you can use hashes in your Ruby projects with common hash methods.</p>
+<h2>Storing Values in a Ruby Hash</h2>
+<p>You can create a hash with a set of initial values, as we have already seen.</p>
+<p><strong>Here&#8217;s another example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">fruits = { coconut: 1, apple: 2, banana: 3 }
+</pre>
+<p>Another option is to add new values into an existing hash.</p>
+<p><strong>Like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">fruits[:orange] = 4
+</pre>
+<p>This is <code>:orange</code> as the hash key, and <code>4</code> as its corresponding value.</p>
+<blockquote><p>Why is the colon before the word <code>:orange</code> when we access a value &amp; after the word <code>orange:</code> when we create a hash? It&#8217;s a nicer syntax that allows you to create hashes without the hash-rocket (<code>=&gt;</code>) symbol, which is a valid, but older way to do it.</p></blockquote>
+<p>Values can be any Ruby object.</p>
+<p><strong>Including</strong>:</p>
+<ul>
+<li>Strings</li>
+<li>Integers &amp; Floats</li>
+<li>Arrays</li>
+</ul>
+<p>Keys can also be anything, but symbols (like <code>:banana</code>) &amp; strings are the most common type of keys you&#8217;ll find.</p>
+<p><strong>Remember that&#8230;</strong></p>
+<p>Keys are unique, we can only have one <code>:orange</code> key, or one <code>:apple</code> key.</p>
+<p>When you add the same key twice you change its value.</p>
+<h2>How to Access Values From a Hash</h2>
+<p>You access a hash by key.</p>
+<p>If you need to access the values directly, then a hash may not be the right structure for your data.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">fruits[:orange]
+# 4
+</pre>
+<p>This is the whole point of hashes, to quickly <strong>look up an item by its key</strong>.</p>
+<p>If a key doesn&#8217;t exist, you&#8217;ll get <code>nil</code>.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">fruits[:peach]
+# nil
+</pre>
+<p>As an alternative, you can use the <code>fetch</code> method, which allows you to provide a default value.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">fruits.fetch(:peach, 0)
+</pre>
+<p>If you use <code>fetch</code> without a default value (the 2nd argument), Ruby will raise a <code>KeyError</code> exception.</p>
+<p>That&#8217;s helpful because you&#8217;ll know what key is missing.</p>
+<h2>How to Merge Two Ruby Hashes</h2>
+<p>You can take two hashes &amp; merge them together into a new hash.</p>
+<p><strong>What method does this?</strong></p>
+<p>Well, it&#8217;s not hard to guess this one. The method&#8217;s name is <code>merge</code>.</p>
+<p><strong>Here&#8217;s how to use it</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">defaults    = { a: 1, b: 2, c: 3 }
+preferences = { c: 4 }
+
+defaults.merge!(preferences)
+# {:a=&gt;1, :b=&gt;2, :c=&gt;4}
+</pre>
+<p>Notice that because <strong>keys are unique</strong>, newer values overwrite older values.</p>
+<p>You could use this fact for interesting solutions, like creating a &#8220;defaults&#8221; hash that users can override by passing their own hash.</p>
+<p>If you need more control over how keys are merged you can pass a block.</p>
+<p><strong>Like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">defaults.merge!(preferences) { |key, old, new| [old, new].max }
+</pre>
+<p>Where <code>old</code> are the values coming from <code>defaults</code>, and <code>new</code> are the values coming from <code>preferences</code>.</p>
+<h2>Multiple Values For One Key</h2>
+<p>In a dictionary&#8230;</p>
+<p>Words are unique, but they can have multiple values (<strong>definitions</strong>) associated with them.</p>
+<p>You can do this in Ruby!</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">dictionary = {
+  opportunity: [
+    "a set of circumstances that makes it possible to do something",
+    "a situation or condition favorable for attainment of a goal"
+  ],
+  creativity: [
+    "the use of imagination or original ideas to create something new",
+    "the ability to create",
+    "the process where new ideas emerge from combining existing ideas in new ways"
+  ]
+}
+
+dictionary[:creativity][1]
+</pre>
+<p>Where <code>dictionary[:creativity]</code> gives you an array &amp; <code>[1]</code> gives you the 2nd element from that array.</p>
+<p><strong>In other words</strong>:</p>
+<p>The key is a symbol &amp; the values are arrays. When you access the hash you get an array back which you access normally, like any other array.</p>
+<h2>How to Sort a Hash</h2>
+<p>You can sort arrays. But did you know that you can also sort hashes?</p>
+<p>When you <code>sort</code> a hash, it&#8217;s sorted by key.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">{ b: 1, a: 2 }.sort
+
+# [[:a, 2], [:b, 1]]
+</pre>
+<p><strong>But you can also sort them by value</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">{ c: 3, b: 1, a: 2 }.sort_by(&amp;:last)
+</pre>
+<p>You&#8217;ll notice that what you get from sorting a hash is not another hash&#8230;</p>
+<p>It&#8217;s an array!</p>
+<p>But you can convert this array back into a hash, using the <code>to_h</code> method.</p>
+<h2>Get All Keys &amp; Values From a Hash</h2>
+<p>If you want a list of all the hash keys, good news, there is a method for that!</p>
+<p><strong>Here it is</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">{ apple: 1, banana: 2 }.keys
+
+# [:apple, :banana]
+</pre>
+<p><strong>There&#8217;s also a method which gives you an array containing the values</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">{ apple: 1, banana: 2 }.values
+
+# [1, 2]
+</pre>
+<p>If you want to know if a key exists in a hash, instead of getting an array of them, use the <code>key?</code> method.</p>
+<p>This method returns a <code>true</code> or <code>false</code> value.</p>
+<h2>Summary</h2>
+<p>You&#8217;ve learned about Ruby hashes, a helpful data structure which is composed of key-value pairs. You also learned how to access a hash by key, and how to store new data in a hash.</p>
+<p>Now open up irb (or pry) &amp; start playing with hashes!</p>
+<p>Thanks for reading <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/05/ruby-hash-methods/">Ruby Hash &#8211; Definition, Examples &#038; Methods: The Ultimate Guide</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">14220</post-id>	</item>
+		<item>
+		<title>What Is Self in Ruby &amp; How to Use It (Explained Clearly)</title>
+		<link>https://www.rubyguides.com/2020/04/self-in-ruby/</link>
+					<comments>https://www.rubyguides.com/2020/04/self-in-ruby/#comments</comments>
+		
+		<dc:creator><![CDATA[Jesus Castello]]></dc:creator>
+		<pubDate>Tue, 14 Apr 2020 18:03:17 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[ruby]]></category>
+		<guid isPermaLink="false">https://www.rubyguides.com/?p=14132</guid>
+
+					<description><![CDATA[<p>If you&#8217;re learning Ruby you may find the use of the &#8220;self&#8221; keyword very confusing. How does it work? What is self, exactly? It&#8217;s a Ruby keyword that gives you access to the current object. If you don&#8217;t know what objects are, watch this video I made for you. It&#8217;s related to Object-Oriented Programming. This [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/04/self-in-ruby/">What Is Self in Ruby &#038; How to Use It (Explained Clearly)</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></description>
+										<content:encoded><![CDATA[<p>If you&#8217;re learning Ruby you may find the use of the &#8220;self&#8221; keyword very confusing.</p>
+<p>How does it work?</p>
+<p>What is <code>self</code>, exactly?</p>
+<p>It&#8217;s <strong>a Ruby keyword</strong> that gives you access to the current object.</p>
+<blockquote><p>
+  If you don&#8217;t know what objects are, <a href="https://www.youtube.com/watch?v=LuTTUNnSj6o" rel="noopener" target="_blank">watch this video</a> I made for you. It&#8217;s related to <a href="https://www.rubyguides.com/ruby-tutorial/object-oriented-programming/" target="_blank">Object-Oriented Programming</a>.
+</p></blockquote>
+<p>This &#8220;current object&#8221; depends on the context.</p>
+<p><strong>Context?</strong></p>
+<p>Yes, the context is where your code is at any given moment.</p>
+<p><strong>Here&#8217;s an example</strong>:</p>
+<p>If your code is inside an instance method, <code>self</code> is an <u>instance</u> of that <a href="https://www.rubyguides.com/2019/02/ruby-class/" rel="noopener" target="_blank">class</a>. In other words, <code>self</code> is an <a href="https://www.rubyguides.com/ruby-tutorial/object-oriented-programming/" rel="noopener" target="_blank">object</a>.</p>
+<p>You can see this in action yourself.</p>
+<p><strong>Run this code</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+def coffee
+  puts self
+end
+
+coffee
+# main
+</pre>
+<p>This code defines &amp; calls a <code>coffee</code> method which prints the value of <code>self</code>.</p>
+<p><strong>Why does it print <code>main</code>?</strong></p>
+<p>Because it&#8217;s the name of the top-level object, it&#8217;s an object where you&#8217;ll find all the <a href="https://www.rubyguides.com/2019/06/ruby-method-definition/" rel="noopener" target="_blank">methods</a> defined <u>outside</u> a class.</p>
+<p>Like our <code>coffee</code> method here.</p>
+<p>But if you define a method inside a class named <code>Cat</code>, then <code>self</code> would be a <code>Cat</code> object.</p>
+<p><strong>As seen here</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+class Cat
+  def meow
+    puts self
+  end
+end
+
+Cat.new.meow
+# &lt;Cat:0x7a14c5>
+</pre>
+<p>From these examples, we can tell that the value of <code>self</code> changes depending on where you use it.</p>
+<p><strong>Now</strong>:</p>
+<p>I believe you can understand anything better by understanding its purpose.</p>
+<p>Why is <code>self</code> useful?</p>
+<p>Let&#8217;s look at some examples.</p>
+<h2>Using Self For Disambiguation</h2>
+<p>One practical use for <code>self</code> is to be able to tell the difference between a method &amp; a local variable.</p>
+<p>It&#8217;s not a great idea to name a variable &amp; a method the same. But if you have to work with that situation, then you&#8217;ll be able to call the method with <code>self.method_name</code>.</p>
+<p><strong>Here&#8217;s what I mean</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+class Example
+  def do_something
+    banana = "variable"
+
+    puts banana
+    puts self.banana
+  end
+
+  def banana
+    "method"
+  end
+end
+
+Example.new.do_something
+
+# "variable"  => puts banana
+# "method"    => puts self.banana
+</pre>
+<p>Here we have a <code>banana</code> local variable, inside the <code>do_something</code> method, but we also have a <code>banana</code> method.</p>
+<p>A local variable takes priority.</p>
+<p>That&#8217;s why we need to use <code>self</code> here if we want to <u>call</u> the <code>banana</code> method, instead of <u>printing</u> the value of the <code>banana</code> variable.</p>
+<p><strong>Next</strong>:</p>
+<p>Let&#8217;s look at a more common use case&#8230; Defining class methods!</p>
+<h2>Using Self To Define Class-Level Methods</h2>
+<p>Number ONE use for <code>self</code>, without a doubt, is to define class-level methods.</p>
+<p>I&#8217;m sure you&#8217;ve seen them.</p>
+<p>These <code>def self.method_name</code> method <u>definitions</u>.</p>
+<p><strong>Like this one</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+class Salad
+  def self.buy_olive_oil
+    # ...
+  end
+end
+
+Salad.buy_olive_oil
+</pre>
+<p>This <code>self</code> here is equivalent to <code>Salad</code>, the class name.</p>
+<p><strong>Why is this useful?</strong></p>
+<p>Because we don&#8217;t have to use the class name for each method definition, making our code easier to change if we change the class.</p>
+<p>It also makes the code less noisy &amp; better to read.</p>
+<p>That&#8217;s why we do <code>def self.buy_olive_oil</code> instead of <code>def Salad.buy_olive_oil</code>.</p>
+<h2>Other Uses For Self</h2>
+<p>Yes!</p>
+<p>There are even more uses for <code>self</code>, so it&#8217;s a helpful thing to be familiar with.</p>
+<p><strong>For example</strong>:</p>
+<p>You can use it in a method to compare the current object with another object.</p>
+<p><strong>Something like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+def ==(other)
+  self == other
+end
+</pre>
+<p>You can also use <code>self</code> for debugging purposes, to find out which object you&#8217;re working with.</p>
+<p><strong>Like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+p self
+</pre>
+<p>Or you can use it as a return value, to implement design patterns like the <a href="https://www.youtube.com/watch?v=jNs7CyC9JFM" rel="noopener" target="_blank">Builder Design Pattern</a>.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+class Salad
+  def initialize
+    @ingredients = []
+  end
+
+  def add_nuts
+    @ingredients << :nuts
+
+    self
+  end
+end
+
+my_salad = Salad.new.add_nuts
+</pre>
+<p><strong>In summary, here's a list of helpful uses for self</strong>:</p>
+<ul>
+<li>Define class-level methods</li>
+<li>Use an instance method when you have a local variable of the same name</li>
+<li>Returning Self (builder pattern)</li>
+<li>Debugging</li>
+<li>Comparing objects (==)</li>
+<li>Default receiver of method calls</li>
+</ul>
+<h2>Self vs Itself</h2>
+<p>One more thing we should look at before we are done with this topic.</p>
+<p>The <code>Kernel#itself</code> method.</p>
+<p>It's a method that you can call on an object &amp; the object will return itself.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+[1,2,3,nil].select(&:itself)
+
+# [1, 2 ,3]
+</pre>
+<p>This example filters <code>nil</code> &amp; <code>false</code> values.</p>
+<p><strong>Understanding the difference</strong>:</p>
+<ul>
+<li><code>self</code> is a keyword. It's value depends on <u>where</u> you use it</li>
+<li><code>itself</code> is a method. It's value depends on <u>what</u> object you use it on (in <code>1.itself</code>, <code>1</code> is the object)</li>
+</ul>
+<p>Hope that's helpful.</p>
+<h2>Conclusion</h2>
+<p>You have learned about Ruby self keyword, exactly what it is, why it's useful &amp; how to use it.</p>
+<p>Now it's your turn to give it a try.</p>
+<p>Thanks for reading! <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/04/self-in-ruby/">What Is Self in Ruby &#038; How to Use It (Explained Clearly)</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.rubyguides.com/2020/04/self-in-ruby/feed/</wfw:commentRss>
+			<slash:comments>11</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">14132</post-id>	</item>
+		<item>
+		<title>What is Scaffolding in Ruby on Rails?</title>
+		<link>https://www.rubyguides.com/2020/03/rails-scaffolding/</link>
+		
+		<dc:creator><![CDATA[Jesus Castello]]></dc:creator>
+		<pubDate>Mon, 09 Mar 2020 21:08:11 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[rails]]></category>
+		<category><![CDATA[ruby]]></category>
+		<guid isPermaLink="false">https://www.rubyguides.com/?p=14103</guid>
+
+					<description><![CDATA[<p>You may be learning Rails &#38; you read that you have to create a &#8220;scaffold&#8221; to get your Rails application started&#8230; Easy! You can do this using the rails g scaffold command. But what is scaffolding? &#8220;Scaffolding is a temporary structure used to support a work crew to aid in the construction, maintenance and repair [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/03/rails-scaffolding/">What is Scaffolding in Ruby on Rails?</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></description>
+										<content:encoded><![CDATA[<p>You may be learning Rails &amp; you read that you have to create a &#8220;scaffold&#8221; to get your Rails application started&#8230;</p>
+<p>Easy!</p>
+<p>You can do this using the <code>rails g scaffold</code> command.</p>
+<p><strong>But what is scaffolding?</strong></p>
+<blockquote><p>
+  &#8220;Scaffolding is a temporary structure used to support a work crew to aid in the construction, maintenance and repair of buildings, bridges and all other man-made structures.&#8221; &#8211; Wikipedia
+</p></blockquote>
+<p><strong>Translated into Rails</strong>:</p>
+<p>A scaffold is a set of automatically generated files which forms the basic structure of a <a href="https://www.rubyguides.com/2018/10/what-is-ruby-on-rails/" rel="noopener" target="_blank">Rails project</a>.</p>
+<p><strong>These files include</strong>:</p>
+<ul>
+<li>A controller</li>
+<li>A model</li>
+<li>Views for every standard controller action (index, edit, show, new)</li>
+</ul>
+<p>A new route.</p>
+<p>And a migration to prepare your database.</p>
+<p>Let&#8217;s see an example!</p>
+<h2>How to Use The Rails Scaffold Command</h2>
+<p>An example of scaffolding a project for a website about books would look like this.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+rails g scaffold books
+</pre>
+<p>You should see a lot of text scrolling by, which details the files being created.</p>
+<p><strong>This example creates</strong>:</p>
+<ul>
+<li>A <code>BooksController</code></li>
+<li>A <code>Book</code> model</li>
+<li>A new <code>resources :books</code> route added to your <code>config/routes.rb</code> file</li>
+<li>A set of <a href="https://www.rubyguides.com/2018/07/rspec-tutorial/" rel="noopener" target="_blank">testing-related</a> files</li>
+<li>View files under <code>app/views/books</code> (five in total)</li>
+</ul>
+<p>Yes.</p>
+<p><strong>That&#8217;s a lot of stuff.</strong></p>
+<p>If you want to undo this scaffolding, right after creating it, you can use the following command.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+rails d scaffold books
+</pre>
+<p>Where &#8220;d&#8221; means &#8220;destroy&#8221;.</p>
+<p>Keep in mind that <u>this will DELETE the files</u> created by the scaffolding process.</p>
+<p><strong>Now</strong>:</p>
+<p>Before you can use your scaffolded code you have to run your migrations to update your database schema.</p>
+<p>Use the <code>rails db:migrate</code> command.</p>
+<p>If no error messages show up, you&#8217;re ready! You have a basic structure for your new Rails application, or for a new feature that needs a new model, views &amp; corresponding controller.</p>
+<p><strong>Next</strong>:</p>
+<p>Run <code>rails server</code>.</p>
+<p>Open your browser to <code>localhost:3000/books</code> &amp; you should be able to see the results!</p>
+<h2>Rails Scaffolding With Extra Fields</h2>
+<p>By default&#8230;</p>
+<p>Your model only gets timestamp fields, which means that the only information that you can record about your books (or whatever model you&#8217;re working with) is the time at which they were created, or updated.</p>
+<p><strong>Here&#8217;s how to scaffold with extra fields</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+rails g scaffold books title:string author:string publication_year:integer
+</pre>
+<p>If you generate your scaffolding like this, you&#8217;ll have 3 fields to work with.</p>
+<p>A title, an author, and a publication year.</p>
+<p>That&#8217;s a bit more interesting than just having the database timestamps.</p>
+<p><strong>Btw.</strong></p>
+<p>This the same syntax we use for creating migrations with <code>rails g migration</code>.</p>
+<h2>Generating Specific Components</h2>
+<p>Scaffolding creates things you may not need or want right now.</p>
+<p>But Rails is nice.</p>
+<p>You can create individual components, like controllers, using the <code>rails g</code> (g for generate) command.</p>
+<p><strong>Examples</strong>:</p>
+<ul>
+<li><code>rails g controller Fruit</code></li>
+<li><code>rails g model Fruit name:string color:string</code> (creates model + migration)</li>
+<li><code>rails g migration CreateBook title:string year:integer</code> (creates migration only)</li>
+</ul>
+<p>One of the big benefits of using a scaffolding command is that all the files are created using the correct naming conventions, which avoids strange error messages. It also saves you the work of having to manually create these files.</p>
+<p><strong>Btw&#8230;</strong></p>
+<p>It&#8217;s considered good practice to delete auto-generated files that you don&#8217;t plan on using. So after using a generator like &#8220;g controller&#8221;, review the list of files created &amp; remove those that you don&#8217;t need.</p>
+<h2>Summary</h2>
+<p>You&#8217;ve learned about scaffolding in Ruby so you can quickly jumpstart a new Rails application to practice with.</p>
+<p>As you learn more you may want to let go of scaffolding.</p>
+<p>But you can still generate individual controllers, models, or view files when you need them.</p>
+<p>Thanks for reading! <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/03/rails-scaffolding/">What is Scaffolding in Ruby on Rails?</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">14103</post-id>	</item>
+		<item>
+		<title>How to Work With Directories in Ruby</title>
+		<link>https://www.rubyguides.com/2020/02/ruby-dir/</link>
+					<comments>https://www.rubyguides.com/2020/02/ruby-dir/#comments</comments>
+		
+		<dc:creator><![CDATA[Jesus Castello]]></dc:creator>
+		<pubDate>Mon, 17 Feb 2020 18:06:18 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[ruby]]></category>
+		<guid isPermaLink="false">https://www.rubyguides.com/?p=14076</guid>
+
+					<description><![CDATA[<p>Did you know that you can navigate your file system with Ruby? With the Ruby &#8220;Dir&#8221; class. You can list directory entries, change your current directory &#38; even create new folders! Here&#8217;s an example: filenames = Dir.entries(".") This entries method returns an array of filename entries. Every entry is a string, so you&#8217;ll need to [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/02/ruby-dir/">How to Work With Directories in Ruby</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Did you know that you can navigate your file system with Ruby?</p>
+<p>With the Ruby &#8220;Dir&#8221; class.</p>
+<p>You can list directory entries, change your current directory &amp; even create new folders!</p>
+<p><strong>Here&#8217;s an example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+filenames = Dir.entries(".")
+</pre>
+<p>This <code>entries</code> method returns an array of filename entries. Every entry is a string, so you&#8217;ll need to combine this with the <a href="https://www.rubyguides.com/2015/05/working-with-files-ruby/" rel="noopener" target="_blank">Ruby File class</a> if you want to actually <a href="https://www.rubyguides.com/2015/05/working-with-files-ruby/" rel="noopener" target="_blank">read these files</a>.</p>
+<p>Btw, this dot (<code>.</code>) represents the <u>current directory</u>.</p>
+<p>This will be the directory your code is running from, NOT the directory you&#8217;re (in your terminal) when running the code.</p>
+<p><strong>Because of that&#8230;</strong></p>
+<p>It can be helpful to check your current directory by using the <code>Dir.pwd</code> method.</p>
+<p><strong>Now</strong>:</p>
+<p>Let&#8217;s learn how to use the <code>Dir</code> class to create new directories (<code>mkdir</code>), rename them (<code>mv</code>), and find file names that follow a specific pattern (<code>glob</code>).</p>
+<h2>Using Ruby&#8217;s Mkdir Method To Create A New Directory</h2>
+<p>If you want to create a new folder with Ruby you can use the <code>Dir.mkdir</code> method.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+Dir.mkdir("testing")
+</pre>
+<p>If given a relative path, this directory is created under the current path (<code>Dir.pwd</code>).</p>
+<p><strong>You can get a few errors</strong>:</p>
+<ul>
+<li>Directory already exists (<code>Errno::EEXIST</code>)</li>
+<li>Permission denied (<code>Errno::EACCES</code>)</li>
+<li>You&#8217;re trying to create a folder under another folder that doesn&#8217;t exist yet (<code>Errno::ENOENT</code>)</li>
+</ul>
+<p>The last error usually happens when you&#8217;re trying to create nested directories.</p>
+<p>Or if you&#8217;re using an absolute path that doesn&#8217;t exist.</p>
+<p><strong>Two solutions</strong>:</p>
+<ul>
+<li>Check if the directory exists before creating it (with <code>Dir.exists?</code>)</li>
+<li>Use a more advanced <a href="https://www.rubyguides.com/2019/02/ruby-class/" rel="noopener" target="_blank">class</a> (next section)</li>
+</ul>
+<p>Let&#8217;s keep learning!</p>
+<h2>Advanced Operations With The FileUtils Module</h2>
+<p>If you need an extra bit of horsepower you can bring in the <code>FileUtils</code> module from the standard library.</p>
+<p>It includes methods like <code>mkdir_p</code> that create nested directories in one step.</p>
+<p><strong>Here&#8217;s an example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+require 'fileutils'
+
+FileUtils.mkdir_p("/tmp/testing/a/b")
+</pre>
+<p>Pretty cool, right?</p>
+<p>That&#8217;s not all, <code>FileUtils</code> also brings extra options for all file operations in the form of keyword arguments. Like the <code>verbose</code> option (prints Linux commands) &amp; the <code>noop</code> (don&#8217;t change files) option.</p>
+<p>Give it a try!</p>
+<h2>How to Rename Directories</h2>
+<p>Ruby allows you to do every operation you can do from your Operating System user interface, or from a terminal.</p>
+<p>For example&#8230;</p>
+<p><strong>You can rename a directory like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+FileUtils.mv("/tmp/a", "/tmp/b")
+</pre>
+<p>You&#8217;ll also need to use <code>FileUtils</code> here because <code>mv</code> is not available on the <code>Dir</code> class.</p>
+<h2>How to Change Your Current Directory</h2>
+<p>Because all directory operations are run from the current directory, you may want to change it.</p>
+<p>You can use the <code>Dir.chdir</code> method to do this.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+Dir.chdir("/tmp") { Dir.entries(".") }
+</pre>
+<p><strong>This works in two ways</strong>:</p>
+<ul>
+<li>With a block, the current directory changes only for the code inside the block</li>
+<li>Without a block, it changes for all the code after the method call</li>
+</ul>
+<p>Notice that <code>chdir</code> only works within your Ruby process, it doesn&#8217;t affect the &#8220;outside world&#8221;.</p>
+<p><strong>In other words&#8230;</strong></p>
+<p>It won&#8217;t change your shell&#8217;s working directory after your Ruby program stops running.</p>
+<h2>Listing Files &amp; Directories With Pattern Matching</h2>
+<p>Want to find all Ruby files in a folder? An easy task with the <code>glob</code> method!</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+Dir.glob("*.rb")
+</pre>
+<p>You can use any other extension you want, like &#8220;.txt&#8221;, or &#8220;.yml&#8221;. Or any other text that&#8217;s part of the file name.</p>
+<p>Want to find files inside all folders?</p>
+<p><strong>Yep, it&#8217;s possible:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+Dir.glob("**/*.rb")
+</pre>
+<p>The result is an array with all the file names, including the relative path. You can remove the path &amp; get only the file name by using the <code>File.basename</code> method on every file of the list that you get from <code>glob</code>.</p>
+<h2>Summary</h2>
+<p>You have learned how to work with directories in Ruby using the <code>Dir</code> &amp; <code>FileUtils</code> classes.</p>
+<p>Now it&#8217;s your turn to put this into practice.</p>
+<p>Thanks for reading! <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/02/ruby-dir/">How to Work With Directories in Ruby</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.rubyguides.com/2020/02/ruby-dir/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">14076</post-id>	</item>
+		<item>
+		<title>7 Major Differences Between Java &amp; Ruby</title>
+		<link>https://www.rubyguides.com/2020/02/java-vs-ruby/</link>
+					<comments>https://www.rubyguides.com/2020/02/java-vs-ruby/#comments</comments>
+		
+		<dc:creator><![CDATA[Jesus Castello]]></dc:creator>
+		<pubDate>Tue, 04 Feb 2020 15:21:24 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[ruby]]></category>
+		<guid isPermaLink="false">https://www.rubyguides.com/?p=14034</guid>
+
+					<description><![CDATA[<p>How do you move from Java to Ruby? In this guide, you&#8217;ll learn what are the major differences between the two languages to help you make the jump. It&#8217;s great for the many people looking to move from Java/C# to Ruby. But&#8230; If you&#8217;re just curious about the differences, then this is also for you. [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/02/java-vs-ruby/">7 Major Differences Between Java &#038; Ruby</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></description>
+										<content:encoded><![CDATA[<p>How do you move from Java to Ruby?</p>
+<p>In this guide, you&#8217;ll learn what are the <strong>major differences</strong> between the two languages to help you <a href="https://www.rubyguides.com/ruby-tutorial/" rel="noopener" target="_blank">make the jump</a>.</p>
+<p>It&#8217;s great for the many people looking to move from Java/C# to Ruby.</p>
+<p><strong>But&#8230;</strong></p>
+<p>If you&#8217;re just curious about the differences, then this is also for you.</p>
+<p>Let&#8217;s do this!</p>
+<h2>Static Typing vs Dynamic Typing</h2>
+<p>Typing style is the biggest &amp; most notable difference when looking at code for either programming language.</p>
+<p><strong>Here&#8217;s the situation</strong>:</p>
+<ul>
+<li>Java uses static typing</li>
+<li>Ruby uses dynamic typing</li>
+</ul>
+<p><strong>What does that mean, exactly?</strong></p>
+<p>Typing refers to how variables &amp; <a href="https://www.rubyguides.com/2018/06/rubys-method-arguments/" rel="noopener" target="_blank">method arguments</a> work.</p>
+<p>A strongly (or statically) typed language has to declare what types (classes) every variable can accept.</p>
+<p><strong>It looks like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+int n = 1;
+</pre>
+<p>Where <code>int</code> is the type, in this case, <code>Integer</code>.</p>
+<p><strong>Why is that useful?</strong></p>
+<p>Because if you try to assign any other type of object to this variable, the compiler will raise an error &amp; your program won&#8217;t even get to run.</p>
+<p>This means that you&#8217;ll always know <a href="https://www.rubyguides.com/2018/12/ruby-inspect-method/" rel="noopener" target="_blank">what kind of object</a> you&#8217;re working with.</p>
+<p>With the disadvantage of being less flexible.</p>
+<p><strong>In contrast&#8230;</strong></p>
+<p>Dynamic typing is all about flexibility, variables aren&#8217;t tied to a particular type, so the type can change.</p>
+<p><strong>Here&#8217;s an example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+n = 1
+n = "abc"
+</pre>
+<p>The downside is that you may run into more errors if your code is sloppy &amp; you don&#8217;t get as much when reading code.</p>
+<p>That&#8217;s one of the major differences!</p>
+<p>More in the next section.</p>
+<h2>Syntax: Simple Things &amp; Boilerplate</h2>
+<p>Java is the king of boilerplate.</p>
+<p>Boilerplate is all that &#8220;setup&#8221; code that you have to add just to make your code syntactically valid.</p>
+<p><strong>As a result&#8230;</strong></p>
+<p>Java makes SIMPLE things complicated!</p>
+<p><strong>Hello World in Java</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+class Hello {
+  static public void main() {
+    System.out.println("Hello World");
+  }
+}
+</pre>
+<p>Then you have to compile this into a class file &amp; run it.</p>
+<p><strong>Two steps!</strong></p>
+<p>(IDEs help with this.)</p>
+<p>Another difference is that expressions in Java end with a semicolon, which is not required in Ruby. You can also leave out parenthesis in Ruby, most of the time.</p>
+<p><strong>Hello World in Ruby</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+puts "Hello World"
+</pre>
+<p>Yep.</p>
+<p>That&#8217;s it.</p>
+<p>It seems like Ruby results in cleaner code. Agree?</p>
+<p><strong>On top of that&#8230;</strong></p>
+<p>You can run this code with a single command from a terminal!</p>
+<p>No compilation step needed.</p>
+<h2>Playing With Code: Built-In REPL</h2>
+<p>Ruby comes with <a href="https://www.rubyguides.com/2018/12/what-is-a-repl-in-ruby/" rel="noopener" target="_blank">irb</a>, which makes testing out a bit of code really quick.</p>
+<p>You don&#8217;t even need to save a file.</p>
+<p>Or open an editor!</p>
+<p>Java doesn&#8217;t have this built-in, at least it doesn&#8217;t until Java 9.</p>
+<h2>File Names &amp; File Organization</h2>
+<p>Java forces a specific file naming structure &amp; organization.</p>
+<p><strong>For example</strong>:</p>
+<p>If you have a (public) class named <code>Hello</code>, the file name MUST be <code>Hello.java</code>.</p>
+<p>This isn&#8217;t the case in Ruby.</p>
+<p>Also, we don&#8217;t have the concept of a private <a href="https://www.rubyguides.com/2019/02/ruby-class/" rel="noopener" target="_blank">class in Ruby</a>.</p>
+<h2>Exception Handling</h2>
+<p>Java has two types of exceptions:</p>
+<ul>
+<li>Checked exception</li>
+<li>Unchecked exception</li>
+</ul>
+<p><strong>The difference?</strong></p>
+<p>You HAVE to handle checked exceptions!</p>
+<p>Or your program won&#8217;t even run.</p>
+<p><strong>Now</strong>:</p>
+<p>Ruby has only one type of exception.</p>
+<p>You can handle it if you want, the interpreter won&#8217;t complain about it, but it may end up crashing your program.</p>
+<h2>Compiler &amp; Language Licensing</h2>
+<p>Lastly, let&#8217;s talk about licensing.</p>
+<p>This isn&#8217;t usually a problem with programming languages.</p>
+<p><strong>Why?</strong></p>
+<p>Because they&#8217;re open source, with one person as the head maintainer &amp; designer.</p>
+<p>Java is different here.</p>
+<p>It to a big corporation (Oracle) &amp; that has implications on it&#8217;s licensing.</p>
+<p><strong>In fact</strong>:</p>
+<p>There are two versions of the Java runtime, &#8220;Oracle JDK&#8221;, which (if I understand correctly) starting with version 9 is a commercial product.</p>
+<p>Then you have &#8220;Open JDK&#8221;, which also belongs to Oracle.</p>
+<p>But it has an open-source license.</p>
+<h2>Library &amp; Code Distribution</h2>
+<p>Another MAJOR difference, one of my favorites (also Matz&#8217;s favorite) about Ruby is <a href="https://www.rubyguides.com/2018/09/ruby-gems-gemfiles-bundler/" rel="noopener" target="_blank">RubyGems</a>.</p>
+<p>It makes distributing libraries (like <a href="https://www.rubyguides.com/2018/08/ruby-http-request/" rel="noopener" target="_blank">HTTP clients</a>) much easier.</p>
+<p><strong>Because</strong>:</p>
+<ul>
+<li>There is a central repository</li>
+<li>It&#8217;s integrated into the language</li>
+<li><a href="https://www.rubyguides.com/2019/09/best-ruby-gems/" rel="noopener" target="_blank">Many open-source gems</a> are available &amp; easy to find</li>
+</ul>
+<p>As far as I know, Java doesn&#8217;t have anything close to this, so this is a <u>major win</u> for Ruby.</p>
+<h2>Summary</h2>
+<p>You&#8217;ve learned about the major difference between Java &amp; Ruby. Including things like static typing, boilerplate, and file naming.</p>
+<p>Now you&#8217;re better prepared to understand Ruby so you can make the correct decision for you.</p>
+<p>Thanks for reading! <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/02/java-vs-ruby/">7 Major Differences Between Java &#038; Ruby</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.rubyguides.com/2020/02/java-vs-ruby/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">14034</post-id>	</item>
+		<item>
+		<title>How to Use Rails Helpers (Complete Guide)</title>
+		<link>https://www.rubyguides.com/2020/01/rails-helpers/</link>
+					<comments>https://www.rubyguides.com/2020/01/rails-helpers/#comments</comments>
+		
+		<dc:creator><![CDATA[Jesus Castello]]></dc:creator>
+		<pubDate>Mon, 06 Jan 2020 17:39:25 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[rails]]></category>
+		<category><![CDATA[ruby]]></category>
+		<guid isPermaLink="false">https://www.rubyguides.com/?p=13975</guid>
+
+					<description><![CDATA[<p>What are helpers in Rails? A helper is a method that is (mostly) used in your Rails views to share reusable code. Rails comes with a set of built-in helper methods. One of these built-in helpers is time_ago_in_words. Here&#8217;s an example: time_ago_in_words(Time.now) # "less than a minute" time_ago_in_words(Time.now + 60) # "1 minute" time_ago_in_words(Time.now + [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/01/rails-helpers/">How to Use Rails Helpers (Complete Guide)</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></description>
+										<content:encoded><![CDATA[<p>What are helpers in Rails?</p>
+<p>A helper is a <a href="https://www.rubyguides.com/2019/06/ruby-method-definition/" rel="noopener" target="_blank">method</a> that is (mostly) used in your Rails views to share reusable code. Rails comes with a set of built-in helper methods.</p>
+<p>One of these built-in helpers is <code>time_ago_in_words</code>.</p>
+<p><strong>Here&#8217;s an example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+time_ago_in_words(Time.now)
+# "less than a minute"
+
+time_ago_in_words(Time.now + 60)
+# "1 minute"
+
+time_ago_in_words(Time.now + 600)
+# "10 minutes"
+</pre>
+<p>This method is helpful whenever you want to display time in this specific format.</p>
+<p>Another Rails view helper is <code>number_to_human</code>.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+number_to_human(10_000)
+# "10 Thousand"
+</pre>
+<p>This is great when you want to take a number &amp; print it as you would read it, which makes it feel more human.</p>
+<p>You can find more helpers in the <a href="https://api.rubyonrails.org/" rel="noopener" target="_blank" rel="nofollow">Ruby on Rails documentation</a>.</p>
+<p>But did you know you can write your own?</p>
+<h2>Writing Your Own Helper Methods</h2>
+<p>If you&#8217;re looking to write custom helper methods, the correct directory path is <code>app/helpers</code>.</p>
+<p>You write your helpers inside a <u>helper module</u>.</p>
+<p>Every Rails application comes with a base helper module by default, it&#8217;s called  <code>ApplicationHelper</code>.</p>
+<p><strong>Here&#8217;s where you can add your helper methods.</strong></p>
+<p>These methods become available to all your views automatically. Later you&#8217;ll learn how to use them in controllers &amp; why that may be a bad idea.</p>
+<p>You could write all your helpers in <code>ApplicationHelper</code>.</p>
+<p><strong>But there is another option&#8230;</strong></p>
+<p>You can create helper modules so you can better organize your methods.</p>
+<p><strong>Instructions</strong>:</p>
+<ul>
+<li>Create a new file under <code>app/helpers</code></li>
+<li>Name it something like <code>user_helper.rb</code></li>
+<li>Add a new module which matches the file name</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+# app/helpers/user_helper.rb
+
+module UserHelper
+  def format_name(user)
+    if user.gender == "M"
+      "Mr. #{user.name}"
+    else
+      "Ms. #{user.name}"
+    end
+  end
+end
+</pre>
+<p>This code can be used to address a person in a formal way based on their gender.</p>
+<p><strong>The main benefit?</strong></p>
+<p>You don&#8217;t have to repeat this logic in other views when you need it &amp; when you need to change the code&#8230; it only has to change in one place.</p>
+<p>Very nice!</p>
+<h3>Using Your New Helper Module</h3>
+<p>You can use your helper methods in your views.</p>
+<p><strong>Like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+<%= format_name(@user) %>
+</pre>
+<p>Easy, right?</p>
+<p>If you want to use helpers outside of views you&#8217;ll need something else.</p>
+<h2>How to Use Helpers From Controllers</h2>
+<p>It&#8217;s possible, although not very common, to use helper methods from controller actions.</p>
+<p>Before Rails 5, you had to include the helper module.</p>
+<p>In newer versions, you can use helpers in your controller with the <code>helpers</code> (plural) object.</p>
+<p><strong>Like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+class UsersController
+  def index
+    helpers.time_ago_in_words(Time.now)
+  end
+end
+</pre>
+<p>This way you can use helpers from your controller. But think twice before doing this because it may be a design issue.</p>
+<p>Consider using a plain <a href="https://www.rubyguides.com/ruby-tutorial/object-oriented-programming/" rel="noopener" target="_blank">Ruby object</a> instead.</p>
+<h3>Fun With The Rails Console</h3>
+<p>I love using the Rails console (<a href="https://www.rubyguides.com/2018/12/what-is-a-repl-in-ruby/" rel="noopener" target="_blank">irb</a> with your Rails app loaded) to try out methods &amp; play around with things.</p>
+<p><strong>Helpers included!</strong></p>
+<p>You can use helpers from the console with <code>helper.method_name</code>.</p>
+<p>Notice the singular form of &#8220;helper&#8221; so you don&#8217;t get an error message. And remember that the console doesn&#8217;t reload code changes automatically.</p>
+<h2>Best Practices for Writing Rails View Helpers</h2>
+<p>When should you create a helper method?</p>
+<p>Whenever you have logic that produces bits of HTML.</p>
+<p>Usually, this falls into one of two categories, one is string formatting &amp; the other is conditional page elements.</p>
+<p><strong>Another tip&#8230;</strong></p>
+<p>If you want to write good helpers don&#8217;t use any <a href="https://www.rubyguides.com/2019/07/ruby-instance-variables/" rel="noopener" target="_blank">instance variables</a>, they may be available in your current view, but they may not be in another view.</p>
+<p>That will result in an error because of missing variables.</p>
+<p><strong>The solution?</strong></p>
+<p>Use parameters, so any data your method needs is <u>clear &amp; explicit</u>.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+# wrong way
+
+def eat_healthy
+  @fruit.eat
+end
+
+# do this instead
+
+def eat_healthy(fruit)
+  fruit.eat
+end
+</pre>
+<p>My final tip is to divide your helpers into modules, where each module name describes clearly what kind of methods it contains.</p>
+<p><strong>However</strong>:</p>
+<p>This won&#8217;t help with duplicated method names, which can result in errors &amp; confusion.</p>
+<p>All your helpers should have <u>unique names</u>.</p>
+<p>As an alternative, try using <a href="https://www.rubyguides.com/2019/09/rails-patterns-presenter-service/" rel="noopener" target="_blank">presenter objects</a>, as explained in <a href="https://www.rubyguides.com/2019/09/rails-patterns-presenter-service/" rel="noopener" target="_blank">this guide</a>.</p>
+<h2>Summary</h2>
+<p>You have learned about helpers in Rails! A set of utility methods you can use for formatting &amp; handling complex logic in your views.</p>
+<p>Now it&#8217;s time to create your own helpers.</p>
+<p>Thanks for reading <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2020/01/rails-helpers/">How to Use Rails Helpers (Complete Guide)</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.rubyguides.com/2020/01/rails-helpers/feed/</wfw:commentRss>
+			<slash:comments>14</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">13975</post-id>	</item>
+		<item>
+		<title>Understanding Yield &amp; Yield_Self in Ruby (Complete Guide)</title>
+		<link>https://www.rubyguides.com/2019/12/yield-keyword/</link>
+		
+		<dc:creator><![CDATA[Jesus Castello]]></dc:creator>
+		<pubDate>Mon, 16 Dec 2019 19:19:21 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[ruby]]></category>
+		<guid isPermaLink="false">https://www.rubyguides.com/?p=13845</guid>
+
+					<description><![CDATA[<p>What does the word &#8220;yield&#8221; mean in Ruby? And what does it do exactly? Well&#8230; Yield is a keyword (meaning it&#8217;s a core part of the language) &#38; it&#8217;s used inside methods for calling a block. Here&#8217;s what you need to know: Calling a block runs the code inside that block (like calling a method) [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2019/12/yield-keyword/">Understanding Yield &#038; Yield_Self in Ruby (Complete Guide)</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></description>
+										<content:encoded><![CDATA[<p>What does the word &#8220;yield&#8221; mean in Ruby? And what does it do exactly?</p>
+<p><strong>Well&#8230;</strong></p>
+<p>Yield is a keyword (meaning it&#8217;s a core part of the language) &amp; it&#8217;s used inside methods for calling a block.</p>
+<p><strong>Here&#8217;s what you need to know</strong>:</p>
+<ul>
+<li>Calling a block runs the code inside that block (like calling a method)</li>
+<li>Yield can pass any number of arguments to the block</li>
+<li>The block&#8217;s return value becomes the return value for <code>yield</code></li>
+</ul>
+<p>You have to <a href="https://www.rubyguides.com/2016/02/ruby-procs-and-lambdas/" rel="noopener" target="_blank">understand blocks</a> for this to make sense.</p>
+<p>You can think of blocks as methods without names that can be passed as extra arguments to other methods.</p>
+<p><strong>Here&#8217;s an example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+def make_salad
+  yield "lettuce"
+  yield "carrots"
+  yield "olive oil"
+end
+
+make_salad { |ingredient| puts "Adding #{ingredient} to salad!" }
+</pre>
+<p><strong>This calls the block 3 times, producing this output</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+Adding lettuce to salad!
+Adding carrots to salad!
+Adding olive oil to salad!
+</pre>
+<p>That&#8217;s in essence what <code>yield</code> does, is like calling a method, but instead you&#8217;re calling the block.</p>
+<p>We don&#8217;t have a name for the block, so this keyword takes care of that.</p>
+<p><strong>Now</strong>:</p>
+<p>Let&#8217;s explore what happens if you don&#8217;t have a block to call.</p>
+<h2>Yield Without a Block == Error Message</h2>
+<p>If you call <code>yield</code> without having a block, then you get <a href="https://www.rubyguides.com/2019/06/ruby-rescue-exceptions/" rel="noopener" target="_blank">an error</a>.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+def write_code
+  yield
+end
+
+write_code
+
+# LocalJumpError: no block given (yield)
+</pre>
+<p>This error is crystal-clear, &#8220;no block given&#8221; means that the method call <code>write_code</code> is not providing a block.</p>
+<p><strong>How can you prevent this error?</strong></p>
+<p>Like this:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+def write_code
+  yield if block_given?
+end
+</pre>
+<p>The <code>block_given?</code> method checks if a block is available &amp; this allows you to only <code>yield</code> if that&#8217;s true.</p>
+<h2>Why Use Yield?</h2>
+<p>Using <code>yield</code> enables blocks.</p>
+<p>We use blocks to pass in bits of code as part of a method call.</p>
+<p><strong>That&#8217;s helpful when</strong>:</p>
+<ul>
+<li>You want to write a generic logging function, that logs how long a bit of code takes to run</li>
+<li>You want to run some code when the method is done (like &#8220;callbacks&#8221; in Javascript)</li>
+<li>You want &#8220;lazy code&#8221;, code that only runs when needed &amp; that can be customized by the user (for an example of this, read about the <code>Hash#fetch</code> method)</li>
+</ul>
+<p>Nice!</p>
+<h2>Yield_Self &#8211; What&#8217;s The Difference?</h2>
+<p>You may find this new <code>yield_self</code> method &amp; think it&#8217;s related to <code>yield</code>.</p>
+<p><strong>Well, it isn&#8217;t.</strong></p>
+<p>Even <code>yield(self)</code> is different, because <a href="https://www.rubyguides.com/2020/04/self-in-ruby/" rel="noopener" target="_blank">self</a> refers to the current object.</p>
+<p>Where <code>yield_self</code>, which was was <a href="https://www.rubyguides.com/ruby-version-changes/" rel="noopener" target="_blank">added in Ruby 2.5</a>, refers to the object we&#8217;re calling the method on.</p>
+<p><strong>A good use for this method?</strong></p>
+<p>Use it whenever you want to chain methods &amp; do something with the object you&#8217;re calling <code>yield_self</code> on.</p>
+<p>While returning the results, instead of the original object.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+n_squared = ->(n) { n ** 2 }
+
+2
+.yield_self(&n_squared)
+.yield_self(&n_squared)
+
+# 16
+</pre>
+<p>In Ruby 2.6, there is an alias for <code>yield_self</code>, the <code>then</code> method.</p>
+<p>But don&#8217;t confuse it with your regular <code>yield</code>.</p>
+<p>Ok?</p>
+<h2>Yield in Rails</h2>
+<p>I should also give a quick mention to the use of <code>yield</code> in Rails &amp; <a href="https://www.rubyguides.com/2018/11/ruby-erb-haml-slim/" rel="noopener" target="_blank">templating engines</a>.</p>
+<p>You&#8217;ll find <code>yield</code> inside layouts.</p>
+<p>Rails replaces it with the contents of the view you&#8217;re rendering.</p>
+<p>No <code>yield</code> equals empty layout!</p>
+<p>That&#8217;s how the layout &amp; your views are combined together.</p>
+<h2>Summary</h2>
+<p>You have learned about the yield keyword in Ruby! Exactly what it is, how it works &amp; why it matters.</p>
+<p>Now give it a try in your Ruby code.</p>
+<p>Thanks for reading! <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2019/12/yield-keyword/">Understanding Yield &#038; Yield_Self in Ruby (Complete Guide)</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">13845</post-id>	</item>
+		<item>
+		<title>New Features, Methods &amp; Improvements in Ruby 2.7</title>
+		<link>https://www.rubyguides.com/2019/12/ruby-2-7-new-features/</link>
+					<comments>https://www.rubyguides.com/2019/12/ruby-2-7-new-features/#comments</comments>
+		
+		<dc:creator><![CDATA[Jesus Castello]]></dc:creator>
+		<pubDate>Mon, 09 Dec 2019 14:56:01 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[ruby]]></category>
+		<guid isPermaLink="false">https://www.rubyguides.com/?p=13824</guid>
+
+					<description><![CDATA[<p>Ruby never stops improving! Version 2.7 is here with new features, methods &#38; performance improvements. It&#8217;s was released on December 25, 2019. Now, according to Matz&#8230; This is the last 2.x version release. Because next year we&#8217;re getting Ruby 3.0! But before we get there&#8230; Let&#8217;s take a look at some of the changes &#38; [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2019/12/ruby-2-7-new-features/">New Features, Methods &#038; Improvements in Ruby 2.7</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Ruby never stops improving!</p>
+<p>Version 2.7 is here with new features, methods &amp; performance improvements. It&#8217;s was released on December 25, 2019.</p>
+<p><strong>Now, according to Matz&#8230;</strong></p>
+<p>This is the last 2.x version release. Because next year we&#8217;re getting Ruby 3.0!</p>
+<p><strong>But before we get there&#8230;</strong></p>
+<p>Let&#8217;s take a look at some of the changes &amp; new features in 2.7, so you can be ready for the version update.</p>
+
+<h2>Enumerable#tally</h2>
+<p>This is a new Ruby method that counts all the elements in an array &amp; returns a hash with their counts.</p>
+<p>You can do this yourself, but this <code>tally</code> method saves you work.</p>
+<p><strong>Here&#8217;s an example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+%w(a a a b b c).tally
+</pre>
+<p><strong>Which results in</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+{"a"=>3, "b"=>2, "c"=>1}
+</pre>
+<p>I like it!</p>
+<h2>Numbered Parameters For Blocks [Experimental]</h2>
+<p>An interesting new feature, which I&#8217;ve been wanting for a while, is a default name for block parameters.</p>
+<p><strong>Here&#8217;s a regular block, with one parameter</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+[1,2,3].each { |n| puts n }
+</pre>
+<p>This <code>|n|</code> is the parameter, which you have to define to use it.</p>
+<p><strong>But what if we had a default name?</strong></p>
+<p>Well, that&#8217;s one of the goodies that Ruby 2.7 brings with it, although as an <u>experimental feature</u>, it can save us a lot of typing.</p>
+<p><strong>Here&#8217;s what it looks like</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+[1,2,3].each { puts _1 }
+</pre>
+<p>Where <code>_1</code> refers to the first parameter, you can use <code>_2</code> if you have a 2nd one, and yes, <code>_3</code> for a 3rd parameter, etc.</p>
+<p><strong>Pretty cool!</strong></p>
+<p>Now, a little bit of trivia.</p>
+<p>This feature was first proposed to look like <code>@1</code>, but that looks too much like an <a href="https://www.rubyguides.com/2019/07/ruby-instance-variables/" rel="noopener" target="_blank">instance variable</a>, so after some discussion, it was settled on using <code>_1</code> instead.</p>
+<h2>Array#intersection</h2>
+<p>This is a new method, but not new functionality.</p>
+<p>Actually&#8230;</p>
+<p>This is more like an <a href="https://www.rubyguides.com/2018/11/ruby-alias-keyword/" rel="noopener" target="_blank">alias</a>!</p>
+<p><a href="https://www.rubyguides.com/2018/11/ruby-2-6-new-features/" rel="noopener" target="_blank">Ruby 2.6</a> introduced Array <code>union</code> &amp; <code>difference</code> methods, to match the more succinct equivalents of <code>Array#|</code>, and <code>Array#-</code>.</p>
+<p>But the missing operation was <code>intersection</code>, which has another hard to remember short version.</p>
+<p>The <code>Array#&amp; method</code>.</p>
+<p><strong>Now</strong>:</p>
+<p>What do these methods do &amp; how do they work?</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+[1, 2, 3].intersection([2, 3, 4])
+# [2, 3]
+
+[1, 2, 3] & [2, 3, 4]
+# [2, 3]
+</pre>
+<p>Well&#8230;</p>
+<p>The name kind of gives it away, <code>intersection</code> finds the intersection between two arrays. In other words, it finds which elements are in common.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Short Version</th>
+<th align="left">Long Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">&amp;</td>
+<td align="left">intersection</td>
+</tr>
+<tr>
+<td align="left">&#124;</td>
+<td align="left">union</td>
+</tr>
+<tr>
+<td align="left">&#8211;</td>
+<td align="left">difference</td>
+</tr>
+</tbody>
+</table>
+<p>I always forget which one of these 3 methods does what!</p>
+<p>But with these new methods, it&#8217;s a lot <u>easier to remember</u> because <u>their names mean something</u>.</p>
+<p>That&#8217;s a good lesson in writing good code, btw.</p>
+<h2>Enumerable#filter_map</h2>
+<p>This <code>filter_map</code> method is an attempt to combine the <code>select</code> &amp; <code>map</code> methods into one.</p>
+<p><strong>Why?</strong></p>
+<p>Because it&#8217;s a common operation to filter a list first, then map the remaining elements.</p>
+<p><strong>You can do this in two ways</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+(1..8).select(&:even?).map { |n| n ** 2 }
+
+# OR
+
+(1..8).map { |n| n ** 2 if n.even? }.compact
+</pre>
+<p>I&#8217;ve used both, but I tend to lean into the first because the intention is more clear.</p>
+<p><strong>Now</strong>:</p>
+<p>In Ruby 2.7, this <code>filter_map</code> method does this in one pass.</p>
+<p><strong>Like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+(1..8).filter_map { |n| n ** 2 if n.even? }
+# [4, 16, 36, 64]
+</pre>
+<p>I&#8217;m not the biggest fan of having <a href="https://www.rubyguides.com/ruby-tutorial/ruby-if-else/" rel="noopener" target="_blank">if statements</a> inside blocks, but sometimes they&#8217;re needed to get the job done.</p>
+<p><strong>Besides that, there is something you should know.</strong></p>
+<p>The <code>filter_map</code> operation doesn&#8217;t behave like <code>map + compact</code>, because it removes <code>false</code> objects, and <code>compact</code> doesn&#8217;t.</p>
+<p>A good thing to keep in mind!</p>
+<h2>Enumerator#produce</h2>
+<p>Here&#8217;s another new method you may find interesting, but <u>it may require some creativity</u> to get the most out of it.</p>
+<p>It&#8217;s the <code>Enumerator#produce</code> method.</p>
+<p>What does it do?</p>
+<p><strong>According to the feature proposal</strong>:</p>
+<blockquote><p>
+  &#8220;This method produces an infinite sequence where each next element is calculated by applying the block to the previous element.&#8221;
+</p></blockquote>
+<p>Yep.</p>
+<p>Another way to create never-ending sequences!</p>
+<p><strong>Here&#8217;s an example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+Enumerator.produce(1, &:next).take(5)
+# [1, 2, 3, 4, 5]
+</pre>
+<p>In this example, it doesn&#8217;t matter if you do <code>take(10)</code> or <code>take(10_000)</code>, you&#8217;ll get an infinite number of values from it.</p>
+<p>Btw, <code>1</code> is the initial value.</p>
+<p>And <code>&amp;:next</code> is the method called on that value to <code>produce</code> the next element in the sequence.</p>
+<h2>IRB Gets a Face Lift?</h2>
+<p>Lately, IRB has been getting some love &amp; attention, and Ruby 2.7 keeps adding to that.</p>
+<p><strong>We&#8217;re getting</strong>:</p>
+<ul>
+<li>Multi-line editing</li>
+<li>Syntax Highlighting</li>
+<li>Built-in RDoc integration</li>
+<li>Command history enabled by default</li>
+<li>Auto-completion enabled by default</li>
+</ul>
+<p><strong>In fact</strong>:</p>
+<p>This is such a BIG change that you get a warning when you start up irb with Ruby 2.7.</p>
+<p>If you wish to keep using the old version of irb you still can, with the <code>irb --legacy</code> command. My main issue with this new IRB is line editing, in legacy IRB (or in <a href="https://www.rubyguides.com/2018/12/what-is-a-repl-in-ruby/" rel="noopener" target="_blank">Pry</a>) I can hold ALT &amp; press left arrow to move faster, but this doesn&#8217;t work in the new IRB.</p>
+<p>Give it a try &amp; see how it works for you.</p>
+<h2>Ruby Pattern Matching [Experimental]</h2>
+<p>An often-requested feature that&#8217;s coming in 2.7 is pattern matching.</p>
+<p><strong>It&#8217;s marked as experimental.</strong></p>
+<p>But what is pattern matching &amp; how does it benefit you?</p>
+<p>Well, if I understand this correctly, pattern matching is like regular expressions, but for data structures (Array/Hash).</p>
+<p><strong>Here&#8217;s an example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+[1,2,3] in [a,b,c] # true
+[1,2,3] in [a]     # false
+</pre>
+<p>If there is a match, these variable names (like <code>a</code>) become local variables you can access.</p>
+<p><strong>Example with a hash</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+{ a: 1, b: 2, c: [] } in { a: a, b: b, c: [] }
+# true
+
+p a
+# 1
+</pre>
+<p>This uses the <code>in</code> keyword.</p>
+<p>It&#8217;s not new, but uncommon because before Ruby 2.7 <code>in</code> was only used as part of a <code>for</code> <a href="https://www.rubyguides.com/ruby-tutorial/loops/" rel="noopener" target="_blank">loop</a> (highly discouraged in Ruby), so we get to reuse this keyword for something useful.</p>
+<p><strong>Even better</strong>&#8230;</p>
+<p>It doesn&#8217;t matter what variables you use, <code>a,b,c</code> here works, but <code>f,g,h</code> also works.</p>
+<p>It&#8217;s all about the pattern!</p>
+<h2>Other Changes</h2>
+<p>A few extra changes worth mentioning.</p>
+<ul>
+<li>New compaction GC improves memory fragmentation</li>
+<li>Method argument <code>**nil</code> now declares that a method takes no keywords</li>
+<li>Method argument <code>...</code> adds an argument forwarding mechanism (parenthesis required, like <code>make_salad(...)</code>)</li>
+<li>Fiber improvements. A new pool of <a href="https://www.rubyguides.com/2019/11/what-are-fibers-in-ruby/" rel="noopener" target="_blank">fiber</a> objects (from which new fibers are allocated) makes fibers more efficient</li>
+<li>Thread improvements. A better, more optimized way of creating threads makes multi-threading faster</li>
+</ul>
+<p>What do you think about these?</p>
+<p>The NEWS file for 2.7 mentions a 10x performance improvement for both fiber &amp; thread creation, I haven&#8217;t tested this myself, but if you do let me know about your results.</p>
+<h2>Summary</h2>
+<p>You&#8217;re now up to date with the latest changes to the Ruby programming language! You learned about IRB changes, new methods &amp; a few experimental features like pattern matching.</p>
+<p>Please share this article to spread the news!</p>
+<p>Thanks for reading <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2019/12/ruby-2-7-new-features/">New Features, Methods &#038; Improvements in Ruby 2.7</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.rubyguides.com/2019/12/ruby-2-7-new-features/feed/</wfw:commentRss>
+			<slash:comments>6</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">13824</post-id>	</item>
+		<item>
+		<title>Ruby Programming Uses: What Can You Create?</title>
+		<link>https://www.rubyguides.com/2019/11/what-can-you-do-with-ruby/</link>
+					<comments>https://www.rubyguides.com/2019/11/what-can-you-do-with-ruby/#comments</comments>
+		
+		<dc:creator><![CDATA[Jesus Castello]]></dc:creator>
+		<pubDate>Mon, 25 Nov 2019 15:14:16 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[ruby]]></category>
+		<guid isPermaLink="false">https://www.rubyguides.com/?p=13668</guid>
+
+					<description><![CDATA[<p>The Ruby programming language has many practical uses. But here&#8217;s the thing&#8230; Many people are attracted to Ruby because of Ruby on Rails. Rails is a framework. A framework is a set of tools that helps you build websites, or web applications, easier &#38; faster than if you had to start from scratch. That&#8217;s fine. [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2019/11/what-can-you-do-with-ruby/">Ruby Programming Uses: What Can You Create?</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></description>
+										<content:encoded><![CDATA[<p>The Ruby programming language has many practical uses.</p>
+<p><strong>But here&#8217;s the thing&#8230;</strong></p>
+<p>Many people are attracted to Ruby because of <a href="https://www.rubyguides.com/2018/10/what-is-ruby-on-rails/" target="_blank" rel="noopener">Ruby on Rails</a>. Rails is a framework. A framework is a set of tools that helps you build websites, or web applications, easier &amp; faster than if you had to start from scratch.</p>
+<p><strong>That&#8217;s fine.</strong></p>
+<p>But Ruby is a beautiful programming language by itself, and after you spend some time with it you&#8217;ll fall in love!</p>
+<p>Now the question is&#8230;</p>
+<p><strong>Is Ruby limited to what Rails can do?</strong></p>
+<p>No!</p>
+<p>Not at all.</p>
+<p>Ruby is a general programming language.</p>
+<p>In theory, you can make anything you want with Ruby.</p>
+<p><strong>Now</strong>:</p>
+<p>How hard it&#8217;s to make something is another story.</p>
+<p>It depends on what gems &amp; libraries are available because these <a href="https://www.rubyguides.com/2018/09/ruby-gems-gemfiles-bundler/" target="_blank" rel="noopener">gems</a> do a lot of the heavy lifting for you.</p>
+<h2>Things That You Can Make With Ruby</h2>
+<p>Here are some examples if you need inspiration:</p>
+<ul>
+<li>Full-stack web development</li>
+<li><a href="https://www.rubyguides.com/2012/01/parsing-html-in-ruby/" target="_blank" rel="noopener">Web scraping &amp; crawling</a></li>
+<li>Static website generators</li>
+<li>Command-line media player (using <a href="https://www.rubyguides.com/2019/05/ruby-ffi/" target="_blank" rel="noopener">FFI + libVLC</a>) &amp; other <a href="https://www.rubyguides.com/2018/12/ruby-argv/" target="_blank" rel="noopener">command-line tools</a></li>
+<li>Automation, Backup &amp; DevOps tools</li>
+<li><a href="https://www.rubyguides.com/2016/08/build-your-own-web-server/" target="_blank" rel="noopener">Servers</a></li>
+<li>Parsing, data cleaning &amp; filtering</li>
+<li>API Clients (like Twitter API or Github API)</li>
+<li>Report generators (PDF, HTML, CSV)</li>
+</ul>
+<p>That&#8217;s a good list!</p>
+<p>You can do all of these things &amp; deliver them at a production level.</p>
+<p><strong>Less practical, but still doable</strong>:</p>
+<ul>
+<li>Games (gosu / Ruby2D)</li>
+<li>Data science</li>
+<li>Machine Learning &amp; AI</li>
+</ul>
+<p>These you can do mostly for personal projects &amp; fun.</p>
+<p><strong>Everything else?</strong></p>
+<p>You can still do it, of course, but it&#8217;ll take a lot more work, code &amp; domain knowledge.</p>
+<h2>Popular Open-Source Ruby Projects</h2>
+<p>I want to give you a list of projects made with Ruby so you can get inspired &amp; see what&#8217;s possible yourself.</p>
+<p>These projects all have 4k+ Github Stars.</p>
+<p><strong>Rails apps</strong>:</p>
+<ul>
+<li><a href="https://github.com/postalhq/postal" target="_blank" rel="noopener">https://github.com/postalhq/postal</a> (Email inbox)</li>
+<li><a href="https://github.com/huginn/huginn" target="_blank" rel="noopener">https://github.com/huginn/huginn</a> (Event notifications)</li>
+<li><a href="https://github.com/discourse/discourse" target="_blank" rel="noopener">https://github.com/discourse/discourse</a> (Forum software)</li>
+<li><a href="https://github.com/gitlabhq/gitlabhq" target="_blank" rel="noopener">https://github.com/gitlabhq/gitlabhq</a> (Web-based git interface, like Github)</li>
+</ul>
+<p><strong>Non-rails apps</strong>:</p>
+<ul>
+<li><a href="https://github.com/puma/puma/" target="_blank" rel="noopener">https://github.com/puma/puma/</a> (<a href="https://www.rubyguides.com/2018/09/rack-middleware/" target="_blank" rel="noopener"><u>Rack</u></a> application server)</li>
+<li><a href="https://github.com/hashicorp/vagrant" target="_blank" rel="noopener">https://github.com/hashicorp/vagrant</a> (Developer environments via Virtual Machines)</li>
+<li><a href="https://github.com/sparklemotion/nokogiri" target="_blank" rel="noopener">https://github.com/sparklemotion/nokogiri</a> (HTML / XML parsing)</li>
+<li><a href="https://github.com/opal/opal" target="_blank" rel="noopener">https://github.com/opal/opal</a> (Write Javascript with Ruby)</li>
+<li><a href="https://github.com/Homebrew/brew" target="_blank" rel="noopener">https://github.com/Homebrew/brew</a> (macOS package manager)</li>
+<li><a href="https://github.com/fluent/fluentd" target="_blank" rel="noopener">https://github.com/fluent/fluentd</a> (<a href="https://www.rubyguides.com/2019/08/logs-in-ruby/" target="_blank" rel="noopener"><u>Logging</u></a> unification tool)</li>
+</ul>
+<p>There are thousands of projects made with Ruby, but these will help you get an idea of what you can do with this programming language.</p>
+<h2>In Summary</h2>
+<p>If you want to crunch the digits of the pi number (3.14159&#8230;.<em>)</em> as fast as possible &amp; get the maximum performance possible out of your hardware, you wouldn&#8217;t use Ruby.</p>
+<p><strong>But you wouldn&#8217;t use ANY other interpreted language for that task either</strong>.</p>
+<p>Like for example PHP or Python.</p>
+<p>Because they share many of the same limitations.</p>
+<p>To max out your performance you may have to go all the way down to ASM (Assembly Language), which is the closest you can get to speaking in 1s &amp; 0s to your computer.</p>
+<p><strong>Here&#8217;s the thing&#8230;</strong></p>
+<p>There is a tradeoff for everything.</p>
+<p>If you want the ease of use &amp; programmer friendliness, you gotta pay with some performance.</p>
+<p>There is no way around that.</p>
+<p>With that in mind, if you want to build a full website, any kind of helpful tool like backup automation, report generators, crawlers, calculators of all kinds, API clients, etc&#8230; Or just <a href="https://www.rubyguides.com/ruby-tutorial/" target="_blank" rel="noopener">get started in the programming world</a> &amp; have lots of fun.</p>
+<p>Then Ruby is perfect for you!</p>
+<p>It&#8217;s under active development, it&#8217;s easy to learn &amp; you can always find help if you get stuck.</p>
+<p><strong>So why not give it a try?</strong></p>
+<p>I look forward to seeing what wonderful projects you build with Ruby!</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2019/11/what-can-you-do-with-ruby/">Ruby Programming Uses: What Can You Create?</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.rubyguides.com/2019/11/what-can-you-do-with-ruby/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">13668</post-id>	</item>
+		<item>
+		<title>How to Use Flash Messages in Rails</title>
+		<link>https://www.rubyguides.com/2019/11/rails-flash-messages/</link>
+		
+		<dc:creator><![CDATA[Jesus Castello]]></dc:creator>
+		<pubDate>Mon, 18 Nov 2019 18:40:19 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[rails]]></category>
+		<category><![CDATA[ruby]]></category>
+		<guid isPermaLink="false">https://www.rubyguides.com/?p=13627</guid>
+
+					<description><![CDATA[<p>What are flash messages? A flash message is a way to communicate information with the users of your Rails application so they can know what happens as a result of their actions. Example messages: &#8220;Password changed correctly&#8221; (confirmation) &#8220;User not found&#8221; (error) You set these flash messages in your controllers, then you render them in [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2019/11/rails-flash-messages/">How to Use Flash Messages in Rails</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></description>
+										<content:encoded><![CDATA[<p>What are flash messages?</p>
+<p>A flash message is a way to communicate information with the users of your Rails application so they can know what happens as a result of their actions.</p>
+<p><strong>Example messages</strong>:</p>
+<ul>
+<li>&#8220;Password changed correctly&#8221; (confirmation)</li>
+<li>&#8220;User not found&#8221; (error)</li>
+</ul>
+<p>You set these flash messages in your controllers, then you render them in your views. Your users can then act accordingly.</p>
+<p>Let&#8217;s learn exactly how this works!</p>
+<h2>How to Use Flash Messages</h2>
+<p>You can work with these notification messages using the <code>flash</code> helper method.</p>
+<p>It behaves a lot like a Ruby hash.</p>
+<p>The flash object has methods like <code>keys</code>, <code>any?</code> or <code>each</code> &amp; you can access a particular message with <code>[]</code>.</p>
+<p>What types of flash messages can you set?</p>
+<p><strong>By default you have</strong>:</p>
+<ul>
+<li>notice</li>
+<li>alert</li>
+</ul>
+<p><strong>Here&#8217;s an example of how to use it</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+flash.alert = "User not found."
+</pre>
+<p><strong>Or if you prefer</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+flash[:alert] = "User not found."
+</pre>
+<p>(Only a style difference.)</p>
+<p>You can use this code inside your controller actions, like <code>index</code>, <code>create</code>, <code>new</code>, etc.</p>
+<p><strong>Another way is this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+redirect_to :books_path, notice: "Book not found"
+</pre>
+<p>This allows you to redirect &amp; create a flash message in one step.</p>
+<p>Nice!</p>
+<h2>Alert vs Notice</h2>
+<p>As far as I understand it doesn&#8217;t really matter if you use <code>alert</code> or <code>notice</code>.</p>
+<p>Use the one that feels more natural for your situation.</p>
+<p>I like to think about <code>alert</code> as an error message &amp; a <code>notice</code> as a confirmation message.</p>
+<p>Separating them helps you style them differently.</p>
+<p><strong>For example</strong>:</p>
+<p>You can show alerts in red &amp; notices in green.</p>
+<p>It&#8217;s also possible to create your own flash types by using the <code>add_flash_types</code> controller method.</p>
+<p><strong>Like this</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+class ApplicationController
+  add_flash_types :info, :error, :warning
+end
+</pre>
+<p>I like to keep things simple, so I stick with the built-in types <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<h2>Rendering Flash Messages</h2>
+<p>Flash messages aren&#8217;t shown automatically.</p>
+<p>You have to render them inside one of your views so users can see them.</p>
+<p>Consider adding this to your <a href="https://www.youtube.com/watch?v=KKg63bQocmw" rel="noopener" target="_blank">application layout</a>.</p>
+<p><strong>Here&#8217;s a code example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+<% flash.each do |type, msg| %>
+  <div>
+    <%= msg %>
+  </div>
+<% end %>
+</pre>
+<p>Put this wherever you want to show your notice, usually at the top of the page, below the menu bar.</p>
+<p><strong>Remember</strong>:</p>
+<p>Once you render a message it&#8217;ll be removed from <code>flash</code>, so it won&#8217;t be shown again.</p>
+<h3>Styling Your Notices &amp; Alert Messages</h3>
+<p>Flash messages don&#8217;t have any built-in design or style.</p>
+<p><strong>Solution?</strong></p>
+<p>If you&#8217;re using Bootstrap, you can use the <code>"alert alert-info"</code> CSS class to make flash messages look good.</p>
+<p><strong>Example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+<% flash.each do |type, msg| %>
+  <div class="alert alert-info">
+    <%= msg %>
+  </div>
+<% end %>
+</pre>
+<p><strong>It looks like this</strong>:</p>
+<p><img src="https://i0.wp.com/www.rubyguides.com/wp-content/uploads/2019/11/flash-message-example.png?ssl=1" alt="flash message example" class="aligncenter size-full wp-image-13630" data-recalc-dims="1" /></p>
+<p>If you&#8217;re NOT using Bootstrap, then you can write your own CSS to make it look however you want.</p>
+<h2>When Are Flash Messages Rendered?</h2>
+<p>Flash messages are only removed on your next controller action, after your display them.</p>
+<p><strong>Implications</strong>:</p>
+<ul>
+<li>If you <code>redirect_to</code>, then render a <code>flash</code> message, that&#8217;s good</li>
+<li>If you <code>redirect_to</code> &amp; DON&#8217;T render the message, the message will stick around, in the <code>flash</code> hash</li>
+<li>If you <code>render</code> on the same action that you&#8217;re setting the <code>flash</code> message, that <code>flash</code> message will be available, but NOT removed so it will stay around &amp; potentially be shown twice</li>
+</ul>
+<p>So&#8230;</p>
+<p>What if you want to set a <strong>flash message for the current action</strong>?</p>
+<p>That&#8217;s where <code>flash.now</code> comes in!</p>
+<p><strong>Here&#8217;s an example</strong>:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="ruby">
+def index
+  @books = Book.all
+
+  flash.now[:notice] = "We have exactly #{@books.size} books available."
+end
+</pre>
+<p>This will render the <code>index</code> view.</p>
+<p>The <code>notice</code> message will be shown &amp; removed from <code>flash</code> so it won&#8217;t be shown twice.</p>
+<p><strong>In other words</strong>:</p>
+<p>You only need to use <code>flash.now</code> if you&#8217;re going to <code>render</code> instead of redirecting.</p>
+<h2>Summary</h2>
+<p>You&#8217;ve learned about flash messages in Rails &amp; how to use them correctly!</p>
+<p>Btw, flash messages aren&#8217;t the same as validation errors. Validations are associated with the model object, and you access these validation messages with the <code>errors</code> method, like <code>@user.errors</code>.</p>
+<p>Now it&#8217;s your turn to put this into practice by writing some code.</p>
+<p>Thanks for reading!</p>
+<p>The post <a rel="nofollow" href="https://www.rubyguides.com/2019/11/rails-flash-messages/">How to Use Flash Messages in Rails</a> appeared first on <a rel="nofollow" href="https://www.rubyguides.com">RubyGuides</a>. Don't miss your <a href="https://www.rubyguides.com/better-developer-new-offer/">free gift here</a> :)</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">13627</post-id>	</item>
+	</channel>
+</rss>

@@ -1,0 +1,8 @@
+{
+  "title":"fix-me-now\n    ",
+  "date":"2022-11-07T10:31:48.000000Z",
+  "author":"Idiomdrottning",
+  "id":"https://idiomdrottning.org/fix-me-now",
+  "link":"https://idiomdrottning.org/fix-me-now",
+  "content":"If you have a tree that’s almost perfect, but you just need to, uh,\n              “fix it up” a little, that’s where this fix-me-now macro can be your\n              friend.\n            It’s a combination of strse* from the strse egg and\n              pre-post-order-splice* from sxml-transforms.\n            The first argument is the tree you wanna fix, followed by zero or more\n              matches and replacements (so an even number), followed by zero or one\n              alist of tags and bindings.\n            The match and replacement works like strse* while the bindings use\n              pre-post-order-splice* but has sane defaults for *default* and\n              *text* (which you can still override).\n            (fix-me-now\n  '(and (she buying) 1 stairway 2 heaven)\n  &quot;2 h&quot;\n  &quot;to h&quot;\n  `((she . ,(fn (cons* x 'is y)))))\n\n            ⇒ (and (she is buying) 1 stairway to heaven)\n            (fix-me-now '(a (b c (d e f))) &quot;e f&quot; &quot;(e f)&quot;)\n\n            ⇒ (a (b c (d (e f))))\n            Note that if you use any strse* operators, the tree will be written\n              and re-read using write semantics, which will mess up any procedures\n              and stuff you have in there. If you only use the\n              pre-post-order-splice* binding alist, you don’t need to worry about\n              that.\n            Source code\n            git clone https://idiomdrottning.org/fix-me-now\n\n    "
+}

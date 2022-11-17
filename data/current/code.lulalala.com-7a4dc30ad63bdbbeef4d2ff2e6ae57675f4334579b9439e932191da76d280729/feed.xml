@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://code.lulalala.com/feed.xml" rel="self" type="application/atom+xml"><link href="https://code.lulalala.com/" rel="alternate" type="text/html"><updated>2020-11-03T10:46:55+00:00</updated><id>https://code.lulalala.com/feed.xml</id><title type="html">All talk but no code</title><subtitle/><entry><title type="html">Rails 6.1’s ActiveModel Errors 介面大翻新</title><link href="https://code.lulalala.com/2020/0619-1013.html" rel="alternate" type="text/html" title="Rails 6.1's ActiveModel Errors 介面大翻新"><published>2020-06-19T10:13:00+00:00</published><updated>2020-06-19T10:13:00+00:00</updated><id>https://code.lulalala.com/2020/active-model-errors.zh</id><content type="html" xml:base="https://code.lulalala.com/2020/0619-1013.html">&lt;p&gt;&lt;strong&gt;&lt;em&gt;The English version of this post is available &lt;a href=&quot;0531-1013.html&quot;&gt;here&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Rails 6.1 預計今年會推出，其中包含了 ActiveModel Errors 的大改變。我想來解釋一下改變的原因，以及開發者該怎樣做準備。&lt;/p&gt;
+
+&lt;h2 id=&quot;每個錯誤都被包成一個物件-&quot;&gt;每個錯誤都被包成一個物件 &lt;img src=&quot;/assets/2020-05-31-active-model-errors/illus1-1.jpg&quot; alt=&quot;&quot; style=&quot;float: right; width: 300px; margin-left: 1em&quot; /&gt;&lt;/h2&gt;
+
+&lt;p&gt;當 model attribute 有錯誤資料時，呼叫 &lt;code class=&quot;highlighter-rouge&quot;&gt;valid?&lt;/code&gt; 會在 &lt;code class=&quot;highlighter-rouge&quot;&gt;errors.messages&lt;/code&gt; 這個 hash 中產生每個 attribute 相對應的錯誤訊息。不過在 Rails 5.0 開始，又新增了另一份叫做 &lt;code class=&quot;highlighter-rouge&quot;&gt;details&lt;/code&gt; 的 hash，讓開發者還能取得更詳細的錯誤資訊。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-05-31-active-model-errors/illus1-3.jpg&quot; alt=&quot;&quot; style=&quot;float: right; width: 300px; margin-left: 1em&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;這兩個hash應該要同步一對一，但是要把messages中某訊息對應到details是一件很瑣碎的工作。我們必須記得array index後才能在另一邊取得資料。這兩個 hash 也會在某些特定狀況變得不一致。有學過物件導向的大家應該都能了解資料不封裝的話，資料一致性就容易被破壞。所以在 Rails 6.1 ，我們把單一錯誤的所有資訊都封裝在一個物件中。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;現在&lt;code class=&quot;highlighter-rouge&quot;&gt;book.errors&lt;/code&gt;其實是一陣列的&lt;a href=&quot;https://edgeapi.rubyonrails.org/classes/ActiveModel/Error.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Error&lt;/code&gt;&lt;/a&gt;物件&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-05-31-active-model-errors/illus1-4.jpg&quot; alt=&quot;&quot; style=&quot;float: right; width: 300px; margin-left: 1em&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;大改變通常就會伴隨著deprecation或是需要開發者修復的breaking change，以下我會把最重要的改變列出來：&lt;/p&gt;
+
+&lt;h2 id=&quot;如何更新&quot;&gt;如何更新？&lt;/h2&gt;
+
+&lt;h3 id=&quot;message-跟-details&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;message&lt;/code&gt; 跟 &lt;code class=&quot;highlighter-rouge&quot;&gt;details&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;原本 &lt;code class=&quot;highlighter-rouge&quot;&gt;messages&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;full_messages&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;details&lt;/code&gt; 這些方法都是一次提供所有錯誤資訊。現在新的 &lt;code class=&quot;highlighter-rouge&quot;&gt;Error&lt;/code&gt; 物件只提供關於自己的資料：&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveModel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:too_long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;limit: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 'is too long (maximum is 1000 characters)'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;full_message&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 'Title is too long (maximum is 1000 characters)'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;detail&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# { limit: 1000, error: :too_long }&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;enumeration-方法&quot;&gt;Enumeration 方法&lt;/h3&gt;
+
+&lt;p&gt;原本 &lt;code class=&quot;highlighter-rouge&quot;&gt;errors&lt;/code&gt; 運作類似 hash，比如說我們可以：&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error_message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attribute&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error_message&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;為了相容性，在 Rails 6.1 中，上面的程式會出現 deprecation 警告。不過，要是 block 參數不是兩個而是只有一個時，列舉（enumeration）的方法就會 yield 出 Error 物件：&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;attribute&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;message&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;有些列舉方法是沒有 block 的，如 &lt;code class=&quot;highlighter-rouge&quot;&gt;first&lt;/code&gt; ，這些方法以前會回傳只有一個陣列，現在則是會回傳 &lt;code class=&quot;highlighter-rouge&quot;&gt;Error&lt;/code&gt; 物件。這是breaking change，要是你的網頁有用到的話，麻煩更改一下。&lt;/p&gt;
+
+&lt;h3 id=&quot;避免直接更改-hash&quot;&gt;避免直接更改 hash&lt;/h3&gt;
+
+&lt;p&gt;以往，你可以直接插入新的錯誤訊息到 hash 中：&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'is not interesting enough.'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;clear&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;現在這些操作會給你 deprecation 警告，因為在未來，這些 hash 是每次呼叫時動態產生的，而不再是資料存放的源頭。要操作的話，請使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;add&lt;/code&gt; 方法或其他 &lt;a href=&quot;https://ruby-doc.org/core-2.7.1/Array.html&quot;&gt;Array&lt;/a&gt; 方法:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'is not interesting enough.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;delete_all&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:too_long&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;以下的資料更改未來會沒有作用：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors&lt;/code&gt; 本身類似 hash 的操作 (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;errors[:foo] = 'bar'&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#messages&lt;/code&gt; 回傳的 hash (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;errors.messages[:foo] = 'bar'&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#details&lt;/code&gt; 回傳的 hash (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;errors.details[:foo].clear&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;消除類似hash的介面&quot;&gt;消除類似hash的介面&lt;/h3&gt;
+
+&lt;p&gt;因為我們要把errors變成陣列，所以類hash的介面之後也會被移除，像是：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#slice!&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#values&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#keys&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;其他&quot;&gt;其他&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#to_xml&lt;/code&gt; 會被移除&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#to_h&lt;/code&gt; 會被移除，但是可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#to_hash&lt;/code&gt;替代。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;新東西&quot;&gt;新東西&lt;/h2&gt;
+
+&lt;p&gt;新的&lt;code class=&quot;highlighter-rouge&quot;&gt;where&lt;/code&gt;方法能用來尋找特定的錯誤。要注意的是它跟你熟悉的 ActiveRecord#where 有一點不同，我們可以依照以下的參數做篩選：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;model attribute (Symbol, 必須)&lt;/li&gt;
+  &lt;li&gt;error type (Symbol, 非必須)&lt;/li&gt;
+  &lt;li&gt;options (hash, 非必須)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;篩選是依照有提供的參數：&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 所有跟 name 相關的錯誤&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:too_short&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 所有 name 錯誤中是 too_short 類的錯誤&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:too_short&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;minimum: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 所有 name 錯誤中是 too_short 類的錯誤，而且最低要求是 2&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;新的&lt;code class=&quot;highlighter-rouge&quot;&gt;import&lt;/code&gt; 方法是用來匯入並包裝其他地方的錯誤。這對association或是巢狀service object很有幫助，未來應該能開啟新的應用方向。原本的&lt;code class=&quot;highlighter-rouge&quot;&gt;merge!&lt;/code&gt;已經使用&lt;code class=&quot;highlighter-rouge&quot;&gt;import&lt;/code&gt;了。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;delete&lt;/code&gt; 方法以往只能刪除所有跟某 attribute 相關的錯誤。以後它也能做出更細緻的篩選，比如說只刪除 name 錯誤中 too_short 錯誤。&lt;/p&gt;
+
+&lt;h1 id=&quot;結論&quot;&gt;結論&lt;/h1&gt;
+
+&lt;p&gt;若你有興趣，可以閱讀原始的 &lt;a href=&quot;https://github.com/rails/rails/pull/32313&quot;&gt;pull request&lt;/a&gt;。你也可以閱讀&lt;a href=&quot;https://edgeapi.rubyonrails.org/classes/ActiveModel/Errors.html&quot;&gt;官方API文件&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;Rails 6.1 還沒正式發表，這篇又是照我一年前的記憶寫的，所以有些錯誤。在此先說聲抱歉。&lt;/p&gt;
+
+&lt;p&gt;寫這篇是希望大家在 6.1 塵埃落定之前提出建議，以便作出修正或是減少升版號的痛苦。所以歡迎大家提供自己的想法。感謝～&lt;/p&gt;</content><author><name/></author><summary type="html">The English version of this post is available here</summary></entry><entry><title type="html">Rails 6.1’s ActiveModel Errors Revamp</title><link href="https://code.lulalala.com/2020/0531-1013.html" rel="alternate" type="text/html" title="Rails 6.1's ActiveModel Errors Revamp"><published>2020-05-31T10:13:00+00:00</published><updated>2020-05-31T10:13:00+00:00</updated><id>https://code.lulalala.com/2020/active-model-errors</id><content type="html" xml:base="https://code.lulalala.com/2020/0531-1013.html">&lt;p&gt;The Rails 6.1 will probably be released this year, and with it comes the major changes in ActiveModel Errors. I want to explain the rationale behind the change, and how we can prepare for the upgrade.&lt;/p&gt;
+
+&lt;h2 id=&quot;wrap-each-error-as-an-object&quot;&gt;Wrap each error as an object&lt;/h2&gt;
+
+&lt;p&gt;When our model object contains invalid data, the &lt;code class=&quot;highlighter-rouge&quot;&gt;valid?&lt;/code&gt; call would fill up the errors information. Historically this behaved like a hash which maps attribute to error messages. Later in Rails 5.0, a separate &lt;code class=&quot;highlighter-rouge&quot;&gt;details&lt;/code&gt; hash was added for accessing additional information.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-05-31-active-model-errors/illus1-5.jpg&quot; alt=&quot;before&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The two hashes are supposed to be a one-to-one mapping, but finding one message’s corresponding details is actually a chore. You need to get the index of the message, then use that to access the second hash. The two hashes can also get out of sync in a few edge cases. Keeping internal state consistent is more difficult than one would imagine,&lt;/p&gt;
+
+&lt;p&gt;For this reason, in 6.1, we wrapped the relevant error information together as an &lt;code class=&quot;highlighter-rouge&quot;&gt;Error&lt;/code&gt; object. &lt;strong&gt;Now under the hood of &lt;code class=&quot;highlighter-rouge&quot;&gt;book.errors&lt;/code&gt; is an array of &lt;a href=&quot;https://edgeapi.rubyonrails.org/classes/ActiveModel/Error.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Error&lt;/code&gt;&lt;/a&gt; objects&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-05-31-active-model-errors/illus1-6.jpg&quot; alt=&quot;Rails 6.1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As with all big changes, there will be deprecations and breaking changes which requires updates. I will list the most important things below:&lt;/p&gt;
+
+&lt;h2 id=&quot;how-to-upgrade&quot;&gt;How to upgrade?&lt;/h2&gt;
+
+&lt;h3 id=&quot;message-and-details&quot;&gt;Message and details&lt;/h3&gt;
+
+&lt;p&gt;Instead of accessing &lt;code class=&quot;highlighter-rouge&quot;&gt;messages&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;full_messages&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;details&lt;/code&gt;, which covers all errors, each individual &lt;code class=&quot;highlighter-rouge&quot;&gt;Error&lt;/code&gt; object knows about its own information:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveModel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:too_long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;count: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 'is too long (maximum is 1000 characters)'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;full_message&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 'Title is too long (maximum is 1000 characters)'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;detail&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# { count: 1000, error: :too_long }&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;enumeration-methods&quot;&gt;Enumeration methods&lt;/h3&gt;
+
+&lt;p&gt;Previously, &lt;code class=&quot;highlighter-rouge&quot;&gt;errors&lt;/code&gt; behaves like a hash and we do this:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error_message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attribute&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error_message&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For compatibility, this would result in deprecation message Rails 6.1. What you can do is to use the single arity enumerator:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;attribute&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;message&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As shown above, if the block takes only one parameter, it would return the &lt;code class=&quot;highlighter-rouge&quot;&gt;Error&lt;/code&gt; objects directly. So when you call &lt;code class=&quot;highlighter-rouge&quot;&gt;first&lt;/code&gt;, those would also return the &lt;code class=&quot;highlighter-rouge&quot;&gt;Error&lt;/code&gt; object.&lt;/p&gt;
+
+&lt;h3 id=&quot;avoid-modifying-the-hashes-directly&quot;&gt;Avoid modifying the hashes directly&lt;/h3&gt;
+
+&lt;p&gt;In the past you can add new errors by appending messages directly on to the hash:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'is not interesting enough.'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;clear&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This would now also raise a deprecation warning, because it is no longer the source of truth, but generated from the Error objects when called. Instead always use the &lt;code class=&quot;highlighter-rouge&quot;&gt;add&lt;/code&gt; interface, or enumeration methods:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'is not interesting enough.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;delete_all&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:too_long&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Manipulating the following will have no effect:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors&lt;/code&gt; itself as a hash (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;errors[:foo] = 'bar'&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;the hash returned by &lt;code class=&quot;highlighter-rouge&quot;&gt;errors#messages&lt;/code&gt; (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;errors.messages[:foo] = 'bar'&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;the hash returned by &lt;code class=&quot;highlighter-rouge&quot;&gt;errors#details&lt;/code&gt; (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;errors.details[:foo].clear&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;removal-of-hash-like-interface&quot;&gt;Removal of hash-like interface&lt;/h3&gt;
+
+&lt;p&gt;As we move towards the array like data representation, several hash-like interfaces will be deprecated and removed. These include:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#slice!&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#values&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#keys&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;misc&quot;&gt;Misc&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#to_xml&lt;/code&gt; will be removed.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errors#to_h&lt;/code&gt; will be removed, and can be replaced with &lt;code class=&quot;highlighter-rouge&quot;&gt;errors#to_hash&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;new-things&quot;&gt;New things&lt;/h2&gt;
+
+&lt;p&gt;To help filtering the errors, a new &lt;code class=&quot;highlighter-rouge&quot;&gt;where&lt;/code&gt; method is provided. Its method signature is different to ActiveRecord query method though. You can filter by:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;attribute name (required)&lt;/li&gt;
+  &lt;li&gt;error type (optional)&lt;/li&gt;
+  &lt;li&gt;options (optional)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Only supplied params will be matched.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; all errors related to name attribute.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:too_short&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; all name attribute errors of being too short&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:too_short&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;minimum: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; all name attribute errors of being too short and minimum being 2&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The new &lt;code class=&quot;highlighter-rouge&quot;&gt;import&lt;/code&gt; method (which &lt;code class=&quot;highlighter-rouge&quot;&gt;merge!&lt;/code&gt; uses) allows errors to be nested. This is especially helpful for association validation or &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveInteraction&lt;/code&gt;, where deep nesting can occur. Nested error opens up possibility to access more information in such cases.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;delete&lt;/code&gt; method now accepts more granular filters, so you can delete specific type of error within an attribute.&lt;/p&gt;
+
+&lt;p&gt;There are also one additional benefit: now we have a dedicated class for this, it will be easier to monkey patch, and for gem authors to write new extensions.&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;If you are interseted, you can check out the original &lt;a href=&quot;https://github.com/rails/rails/pull/32313&quot;&gt;pull request&lt;/a&gt;. You can also read the &lt;a href=&quot;https://edgeapi.rubyonrails.org/classes/ActiveModel/Errors.html&quot;&gt;official doc&lt;/a&gt; for more information.&lt;/p&gt;
+
+&lt;p&gt;As the code is still changing constantly, and me forgetting things here and there, there are probably some errors in this post. I’ll keep this updated, but apology in advance.&lt;/p&gt;
+
+&lt;p&gt;If you have some suggestion please feel free to leave a comment below or open an issue on Rails repository. Thanks!&lt;/p&gt;</content><author><name/></author><summary type="html">The Rails 6.1 will probably be released this year, and with it comes the major changes in ActiveModel Errors. I want to explain the rationale behind the change, and how we can prepare for the upgrade.</summary></entry><entry><title type="html">Settei - 又一個讀取設定的 Gem</title><link href="https://code.lulalala.com/2018/0307-1518.html" rel="alternate" type="text/html" title="Settei - 又一個讀取設定的 Gem"><published>2018-03-07T15:18:00+00:00</published><updated>2018-03-07T15:18:00+00:00</updated><id>https://code.lulalala.com/2018/settei-gem-zh</id><content type="html" xml:base="https://code.lulalala.com/2018/0307-1518.html">&lt;p&gt;五年前，本部落格第一篇文章就是在講&lt;a href=&quot;http://lulalala.logdown.com/posts/91804-rails-config-settings&quot;&gt;使用 Settingslogic 作設定&lt;/a&gt;。經過了漫長的歲月，終於想到了怎樣還能作的更好，最後作出了一個新的 gem 叫做 Settei 。這是一個使用 yaml，但是又能符合 12-factor app 的設定方式。&lt;/p&gt;
+
+&lt;p&gt;https://github.com/lulalala/settei&lt;/p&gt;
+
+&lt;h2 id=&quot;緣起&quot;&gt;緣起&lt;/h2&gt;
+
+&lt;p&gt;12-factor app 是一套讓部屬更容易的規則。其中第三點指到，要把設定跟程式分開，並把設定存在環境（變數）中。&lt;/p&gt;
+
+&lt;p&gt;但是使用環境變數有很多缺點，要是你的程式有30項大大小小的設定，光是命名變數名稱就會很麻煩：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 傳統使用 ENV 就得寫一長串超累:
+BOARD_PAGINATION_PER_PAGE=5
+BOARD_PAGINATION_MAX_PAGE=10
+BOARD_REPLY_OMIT_CONDITION_N_RECENT_ONLY=5
+BOARD_REPLY_OMIT_CONDITION_AVOID_ONLY_N_HIDDEN=2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;使用YAML 就簡單很多&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;board&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;pagination&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;per_page&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;max_page&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;reply_omit_condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;n_recent_only&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;avoid_only_n_hidden&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;但是要怎樣結合 YAML 的優勢跟 ENV VAR 的優勢呢？&lt;/p&gt;
+
+&lt;p&gt;我的想法是：把 YAML 給 serialize 成一串文字，就能當 env var 傳到遠端了。&lt;/p&gt;
+
+&lt;p&gt;本機開發跟遠端部屬的兩個流程如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://user-image.logdown.io/user/291/blog/291/post/6683287/IC9iAV9QTjS6IyuUw9wn_settei.png&quot; alt=&quot;settei.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;安裝&quot;&gt;安裝&lt;/h2&gt;
+
+&lt;p&gt;用 Gemfile 安裝以後：&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'settei'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在 rails 專案下執行以下 rake task 繼續安裝：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rake settei:install:rails
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;使用方法&quot;&gt;使用方法&lt;/h2&gt;
+
+&lt;p&gt;要是 &lt;code class=&quot;highlighter-rouge&quot;&gt;config/environments/default.yml&lt;/code&gt; 內容是這樣的話：&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;the_answer_to_life_the_universe_and_everything&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;42&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;api&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;foo&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;就能這樣取得設定&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Setting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;dig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:the_answer_to_life_the_universe_and_everything&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Setting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;dig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:google&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:api&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;部署&quot;&gt;部署&lt;/h2&gt;
+
+&lt;p&gt;要是你是使用 capistrano 或是 mina 的話，應該自動會有效。我塞了一個設定，所以deploy時，你的production.yml會直接變成Env var隨著遠端的 Rails server 啟動。於是遠端的 server 也就拿到了設定。&lt;/p&gt;
+
+&lt;p&gt;要是你是使用 heroku 的話，使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;rake settei:heroku:config:set app=[app_name]&lt;/code&gt; 來把 production.yml 上傳到指定的app中。&lt;/p&gt;
+
+&lt;p&gt;更詳盡的使用方法請閱讀 github，也歡迎指教～～&lt;/p&gt;</content><author><name/></author><summary type="html">五年前，本部落格第一篇文章就是在講使用 Settingslogic 作設定。經過了漫長的歲月，終於想到了怎樣還能作的更好，最後作出了一個新的 gem 叫做 Settei 。這是一個使用 yaml，但是又能符合 12-factor app 的設定方式。</summary></entry><entry><title type="html">Gem development inside Rails app</title><link href="https://code.lulalala.com/2018/0228-1427.html" rel="alternate" type="text/html" title="Gem development inside Rails app"><published>2018-02-28T14:27:00+00:00</published><updated>2018-02-28T14:27:00+00:00</updated><id>https://code.lulalala.com/2018/gem-development-inside-rails-app</id><content type="html" xml:base="https://code.lulalala.com/2018/0228-1427.html">&lt;p&gt;Often during app development, it’s a good idea to extract some functionality into a gem. The simple way to do this is to open a new git repository, do a &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle gem foobar&lt;/code&gt;, publish it, install said gem inside Rails app, use it and test some more.&lt;/p&gt;
+
+&lt;p&gt;How about updates? We have to change the gem, guessing how it can be used inside Rails. Then release a version, install it inside your app, and finally do some testing. This is a lot of friction. This can be especially bad if your gem is closely coupled with the app, or gets updated a lot.&lt;/p&gt;
+
+&lt;p&gt;How about this?&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create an empty gem (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle gem foobar&lt;/code&gt;) (without doing any release)&lt;/li&gt;
+  &lt;li&gt;Push it onto Github.&lt;/li&gt;
+  &lt;li&gt;Put the gem in your Rails app as a submodule: &lt;code class=&quot;highlighter-rouge&quot;&gt;git submodule add https://github.com/foo/foobar.git vendor/foobar&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Install the empty gem in your app’s Gemfile: &lt;code class=&quot;highlighter-rouge&quot;&gt;gem 'settei', path:'./vendor/foobar'&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+  &lt;li&gt;Profit!&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Now develop the gem entirely inside app’s submodule. It’s probably possible to autoload it (though I don’t recommend it). This will also work in production too.&lt;/p&gt;</content><author><name/></author><summary type="html">Often during app development, it’s a good idea to extract some functionality into a gem. The simple way to do this is to open a new git repository, do a bundle gem foobar, publish it, install said gem inside Rails app, use it and test some more.</summary></entry><entry><title type="html">Rails’ many default_url_options</title><link href="https://code.lulalala.com/2018/0214-0826.html" rel="alternate" type="text/html" title="Rails' many default_url_options"><published>2018-02-14T08:26:00+00:00</published><updated>2018-02-14T08:26:00+00:00</updated><id>https://code.lulalala.com/2018/rails-many-default-url-options</id><content type="html" xml:base="https://code.lulalala.com/2018/0214-0826.html">&lt;p&gt;I have read so many different ways to set default_url_options. But at least in Rails 5.1.4, only some of them worked. The thing is, often one works for console but not for controller, or the opposite happens:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# in development.rb
+config.action_controller.default_url_options({:protocol =&amp;gt; 'https'})
+config.action_controller.default_url_options(:protocol =&amp;gt; 'https')
+# Does not work
+
+# in development.rb, outside config block
+Rails.application.routes.default_url_options[:protocol] = 'https'
+# Does not work, but works under console
+
+# in routes.rb
+Rails.application.routes.draw do
+  default_url_options protocol: :https
+# Does not work, but works under console
+
+# in ApplicationController
+def default_url_options(options={})
+  { secure: true }
+end
+# Does not work
+
+# in ApplicationController
+def default_url_options
+  { protocol: :https }
+end
+# Works in browser, but does not work under console
+
+# in development.rb
+config.action_controller.default_url_options= {:protocol =&amp;gt; 'https'}
+# Works in browser, but does not work under console
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This means we probably want to set the options at two different places for it to work always. I think this caused many stackoverflow questions, and deserve to have a Rails repo issue.&lt;/p&gt;</content><author><name/></author><summary type="html">I have read so many different ways to set default_url_options. But at least in Rails 5.1.4, only some of them worked. The thing is, often one works for console but not for controller, or the opposite happens:</summary></entry><entry><title type="html">Pundit and controller based authorization</title><link href="https://code.lulalala.com/2018/0118-0846.html" rel="alternate" type="text/html" title="Pundit and controller based authorization"><published>2018-01-18T08:46:00+00:00</published><updated>2018-01-18T08:46:00+00:00</updated><id>https://code.lulalala.com/2018/4879384</id><content type="html" xml:base="https://code.lulalala.com/2018/0118-0846.html">&lt;p&gt;If we have an Order class, pundit gem will figure out to use the OrderPolicy for authorization. But what if we have multiple domains using the same item?&lt;/p&gt;
+
+&lt;p&gt;For example an online auction site, there will be a &lt;code class=&quot;highlighter-rouge&quot;&gt;Seller::OrdersController&lt;/code&gt; and a &lt;code class=&quot;highlighter-rouge&quot;&gt;Buyer::OrdersController&lt;/code&gt;. They will manage the two sides of the same order. The idea is that, buyer should be allowed to only update via &lt;code class=&quot;highlighter-rouge&quot;&gt;Buyer::OrdersController&lt;/code&gt; but not &lt;code class=&quot;highlighter-rouge&quot;&gt;Seller::OrdersController&lt;/code&gt;. And vice versa for seller. Obviously we would want to have two sets of policies.&lt;/p&gt;
+
+&lt;p&gt;However in Pundit namespaced policy require us to call &lt;code class=&quot;highlighter-rouge&quot;&gt;authorze [:seller, item]&lt;/code&gt;, in order for it to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;Seller::ItemPolicy&lt;/code&gt;. This can become repetitive.&lt;/p&gt;
+
+&lt;p&gt;For me, there is less room for error if we have a 1:1 relationship between controller and policy, and a controller can be assumed to use the same policy. So I patched &lt;code class=&quot;highlighter-rouge&quot;&gt;authorize&lt;/code&gt; call so policy can be set on the controller level.&lt;/p&gt;
+
+&lt;h2 id=&quot;solution&quot;&gt;Solution&lt;/h2&gt;
+
+&lt;p&gt;Put the following under &lt;code class=&quot;highlighter-rouge&quot;&gt;ApplicationController&lt;/code&gt; as private methods.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  class_attribute :pundit_policy_class
+
+  def self.set_pundit_policy_class(klass)
+    self.pundit_policy_class = klass
+  end
+
+  def authorize(record, query: nil, policy_class: nil)
+    query ||= params[:action].to_s + &quot;?&quot;
+
+    @_pundit_policy_authorized = true
+
+    if policy_class
+      policy = policy_class.new(pundit_user, record)
+    elsif self.pundit_policy_class
+      policy = self.pundit_policy_class.new(pundit_user, record)
+    else
+      policy = policy(record)
+    end
+
+    unless policy.public_send(query)
+      raise NotAuthorizedError, query: query, record: record, policy: policy
+    end
+
+    record
+  end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In your controller, you can then do this to set policy:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class Seller::OrdersController &amp;lt; ApplicationController
+  set_pundit_policy_class Seller::OrderPolicy
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This means all actions under this controller will use &lt;code class=&quot;highlighter-rouge&quot;&gt;Seller::OrderPolicy&lt;/code&gt; by default when you call &lt;code class=&quot;highlighter-rouge&quot;&gt;authorize&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If we want to override this, we can also pass in &lt;code class=&quot;highlighter-rouge&quot;&gt;policy_class&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;authorize&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   authorize @order, policy_class: FooPolicy
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Note that I made some changes to &lt;code class=&quot;highlighter-rouge&quot;&gt;authorize&lt;/code&gt;’s method signature: &lt;code class=&quot;highlighter-rouge&quot;&gt;query&lt;/code&gt; is a keyword argument now. It also returns the record object (as planned for its 1.2 release).&lt;/p&gt;</content><author><name/></author><summary type="html">If we have an Order class, pundit gem will figure out to use the OrderPolicy for authorization. But what if we have multiple domains using the same item?</summary></entry><entry><title type="html">《深入理解運算原理》的翻譯慘不忍睹</title><link href="https://code.lulalala.com/2018/0103-1251.html" rel="alternate" type="text/html" title="《深入理解運算原理》的翻譯慘不忍睹"><published>2018-01-03T12:51:00+00:00</published><updated>2018-01-03T12:51:00+00:00</updated><id>https://code.lulalala.com/2018/chinese-translation-of-understand-computation</id><content type="html" xml:base="https://code.lulalala.com/2018/0103-1251.html">&lt;p&gt;《Understand Computation》這本書原本我很期待的，聽 &lt;a href=&quot;https://devchat.tv/ruby-rogues/263-rr-programmer-education-and-skill-development-with-tom-stuart&quot;&gt;Ruby Rouge&lt;/a&gt; 的介紹，似乎可以讓讀者理解許多有趣的計算機科學原理，像是正規表示式等等。原本都快要去買英文版了，想不到12月初碁峰資訊代理的中文版竟然上市了，於是我就很高興的買了一本回家看。&lt;/p&gt;
+
+&lt;p&gt;結果越讀越不對勁，很多地方不大理解，於是去找了英文版來對照，才發現翻譯實在不行，大概每四到五頁就會出現巨大的錯誤。沒有對照就看不懂。這邊列出最明顯的四個例子：&lt;/p&gt;
+
+&lt;h2 id=&quot;漏了一個-no-意思差很多&quot;&gt;漏了一個 No 意思差很多&lt;/h2&gt;
+
+&lt;p&gt;原文中這句話被這樣翻譯：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;That all works as expected, but it would be nice if we could support conditional state-
+ments with no « else » clause, like « if (x) { y = 1 } »&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;所有工作都一如預期，但我們若能以 else 子句支援條件陳述式，就像if (x) { y = 1 }，那就更棒了。（40頁）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;少了「no」結果意思變反了。這個問題在 31 頁也出現過。&lt;/p&gt;
+
+&lt;h2 id=&quot;例2&quot;&gt;例2&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;小步語意使得我們必須從諸如 3 的不可約運算式辨識出像是 1 + 2 的可化簡運算式。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;當初看到這句的時候愣了一下，為何能從前者辨識出後者，所以去找了原文：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;With small-step semantics we had to distinguish reducible expressions like « 1 + 2 » from irreducible expressions like « 3 »&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;才知道意思只是兩者參雜的情況下分辨是哪一種而已。要翻的話應該是這樣：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;在小步語意我們必須分辨可化簡運算式（如 1 + 2 ）與不可化簡運算式（如 3 ）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;很棘手&quot;&gt;很棘手&lt;/h2&gt;
+
+&lt;p&gt;看你能不能找到這段錯誤的地方：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;當我們在大型程式呼叫 #reduce 的時候，如果訊息往下經過抽象語法樹，然後一直到它抵達準備好化簡的程式碼片段，可能就會造成棘手的巢狀 #reduce 呼叫。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;應該很難，但是比對原文以後：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;when we call #reduce on a large program, that might cause a handful of nested #reduce calls as the message travels down the abstract syntax tree until it reaches the piece of code that is ready to reduce.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;我們就會發覺正面的句子被翻譯成負面的了。「handful」被譯為「棘手的」，其實作者想表達這只會造成「一些」呼叫而已。&lt;/p&gt;
+
+&lt;h2 id=&quot;58-59-頁編輯的失誤連續-combo&quot;&gt;58 59 頁編輯的失誤連續 Combo&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;我們在前面看到，操作語意是藉由設計語言的直譯器來解釋語言的意義。相較之下，操作語意語言對語言的翻譯就像編譯器。（第58頁）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;是不是不懂為何要「相較」同一個東西？嗯，因為第二句話寫錯了，應該是對「指稱語意（denotational semantics）」&lt;/p&gt;
+
+&lt;p&gt;接下來也有點不懂：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;這些語意風格無一必能說明如何有效實做語言的直譯器或編譯器…（第58頁）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;無一必能&lt;/strong&gt; 是什麼呢？翻了一下英文翻譯&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;None of these styles of semantics necessarily says anything about how to efficiently implement an interpreter or compiler for a language, but…&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;喔，原來多加了一個「必」字。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;指稱語意的優點是操作語意更為抽象（第59頁）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;這次則是漏了一個「比」字。&lt;/p&gt;
+
+&lt;p&gt;最後是一個理解錯誤：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;指稱只能如其含意；尤其若指稱語言具有某些操作含意，那麼指稱語意就只能讓我們更接近實際執行的程式…（59頁）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A denotation is only as good as its meaning; in particular, a denotational semantics only gets us closer to being able to actually execute a program if the denotation language has some operational meaning&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;「只能」放錯位置了。意思應該是「指稱語意只有在指稱用語言本身有操作含意時，才讓我們更接近實際執行程式」&lt;/p&gt;
+
+&lt;h2 id=&quot;結論&quot;&gt;結論&lt;/h2&gt;
+
+&lt;p&gt;怕被認為雞蛋挑骨頭，所以比較小的問題放在這裡：&lt;a href=&quot;https://goo.gl/VVWzMb&quot;&gt;https://goo.gl/VVWzMb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;上次買了《Ruby 物件導向設計實踐－敏捷入門》，一樣也是有一些小問題，但是因為是代理中國出版社翻譯的書，所以想說反應問題也沒用。&lt;/p&gt;
+
+&lt;p&gt;這次的翻譯是&lt;a href=&quot;http://www.eslite.com/Search_BW.aspx?query=%e8%b3%b4%e6%a6%ae%e6%a8%9e&quot;&gt;賴榮樞&lt;/a&gt;，之前已經翻譯了十本以上的資訊書，應該算是很有經驗的譯者，所以我原本比較有信心。可是這麼多問題似乎代表編輯似乎沒有在做任何事情，糟蹋這本好書實在讓我很失望。&lt;/p&gt;</content><author><name/></author><summary type="html">《Understand Computation》這本書原本我很期待的，聽 Ruby Rouge 的介紹，似乎可以讓讀者理解許多有趣的計算機科學原理，像是正規表示式等等。原本都快要去買英文版了，想不到12月初碁峰資訊代理的中文版竟然上市了，於是我就很高興的買了一本回家看。</summary></entry><entry><title type="html">AdequateErrors - Overcoming limitation of Rails model errors API</title><link href="https://code.lulalala.com/2017/1211-0520.html" rel="alternate" type="text/html" title="AdequateErrors - Overcoming limitation of Rails model errors API"><published>2017-12-11T05:20:00+00:00</published><updated>2017-12-11T05:20:00+00:00</updated><id>https://code.lulalala.com/2017/adequate-errors</id><content type="html" xml:base="https://code.lulalala.com/2017/1211-0520.html">&lt;p&gt;Over the years I encountered many issues related to &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveModel::Errors&lt;/code&gt; API. After looking at the Rails source, I realized the original design was the root cause. &lt;code class=&quot;highlighter-rouge&quot;&gt;errors&lt;/code&gt; was originally just a hash of array of &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt;, which worked for simple requirements, but not for more complex ones.&lt;/p&gt;
+
+&lt;p&gt;In April I started collecting use cases, and study Rails source. Last month I finally put my hands on implementing a solution: a gem to apply object-oriented design principles to make each error an object, and provide new set of APIs to access these objects. I call it &lt;a href=&quot;https://github.com/lulalala/adequate_errors&quot;&gt;&lt;strong&gt;AdequateErrors&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;AdequateErrors can be accessed by calling &lt;code class=&quot;highlighter-rouge&quot;&gt;model.errors.adequate&lt;/code&gt;. It co-exists with existng Rails API, so nothing will break. But what issues does it solve? Let me list them one by one:&lt;/p&gt;
+
+&lt;h1 id=&quot;query-on-errors-using-where&quot;&gt;Query on errors using &lt;code class=&quot;highlighter-rouge&quot;&gt;where&lt;/code&gt;&lt;/h1&gt;
+
+&lt;p&gt;Imagine we need to access the &lt;code class=&quot;highlighter-rouge&quot;&gt;empty&lt;/code&gt; error on &lt;strong&gt;any&lt;/strong&gt; attributes:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;details&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:empty&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;AdequateErrors provides a &lt;code class=&quot;highlighter-rouge&quot;&gt;where&lt;/code&gt; method. Now we can stop using loops, and write complex queries:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;adequate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;type: :empty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;adequate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;attribute: :title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :empty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;adequate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;attribute: :title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :empty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;count: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This returns an array of Error objects. Simple.&lt;/p&gt;
+
+&lt;h1 id=&quot;access-both-the-message-and-details-of-one-particular-error&quot;&gt;Access both the message and details of one particular error&lt;/h1&gt;
+
+&lt;p&gt;If one attribute has two &lt;code class=&quot;highlighter-rouge&quot;&gt;foo_error&lt;/code&gt; and one &lt;code class=&quot;highlighter-rouge&quot;&gt;bar_error&lt;/code&gt;, e.g.:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# model.errors.details&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;error: :foo_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;count: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;error: :bar_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;error: :foo_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;count: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}]}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;How do you access the message on the third particular error? With the current implementation, we have to resort to using array indexes:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;messages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Or we can call &lt;code class=&quot;highlighter-rouge&quot;&gt;generate_message&lt;/code&gt; to recreate a message from the details, but that’s also tedious.&lt;/p&gt;
+
+&lt;p&gt;With  AdequateErrors, we won’t have this problem. Error is represented as an object, message and details are its attributes, so accessing those are straightforward:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;adequate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;attribute: :title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :foo_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# full message&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;options&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# similar to details, where meta informations such as `:count` is stored.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;lazily-evaluating-message-for-internationalization&quot;&gt;Lazily evaluating message for internationalization&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/morgoth&quot;&gt;@morgoth&lt;/a&gt; mentioned this issue that when you’re adding error, it’s translated right away.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# actual:&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;I18n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_locale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:pl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;full_messages&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; outputs EN errors always&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# expecting:&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;I18n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_locale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:pl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;full_messages&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; outputs PL errors&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;I18n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_locale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:pt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;full_messages&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; outputs PT errors&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Taking this into consideration, AdequateErrors lazily evaluates messages only when &lt;code class=&quot;highlighter-rouge&quot;&gt;message&lt;/code&gt; is called.&lt;/p&gt;
+
+&lt;h1 id=&quot;error-message-attribute-prefix&quot;&gt;Error message attribute prefix&lt;/h1&gt;
+
+&lt;p&gt;Not all error messages start with the attribute name, but Rails forces you to do this. People have developed &lt;a href=&quot;https://github.com/jeremydurham/custom-err-msg&quot;&gt;hacks&lt;/a&gt; to bypass this. Others simply assigned errors to &lt;code class=&quot;highlighter-rouge&quot;&gt;:base&lt;/code&gt; instead of the actual attribute. This is ugly.&lt;/p&gt;
+
+&lt;p&gt;Here is AdequateErrors’ solution. It has its own namespace in the locale file, and instead of the global default format &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;%{attribute} %{message}&quot;&lt;/code&gt;, the prefix is moved into each individual entries:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;en&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;adequate_errors&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;messages&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;invalid&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;%{attribute}&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;is&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;invalid&quot;&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;inclusion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;%{attribute}&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;is&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;not&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;included&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;in&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;list&quot;&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;exclusion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;%{attribute}&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;is&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;reserved&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;All built-in error types have been converted into this. If one wishes to have prefix-less error, simply have its entry in locale file without the &lt;code class=&quot;highlighter-rouge&quot;&gt;%{attribute}&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;just-less-error-prune-code&quot;&gt;Just less error prune code&lt;/h1&gt;
+
+&lt;p&gt;I remember when I first learned about Object-Oriented design principle in uni, there was this example of payroll system. In the system, one array stores account name and another array stores account number. Whenever we need to delete an account, we need to manipulate both arrays. Further more, if we need to add a new attribute, we need to add a third array. It is very clear that objectifying this system can make it simpler and less error-prone.&lt;/p&gt;
+
+&lt;p&gt;This is what the current Rails errors implementation looks like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    def copy!(other) # :nodoc:
+      @messages = other.messages.dup
+      @details  = other.details.dup
+    end
+
+    def clear
+      messages.clear
+      details.clear
+    end
+    
+    def delete(key)
+      attribute = key.to_sym
+      details.delete(attribute)
+      messages.delete(attribute)
+    end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This being similar to the case I mentioned above, really can benefit from an object-oriented approach.&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;If you are a long-time Rails developer, chances are you have met similar issue before, please try this gem. If you have other usecases that you wish to improve on, I would like to know and see if it can be added into the gem. Happy hacking!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://user-image.logdown.io/user/291/blog/291/post/2909828/NoJZ5XqSQ0qVeVIyerNy_adequate.png&quot; alt=&quot;adequate.png&quot; /&gt;&lt;/p&gt;</content><author><name/></author><summary type="html">Over the years I encountered many issues related to ActiveModel::Errors API. After looking at the Rails source, I realized the original design was the root cause. errors was originally just a hash of array of String, which worked for simple requirements, but not for more complex ones.</summary></entry><entry><title type="html">Magics that Decorator/Presenter Gems Do to Make Your Type Less</title><link href="https://code.lulalala.com/2017/1122-1453.html" rel="alternate" type="text/html" title="Magics that Decorator/Presenter Gems Do to Make Your Type Less"><published>2017-11-22T14:53:00+00:00</published><updated>2017-11-22T14:53:00+00:00</updated><id>https://code.lulalala.com/2017/rails-decorator-presenter</id><content type="html" xml:base="https://code.lulalala.com/2017/1122-1453.html">&lt;p&gt;Some of you Rails developers probably have used a ‘decorator’ or ‘presenter’ library. These libraries aim to bridge between Rails model and view layers. If I am to define it, a &lt;em&gt;presenter&lt;/em&gt; allows developers to group helper methods related to a model to be under a namespace related to that model, instead of the current global space.&lt;/p&gt;
+
+&lt;p&gt;But would you believe it? There are actually a dozen or more decorator/presenter gems out there. Why do we reinvent the wheels? The first reason is that there is really a demand, because keeping large amount of helper methods under the same namespace is just unrealistic. The second reason is that, these gem owners have different views on this philosophical question: should the interface be implicit (things are done for the user under the hood) or explicit (user has to type more).&lt;/p&gt;
+
+&lt;p&gt;As a fun exercise I will compare 6 of these gems and explain how the general concept works. I have not used some of the gems, but only read the readme and some of the code, so if there are mistakes please let me know.&lt;/p&gt;
+
+&lt;p&gt;*Disclaimer, I am the owner of LulalalaPresenter gem. And if you have never used a presenter/decorator before, read this &lt;a href=&quot;http://lulalala.logdown.com/posts/308472-lulalala-presenter-for-rails&quot;&gt;post&lt;/a&gt; to know why it is useful.&lt;/p&gt;
+
+&lt;p&gt;The following table represents the spectrum of these gems. On the left end, we see gems favoring implicity more. On the right end, gems are more explicit in nature.&lt;/p&gt;
+
+&lt;table style=&quot;font-size:0.8em&quot;&gt;
+  &lt;tr&gt;
+    &lt;th&gt;&lt;br /&gt;&lt;/th&gt;
+    &lt;th&gt;Active&lt;br /&gt;Decorator&lt;/th&gt;
+    &lt;th&gt;Draper&lt;/th&gt;
+    &lt;th&gt;Oprah&lt;/th&gt;
+    &lt;th&gt;Display-case&lt;/th&gt;
+    &lt;th&gt;Lulalala&lt;br /&gt;Presenter&lt;/th&gt;
+    &lt;th&gt;RailsCast&lt;br /&gt;&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;a href=&quot;https://github.com/amatsuda/active_decorator&quot; target=&quot;_blank&quot;&gt;link&lt;/a&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;a href=&quot;https://github.com/drapergem/draper&quot; target=&quot;_blank&quot;&gt;link&lt;/a&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;a href=&quot;https://github.com/endofunky/oprah&quot; target=&quot;_blank&quot;&gt;link&lt;/a&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;a href=&quot;https://github.com/objects-on-rails/display-case&quot; target=&quot;_blank&quot;&gt;link&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;a href=&quot;https://github.com/lulalala/lulalala_presenter&quot; target=&quot;_blank&quot;&gt;link&lt;/a&gt;&lt;/td&gt;
+                        &lt;td&gt;&lt;a href=&quot;http://railscasts.com/episodes/287-presenters-from-scratch&quot; target=&quot;_blank&quot;&gt;link&lt;/a&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Decorate (Quack like a model)&lt;/td&gt;
+    &lt;td&gt;Y&lt;/td&gt;
+    &lt;td&gt;optional&lt;/td&gt;
+    &lt;td&gt;Y&lt;/td&gt;
+    &lt;td&gt;Y&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Decorates Association&lt;/td&gt;
+    &lt;td&gt;Y&lt;/td&gt;
+    &lt;td&gt;optional&lt;/td&gt;
+    &lt;td&gt;optional&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Directly call helper method within decorator&lt;/td&gt;
+    &lt;td&gt;Y&lt;/td&gt;
+    &lt;td&gt;optional&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Globally accessible view context&lt;/td&gt;
+    &lt;td&gt;Y&lt;/td&gt;
+    &lt;td&gt;Y&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;Y&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Automatically decorates&lt;/td&gt;
+    &lt;td&gt;Y&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Presenter/Model mapping&lt;/td&gt;
+    &lt;td&gt;1:1&lt;/td&gt;
+    &lt;td&gt;N:1&lt;/td&gt;
+    &lt;td&gt;N:1&lt;/td&gt;
+    &lt;td&gt;N:1&lt;/td&gt;
+    &lt;td&gt;1:1&lt;/td&gt;
+    &lt;td&gt;1:1&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Lines of code&lt;/td&gt;
+    &lt;td&gt;281&lt;/td&gt;
+    &lt;td&gt;718&lt;/td&gt;
+    &lt;td&gt;130&lt;/td&gt;
+    &lt;td&gt;375&lt;/td&gt;
+    &lt;td&gt;110&lt;/td&gt;
+    &lt;td&gt;38&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Lines of test&lt;/td&gt;
+    &lt;td&gt;473&lt;/td&gt;
+    &lt;td&gt;3037&lt;/td&gt;
+    &lt;td&gt;354&lt;/td&gt;
+    &lt;td&gt;1556&lt;/td&gt;
+    &lt;td&gt;294&lt;/td&gt;
+    &lt;td&gt;n/a&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;(I find many more gems after writing this. A complete list can be found &lt;a href=&quot;https://docs.google.com/spreadsheets/d/1BVGC9ULsiv1uMOVW2buctXrfOHKpab63TXh_ssax3nA/edit?usp=sharing&quot;&gt;here&lt;/a&gt;. If you want to add your gem to it, let me know~)&lt;/p&gt;
+
+&lt;h2 id=&quot;i-hate-magic-camp&quot;&gt;“I hate magic” camp&lt;/h2&gt;
+
+&lt;p&gt;The conservative rubyists prefer to avoid magic. They don’t like to override too much things, and they write PORO instead of meta-programming.&lt;/p&gt;
+
+&lt;p&gt;The most simple example can be seen from Ryan Bate’s RailsCast: &lt;a href=&quot;http://railscasts.com/episodes/287-presenters-from-scratch&quot;&gt;“Presenters from Scratch”&lt;/a&gt;. In the video he explains step by step how to make a simple presenter.&lt;/p&gt;
+
+&lt;p&gt;The only meta-programming used is how it infers the presenter class from the model. All other interfaces are simple object passing method calls. Only 38 lines are required to achieve this.&lt;/p&gt;
+
+&lt;p&gt;Since by default it does not act like a model, Ryan calls it a &lt;strong&gt;presenter&lt;/strong&gt; instead of decorator. You can still delegate calls to model if you wish, but the readme indicates that presenter object should not be mixed up with model object.&lt;/p&gt;
+
+&lt;p&gt;I’ll talk about LulalalaPresenter later after ActiveDecorator, because it is its fork.&lt;/p&gt;
+
+&lt;h2 id=&quot;decorator&quot;&gt;Decorator&lt;/h2&gt;
+
+&lt;div style=&quot;float:right;width: 300px;margin-left: 20px&quot;&gt;
+&lt;img src=&quot;http://user-image.logdown.io/user/291/blog/291/post/3766261/684SJISbSOBtgSsNFQ3s_B2017-12-04%2022_16_57-Edit_%20helpers.png&quot; title=&quot;&quot; style=&quot;width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;According to &lt;a href=&quot;https://www.amazon.com/Design-Patterns-Ruby-Russ-Olsen/dp/0321490452&quot;&gt;Design Patterns in Ruby&lt;/a&gt;, the decorator pattern is a wrapper that “supports the same core interface, but adds its own twist on that interface.” In this case we add view related functionality around the model. A decorator can act as if it is the model, which means less view changes are required.&lt;/p&gt;
+
+&lt;p&gt;ActiveDecorator, oprah and display-case all position themselves as decorators. Draper on the other hand gives the user freedom to choose if the wrapper should become a decorator or not.&lt;/p&gt;
+
+&lt;h2 id=&quot;one-association-further&quot;&gt;One association further&lt;/h2&gt;
+
+&lt;p&gt;Associations are part of the ActiveModel interface too, and some gems can decorate associations for you to save some key strokes (&lt;a href=&quot;https://github.com/amatsuda/active_decorator/pull/68/files&quot;&gt;example&lt;/a&gt;). This is no small task, as there are multiple ways to trigger associations. It is therefore more possible to break across Rails versions.&lt;/p&gt;
+
+&lt;h2 id=&quot;directly-call-helper-methods-within-decorator&quot;&gt;Directly call helper methods within decorator&lt;/h2&gt;
+
+&lt;p&gt;Normally for a model decorator to call helper methods within it, it needs to call via &lt;code class=&quot;highlighter-rouge&quot;&gt;view_context&lt;/code&gt; (often alias as &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt;), e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;h.url_for()&lt;/code&gt;. Both ActiveDecorator and Draper offers a way to save key strokes so you can call &lt;code class=&quot;highlighter-rouge&quot;&gt;url_for&lt;/code&gt; directly. This is done by a simple trick: if the model does not support a method, we retry it on view context again (&lt;a href=&quot;https://github.com/drapergem/draper/blob/master/lib/draper/lazy_helpers.rb&quot;&gt;example&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;The implications are: 1. this is a wee bit slower because &lt;code class=&quot;highlighter-rouge&quot;&gt;method_missing&lt;/code&gt; is utilized. 2. if same method name exists on model and view_context, model’s method takes precedence. This is usually not a problem.&lt;/p&gt;
+
+&lt;h2 id=&quot;globally-accessible-view_context&quot;&gt;Globally accessible view_context&lt;/h2&gt;
+
+&lt;p&gt;Draper, ActiveDecorator and LulalalaPresenter all keeps the view_context in a globally accessible place (&lt;a href=&quot;https://github.com/drapergem/draper/blob/master/lib/draper/view_context.rb#L39&quot;&gt;example&lt;/a&gt;). This is done for two reasons:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Give an OO-esque feel to the decoration method:&lt;br /&gt;
+Draper decorates by calling &lt;code class=&quot;highlighter-rouge&quot;&gt;model.decorate&lt;/code&gt;
+LulalalaPresenter presents by calling &lt;code class=&quot;highlighter-rouge&quot;&gt;model.presenter&lt;/code&gt;
+The design saves you from passing view_context, otherwise one will need to do &lt;code class=&quot;highlighter-rouge&quot;&gt;model.decorate(view_context)&lt;/code&gt; all the time.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;To allow automatic decoration (see below).&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;the-holy-grail-of-implicity&quot;&gt;The Holy Grail of Implicity&lt;/h2&gt;
+
+&lt;p&gt;We have reached the end of implicity. To automatically decorate things, ActiveDecorator hooks into the render call, and decorates instance variables when applicable (&lt;a href=&quot;https://github.com/amatsuda/active_decorator/blob/master/lib/active_decorator/monkey/abstract_controller/rendering.rb&quot;&gt;example&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;The gem walked the extra miles for you, so you don’t have to do anything beside writing the decorator class. In some way, this feels like Rails philosophy, where we just write the controller/model/view, and things will just hook up perfectly without you knowing what’s happening under the hood.&lt;/p&gt;
+
+&lt;h2 id=&quot;my-own-presenter-and-conclusion&quot;&gt;My Own Presenter and Conclusion&lt;/h2&gt;
+
+&lt;div style=&quot;float:right;width: 300px;margin-left: 20px&quot;&gt;
+&lt;img src=&quot;http://user-image.logdown.io/user/291/blog/291/post/3766261/nSU4JtAvRG7EiGAjhygr_B2017-12-04%2022_10_04-Edit_%20helpers.png&quot; title=&quot;&quot; style=&quot;width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;As you can see from the table, most are decorators. They behave like models, delegating calls to the inside. However if we treat presenter as a separate object, we can reduce a lot of the delegation complexities.&lt;/p&gt;
+
+&lt;p&gt;I was looking for a presenter which does not involve decorating ActiveModel, but I couldn’t find one. Ryan’s solution was the closest I could find. So I thought I can make my own.&lt;/p&gt;
+
+&lt;p&gt;I personally hate typing parenthesis, because my left little finger aches when holding &lt;code class=&quot;highlighter-rouge&quot;&gt;shift&lt;/code&gt; key. Instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;present(model).foo&lt;/code&gt;, I prefer &lt;code class=&quot;highlighter-rouge&quot;&gt;model.present.foo&lt;/code&gt;. If we are to do this, how can presenter get hold of view_context object? We can pass it in everytime like this &lt;code class=&quot;highlighter-rouge&quot;&gt;model.present.foo(vc)&lt;/code&gt;, but that’s definitely too much too type. In the end, I found out ActiveDecorator’s globally accessible view_context, so I used it to make my own. Hopefully this does not offend any one, I feel guilty but I want to please my little finger.&lt;/p&gt;
+
+&lt;p&gt;Do we need presenters/decorators pattern? Some may argue this is an offense to the MVC architecture, and some may think it introduces extra complexity. Again we will probably never get a consensus on this, but I use it because it made coding Rails more pleasant. So if you have large number of helper methods in your codebase, I recommend you to just pick a gem and try it out :)&lt;/p&gt;</content><author><name/></author><summary type="html">Some of you Rails developers probably have used a ‘decorator’ or ‘presenter’ library. These libraries aim to bridge between Rails model and view layers. If I am to define it, a presenter allows developers to group helper methods related to a model to be under a namespace related to that model, instead of the current global space.</summary></entry><entry><title type="html">I wrote an address tokenizer using machine learning</title><link href="https://code.lulalala.com/2016/1202-1530.html" rel="alternate" type="text/html" title="I wrote an address tokenizer using machine learning"><published>2016-12-02T15:30:00+00:00</published><updated>2016-12-02T15:30:00+00:00</updated><id>https://code.lulalala.com/2016/1163179</id><content type="html" xml:base="https://code.lulalala.com/2016/1202-1530.html">&lt;p&gt;A few years ago, I was assigned the task to extract the city/suburb names from our crawler results. I wrote a parser, using a bunch of if/else statements and regular expressions. It worked mostly, except in some extreme cases. In order to parse those extreme cases, I added more if statements and more obscure regular expressions. At the end I feel the code was very unreadable.&lt;/p&gt;
+
+&lt;p&gt;But was I an incompetent programmer? A few months ago I read a &lt;a href=&quot;http://blog.grunick.com/probabilistic-postal-address-elementalization/&quot;&gt;blog post&lt;/a&gt; about using machine learning to do address parsing, and I realized my old approach of creating rules, is not how our brains work. A lot of cases really requires us thinking in terms of possibility (“if there are more than three characters followed by this, it is probably a street”). These are fuzzy logics, but my if/ else regular expressions are discrete logics operating on a boolean level.&lt;/p&gt;
+
+&lt;p&gt;So as a pet project, I decided to implement an address parser in Ruby. In the Python community they already have &lt;a href=&quot;https://parserator.datamade.us/usaddress&quot;&gt;Parserator&lt;/a&gt;. So why not in Rubyland? I am from Taiwan, so I also want to try applying that to addresses here.&lt;/p&gt;
+
+&lt;p&gt;I used the Conditional Random Fields model, though reading the Wikipedia article fried my brain:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://user-image.logdown.io/user/291/blog/291/post/1163179/gFJyYmvQLmhROeplWGpw_v5.png&quot; alt=&quot;v5.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I don’t understand any of these. However I still keep my hopes that I can just copy &amp;amp; paste something and it would work out eventually. Though we don’t know how to create a lego block, we can still build things using it without all the background knowledge right?&lt;/p&gt;
+
+&lt;p&gt;The first step is to gather the training data. My friend said that these are confidential, and can cost money. So I looked elsewhere. Eventually I found out that there are people adding address entries on this site called &lt;a href=&quot;http://www.openstreetmap.org/&quot;&gt;OpenStreetMap&lt;/a&gt;. Regional data can be downloaded at this site called &lt;a href=&quot;http://www.gisgraphy.com/&quot;&gt;Gisgraphy&lt;/a&gt;. The file is in .pbf, which stands for Protocolbuffer Binary Format. So I used &lt;code class=&quot;highlighter-rouge&quot;&gt;pbf_parser&lt;/code&gt; gem to access the data inside. Not all data are for addresses, some are bus routes and some are geometry data. I wrote a parser to extract addresses into the a SQL database. There were around 15000 records.&lt;/p&gt;
+
+&lt;p&gt;Though in OSM people enters address in different sections such as city and suburb, in reality it is not strictly followed as to which field represents what. This is especially true in Eastern countries. there are a few distinct levels which does not have an English counterpart. People also puts the full address in the &lt;code class=&quot;highlighter-rouge&quot;&gt;street&lt;/code&gt; field and the like. So I have to write scripts to boldly move the data around the columns, add new columns to match Taiwanese address rules. I feel I have touched more than 2/3 of the addresses. I call this part cleaning.&lt;/p&gt;
+
+&lt;p&gt;Once cleaning is done, all we have to do is to feed those data in to train the model. Sylvester Keil wrote two Rubygems to do CRF training, one of which is called &lt;a href=&quot;https://github.com/inukshuk/wapiti-ruby&quot;&gt;wapiti&lt;/a&gt;. It is a wrapper to a C library of the same name. He was very kind and helped me when I wanted to know how to use the gem.&lt;/p&gt;
+
+&lt;p&gt;Eventually I was able to feed my data into wapiti and create a model file. Some East-Asian languages have the property that pharaes are not separated by space characters, I have to chop the address into individual characters, and then feed them in. On the other end, when the model determines the result, I then have to combine neighbouring characters of the same label back into a phrase.&lt;/p&gt;
+
+&lt;p&gt;The result was much better than I expected, it can parse common addresses just fine. All of these are me writing no rules at all. I created a website for people to try out &lt;a href=&quot;http://addresstokenizer.lulalala.com/&quot;&gt;http://addresstokenizer.lulalala.com/&lt;/a&gt;, so I can also gather some new data.&lt;/p&gt;
+
+&lt;p&gt;People do inform me extreme cases where the tokenization fails. As my first time writing something using Machine Learning, the feeling is quite different, as something like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;if result.wrong?
+  say &quot;Not me! It's its fault!
+       The machine is too stupid to learn~~&quot;
+  shrug
+  guilt = 0 # do not feel guilty at all~
+else
+  say &quot;Hehe&quot;
+  feels &quot;complimented&quot;
+  happiness += 100
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I provided a gem (&lt;a href=&quot;https://github.com/lulalala/lulalala_address_tokenizer&quot;&gt;https://github.com/lulalala/lulalala_address_tokenizer&lt;/a&gt;) and provided a model file. The gem is intended for East Asian addresses (Chinese, Japanese and Korean), so if you are in these region, please try create your own model. Once you plug it in, it should just work. Once I have time, I plan to put my training data online for others to make correction on.&lt;/p&gt;</content><author><name/></author><summary type="html">A few years ago, I was assigned the task to extract the city/suburb names from our crawler results. I wrote a parser, using a bunch of if/else statements and regular expressions. It worked mostly, except in some extreme cases. In order to parse those extreme cases, I added more if statements and more obscure regular expressions. At the end I feel the code was very unreadable.</summary></entry></feed>

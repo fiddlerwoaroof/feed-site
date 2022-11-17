@@ -1,0 +1,1233 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="https://awesomekling.github.io/feed.xml" rel="self" type="application/atom+xml"><link href="https://awesomekling.github.io/" rel="alternate" type="text/html"><updated>2022-11-01T10:53:17+00:00</updated><id>https://awesomekling.github.io/feed.xml</id><title type="html">Andreas Kling</title><subtitle>I like computers!</subtitle><entry><title type="html">How I make a living working on SerenityOS</title><link href="https://awesomekling.github.io/How-I-make-a-living-working-on-SerenityOS/" rel="alternate" type="text/html" title="How I make a living working on SerenityOS"><published>2022-10-29T00:00:00+00:00</published><updated>2022-10-29T00:00:00+00:00</updated><id>https://awesomekling.github.io/How-I-make-a-living-working-on-SerenityOS</id><content type="html" xml:base="https://awesomekling.github.io/How-I-make-a-living-working-on-SerenityOS/">&lt;p&gt;This post describes in detail how I support myself while working on the SerenityOS project.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt;
+
+&lt;p&gt;Hello! My name is Andreas Kling and I’m the founder of the &lt;a href=&quot;https://github.com/SerenityOS/serenity&quot;&gt;SerenityOS&lt;/a&gt; project. If you’re not familiar, SerenityOS is a from-scratch operating system that I started building in 2018. It combines a Unix-like core with the look &amp;amp; feel of the late 1990s. Although it began as a one-man project, it has since blossomed into a lively open source community with &lt;a href=&quot;https://github.com/SerenityOS/serenity/graphs/contributors&quot;&gt;hundreds of amazing developers&lt;/a&gt; working on it.&lt;/p&gt;
+
+&lt;p&gt;Since May of 2021, &lt;a href=&quot;https://awesomekling.github.io/I-quit-my-job-to-focus-on-SerenityOS-full-time/&quot;&gt;SerenityOS has been my full-time job&lt;/a&gt;. This terrifying but exciting leap was made possible by recurring donations from generous people who like what I do and want to see it continue.&lt;/p&gt;
+
+&lt;p&gt;With so many people having my back, I’ve grown a bit more courageous with taking on large projects, which has led to SerenityOS expanding into both a &lt;a href=&quot;https://awesomekling.github.io/Memory-safety-for-SerenityOS/&quot;&gt;new memory-safe systems language (Jakt)&lt;/a&gt; and a &lt;a href=&quot;https://awesomekling.github.io/Ladybird-a-new-cross-platform-browser-project/&quot;&gt;new cross-platform browser (Ladybird)&lt;/a&gt; in the last year.&lt;/p&gt;
+
+&lt;h3 id=&quot;okay-but-how-do-you-actually-make-a-living&quot;&gt;“Okay, but how do you &lt;em&gt;actually&lt;/em&gt; make a living?”&lt;/h3&gt;
+
+&lt;p&gt;I get this question regularly, so I’m going to do my best to answer it. Please understand that I’m publishing this for transparency, not to brag about making so much or complain about not making enough.&lt;/p&gt;
+
+&lt;p&gt;All currency amounts below are in USD.&lt;/p&gt;
+
+&lt;h3 id=&quot;main-source-of-income-individual-sponsorshipsdonations&quot;&gt;Main source of income: Individual sponsorships/donations&lt;/h3&gt;
+
+&lt;p&gt;I created a &lt;a href=&quot;https://www.patreon.com/awesomekling&quot;&gt;Patreon&lt;/a&gt; back in April of 2019. I felt a bit silly at the time, with thoughts like &lt;em&gt;“who do I think I am”&lt;/em&gt; and &lt;em&gt;“what am I even doing”&lt;/em&gt; echoing in my head. I still did it though. I was too curious to see what would happen, even though I expected nothing. Amazingly, a couple of people actually signed up!&lt;/p&gt;
+
+&lt;p&gt;Later on, when &lt;a href=&quot;https://github.com/sponsors/awesomekling&quot;&gt;GitHub Sponsors&lt;/a&gt; opened up, I got in as early as I could. Not only did they have zero fees, but they also offered to match the first $5,000 in donations. And once again, some people actually signed up!&lt;/p&gt;
+
+&lt;p&gt;On both platforms, people are invited to donate to me personally so that I can spend time working on SerenityOS. No goods/services are offered in return.&lt;/p&gt;
+
+&lt;p&gt;Here are the current numbers as of 2022-10-29. They tend to fluctuate as people join and leave as supporters.&lt;/p&gt;
+
+&lt;style&gt;
+th, td {
+    padding-right: 1em;
+}
+&lt;/style&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;&lt;strong&gt;Platform&lt;/strong&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;&lt;strong&gt;Supporters&lt;/strong&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;&lt;strong&gt;$/month&lt;/strong&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;GitHub Sponsors&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;263&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2,136&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Patreon&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;268&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1,411&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;PayPal&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&amp;lt;5&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&amp;lt;200&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Cryptocurrency&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&amp;lt;5&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;&amp;lt;50&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Early on I would monitor these numbers closely, as I found it fascinating. Eventually it became a source of stress, so now I only check on them once a month when I do my accounting.&lt;/p&gt;
+
+&lt;h3 id=&quot;secondary-source-of-income-youtube&quot;&gt;Secondary source of income: YouTube&lt;/h3&gt;
+
+&lt;p&gt;I’ve been fairly active on &lt;a href=&quot;https://youtube.com/andreaskling&quot;&gt;YouTube&lt;/a&gt; since early on in the SerenityOS project. I started uploading development videos about ~6 months into the project. They were awkward and clumsy, but people seemed to enjoy watching someone incrementally building a new operating system from scratch.&lt;/p&gt;
+
+&lt;p&gt;Once the channel grew large enough, I was able to enable monetization in the form of ads. I felt a bit weird about this, since I use an ad blocker myself, but I figured that the kind of person who watches my content is perfectly aware of ad blockers and can make their own decisions about them.&lt;/p&gt;
+
+&lt;p&gt;Income from ads varies wildly depending on how often I upload new videos, and how many views they get. YouTube’s terms &amp;amp; conditions don’t allow me to disclose analytics in detail, but my estimated revenue this month is &lt;strong&gt;$315&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Outside of ads, I also have 58 people enrolled as “channel members”, which nets &lt;strong&gt;$65/month&lt;/strong&gt; (part of the $315). YouTube allows you to create separate content for channel members, but I don’t make use of this feature as I prefer that everyone has access to everything I make. The one thing that channel members &lt;em&gt;do&lt;/em&gt; get is the ability to use our fancy SerenityOS and yak-shaving-themed emotes when commenting/chatting the channel.&lt;/p&gt;
+
+&lt;p&gt;Finally, YouTube also allows people to send “super chats” during live streams. These are irregular, but this month I have received &lt;strong&gt;$50&lt;/strong&gt; across 8 super chats (also part of the $315).&lt;/p&gt;
+
+&lt;h3 id=&quot;tertiary-source-of-income-merch&quot;&gt;Tertiary source of income: Merch&lt;/h3&gt;
+
+&lt;p&gt;People kept asking me for SerenityOS related merch like t-shirts and tea cups, so I ended up making a &lt;a href=&quot;https://store.serenityos.org/&quot;&gt;print-on-demand store&lt;/a&gt; using Teespring. Afterwards, people have told me that they felt much more comfortable supporting the project if they got &lt;em&gt;something&lt;/em&gt; in return, “like a laptop sticker or something”. This makes perfect sense, but had not occurred to me before.&lt;/p&gt;
+
+&lt;p&gt;Monthly income from merch varies greatly. Last month it was &lt;strong&gt;$0&lt;/strong&gt; and so far this month it’s at &lt;strong&gt;$101&lt;/strong&gt;. People are not going to buy the same t-shirt over and over again, so you have to put in some effort into making new designs/products available.&lt;/p&gt;
+
+&lt;h3 id=&quot;non-income-sponsorednative-advertising&quot;&gt;Non-income: Sponsored/native advertising&lt;/h3&gt;
+
+&lt;p&gt;I’ve been approached to advertise a number of products, including (but not limited to) mobile games, VPN services, programming courses, zero-day exploit brokers, cloud platforms, etc.&lt;/p&gt;
+
+&lt;p&gt;So far I haven’t accepted any of these offers, as I made a rule for myself that I wouldn’t advertise something I’m not personally using.&lt;/p&gt;
+
+&lt;p&gt;The only thing that came somewhat close was when I started using the CLion IDE, the folks at JetBrains gave me three 1-year license codes to raffle out to my YouTube audience. Since I use CLion daily, both on and off YouTube, I would be happy to partner with them, but so far we’re just friends. :^)&lt;/p&gt;
+
+&lt;h3 id=&quot;non-income-venture-capital&quot;&gt;Non-income: Venture capital&lt;/h3&gt;
+
+&lt;p&gt;I’ve also been approached by a handful of folks from VC firms and while I have nothing against them, I’m not taking any meetings. I’m not interested in selling influence over the things I work on, and I’d much rather have many small donors who believe in me than one huge investor telling me what to do.&lt;/p&gt;
+
+&lt;h3 id=&quot;accounting-and-taxes&quot;&gt;Accounting and taxes&lt;/h3&gt;
+
+&lt;p&gt;All of the above is a fairly unusual way of making a living, so there isn’t a lot of guidance from Swedish tax authorities on how to report things, etc. I wanted to make sure that everything is done correctly, and that I pay all the taxes I’m supposed to, so I ended up hiring an accounting consultant.&lt;/p&gt;
+
+&lt;p&gt;They advised me to start a business, since it would make accounting much more straightforward, so in 2021 I formed &lt;strong&gt;Cerphus Software AB&lt;/strong&gt;. The name comes from the imaginary software company I had as a child. :^)&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;I was trying to come up with a nice name for my business, and while there were many good options, I decided to fulfill a childhood dream and turn my then-imaginary &amp;quot;software company&amp;quot; into a real one.&lt;br /&gt;&lt;br /&gt;I&amp;#39;ve just signed the documents forming Cerphus Software AB 👦💻🦌 &lt;a href=&quot;https://t.co/LK2lPfSw7Z&quot;&gt;https://t.co/LK2lPfSw7Z&lt;/a&gt;&lt;/p&gt;&amp;mdash; Andreas Kling (@awesomekling) &lt;a href=&quot;https://twitter.com/awesomekling/status/1409466985608585221?ref_src=twsrc%5Etfw&quot;&gt;June 28, 2021&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;I’m extremely glad that I hired an accountant. It cost a bit of money to get everything up and running, but we’ve settled into a comfortable routine, and they only need to spend a little bit of time per month on filing everything for me.&lt;/p&gt;
+
+&lt;p&gt;In fact, other than the occasional computer part, accounting services is the only real expense I have.&lt;/p&gt;
+
+&lt;h3 id=&quot;summary--closing-thoughts&quot;&gt;Summary &amp;amp; closing thoughts&lt;/h3&gt;
+
+&lt;p&gt;As you can see, the numbers above put me at roughly &lt;strong&gt;$4200&lt;/strong&gt; this month. My wife and I live a modest life, and while taxes in Sweden are high, this is enough to break even where we are right now.&lt;/p&gt;
+
+&lt;p&gt;I know I could make a lot more money doing something else, but having the freedom to work on SerenityOS (and Jakt and Ladybird) in peace is worth infinitely more.&lt;/p&gt;
+
+&lt;p&gt;It’s incredibly humbling to have so many people support me financially so that I can continue my work. My massive heartfelt thanks to everyone who has supported me in the past and present! ❤️&lt;/p&gt;
+
+&lt;p&gt;In the future, I would love to be able to pay more people to work on the project. Especially now that we’re making a truly independent open source cross-platform web browser, I think there’s a lot of room to grow. I don’t know exactly how to do this yet, but when/if there’s enough support, I will find a way to restructure so I can hire people.&lt;/p&gt;
+
+&lt;h3 id=&quot;my-links&quot;&gt;My Links&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://youtube.com/andreaskling&quot;&gt;YouTube&lt;/a&gt; |
+&lt;a href=&quot;https://patreon.com/awesomekling&quot;&gt;Patreon&lt;/a&gt; |
+&lt;a href=&quot;https://github.com/sponsors/awesomekling&quot;&gt;GitHub Sponsors&lt;/a&gt; |
+&lt;a href=&quot;https://paypal.me/awesomekling&quot;&gt;PayPal&lt;/a&gt; |
+&lt;a href=&quot;https://store.serenityos.org/&quot;&gt;Teespring&lt;/a&gt; |
+&lt;a href=&quot;https://etherscan.io/address/0xae3C5A0b9AD28F8C7B0d0c56C1109411dE4EC029&quot;&gt;Ethereum&lt;/a&gt;&lt;/p&gt;</content><author><name/></author><summary type="html">This post describes in detail how I support myself while working on the SerenityOS project.</summary></entry><entry><title type="html">Ladybird: A new cross-platform browser project</title><link href="https://awesomekling.github.io/Ladybird-a-new-cross-platform-browser-project/" rel="alternate" type="text/html" title="Ladybird: A new cross-platform browser project"><published>2022-09-12T00:00:00+00:00</published><updated>2022-09-12T00:00:00+00:00</updated><id>https://awesomekling.github.io/Ladybird-a-new-cross-platform-browser-project</id><content type="html" xml:base="https://awesomekling.github.io/Ladybird-a-new-cross-platform-browser-project/">&lt;p&gt;This post describes the Ladybird browser, based on the LibWeb and LibJS engines from SerenityOS.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Since starting the &lt;a href=&quot;https://serenityos.org&quot;&gt;SerenityOS&lt;/a&gt; project in 2018, my goal has been “to build a complete desktop operating system to eventually use as my daily driver”.&lt;/p&gt;
+
+&lt;p&gt;What started as 
+&lt;a href=&quot;https://awesomekling.github.io/I-quit-my-job-to-focus-on-SerenityOS-full-time/&quot;&gt;a little therapy project&lt;/a&gt; for myself has blossomed into a huge OSS community with hundreds of people working on it all over the world. We’ve gone from &lt;em&gt;nothing&lt;/em&gt; to a capable system with its own browser stack in the last 4 years.&lt;/p&gt;
+
+&lt;p&gt;Throughout this incredible expansion, my own goals have remained the same. Today I’m updating them a little bit: &lt;em&gt;in addition to building a new OS for myself, I’m also going to build a cross-platform web browser.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;a-browser-is-born&quot;&gt;A browser is born&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://awesomekling.github.io/assets/ladybird-thispost.png&quot; alt=&quot;This post in Ladybird&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://github.com/SerenityOS/ladybird&quot;&gt;Ladybird&lt;/a&gt; browser came to life on July 4th, when I recorded &lt;a href=&quot;https://www.youtube.com/watch?v=X38MTKHt3_I&quot;&gt;a video of myself making a simple Qt GUI for the LibWeb browser engine&lt;/a&gt;. Thanks to some recent work by &lt;a href=&quot;https://github.com/dexesttp&quot;&gt;Dex&lt;/a&gt; and others, we had LibWeb building on Linux in headless mode, so I decided to push ahead and build a simple GUI around it.&lt;/p&gt;
+
+&lt;p&gt;I originally imagined Ladybird as a debugging tool that made it easier for people to remain in Linux while working on LibWeb if they wanted to. It’s now two months later, and I find myself using Ladybird for most of my own browser development work.&lt;/p&gt;
+
+&lt;p&gt;At this point, we might as well tweak the scope from “browser engine for SerenityOS” to “cross-platform browser engine” and build something that many more people could potentially have use for some day. :^)&lt;/p&gt;
+
+&lt;p&gt;Note that &lt;a href=&quot;https://github.com/SerenityOS/serenity/commit/a67e823838943b31fb7cea68bd592093e197cf16&quot;&gt;LibWeb started back in 2019, then called LibHTML&lt;/a&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;commit a67e823838943b31fb7cea68bd592093e197cf16
+Author: Andreas Kling
+Date:   Sat Jun 15 18:55:47 2019 +0200
+
+    LibHTML: Start working on a simple HTML library.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/commit/f5476be702009968468731df5e23cdeb68fdb6e0&quot;&gt;LibJS began almost 9 months later, in 2020&lt;/a&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;commit f5476be702009968468731df5e23cdeb68fdb6e0
+Author: Andreas Kling
+Date:   Sat Mar 7 19:42:11 2020 +0100
+
+    LibJS: Start building a JavaScript engine for SerenityOS :^)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If you’re interested, you can see exactly how I started the LibJS engine,
+as the whole process was &lt;a href=&quot;https://www.youtube.com/watch?v=byNwCHc_IIM&quot;&gt;recorded for YouTube&lt;/a&gt; :^)&lt;/p&gt;
+
+&lt;h2 id=&quot;basic-architecture&quot;&gt;Basic architecture&lt;/h2&gt;
+
+&lt;p&gt;Both LibWeb and LibJS are novel engines. I have a personal history with the Qt and WebKit projects, so there’s some inspiration from them throughout, but all the code is new. Not to mention, hundreds of people have worked on the codebase since I started it, all adding their own personal influences, so it’s definitely its own thing.&lt;/p&gt;
+
+&lt;p&gt;The browser and libraries are all written in C++. (While our own memory-safe &lt;a href=&quot;https://awesomekling.github.io/Memory-safety-for-SerenityOS/&quot;&gt;Jakt&lt;/a&gt; language is in heavy development, it’s not yet ready for use in Ladybird.)&lt;/p&gt;
+
+&lt;p&gt;Here’s a rough breakdown of the current stack:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/ladybird&quot;&gt;Ladybird&lt;/a&gt;&lt;/strong&gt;: Tabbed browser GUI application&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibWeb&quot;&gt;LibWeb&lt;/a&gt;&lt;/strong&gt;: Web engine, multiple standards: HTML, DOM, CSS, SVG, …&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibJS&quot;&gt;LibJS&lt;/a&gt;&lt;/strong&gt;: The ECMAScript language, runtime library, garbage collector&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibGfx&quot;&gt;LibGfx&lt;/a&gt;&lt;/strong&gt;: 2D graphics, text rendering, image formats (PNG, JPG, GIF, …)&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibRegex&quot;&gt;LibRegex&lt;/a&gt;&lt;/strong&gt;: Regular expression engine&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibXML&quot;&gt;LibXML&lt;/a&gt;&lt;/strong&gt;: XML parser&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibWasm&quot;&gt;LibWasm&lt;/a&gt;&lt;/strong&gt;: WebAssembly parser and interpreter&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibUnicode&quot;&gt;LibUnicode&lt;/a&gt;&lt;/strong&gt;: Unicode support library&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibTextCodec&quot;&gt;LibTextCodec&lt;/a&gt;&lt;/strong&gt;: Text encoding conversion library&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibMarkdown&quot;&gt;LibMarkdown&lt;/a&gt;&lt;/strong&gt;: Markdown parser&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibCore&quot;&gt;LibCore&lt;/a&gt;&lt;/strong&gt;: Miscellaneous support functions (I/O, datetime, MIME data, …)&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;https://www.qt.io&quot;&gt;Qt&lt;/a&gt;&lt;/strong&gt;: Cross-platform GUI and networking&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;LibWeb has a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Platform&lt;/code&gt; layer where Ladybird injects Qt support code for event loops, timers, system font settings, etc. We currently use Qt for networking in Ladybird, as the multi-process RequestServer system is not available outside of SerenityOS yet. Likewise, Ladybird is currently single-process, while the SerenityOS browser is process-per-tab. All of this is temporary and will change over time.&lt;/p&gt;
+
+&lt;h2 id=&quot;license--business-model&quot;&gt;License &amp;amp; “business model”&lt;/h2&gt;
+
+&lt;p&gt;Ladybird and its engine are freely available under the &lt;a href=&quot;https://opensource.org/licenses/BSD-2-Clause&quot;&gt;2-clause BSD license&lt;/a&gt;. You cannot buy influence over the project, but you can improve the browser by participating in development!&lt;/p&gt;
+
+&lt;p&gt;I’m personally working on these projects &lt;a href=&quot;https://awesomekling.github.io/I-quit-my-job-to-focus-on-SerenityOS-full-time/&quot;&gt;full time since 2021&lt;/a&gt; thanks to my generous supporters. If you like what I’m doing, you can help me do more of it by supporting me on &lt;a href=&quot;https://github.com/sponsors/awesomekling&quot;&gt;GitHub Sponsors&lt;/a&gt;, &lt;a href=&quot;https://patreon.com/awesomekling&quot;&gt;Patreon&lt;/a&gt; or &lt;a href=&quot;https://paypal.me/awesomekling&quot;&gt;PayPal&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I would &lt;em&gt;love&lt;/em&gt; to have enough money to pay others to work on Ladybird some day. At the moment, I make just enough to support my own family, but if things should grow past the point where I’m comfortable, I will look into restructuring so I can hire more help.&lt;/p&gt;
+
+&lt;p&gt;In addition to myself, you can already directly sponsor &lt;a href=&quot;https://github.com/sponsors/linusg&quot;&gt;Linus Groh&lt;/a&gt; and &lt;a href=&quot;https://github.com/sponsors/AtkinsSJ&quot;&gt;Sam Atkins&lt;/a&gt; who both do a lot of excellent browser work.&lt;/p&gt;
+
+&lt;h2 id=&quot;a-note-on-maturity&quot;&gt;A note on maturity&lt;/h2&gt;
+
+&lt;p&gt;Please note that we’re still early in development, and many web platform features are missing or broken. It’s going to take a long time before Ladybird is ready for day-to-day browsing.&lt;/p&gt;
+
+&lt;p&gt;We’re very much in the “make it work” part of the “make it work, make it good, make it faster” cycle. As such, we tend to focus a lot more on correctness and feature support rather than optimization. Performance work happens mostly at the architectural level, although targeted optimizations that relieve particular pain points do also happen.&lt;/p&gt;
+
+&lt;p&gt;Please note that this is &lt;em&gt;not&lt;/em&gt; a product announcement or release, but more of a personal announcement that I’m adding &lt;em&gt;“a truly independent cross-platform browser”&lt;/em&gt; to my list of personal goals. It’s also an invitation to anyone who might be interested in working on a completely new browser. :^)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://awesomekling.github.io/assets/ladybird-acid3.png&quot; alt=&quot;Acid3 passes in Ladybird&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see above, we do pass the classic &lt;a href=&quot;https://en.wikipedia.org/wiki/Acid3&quot;&gt;Acid3 standards test&lt;/a&gt;, which covers a bunch of basic CSS layout features, and various DOM/HTML APIs. However, the test does not cover many of the features used on the web today (like CSS flexbox, CSS grid, etc.)&lt;/p&gt;
+
+&lt;p&gt;Fidelity of modern websites in Ladybird is steadily improving, but you’ll often see lots of layout and compatibility issues. For example, here’s Reddit right now:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://awesomekling.github.io/assets/ladybird-proggit.png&quot; alt=&quot;/r/programming in Ladybird&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;community-acknowledgment&quot;&gt;Community acknowledgment&lt;/h2&gt;
+
+&lt;p&gt;Sometimes people write articles saying I’m “single-handedly” doing this or that. I’m not! Both Ladybird and SerenityOS are community efforts that hundreds of awesome people are pouring their heart and soul into. I write a lot of code, and I do my best to cheerlead for the community, but I absolutely wouldn’t be here without them!&lt;/p&gt;
+
+&lt;h2 id=&quot;faq&quot;&gt;FAQ&lt;/h2&gt;
+
+&lt;h4 id=&quot;q-which-platforms-will-ladybird-support&quot;&gt;&lt;strong&gt;Q: Which platforms will Ladybird support?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;So far, we’ve seen it running on Linux, macOS, Windows (WSL) and Android. The Linux version is definitely the most tested.&lt;/p&gt;
+
+&lt;p&gt;Since the libraries come from SerenityOS, they’re already self-contained, and we only need Qt to help us with GUI and networking. This makes the browser quite portable, and in &lt;em&gt;theory&lt;/em&gt; we could run wherever Qt runs. In practice, we’ll see what happens.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-when-will-ladybird-be-ready-for-use&quot;&gt;&lt;strong&gt;Q: When will Ladybird be ready for use?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;I don’t know. It depends on what you consider “ready”, but I’d expect a few more years of development before we have something solid. You can accelerate this process by participating in development and/or supporting our developers financially.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-how-can-i-participate-in-development&quot;&gt;&lt;strong&gt;Q: How can I participate in development?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;The most important work ahead of us is fixing bugs and adding missing features to LibWeb and LibJS. If you try opening your favorite website in Ladybird, you will find bugs! To participate in development, figure out the bug and fix it. Development discussion primarily happens in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#browser&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#js&lt;/code&gt; channels on &lt;a href=&quot;https://discord.gg/serenityos&quot;&gt;our Discord server&lt;/a&gt;, so come join us there.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-i-found-a-website-that-does-not-work-where-do-i-report-this&quot;&gt;&lt;strong&gt;Q: I found a website that does not work! Where do I report this?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;At this point, there are &lt;em&gt;way&lt;/em&gt; more websites that don’t work than websites that do. We’re not yet at the point where reporting individual site issues makes sense.&lt;/p&gt;
+
+&lt;p&gt;That said, if you’re going to actually work on fixing the problems, feel free to track them using GitHub issues if that helps you.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-do-you-have-a-javascript-jit-compiler&quot;&gt;&lt;strong&gt;Q: Do you have a JavaScript JIT compiler?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;No, we have a traditional AST interpreter that is being replaced by a bytecode VM. You can track the &lt;a href=&quot;https://libjs.dev/test262/&quot;&gt;LibJS test262 score for both backends here&lt;/a&gt;. I’m not convinced that the complexity and security burdens of a JavaScript JIT are reasonable, and given recent developments like Microsoft Edge’s &lt;a href=&quot;https://microsoftedge.github.io/edgevr/posts/Super-Duper-Secure-Mode/&quot;&gt;Super Duper Secure Mode&lt;/a&gt;, I’m interested in pushing for best-effort JIT-less performance while keeping the codebase simple.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-i-opened-acid3-in-my-browser-and-i-only-got-97100-whats-wrong&quot;&gt;&lt;strong&gt;Q: I opened Acid3 in my browser and I only got 97/100. What’s wrong?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;You’re using an older version of the test that does not reflect settled web standards. The up-to-date version is here: &lt;a href=&quot;http://wpt.live/acid/acid3/test.html&quot;&gt;http://wpt.live/acid/acid3/test.html&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-why-bother-you-cant-make-a-new-browser-engine-without-billions-of-dollars-and-hundreds-of-staff&quot;&gt;&lt;strong&gt;Q: Why bother? You can’t make a new browser engine without billions of dollars and hundreds of staff.&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;Sure you can. Don’t listen to armchair defeatists who never worked on a browser.&lt;/p&gt;
+
+&lt;h2 id=&quot;contact&quot;&gt;Contact&lt;/h2&gt;
+
+&lt;p&gt;If you’re interested in working on Ladybird, LibWeb, LibJS, or any part of the supporting stack, you can find us on the &lt;a href=&quot;https://discord.gg/serenityos&quot;&gt;SerenityOS Discord&lt;/a&gt;. :^)&lt;/p&gt;</content><author><name/></author><summary type="html">This post describes the Ladybird browser, based on the LibWeb and LibJS engines from SerenityOS.</summary></entry><entry><title type="html">Memory safety for SerenityOS</title><link href="https://awesomekling.github.io/Memory-safety-for-SerenityOS/" rel="alternate" type="text/html" title="Memory safety for SerenityOS"><published>2022-05-19T00:00:00+00:00</published><updated>2022-05-19T00:00:00+00:00</updated><id>https://awesomekling.github.io/Memory-safety-for-SerenityOS</id><content type="html" xml:base="https://awesomekling.github.io/Memory-safety-for-SerenityOS/">&lt;p&gt;This post describes how we’re going to achieve memory safety in SerenityOS.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;After visiting my nephews for easter, I spent the drive back home thinking about the future they will grow up in. What will their computers look like? What kind of software will they use? Will any of my code still be running?&lt;/p&gt;
+
+&lt;p&gt;When I started the &lt;a href=&quot;https://github.com/SerenityOS/serenity&quot;&gt;SerenityOS&lt;/a&gt; project in 2018, I used C++ for everything, simply because it was the language I was most comfortable with. It was the right choice at the time, as it allowed me to bootstrap the project (and a community) very quickly and efficiently.&lt;/p&gt;
+
+&lt;p&gt;In the time since then, SerenityOS has grown larger and more complex, and we recently passed 700 individual contributors! It’s &lt;em&gt;far&lt;/em&gt; from a one-man hobby project at this point.&lt;/p&gt;
+
+&lt;p&gt;When thinking about the future, I would love for SerenityOS to be around in 30 years, when my nephews are my age (and I’m an old greybeard!)&lt;/p&gt;
+
+&lt;p&gt;While I believe our community and system architectures are strong enough to sustain development for years to come, I no longer believe that C++ is the right language for us.&lt;/p&gt;
+
+&lt;p&gt;As much as I enjoy using it, the lack of memory safety in C++ means that we’ll always have bugs that could have been avoided. I’m tired of this, and I don’t want to spend the next decades of my life debugging more avoidable bugs.&lt;/p&gt;
+
+&lt;p&gt;To improve the longevity of SerenityOS, we need to make the system memory-safe.&lt;/p&gt;
+
+&lt;h2 id=&quot;so-how-do-we-achieve-memory-safety&quot;&gt;So how do we achieve memory safety?&lt;/h2&gt;
+
+&lt;p&gt;I spent a few weeks exploring the current landscape of memory-safe systems languages. I learned a handful of new ones so I could see how they work, and understand what they do to achieve safety.&lt;/p&gt;
+
+&lt;p&gt;I tried rewriting parts of SerenityOS in different languages, and while there were some interesting options, they all came with idiosyncratic limitations and dependencies that made them unsuitable for adoption.&lt;/p&gt;
+
+&lt;p&gt;Since the beginning, SerenityOS has been about making everything ourselves, for fun, for love of programming, for control, for performance, for vertical integration, etc.&lt;/p&gt;
+
+&lt;p&gt;In fact, the main thing we haven’t made ourselves is a programming language.&lt;/p&gt;
+
+&lt;h2 id=&quot;yak-baiting-a-friend&quot;&gt;Yak-baiting a friend&lt;/h2&gt;
+
+&lt;p&gt;Throughout this process, I’d been talking to &lt;a href=&quot;https://twitter.com/jntrnr&quot;&gt;my friend JT&lt;/a&gt; and sharing the struggle I had with the various languages. After talking their ear off about why some language wasn’t a good fit, I got this intriguing message:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://awesomekling.github.io/assets/jt_yakbait.png&quot; alt=&quot;JT saying &amp;quot;So... I'm totally yak baited at this point&amp;quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;font size=&quot;2&quot;&gt;&lt;b&gt;NOTE: &quot;yakbait&quot; is &lt;a href=&quot;https://github.com/SerenityOS/yaksplained#yakbait-nerd-snipe&quot;&gt;SerenityOS slang&lt;/a&gt; for baiting someone into shaving your yak&lt;/b&gt;&lt;/font&gt;
+
+&lt;p&gt;JT went on to suggest that instead of settling for an existing language, we could design a new language by simply stealing the stuff we liked from other languages, and skipping the stuff we didn’t like or need.&lt;/p&gt;
+
+&lt;p&gt;To simplify incremental adoption, the new language would transpile to C++, which could then easily interact with our existing code.&lt;/p&gt;
+
+&lt;p&gt;I was hooked. &lt;em&gt;Transpiling to C++!?&lt;/em&gt; I didn’t even realize that was an option!&lt;/p&gt;
+
+&lt;p&gt;We decided to name it &lt;strong&gt;Jakt&lt;/strong&gt; (&lt;a href=&quot;https://en.wiktionary.org/wiki/jakt#Swedish&quot;&gt;Swedish for “hunt”&lt;/a&gt;). What followed was 2 weeks of intense compiler bootstrapping with JT.&lt;/p&gt;
+
+&lt;p&gt;The language is now at a point where I feel comfortable telling you that we’re working on it, but it’s still a &lt;strong&gt;&lt;em&gt;long&lt;/em&gt;&lt;/strong&gt; way from “ready”.&lt;/p&gt;
+
+&lt;h2 id=&quot;jakt&quot;&gt;Jakt&lt;/h2&gt;
+
+&lt;p&gt;So, let’s take a look at &lt;strong&gt;Jakt&lt;/strong&gt;! It’s…&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Object-oriented&lt;/li&gt;
+  &lt;li&gt;Safe by default&lt;/li&gt;
+  &lt;li&gt;Paranoid about integer overflow &amp;amp; truncation&lt;/li&gt;
+  &lt;li&gt;Immutable by default&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Young and immature, not ready for anything serious&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The current Jakt compiler is written in Rust and spits out C++. Development happens in the &lt;a href=&quot;https://github.com/SerenityOS/jakt&quot;&gt;jakt&lt;/a&gt; repository on GitHub.&lt;/p&gt;
+
+&lt;h3 id=&quot;a-little-jakt-program&quot;&gt;A little Jakt program&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class Language {
+    name: String
+    age_in_days: i64
+    
+    function greet(this) {
+        println(&quot;Hello from {}!&quot;, this.name)
+        println(&quot;I am this many days old:&quot;)
+        for i in 0..this.age_in_days {
+            println(&quot;:^)&quot;)
+        }
+    }
+}
+
+function main() {
+    let jakt = Language(name: &quot;Jakt&quot;, age_in_days: 14)
+    jakt.greet()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;memory-safety&quot;&gt;Memory safety&lt;/h3&gt;
+
+&lt;p&gt;So how does Jakt achieve memory safety? Through a combination of these techniques:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Automatic reference counting of all &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;class&lt;/code&gt; instances.&lt;/li&gt;
+  &lt;li&gt;Runtime bounds checking of arrays and slices.&lt;/li&gt;
+  &lt;li&gt;No dereferencing raw pointers in safe (default) code. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unsafe&lt;/code&gt; keyword for situations where it’s necessary.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;weak&lt;/code&gt; references that get emptied on pointee destruction.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;roadmap&quot;&gt;Roadmap&lt;/h2&gt;
+
+&lt;p&gt;Here’s a &lt;em&gt;very&lt;/em&gt; fluffy 10 year roadmap for this project:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Bring up basic language features.&lt;/li&gt;
+  &lt;li&gt;Improve static analysis in the compiler.&lt;/li&gt;
+  &lt;li&gt;Write an auto-formatter for Jakt.&lt;/li&gt;
+  &lt;li&gt;Rewrite the Jakt compiler in Jakt.&lt;/li&gt;
+  &lt;li&gt;Integrate Jakt with the SerenityOS build system.&lt;/li&gt;
+  &lt;li&gt;Incrementally rewrite SerenityOS in Jakt.&lt;/li&gt;
+  &lt;li&gt;Stop transpiling to C++ and generate native code directly.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;faq&quot;&gt;FAQ&lt;/h2&gt;
+
+&lt;h4 id=&quot;q-why-not-just-use-an-existing-language&quot;&gt;&lt;strong&gt;Q: Why not just use an existing language?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;I have nothing bad to say about other languages. This is simply the option that makes the most sense for SerenityOS, which is fundamentally about having fun and implementing everything ourselves.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-why-does-jakt-have-flaws&quot;&gt;&lt;strong&gt;Q: Why does Jakt have flaws?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;It’s two weeks old.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-when-will-jakt-be-done-will-it-hit-10&quot;&gt;&lt;strong&gt;Q: When will Jakt be done? Will it hit 1.0?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;It will evolve with SerenityOS, so as SerenityOS matures no doubt Jakt will as well.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-why-arc-automatic-reference-counting-instead-of-a-borrow-checker&quot;&gt;&lt;strong&gt;Q: Why ARC (automatic reference counting) instead of a borrow checker?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;ARC allows the language to feel lightweight without constantly asking the user to make decisions about memory management.&lt;/p&gt;
+
+&lt;p&gt;There’s a little bit of overhead from maintaining reference counts, but we’re betting that the comfort gained will outweigh the cost.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-what-about-iterator-invalidation&quot;&gt;&lt;strong&gt;Q: What about iterator invalidation?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;We’re discussing a number of approaches, but have not settled on one yet.&lt;/p&gt;
+
+&lt;h4 id=&quot;q-what-about-thread-safety&quot;&gt;&lt;strong&gt;Q: What about thread safety?&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;Jakt currently does nothing to enforce thread safety. We have not started looking at this area yet.&lt;/p&gt;
+
+&lt;h2 id=&quot;contact&quot;&gt;Contact&lt;/h2&gt;
+
+&lt;p&gt;If you’re interested in working on Jakt, you can find us on the &lt;a href=&quot;https://discord.gg/serenityos&quot;&gt;SerenityOS Discord&lt;/a&gt;. :^)&lt;/p&gt;</content><author><name/></author><summary type="html">This post describes how we’re going to achieve memory safety in SerenityOS.</summary></entry><entry><title type="html">I quit my job to focus on SerenityOS full time</title><link href="https://awesomekling.github.io/I-quit-my-job-to-focus-on-SerenityOS-full-time/" rel="alternate" type="text/html" title="I quit my job to focus on SerenityOS full time"><published>2021-05-28T00:00:00+00:00</published><updated>2021-05-28T00:00:00+00:00</updated><id>https://awesomekling.github.io/I-quit-my-job-to-focus-on-SerenityOS-full-time</id><content type="html" xml:base="https://awesomekling.github.io/I-quit-my-job-to-focus-on-SerenityOS-full-time/">&lt;p&gt;Hello friends! :^) Let me tell you a story…&lt;/p&gt;
+
+&lt;p&gt;It was October 2018 and I had just completed a 3-month rehab program at a state addiction clinic in Sweden. I was unemployed, staying with family, and had basically nothing going on.&lt;/p&gt;
+
+&lt;p&gt;With no drugs or other vices to pass the time, the days seemed impossibly long. I struggled to find activities to fill them. I enrolled in school for a while, but it wasn’t for me this time either. Eventually I turned to programming, since it’s always been my big interest in life.&lt;/p&gt;
+
+&lt;p&gt;Until that point, my career had been focused on web browsers (WebKit at Apple &amp;amp; Nokia). However, I had always been interested in low-level things so I began &lt;a href=&quot;http://www.serenityos.org/happy/1st/&quot;&gt;tinkering&lt;/a&gt; with some of that. I wrote a little ELF executable parser.. And an Ext2 filesystem browser.. And a little GUI framework with an event loop..&lt;/p&gt;
+
+&lt;p&gt;Out of this tinkering, an operating system began to take shape. I chose the name &lt;a href=&quot;https://www.serenityos.org/&quot;&gt;&lt;strong&gt;SerenityOS&lt;/strong&gt;&lt;/a&gt; because I wanted to always remember the &lt;a href=&quot;https://en.wikipedia.org/wiki/Serenity_Prayer&quot;&gt;Serenity Prayer&lt;/a&gt;. I was quite worried about my future at the time, and I figured that this name would help me stay on the good path.&lt;/p&gt;
+
+&lt;p&gt;My general idea was to build my own dream system for daily use. It would be a combination of my two favorite computing paradigms: the 1990s GUI and the no-nonsense command-line of late-2000s Unix.&lt;/p&gt;
+
+&lt;p&gt;While at Apple, I really enjoyed how most of the software was made under one roof. Not only did this enable super tight integrations, but it made the system extremely hackable for its developers, and you could always find &lt;em&gt;the&lt;/em&gt; experts somewhere nearby. I thought I could try bringing that same feeling to the open source world, so I decided that SerenityOS wasn’t going to be a patchwork of packages – no, we’re building everything ourselves! From kernel to web browser, and everything in between.&lt;/p&gt;
+
+&lt;p&gt;So I started hacking, day after day. Week after week. Month after month. The project became my rock as I slowly learned to navigate life again.&lt;/p&gt;
+
+&lt;p&gt;I decided to record some of my programming sessions and posted them to &lt;a href=&quot;https://www.youtube.com/andreaskling&quot;&gt;my YouTube channel&lt;/a&gt;. I was &lt;em&gt;very&lt;/em&gt; uncomfortable with this at first, but I kept at it since I liked the feeling of just being myself and letting people see me, instead of putting on a mask and pretending everything was fine.&lt;/p&gt;
+
+&lt;p&gt;Over time, more people discovered my little project (and my little channel), and many found something that really resonated with them. Since those humble beginnings, it has grown into a vibrant open source community with hundreds of &lt;a href=&quot;https://github.com/SerenityOS/serenity/graphs/contributors&quot;&gt;contributors&lt;/a&gt; from all over the world. To say that this has been an amazing journey would be an understatement, yet in many ways we are still only getting started.&lt;/p&gt;
+
+&lt;p&gt;Until now, I’ve been juggling SerenityOS as a side project while also having a full time programming job.&lt;/p&gt;
+
+&lt;p&gt;That all changes today! I just wrapped up my last day at work, and I’m no longer employed. Instead, I will be focusing on SerenityOS full time starting &lt;em&gt;right now&lt;/em&gt;! :^)&lt;/p&gt;
+
+&lt;p&gt;This is all made possible by the extremely generous support I’m receiving from folks via &lt;a href=&quot;https://patreon.com/awesomekling&quot;&gt;Patreon&lt;/a&gt;, &lt;a href=&quot;https://github.com/sponsors/awesomekling&quot;&gt;GitHub Sponsors&lt;/a&gt; and &lt;a href=&quot;https://paypal.me/awesomekling&quot;&gt;PayPal&lt;/a&gt;! I feel super fortunate to have the trust &amp;amp; support of so many people. Thank you all so much!!&lt;/p&gt;
+
+&lt;p&gt;At the time of writing, I’m receiving a bit over $2000 in donations per month. There’s also a modest amount from &lt;a href=&quot;https://youtube.com/c/andreaskling&quot;&gt;YouTube&lt;/a&gt; (say $150/month), as well as sales of &lt;a href=&quot;https://serenityos.creator-spring.com/&quot;&gt;SerenityOS merchandise&lt;/a&gt; (another $100).&lt;/p&gt;
+
+&lt;p&gt;This isn’t yet enough to fully sustain me and my family, but it’s close enough that I decided it’s time to take a chance and see what happens!&lt;/p&gt;
+
+&lt;p&gt;As you probably understand, I’m not trying to get rich by doing this. I’m just a human being trying to stay sane and healthy, and it just so happens that my therapy/self-care project resonates with thousands of people, many of whom want to support it and see where it goes.&lt;/p&gt;
+
+&lt;p&gt;It’s truly an honor to find myself in this position, and I promise that I will continue doing my best. Thank you so much for reading this post. I’m gonna have a nap and then we’ll start fresh in the morning! :^)&lt;/p&gt;
+
+&lt;p&gt;Andreas Kling&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://awesomekling.github.io/assets/writing-this-post.png&quot; alt=&quot;Screenshot of editing this post in today's build of SerenityOS&quot; /&gt;&lt;/p&gt;</content><author><name/></author><summary type="html">Hello friends! :^) Let me tell you a story…</summary></entry><entry><title type="html">Smarter C/C++ inlining with __attribute__((flatten))</title><link href="https://awesomekling.github.io/Smarter-C++-inlining-with-attribute-flatten/" rel="alternate" type="text/html" title="Smarter C/C++ inlining with __attribute__((flatten))"><published>2020-04-27T00:00:00+00:00</published><updated>2020-04-27T00:00:00+00:00</updated><id>https://awesomekling.github.io/Smarter-C++-inlining-with-attribute-flatten</id><content type="html" xml:base="https://awesomekling.github.io/Smarter-C++-inlining-with-attribute-flatten/">&lt;p&gt;This post describes a compile-time technique for getting the benefits of aggressive inlining in hot code while protecting cool code from its downsides.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Hello friends!&lt;/p&gt;
+
+&lt;p&gt;A common technique for improving performance of hot code in C/C++ is to inline the hottest functions called. While it often helps make things faster, there are some downsides to inlining. Let’s quickly review the pros &amp;amp; cons:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Pros of inlining:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Removes function call overhead (yay!)&lt;/li&gt;
+  &lt;li&gt;May reveal additional optimization opportunities (sometimes yay!)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Cons of inlining:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Increases program size (boo!)&lt;/li&gt;
+  &lt;li&gt;May reduce cache locality (sometimes boo!)&lt;/li&gt;
+  &lt;li&gt;May increase build times (boo!)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When compiling with optimizations, the compiler usually makes pretty reasonable choices about which functions to inline. It uses a combination of heuristics, with function size being the most important one AFAIK.&lt;/p&gt;
+
+&lt;h2 id=&quot;manual-inlining-with-__attribute__always_inline&quot;&gt;Manual inlining with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;__attribute__((always_inline))&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;However, sometimes &lt;em&gt;you&lt;/em&gt; know some code is &lt;strong&gt;hot&lt;/strong&gt; and the compiler has no idea. This is usually when &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;__attribute__((always_inline))&lt;/code&gt; comes in. If you add this attribute to a function, that function will now be inlined wherever it is called, even when the compiler would normally have dismissed it as too large. &lt;em&gt;(Note that there are exceptions to this, and some functions cannot be inlined.)&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Here’s a contrived example of a very common scenario in larger codebases:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;__attribute__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;always_inline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;inline&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// this code is always inlined at the call site&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hot_code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// the program spends &amp;gt;80% of its runtime in this function&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above is all well and good, but what happens when &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do_thing()&lt;/code&gt; is a popular function that gets called a lot?&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;cool_code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// the program spends &amp;lt;5% of its runtime in this function&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cool_code()&lt;/code&gt; function gets three copies of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do_thing()&lt;/code&gt; inlined into it, invoking all of the cons from the list we made above (larger program size, worse cache locality, longer build time.)&lt;/p&gt;
+
+&lt;h2 id=&quot;targeted-flattening-instead-of-global-inlining&quot;&gt;Targeted flattening instead of global inlining&lt;/h2&gt;
+
+&lt;p&gt;Now for the trick! Both GCC and Clang support &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;__attribute__((flatten))&lt;/code&gt;. Putting it on a function causes all of its callees to be inlined into it. It’s dead simple.&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// this code is not always inlined at the call site&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;__attribute__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;flatten&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hot_code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// the program spends &amp;gt;80% of its runtime in this function&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;call_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;// inlined!&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;// inlined!&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;other_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;// also inlined!&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;cool_code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// the program spends &amp;lt;5% of its runtime in this function&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;            &lt;span class=&quot;c1&quot;&gt;// not inlined!&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;            &lt;span class=&quot;c1&quot;&gt;// not inlined!&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;            &lt;span class=&quot;c1&quot;&gt;// guess!&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;Note: Functions with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;__attribute__((noinline))&lt;/code&gt; will not be inlined. The same goes for functions where the compiler can’t see the body.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;in-conclusion&quot;&gt;In conclusion&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;__attribute__((flatten))&lt;/code&gt; lets you opt in to the pros of aggressive inlining on a per-function basis, while protecting the rest of your program from the cons!&lt;/p&gt;
+
+&lt;p&gt;Until next time! :^)&lt;/p&gt;</content><author><name/></author><summary type="html">This post describes a compile-time technique for getting the benefits of aggressive inlining in hot code while protecting cool code from its downsides.</summary></entry><entry><title type="html">Introduction to SerenityOS GUI programming</title><link href="https://awesomekling.github.io/Introduction-to-SerenityOS-GUI-programming/" rel="alternate" type="text/html" title="Introduction to SerenityOS GUI programming"><published>2020-03-03T00:00:00+00:00</published><updated>2020-03-03T00:00:00+00:00</updated><id>https://awesomekling.github.io/Introduction-to-SerenityOS-GUI-programming</id><content type="html" xml:base="https://awesomekling.github.io/Introduction-to-SerenityOS-GUI-programming/">&lt;p&gt;This post will give you a quick intro to the basics of GUI programming for &lt;a href=&quot;https://github.com/SerenityOS/serenity&quot;&gt;SerenityOS&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Hello friends! Let’s cut to the chase and go straight to some code!&lt;/p&gt;
+
+&lt;h3 id=&quot;the-smallest-possible-gui-program&quot;&gt;The smallest possible GUI program&lt;/h3&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;LibGUI/Application.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Application&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above program creates a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Application&lt;/code&gt; object and enters the main event loop. That’s it. It then does nothing until you interrupt it with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;^C&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Details:&lt;/em&gt;&lt;/strong&gt; &lt;em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Application&lt;/code&gt; is created on the stack in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;main()&lt;/code&gt; and will exist throughout the program’s lifetime. It can be reached globally as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Application::the()&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;lets-add-a-window&quot;&gt;Let’s add a window!&lt;/h3&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;LibGUI/Application.h&amp;gt;
+#include &amp;lt;LibGUI/Window.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Application&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;construct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;My window!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_rect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above program creates a window and sets its title, screen location and size. It then displays the window on screen and enters the main event loop.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://awesomekling.github.io/assets/libgui-intro-2.png&quot; alt=&quot;Example 2&quot; class=&quot;fancy-image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Details:&lt;/em&gt;&lt;/strong&gt; &lt;em&gt;Windows are represented by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Window&lt;/code&gt;, which inherits from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Core::Object&lt;/code&gt;, a foundational building block of the Serenity userspace programming environment. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Core::Object&lt;/code&gt; is reference-counted, and is constructed using its &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;construct()&lt;/code&gt; helper. The value you get back is a reference-counting smart pointer, in this case a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullRefPtr&amp;lt;GUI::Window&amp;gt;&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;lets-add-a-button&quot;&gt;Let’s add a button!&lt;/h3&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;LibGUI/Application.h&amp;gt;
+#include &amp;lt;LibGUI/Button.h&amp;gt;
+#include &amp;lt;LibGUI/Window.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Application&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;construct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;My window!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_rect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;button&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_main_widget&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Button&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;OK&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;button&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;on_click&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;quit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above program creates a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Button&lt;/code&gt; widget and makes it the &lt;em&gt;main widget&lt;/em&gt; of the window. We install a callback for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;on_click&lt;/code&gt; hook that calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Application::quit()&lt;/code&gt;. Clicking the button exits the event loop and terminates the program.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://awesomekling.github.io/assets/libgui-intro-3.png&quot; alt=&quot;Example 3&quot; class=&quot;fancy-image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Details:&lt;/em&gt;&lt;/strong&gt; &lt;em&gt;A window’s main widget is the root of its widget tree. It fills up all the space in the window (and follows along with resizing.) The main widget is owned by the window.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;lets-use-a-layout-to-have-more-than-one-widget&quot;&gt;Let’s use a layout to have more than one widget!&lt;/h3&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;LibGUI/Application.h&amp;gt;
+#include &amp;lt;LibGUI/BoxLayout.h&amp;gt;
+#include &amp;lt;LibGUI/Button.h&amp;gt;
+#include &amp;lt;LibGUI/Label.h&amp;gt;
+#include &amp;lt;LibGUI/Widget.h&amp;gt;
+#include &amp;lt;LibGUI/Window.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Application&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;construct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;My window!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_rect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;widget&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_main_widget&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Widget&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;widget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_fill_with_background_color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;widget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_layout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;VerticalBoxLayout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;widget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Label&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;widget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Button&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Friends!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above program uses a generic &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Widget&lt;/code&gt; as the window’s main widget, and assigns a &lt;em&gt;layout&lt;/em&gt; to it. LibGUI currently offers two layouts: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HorizontalBoxLayout&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;VerticalBoxLayout&lt;/code&gt;. Once a layout is assigned to a widget, it will manage the location and shape of that widget’s immediate children.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://awesomekling.github.io/assets/libgui-intro-4.png&quot; alt=&quot;Example 4&quot; class=&quot;fancy-image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We add two children to the main widget, a label and button, causing them to get laid out vertically in insertion order, label up top, button down below.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Details:&lt;/em&gt;&lt;/strong&gt; &lt;em&gt;Using the layout system is optional (but preferred due to its simplicity.) It’s also possible to place and size children directly by calling &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Widget::set_relative_rect(x, y, width, height)&lt;/code&gt; on them. To build complex user interfaces, layouts can be nested arbitrarily by adding layouts to the children of the main widget, etc. Widgets have size policies and preferred size that can be used to adjust layout. Widgets own their children.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;okay-lets-make-a-custom-widget&quot;&gt;Okay, let’s make a custom widget!&lt;/h3&gt;
+
+&lt;p&gt;For our final example, let’s make something a little more advanced…&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;LibGUI/Application.h&amp;gt;
+#include &amp;lt;LibGUI/Painter.h&amp;gt;
+#include &amp;lt;LibGUI/Widget.h&amp;gt;
+#include &amp;lt;LibGUI/Window.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MyWidget&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Widget&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;C_OBJECT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MyWidget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;private:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;MyWidget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;paint_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PaintEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mousedown_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MouseEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;Vector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Gfx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m_points&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MyWidget&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;paint_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PaintEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Painter&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;painter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;painter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fill_rect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Gfx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;White&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;painter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;draw_text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;:)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Gfx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TextAlignment&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Center&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;Gfx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last_point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m_points&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;painter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;draw_line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;last_point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Gfx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Red&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;last_point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MyWidget&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mousedown_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MouseEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;m_points&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Application&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;construct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;My window!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_rect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_main_widget&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MyWidget&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above program defines a custom &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Widget&lt;/code&gt; subclass called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MyWidget&lt;/code&gt;. It implements its own behavior for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mousedown&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;paint&lt;/code&gt; events. When you click somewhere in the window, it will draw a line from the last place you clicked to the new place you clicked.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://awesomekling.github.io/assets/libgui-intro-5.png&quot; alt=&quot;Example 5&quot; class=&quot;fancy-image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The SerenityOS GUI is event-driven, and most of the logic is about widgets handling events. The following virtual functions from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Widget&lt;/code&gt; can be overridden to handle specific events:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;change_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;child_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Core&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ChildEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;context_menu_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ContextMenuEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;doubleclick_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MouseEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;drag_move_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DragEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;drop_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DropEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;enter_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Core&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;focusin_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Core&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;focusout_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Core&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hide_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HideEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;keydown_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;KeyEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;keyup_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;KeyEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;leave_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Core&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;mousedown_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MouseEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;mousemove_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MouseEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;mouseup_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MouseEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;mousewheel_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MouseEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;paint_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PaintEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;resize_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ResizeEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;show_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GUI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ShowEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Details:&lt;/em&gt;&lt;/strong&gt; &lt;em&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C_OBJECT&lt;/code&gt; macro is used in all &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Core::Object&lt;/code&gt; subclasses to insert some shared functionality at the preprocessing stage. The call to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUI::Widget::update()&lt;/code&gt; in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mousedown_event&lt;/code&gt; is what causes the widget to be repainted. Internally, this sends an invalidation rect to the WindowServer program, which will let us know when it’s time to paint. When the time comes, we get a call to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;paint_event&lt;/code&gt; and can paint our widget however we like.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;And that’s it for today! I hope this gave you some idea of how GUI programming is done on SerenityOS.&lt;/p&gt;
+
+&lt;p&gt;If you would like to know more, I recommend looking at some of the many &lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Applications&quot;&gt;applications&lt;/a&gt;, &lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Games&quot;&gt;games&lt;/a&gt; and &lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Demos&quot;&gt;demos&lt;/a&gt;. It’s also handy to look at the &lt;a href=&quot;https://github.com/SerenityOS/serenity/tree/master/Userland/Libraries/LibGUI&quot;&gt;LibGUI source code itself.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that the system and its various libraries are under constant development, so the above may no longer be accurate by the time you read this. Come talk to us in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#serenityos&lt;/code&gt; on the Freenode IRC network if you find bugs or have questions!&lt;/p&gt;
+
+&lt;p&gt;Thank you for stopping by! Until next time :^)&lt;/p&gt;</content><author><name/></author><summary type="html">This post will give you a quick intro to the basics of GUI programming for SerenityOS.</summary></entry><entry><title type="html">pledge() and unveil() in SerenityOS</title><link href="https://awesomekling.github.io/pledge-and-unveil-in-SerenityOS/" rel="alternate" type="text/html" title="pledge() and unveil() in SerenityOS"><published>2020-01-22T00:00:00+00:00</published><updated>2020-01-22T00:00:00+00:00</updated><id>https://awesomekling.github.io/pledge-and-unveil-in-SerenityOS</id><content type="html" xml:base="https://awesomekling.github.io/pledge-and-unveil-in-SerenityOS/">&lt;p&gt;This post describes the implementation and use of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge()&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt; in &lt;a href=&quot;https://github.com/SerenityOS/serenity&quot;&gt;SerenityOS&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;SerenityOS is proud to be the second operating system to adopt the excellent &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge()&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt; mechanisms from the &lt;a href=&quot;https://www.openbsd.org/&quot;&gt;OpenBSD project&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you’re not familiar, let me introduce them:&lt;/p&gt;
+
+&lt;h2 id=&quot;pledge-i-promise-i-will-only-do-x-y-and-z&quot;&gt;pledge(): “I promise I will only do X, Y and Z”&lt;/h2&gt;
+
+&lt;p&gt;Most programs have a pretty good idea of what they’ll be doing in their lifetime. They’ll open some files, read some inputs, generate some outputs. Maybe they’ll connect to a server over the Internet to download something. Maybe they’ll write something to disk.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge()&lt;/code&gt; allows programs to declare up front what they’ll be doing. Functionality is divided into a reasonably small number of “promises” that can be combined. Each promise is basically a subset of the kernel’s syscalls.&lt;/p&gt;
+
+&lt;p&gt;Once you’ve pledged a set of promises, you can’t add more promises, only remove ones you’ve already made.&lt;/p&gt;
+
+&lt;p&gt;If a program then attempts to do something that it said it wouldn’t be doing, the kernel immediately terminates the program.&lt;/p&gt;
+
+&lt;p&gt;The prototype looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;pledge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;promises&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;execpromises&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The two arguments are space-separated lists of strings. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;promises&lt;/code&gt; take effect right away, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;execpromises&lt;/code&gt; take effect if/when the process uses &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;exec()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Here’s an example from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/bin/cat&lt;/code&gt; program in SerenityOS:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pledge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;stdio rpath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;nullptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;perror&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;pledge&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, the very first thing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cat&lt;/code&gt; does is inform the kernel that we’re only gonna be doing &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdio&lt;/code&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpath&lt;/code&gt;&lt;/strong&gt; stuff from now on. Pretty simple!&lt;/p&gt;
+
+&lt;p&gt;So what are the different promises we can make? Here’s the current list from the SerenityOS manual page for &lt;a href=&quot;https://github.com/SerenityOS/serenity/blob/master/Base/usr/share/man/man2/pledge.md&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge(2)&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdio&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Basic I/O, memory allocation, information about self, various non-destructive syscalls&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thread&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;The POSIX threading API&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Ability to change UID/GID&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tty&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;TTY related functionality&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;proc&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Process and scheduling related functionality&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;exec&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;exec(2)&lt;/code&gt; syscall&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unix&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;UNIX local domain sockets&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inet&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;IPv4 domain sockets&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accept&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;May use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accept(2)&lt;/code&gt; to accept incoming socket connections on already listening sockets. It also allows &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getsockopt(2)&lt;/code&gt; with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SOL_SOCKET&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SO_PEERCRED&lt;/code&gt; on local sockets&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpath&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;“Read” filesystem access&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;wpath&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;“Write” filesystem access&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cpath&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;“Create” filesystem access&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dpath&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Creating new device files&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chown&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Changing file owner/group&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fattr&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Changing file attributes/permissions&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;shared_buffer&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Shared memory buffers&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chroot&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chroot(2)&lt;/code&gt; syscall&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;video&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;May use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ioctl(2)&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mmap(2)&lt;/code&gt; on framebuffer video devices&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Inside the kernel, each process stores its current set of promises in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Process::m_promises&lt;/code&gt;. Most of the action happens in the &lt;a href=&quot;https://github.com/SerenityOS/serenity/blob/master/Kernel/Process.cpp&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Process&lt;/code&gt; class&lt;/a&gt;. When a syscall is invoked, we check that the calling process has made the right promises before proceeding. This is usually done by the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;REQUIRE_PROMISE(promise)&lt;/code&gt; macro:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Process&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setuid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uid_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;REQUIRE_PROMISE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The macro expands to some code that verifies that the current process has either made no promises (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge()&lt;/code&gt; is opt-in) or has made some promise(s) and &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id&lt;/code&gt;&lt;/strong&gt; is one of them. If there are promises but no &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id&lt;/code&gt;&lt;/strong&gt;, the program is immediately terminated by an uncatchable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SIGABRT&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Sometimes, things get a bit more complicated. For example, to accommodate the windowing system, we make an exception to allow &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getsockopt()&lt;/code&gt; with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SO_PEERCRED&lt;/code&gt; on local sockets for processes that have pledged &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accept&lt;/code&gt;&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Process&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getsockopt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Syscall&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SC_getsockopt_params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;has_promised&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Pledge&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;level&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SOL_SOCKET&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;option&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SO_PEERCRED&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// We make an exception for SOL_SOCKET::SO_PEERCRED on local sockets if you've pledged &quot;accept&quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;REQUIRE_PROMISE_FOR_SOCKET_DOMAIN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;domain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We’ll be tweaking these promises as we learn more about how they fit into SerenityOS. The implementation currently feels quite invasive, and there are various improvements to make, so this is just a snapshot of how it works at the moment of writing.&lt;/p&gt;
+
+&lt;h2 id=&quot;unveil-i-will-only-access-paths-x-y-and-z-so-hide-everything-else&quot;&gt;unveil(): “I will only access paths X, Y and Z, so hide everything else.”&lt;/h2&gt;
+
+&lt;p&gt;Now that we’ve limited ourselves to a small set of syscalls with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge()&lt;/code&gt;, the next step is to limit our view of the file system. This is where &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt; comes in!&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt; works very much like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge()&lt;/code&gt;, except you pass in paths and permissions for those paths:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;unveil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;permissions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path&lt;/code&gt; can be either a file or a directory. If it’s a directory, the permissions will apply to any file in the subtree of that directory.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;permissions&lt;/code&gt; is a string containing zero or more of these letters:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r&lt;/code&gt;&lt;/strong&gt;: Read access&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;w&lt;/code&gt;&lt;/strong&gt;: Write access&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;c&lt;/code&gt;&lt;/strong&gt;: Create/remove access&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;&lt;/strong&gt;: Execute access&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Just like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge()&lt;/code&gt;, permissions can only be reduced, never increased.&lt;/p&gt;
+
+&lt;p&gt;Another important difference is that unlike &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge()&lt;/code&gt;, trying to open a file that’s not visible due to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt; will not terminate the program. Instead, the attempt will simply fail with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ENOENT&lt;/code&gt; (or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EACCES&lt;/code&gt; if the path was unveiled, but not with the requested permissions.)&lt;/p&gt;
+
+&lt;p&gt;Let’s look at an example from our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/bin/man&lt;/code&gt; program:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unveil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/usr/share/man&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;r&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;perror&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;unveil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;unveil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;nullptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;nullptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This program knows up front that it will only be reading from files within the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/share/man&lt;/code&gt; subtree.&lt;/p&gt;
+
+&lt;p&gt;The second call to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt; with null inputs tells the kernel that we’re done with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt; and won’t need to specify any more paths. After this, it’s no longer possible to call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In the kernel, all the magic happens in path resolution (&lt;a href=&quot;https://github.com/SerenityOS/serenity/blob/master/Kernel/FileSystem/VirtualFileSystem.cpp&quot;&gt;the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;VFS&lt;/code&gt; class&lt;/a&gt;.) The very first thing we do in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;VFS::resolve_path()&lt;/code&gt; is this:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;KResultOr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NonnullRefPtr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Custody&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;VFS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resolve_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StringView&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Custody&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RefPtr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Custody&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;out_parent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;symlink_recursion_level&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;validate_path_against_process_veil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If a process has opted into using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt;, there will be a list of paths and permissions in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Process::m_unveiled_paths&lt;/code&gt;. We’ll check the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path&lt;/code&gt; parameter against the list, and possibly short-circuit the path resolution with an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ENOENT&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EACCES&lt;/code&gt; if the path is not available.&lt;/p&gt;
+
+&lt;h2 id=&quot;visibility-from-userspace&quot;&gt;Visibility from userspace&lt;/h2&gt;
+
+&lt;p&gt;Promises for each process are visible in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/proc/all&lt;/code&gt;. For a list of unveiled paths, you’ll have to look in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/proc/PID/unveil&lt;/code&gt;. Since that’s a bit more sensitive, only the process owner and the superuser can see the paths.&lt;/p&gt;
+
+&lt;p&gt;All of this information is visualized nicely in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SystemMonitor&lt;/code&gt; program:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://awesomekling.github.io/assets/pledge-unveil.png&quot; alt=&quot;SystemMonitor showing pledge promises and unveiled paths&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In the screenshot above, you can see what each running program has pledged, and since &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WindowServer&lt;/code&gt; is currently selected, we have a list of its unveiled paths below. Pretty cool!&lt;/p&gt;
+
+&lt;h2 id=&quot;some-differences-from-openbsd&quot;&gt;Some differences from OpenBSD&lt;/h2&gt;
+
+&lt;p&gt;Since SerenityOS is a different system from OpenBSD and shares no code with it, it’s natural that the needs are a bit different. These are some of the differences we have at the moment:&lt;/p&gt;
+
+&lt;h3 id=&quot;no-hard-coded-paths-in-the-kernel&quot;&gt;No hard-coded paths in the kernel&lt;/h3&gt;
+
+&lt;p&gt;OpenBSD hard-codes paths to various things and relaxes restrictions to certain paths based on pledges. I’ve been trying to avoid that so far, since it feels strange for the kernel to assume things about filesystem layout.&lt;/p&gt;
+
+&lt;h3 id=&quot;separate-promise-for-threading&quot;&gt;Separate promise for threading&lt;/h3&gt;
+
+&lt;p&gt;It seemed unnecessary to allow any program to gain concurrency by default. I’ve added the &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thread&lt;/code&gt;&lt;/strong&gt; promise for this purpose. On OpenBSD, all you need for threading is &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdio&lt;/code&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;separate-promise-for-accept&quot;&gt;Separate promise for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accept()&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;We have a bunch of programs that set up a listening socket at startup. Since those programs don’t need to create any more sockets, or make any outbound connections, it’s good to be able to drop the &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unix&lt;/code&gt;&lt;/strong&gt; and/or &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inet&lt;/code&gt;&lt;/strong&gt; promises after setting up the listener.&lt;/p&gt;
+
+&lt;p&gt;I’ve added the &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accept&lt;/code&gt;&lt;/strong&gt; promise for this purpose. On OpenBSD, this would require &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unix&lt;/code&gt;&lt;/strong&gt; and/or &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inet&lt;/code&gt;&lt;/strong&gt; depending on the socket type.&lt;/p&gt;
+
+&lt;h2 id=&quot;in-closing&quot;&gt;In closing&lt;/h2&gt;
+
+&lt;p&gt;I believe &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge()&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt; are excellent mitigation mechanisms, and I’m really happy to start using them throughout all of the programs that make up SerenityOS. Huge props to Theo de Raadt and the OpenBSD team for coming up with the ideas.&lt;/p&gt;
+
+&lt;p&gt;The implementations in SerenityOS are still young and immature, just like the rest of the system. We’re continuously improving on things as we go. If you’re interested in this sort of thing, you’re more than welcome to help out!&lt;/p&gt;
+
+&lt;p&gt;Also, if you’d like to see how these things were implemented, I recorded both hacking sessions and posted them to &lt;a href=&quot;https://youtube.com/c/AndreasKling&quot;&gt;my YouTube channel&lt;/a&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=-a5hLBuW6tY&quot;&gt;Implementing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pledge()&lt;/code&gt; in SerenityOS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=njbqgDEiB7A&quot;&gt;Implementing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unveil()&lt;/code&gt; in SerenityOS&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thank you for stopping by! Until next time :^)&lt;/p&gt;</content><author><name/></author><summary type="html">This post describes the implementation and use of pledge() and unveil() in SerenityOS.</summary></entry><entry><title type="html">Serenity C++ patterns: NonnullOwnPtr</title><link href="https://awesomekling.github.io/Serenity-C++-patterns-NonnullOwnPtr/" rel="alternate" type="text/html" title="Serenity C++ patterns: NonnullOwnPtr"><published>2019-07-24T00:00:00+00:00</published><updated>2019-07-24T00:00:00+00:00</updated><id>https://awesomekling.github.io/Serenity-C++-patterns-NonnullOwnPtr</id><content type="html" xml:base="https://awesomekling.github.io/Serenity-C++-patterns-NonnullOwnPtr/">&lt;p&gt;This post describes the C++ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&lt;/code&gt; template used to enforce non-nullity of single-owner object pointers in the &lt;a href=&quot;https://github.com/SerenityOS/serenity&quot;&gt;Serenity Operating System&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;You’re probably familiar with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;std::unique_ptr&lt;/code&gt;, the single-owner smart pointer in the C++ standard library.&lt;/p&gt;
+
+&lt;p&gt;In Serenity , the equivalent smart pointer is called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OwnPtr&lt;/code&gt;, a name I’ve borrowed from the WebKit project (and although WebKit has long since switched to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;std::unique_ptr&lt;/code&gt;, I always felt that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OwnPtr&lt;/code&gt; looked more beautiful.)&lt;/p&gt;
+
+&lt;p&gt;If you read my post on &lt;a href=&quot;https://awesomekling.github.io/Serenity-C++-patterns-References-instead-of-Pointers/&quot;&gt;using references instead of pointers&lt;/a&gt;, you know I’m a fan of keeping &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nullptr&lt;/code&gt; out of sight (and mind) whenever possible, and &lt;strong&gt;compile-time is the best time to catch bugs!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OwnPtr&lt;/code&gt; can be null (just like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;std::unique_ptr&lt;/code&gt;) and that’s perfectly reasonable. However, there are many situations where we know for sure that a pointer is not going to be null. For example:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;When we’ve just constructed a new object.&lt;/li&gt;
+  &lt;li&gt;When we’re returning a pointer that we know isn’t null.&lt;/li&gt;
+  &lt;li&gt;When a function argument is required to be null, and it’s really up to the caller to make sure he’s not passing us &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nullptr&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In all of these cases, we can use the handy &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&lt;/code&gt; smart pointer. Let me tell you about it…&lt;/p&gt;
+
+&lt;h4 id=&quot;nonnullownptr-as-return-type&quot;&gt;NonnullOwnPtr as return type&lt;/h4&gt;
+
+&lt;p&gt;Here’s a simple example:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;NonnullOwnPtr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;create_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;nullptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Would not compile.&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;create_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Would not compile.&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Note that we’re using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;make&amp;lt;T&amp;gt;&lt;/code&gt;, which is a helper that constructs a new object via &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;new T(...)&lt;/code&gt; and returns it wrapped in a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Because the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;create_object()&lt;/code&gt; function returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&lt;/code&gt;, it’s not valid to return &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nullptr&lt;/code&gt;, and the compiler will prevent you from doing it.&lt;/p&gt;
+
+&lt;p&gt;It’s also not valid to null-check a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&lt;/code&gt; since it’s never null.&lt;/p&gt;
+
+&lt;p&gt;Sadly it’s not possible to override the dot(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.&lt;/code&gt;) operator in C++ (yet), so we’re forced to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-&amp;gt;&lt;/code&gt; for dereferencing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&lt;/code&gt;. &lt;em&gt;(This bothers me more than I’m proud to admit, but whatcha gonna do…)&lt;/em&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;nonnullownptr-as-argument-type&quot;&gt;NonnullOwnPtr as argument type&lt;/h4&gt;
+
+&lt;p&gt;Let’s do another example where &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&lt;/code&gt; is used for an argument:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NonnullOwnPtr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Bar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;m_bar&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;move&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;create_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Bar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Cool!&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;nullptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Would not compile.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;set_bar&lt;/code&gt; function declaration now explicitly prevents callers from passing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nullptr&lt;/code&gt; (or a regular &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OwnPtr&amp;amp;&amp;amp;&lt;/code&gt;, since those &lt;em&gt;may&lt;/em&gt; be null.)&lt;/p&gt;
+
+&lt;h4 id=&quot;what-about-moved-from-pointers&quot;&gt;What about moved-from pointers?&lt;/h4&gt;
+
+&lt;p&gt;Astute readers and paranoid veterans might now be asking “well, what about a moved-from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&lt;/code&gt; though? If it can’t be null, then what is it?”&lt;/p&gt;
+
+&lt;p&gt;The answer is that they are “invalid”, but internally &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nullptr&lt;/code&gt;. I’m using &lt;a href=&quot;https://awesomekling.github.io/Catching-use-after-move-bugs-with-Clang-consumed-annotations/&quot;&gt;my Clang consumable annotation technique&lt;/a&gt; to have the compiler  generate a warning if a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&lt;/code&gt; is used (other than invoking the destructor) after it’s been moved from.&lt;/p&gt;
+
+&lt;p&gt;It’s not perfect, but AFAIK it’s the best we can do with the language support available today.&lt;/p&gt;
+
+&lt;h4 id=&quot;bonus-nonnullownptrvector&quot;&gt;Bonus: NonnullOwnPtrVector&lt;/h4&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&lt;/code&gt; also has a complementary template called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtrVector&lt;/code&gt;. It inherits from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Vector&amp;lt;NonnullOwnPtr&amp;lt;T&amp;gt;&amp;gt;&lt;/code&gt; and enhances it by overloading all the accessors and making them return &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;T&amp;amp;&lt;/code&gt; rather than &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullOwnPtr&amp;lt;T&amp;gt;&amp;amp;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This allows you to write very pleasant-looking code with dots(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.&lt;/code&gt;) instead of arrows(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-&amp;gt;&lt;/code&gt;):&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo_them_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NonnullOwnPtrVector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_empty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_fancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;dbg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;The first object is fancy!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Look, no -&amp;gt;!&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Pretty neat, no? :^)&lt;/p&gt;
+
+&lt;h4 id=&quot;so-wheres-the-code&quot;&gt;So where’s the code?&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/blob/master/AK/NonnullOwnPtr.h&quot;&gt;serenity/AK/NonnullOwnPtr.h&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/SerenityOS/serenity/blob/master/AK/NonnullOwnPtrVector.h&quot;&gt;serenity/AK/NonnullOwnPtrVector.h&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Note: The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CONSUMABLE&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SET_TYPESTATE&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RETURN_TYPESTATE&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CALLABLE_WHEN&lt;/code&gt; macros can be found in &lt;a href=&quot;https://github.com/SerenityOS/serenity/blob/master/AK/Platform.h&quot;&gt;serenity/AK/Platform.h&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Until next time!&lt;/p&gt;</content><author><name/></author><summary type="html">This post describes the C++ NonnullOwnPtr template used to enforce non-nullity of single-owner object pointers in the Serenity Operating System.</summary></entry><entry><title type="html">Serenity C++ patterns: References instead of Pointers</title><link href="https://awesomekling.github.io/Serenity-C++-patterns-References-instead-of-Pointers/" rel="alternate" type="text/html" title="Serenity C++ patterns: References instead of Pointers"><published>2019-07-24T00:00:00+00:00</published><updated>2019-07-24T00:00:00+00:00</updated><id>https://awesomekling.github.io/Serenity-C++-patterns-References-instead-of-Pointers</id><content type="html" xml:base="https://awesomekling.github.io/Serenity-C++-patterns-References-instead-of-Pointers/">&lt;p&gt;This post describes the use of C++ references to enhance autodocumentation in the &lt;a href=&quot;https://github.com/SerenityOS/serenity&quot;&gt;Serenity Operating System&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Six years ago I wrote on the WebKit blog about &lt;a href=&quot;https://webkit.org/blog/3011/reference-radness-whats-up-with-all-this-in-webkit-lately/&quot;&gt;Using References Instead of Pointers&lt;/a&gt;. Re-reading that post today, I remember how excited I was about the technique back then.&lt;/p&gt;
+
+&lt;p&gt;In the years since that post, references have become part of my everyday C++ vernacular, and consequently references are widely used in Serenity. I’m writing this post to refresh myself on what’s great about references, and to share my views with you, dear reader. So let’s get to the reasons I love these things…&lt;/p&gt;
+
+&lt;h3 id=&quot;references-enforce-object-existence-at-the-type-level&quot;&gt;References enforce object existence at the type level.&lt;/h3&gt;
+
+&lt;p&gt;If you write a function that takes a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Foo*&lt;/code&gt;, it may receive a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Foo&lt;/code&gt;, but you may also receive &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nullptr&lt;/code&gt;. Since you don’t know this at compile-time, you have to somehow deal with the scenario in which someone passes you a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nullptr&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;It’s not uncommon to see code like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If it’s an error to call the function with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nullptr&lt;/code&gt;, a common technique to catch bad calls is to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;assert&lt;/code&gt; at runtime that the pointer is non-null:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;While I’m definitely in favor of assertions, I do consider it a bug whenever I see a function that takes a pointer and immediately asserts that it’s non-null.&lt;/p&gt;
+
+&lt;p&gt;Now let’s use a reference instead:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// No need to null-check or assert anything.&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;By taking a reference, the function communicates to the outside world that it requires a non-null object, and it’s the caller’s job to validate and dereference any pointers before passing them.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; If we don’t intend to modify anything about the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Foo&lt;/code&gt; we’re being passed, we should take it as a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;const Foo&amp;amp;&lt;/code&gt; to prevent &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do_something&lt;/code&gt; from calling any of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Foo&lt;/code&gt;’s non-const member functions.&lt;/p&gt;
+
+&lt;h3 id=&quot;reference-chasing-is-way-less-suspicious-than-pointer-chasing&quot;&gt;Reference chasing is way less suspicious than pointer chasing.&lt;/h3&gt;
+
+&lt;p&gt;Consider the following two examples:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Using pointers:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;my_object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subsystem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Using references:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;my_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subsystem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;do_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When using pointers, it’s up to &lt;em&gt;you&lt;/em&gt; to know that the pointers you’re dereferencing are non-null. The compiler has very limited ability to detect mistakes and let you know if you’re messing up.&lt;/p&gt;
+
+&lt;p&gt;However, if you’ve been consistently using references, your getters now return &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;T&amp;amp;&lt;/code&gt; (or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;const T&amp;amp;&lt;/code&gt;) because they know that the object will exist and so they alleviate the caller of having to worry about that.&lt;/p&gt;
+
+&lt;p&gt;Getters for objects that may not exist should of course still return &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;T*&lt;/code&gt;, which then communicates to the caller that they may be &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nullptr&lt;/code&gt; and must be checked.&lt;/p&gt;
+
+&lt;h3 id=&quot;references-are-an-important-part-of-self-documenting-c&quot;&gt;References are an important part of self-documenting C++.&lt;/h3&gt;
+
+&lt;p&gt;I’m a big fan of autodocumentation. By sticking to a consistent coding style and combining good names with strong types, we can encode a large amount of information in the code itself.&lt;/p&gt;
+
+&lt;p&gt;Consistent use of references contributes greatly to that, since it means you can comfortably make assumptions about object lifetimes and ownerships when you see an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; in the Serenity codebase. For example:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;If something returns a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;const T&amp;amp;&lt;/code&gt;, we can assume that the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;T&lt;/code&gt; is kept alive for at least as long as the object that vended the reference.&lt;/li&gt;
+  &lt;li&gt;If something takes a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;T&amp;amp;&lt;/code&gt;, we can assume that it might modify the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;T&lt;/code&gt; by calling any of its non-const member functions.&lt;/li&gt;
+  &lt;li&gt;And of course, when we spot a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;*&lt;/code&gt;, it means we have to watch out and check for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nullptr&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Until next time!&lt;/p&gt;</content><author><name/></author><summary type="html">This post describes the use of C++ references to enhance autodocumentation in the Serenity Operating System.</summary></entry><entry><title type="html">Catching use-after-move bugs with Clang’s consumed annotations</title><link href="https://awesomekling.github.io/Catching-use-after-move-bugs-with-Clang-consumed-annotations/" rel="alternate" type="text/html" title="Catching use-after-move bugs with Clang’s consumed annotations"><published>2019-07-10T00:00:00+00:00</published><updated>2019-07-10T00:00:00+00:00</updated><id>https://awesomekling.github.io/Catching-use-after-move-bugs-with-Clang-consumed-annotations</id><content type="html" xml:base="https://awesomekling.github.io/Catching-use-after-move-bugs-with-Clang-consumed-annotations/">&lt;p&gt;This post describes a compile-time technique for catching use-after-move bugs in modern C++. It’s currently used to prevent some mistakes in the &lt;a href=&quot;https://github.com/SerenityOS/serenity&quot;&gt;Serenity Operating System&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Update:&lt;/em&gt;&lt;/strong&gt; &lt;em&gt;We’ve stopped using this in SerenityOS since it stopped working as the codebase became more complex and Clang was not our primary toolchain compiler anyway.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;We were all excited when C++11 added move semantics. Finally we could work &lt;em&gt;together&lt;/em&gt; with the compiler to avoid copies (instead of &lt;em&gt;against&lt;/em&gt; the compiler, which is how it sometimes felt before.)&lt;/p&gt;
+
+&lt;p&gt;There is one footgun lurking with move semantics though. Once you &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;std::move&lt;/code&gt; an object and pass it to someone who takes an rvalue-reference, your local object may very well end up in an invalid state. It’ll still be destructible, of course, but it’s no longer logically valid.&lt;/p&gt;
+
+&lt;p&gt;An obvious example is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;std::unique_ptr&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;make_unique&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other_object&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;move&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Now the Object has moved into &quot;other_object&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// and &quot;object&quot; is null.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;other_object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// This is fine.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Crash: nullptr dereference!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This kind of problem can be hard to spot in longer functions, and you find yourself wishing the compiler would give you a hand..&lt;/p&gt;
+
+&lt;p&gt;So I came up with a way to catch some of these bugs. It only works with the Clang compiler (AFAIK) and uses some obscure attributes listed under &lt;a href=&quot;https://clang.llvm.org/docs/AttributeReference.html#consumed-annotation-checking&quot;&gt;“Consumed Annotation Checking”&lt;/a&gt; in the Clang documentation.&lt;/p&gt;
+
+&lt;p&gt;The basic idea is: you mark a class as &lt;strong&gt;consumable&lt;/strong&gt;. Objects of that class then exist in one of three states: &lt;strong&gt;&lt;em&gt;unconsumed&lt;/em&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;em&gt;consumed&lt;/em&gt;&lt;/strong&gt; or &lt;strong&gt;&lt;em&gt;unknown&lt;/em&gt;&lt;/strong&gt;. Using function attributes, you can read and modify this state on a per-object basis. And most importantly (for our needs), the compiler can generate a warning when a member function is called on an object in an unwanted state!&lt;/p&gt;
+
+&lt;p&gt;Let’s write a little program to illustrate how this mechanism can be harnessed. First, an error-prone version:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;public:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;invalidate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m_valid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nl&quot;&gt;private:&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;invalidate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m_valid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m_valid&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;move&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above code will assert in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do_something()&lt;/code&gt;. There’s nothing technically wrong with the program, so the compiler won’t get in our way.&lt;/p&gt;
+
+&lt;p&gt;Now let’s annotate the class with these attributes:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;clang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;consumable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unconsumed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CleverObject&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;public:&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;clang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;return_typestate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unconsumed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;CleverObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;CleverObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CleverObject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;invalidate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;clang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;callable_when&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unconsumed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]]&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m_valid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nl&quot;&gt;private:&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;clang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_typestate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;consumed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]]&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;invalidate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m_valid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m_valid&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;CleverObject&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;move&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We’ve made these four annotations:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CleverObject&lt;/code&gt; class is made &lt;strong&gt;consumable&lt;/strong&gt;, with each object starting out in the &lt;strong&gt;&lt;em&gt;unconsumed&lt;/em&gt;&lt;/strong&gt; state.&lt;/li&gt;
+  &lt;li&gt;The constructor is marked as returning an object in the &lt;strong&gt;&lt;em&gt;unconsumed&lt;/em&gt;&lt;/strong&gt; state.&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do_something()&lt;/code&gt; function  must only be called on objects in the &lt;strong&gt;&lt;em&gt;unconsumed&lt;/em&gt;&lt;/strong&gt; state.&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;invalidate()&lt;/code&gt; function sets the state of the callee object to &lt;strong&gt;&lt;em&gt;consumed&lt;/em&gt;&lt;/strong&gt;. Note that the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CleverObject(CleverObject&amp;amp;&amp;amp;)&lt;/code&gt; move constructor calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;invalidate()&lt;/code&gt; on the moved-from object, causing it to become &lt;strong&gt;&lt;em&gt;consumed&lt;/em&gt;&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Compiling the above code with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;clang -Wconsumed&lt;/code&gt; gives you this output:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;clang -Wconsumed    test.cpp   -o test
+test.cpp:36:12: warning: invalid invocation of method 'do_something' on object 'object'
+      while it is in the 'consumed' state [-Wconsumed]
+    object.do_something();
+           ^
+1 warning generated.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Pretty neat, huh? :^)&lt;/p&gt;
+
+&lt;p&gt;For a bigger example, you can see how I’ve implemented the &lt;a href=&quot;https://github.com/SerenityOS/serenity/blob/master/AK/NonnullRefPtr.h&quot;&gt;NonnullRefPtr&lt;/a&gt; smart pointer in Serenity. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NonnullRefPtr&lt;/code&gt; is a variant of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RefPtr&lt;/code&gt; (a reference counting smart pointer) that cannot be null. However, you are allowed to move from it, which puts it into an invalid (and &lt;strong&gt;&lt;em&gt;consumed&lt;/em&gt;&lt;/strong&gt;) state.&lt;/p&gt;
+
+&lt;p&gt;Curiously, I couldn’t find a single instance of anyone using these attributes for anything on the web. If you’ve seen them anywhere, I’d love to hear about it.&lt;/p&gt;
+
+&lt;p&gt;Until next time!&lt;/p&gt;</content><author><name/></author><summary type="html">This post describes a compile-time technique for catching use-after-move bugs in modern C++. It’s currently used to prevent some mistakes in the Serenity Operating System.</summary></entry></feed>

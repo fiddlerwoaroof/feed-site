@@ -1,0 +1,1791 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>DEV Community 👩‍💻👨‍💻: Doctolib Engineering</title>
+    <description>The latest articles on DEV Community 👩‍💻👨‍💻 by Doctolib Engineering (@doctolib).</description>
+    <link>https://dev.to/doctolib</link>
+    <image>
+      <url>https://res.cloudinary.com/practicaldev/image/fetch/s--qhbe8qWz--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/organization/profile_image/668/0257c884-8a3c-4ef0-b66d-c360874393da.png</url>
+      <title>DEV Community 👩‍💻👨‍💻: Doctolib Engineering</title>
+      <link>https://dev.to/doctolib</link>
+    </image>
+    <atom:link rel="self" type="application/rss+xml" href="https://dev.to/feed/doctolib"/>
+    <language>en</language>
+    <item>
+      <title>Could not create unique index: how to solve duplication errors</title>
+      <dc:creator>Thomas Bracher</dc:creator>
+      <pubDate>Fri, 23 Sep 2022 08:41:54 +0000</pubDate>
+      <link>https://dev.to/doctolib/could-not-create-unique-index-how-to-solve-duplication-errors-44j9</link>
+      <guid>https://dev.to/doctolib/could-not-create-unique-index-how-to-solve-duplication-errors-44j9</guid>
+      <description>&lt;p&gt;Unique indexes enforce the uniqueness (as their name implies) of one or more columns' values. They can guarantee one-to-one relationships in your model. For instance, let's have a unique shopping cart per user:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;create&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unique&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uidx_shopping_carts_on_user_id&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;ERROR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;could&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;create&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unique&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;uidx_shopping_carts_by_user_id&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;DETAIL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;Key&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;duplicated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Wow! What was that? It seems that the index can not be created: some existing rows already infringe the constraint.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Oopsy
+&lt;/h2&gt;
+
+&lt;p&gt;Let's explore the data a bit. Can we spot culprits?&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;order&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;by&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+ &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;---------&lt;/span&gt;
+       &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+       &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+       &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+       &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;
+       &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;
+       &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Oopsy, &quot;2&quot; appears twice. This can be quite an issue. It can go wrong for 3 reasons:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The user can see the wrong cart, leading to items disappearing&lt;/li&gt;
+&lt;li&gt;Your data team has to apply heuristics to reunify the duplicates&lt;/li&gt;
+&lt;li&gt;Worst case: it leads to complex bugs because everyone suppose shopping carts are unique&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Unfortunately, postgres cannot create a unique index as long as the duplicate items exist.&lt;/p&gt;
+
+&lt;p&gt;First things first: how many duplicates do you have? Some self joining request does the trick:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;join&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;group&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;by&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;having&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+
+ &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;-------&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;76533&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;There are too many duplicates for a manual cleanup... Create a dashboard to track the duplicate injection rate. If your table already includes a &lt;code&gt;created_at&lt;/code&gt; datetime, you can use a variation of the previous query:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;last_occurrence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;join&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;created_at&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last_occurrence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;group&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;by&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;having&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;group&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;by&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last_occurrence&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;order&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;by&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last_occurrence&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;DESC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+ &lt;span class=&quot;n&quot;&gt;last_occurrence&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;-----------------+-------&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;193&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;484&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;We have the duplicate rate per day. This is useful to check if our future fixes work.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Remove the root cause
+&lt;/h2&gt;
+
+&lt;p&gt;Let's consider your endpoint implements the following pseudo-ruby code:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;ShoppingCarts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;A quick fix is to check the existence of the row before creating it:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ShoppingCarts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;user_id: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exists?&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ShoppingCarts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;This way no duplicate creation, right? You deploy and check the numbers the next day:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt; &lt;span class=&quot;n&quot;&gt;last_occurrence&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;-----------------+-------&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;     &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;193&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;484&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Wait what? Still more duplicates!!!!&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Transactions
+&lt;/h2&gt;
+
+&lt;p&gt;This is a race condition happening. Two requests check existence and insert at the same time.&lt;/p&gt;
+
+&lt;div class=&quot;table-wrapper-paragraph&quot;&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;request 1&lt;/th&gt;
+&lt;th&gt;request 2&lt;/th&gt;
+&lt;th&gt;select count(*) from shopping_carts where id = 2&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;exists()... == false&lt;/td&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;td&gt;exists()... == false&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;insert()...&lt;/td&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;td&gt;insert()...&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;Transactions are gonna help, but not directly.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ShoppingCarts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;user_id: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exists?&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;ShoppingCarts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;You deploy this code and watch its effects:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt; &lt;span class=&quot;n&quot;&gt;last_occurrence&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;-----------------+-------&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;     &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;193&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;484&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;The problem is not solved. Transactions are configured to &lt;code&gt;committed read&lt;/code&gt; isolation by default. If you replay the previous race condition under this isolation, you'll find no violation. Transactions do not avoid race conditions. Fortunately, there are tools to stop the bleeding: locks.&lt;/p&gt;
+
+&lt;p&gt;Locks are usually managed by your database for operations like indexation, etc. Locks are a common way to mutually exclude processes from shared resources. You can also manually lock a row. Mutual exclusion is preventing 2 processes to access the same resource.&lt;/p&gt;
+
+&lt;p&gt;In postgres you can lock rows or tables using the &lt;code&gt;for udpate&lt;/code&gt; keyword in a &lt;code&gt;select&lt;/code&gt; query:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ShoppingCarts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;FOR UPDATE&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;user_id: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exists?&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;ShoppingCarts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;You deploy and check the numbers the next day:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt; &lt;span class=&quot;n&quot;&gt;last_occurrence&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;-----------------+-------&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;     &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;193&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;484&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Oopsy, the lock does not work? Because the &lt;code&gt;select&lt;/code&gt; query returns no rows, no lock is upheld. We need to lock something &lt;strong&gt;that exists&lt;/strong&gt;. Great thing that we have a unique user!&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;current_user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;with_lock&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ShoppingCarts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;user_id: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exists?&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;ShoppingCarts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Here the transaction is finally helpful. The lock is released when the transaction is committed. You can deploy and see the result:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt; &lt;span class=&quot;n&quot;&gt;last_occurrence&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;-----------------+-------&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;     &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;193&lt;/span&gt;
+ &lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;484&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;No line for 2022-09-17: victory! Next, we remove duplicates and create the unique index.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Removing duplicates
+&lt;/h2&gt;
+
+&lt;p&gt;Removing duplicates can be a touchy matter. I find the following heuristic true most of the time: the latest modified row is the most updated. Some frameworks automatically generate &lt;code&gt;updated_at&lt;/code&gt; columns. This can be useful to apply the heuristic. We use &lt;code&gt;updated_at&lt;/code&gt; column to discriminate the old rows to delete:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;join&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;updated_at&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last_updated_at&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;group&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;by&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;having&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;updated_at&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;last_updated_at&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;This way only the last updated rows remain. Let's check if there's no duplicate left:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;join&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;group&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;by&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;having&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+
+ &lt;span class=&quot;k&quot;&gt;count&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;-------&lt;/span&gt;
+     &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Nice!&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Creating the unique index
+&lt;/h2&gt;
+
+&lt;p&gt;With no duplicate in the table left, we can create the index:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;create&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unique&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uidx_shopping_carts_on_user_id&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;This time, there's no error. Every user has at most one shopping cart. When attempting to create duplicates, you encounter the following error:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight sql&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;insert&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;into&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shopping_carts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;values&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;ERROR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;duplicate&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;violates&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unique&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;constraint&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;uidx_shopping_carts_by_user_id&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;No process can violate the business rule, even under race conditions! Great value for the buck if you ask me.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Conclusion
+&lt;/h2&gt;
+
+&lt;p&gt;I hope you learned some sql knowledge. Here are the main takeaways:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Learn some sql syntax to navigate easily in your data&lt;/li&gt;
+&lt;li&gt;Columns &lt;code&gt;created_at&lt;/code&gt; and &lt;code&gt;updated_at&lt;/code&gt; managed by your ORM are great tools for maintenance&lt;/li&gt;
+&lt;li&gt;Transactions do &lt;strong&gt;not&lt;/strong&gt; avoid race conditions&lt;/li&gt;
+&lt;li&gt;Introduce unique constraints before you feed the data (this applies to other constraints)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I had to solve a similar problem at work and &lt;a href=&quot;https://refer.hellotrusty.io/YP1WLAS9Lm&quot;&gt;we are hiring talented engineers to solve this kind of problems&lt;/a&gt;.&lt;br&gt;
+Take care.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Photo by &lt;a href=&quot;https://unsplash.com/@stefanbc?utm_source=unsplash&amp;amp;utm_medium=referral&amp;amp;utm_content=creditCopyText&quot;&gt;Stefan Cosma&lt;/a&gt; on &lt;a href=&quot;https://unsplash.com/s/photos/duplicate?utm_source=unsplash&amp;amp;utm_medium=referral&amp;amp;utm_content=creditCopyText&quot;&gt;Unsplash&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+
+</description>
+    </item>
+    <item>
+      <title>Announcing the launch of Doctolib’s public Bug Bounty Program</title>
+      <dc:creator>Toufik Airane</dc:creator>
+      <pubDate>Mon, 11 Apr 2022 16:56:46 +0000</pubDate>
+      <link>https://dev.to/doctolib/announcing-the-launch-of-doctolibs-public-bug-bounty-program-67a</link>
+      <guid>https://dev.to/doctolib/announcing-the-launch-of-doctolibs-public-bug-bounty-program-67a</guid>
+      <description>&lt;p&gt;&lt;em&gt;After years of invitation-only activity, we are excited to launch our public Bug Bounty Program in partnership with &lt;a href=&quot;https://yeswehack.com/&quot;&gt;YesWeHack&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--GYNZ8134--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/a319cy0fdytssmlvs4wq.png&quot; class=&quot;article-body-image-wrapper&quot;&gt;&lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--GYNZ8134--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/a319cy0fdytssmlvs4wq.png&quot; alt=&quot;We are excited to launch our public Bug Bounty Program in partnership with YesWeHack&quot; width=&quot;640&quot; height=&quot;411&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;We believe that maintaining a visible crowdsourced security program helps us to build a sound cybersecurity posture, that’s why today we broaden our call to the global community of bug bounty hunters and security researchers.&lt;/p&gt;
+
+&lt;p&gt;As a matter of fact, we offer higher rewards and exclusive challenges to our community such as bounty rewards up to 20,000 EUR for critical issues, exclusive in-scope features, and hardware devices, invitation to live hacking events in France, and dedicated communication channels.&lt;/p&gt;
+
+&lt;p&gt;This decade will be marked by the growing importance of healthcare software and health data hosting. Therefore, we rely on a talented and creative workforce to report security weaknesses and vulnerabilities in our applications.&lt;/p&gt;
+
+&lt;p&gt;These efforts will benefit the product and engineering teams to deliver secure products and all of the findings serve to push our secure development workflow to be more resilient, scalable, and consistent over security reviews, hardening, and detection.&lt;/p&gt;
+
+&lt;p&gt;On our side, Doctolib’s application cybersecurity team is engaged to warmly welcome any security researcher within a safe harbor policy and offer the best triage experience in terms of response time, respect and expectation.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--CSNRH5Xb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/sts92bx97rueza8c2r2b.png&quot; class=&quot;article-body-image-wrapper&quot;&gt;&lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--CSNRH5Xb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/sts92bx97rueza8c2r2b.png&quot; alt=&quot;Explore our bug bounty program on YesWeHack&quot; width=&quot;880&quot; height=&quot;440&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To know more about our bug bounty program, &lt;a href=&quot;https://www.doctolib.fr/sante/bug-bounty-program/&quot;&gt;explore our policy on Doctolib&lt;/a&gt; and &lt;a href=&quot;https://yeswehack.com/programs/doctolib-public-bug-bounty-program&quot;&gt;join the bug bounty program on YesWeHack&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;And if you have any feedback, questions, or concerns, feel free to reach us at &lt;a href=&quot;mailto:report@doctolib.com&quot;&gt;report@doctolib.com&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Cheers.&lt;/p&gt;
+
+&lt;p&gt;Doctolib's Cybersecurity team&lt;/p&gt;
+
+</description>
+    </item>
+    <item>
+      <title>Exfiltrating your own data from a PaaS (PostgreSQL Unprivileged Replication)</title>
+      <dc:creator>Isabelle COWAN-BERGMAN</dc:creator>
+      <pubDate>Mon, 18 Oct 2021 11:10:39 +0000</pubDate>
+      <link>https://dev.to/doctolib/exfiltrating-your-own-data-from-a-paas-postgresql-unprivileged-replication-1pcd</link>
+      <guid>https://dev.to/doctolib/exfiltrating-your-own-data-from-a-paas-postgresql-unprivileged-replication-1pcd</guid>
+      <description>&lt;p&gt;Several months ago we wanted to move an internal Rails application out of the Heroku ecosystem because it had grown too important and resource intensive to maintain there.  This application (test-failures) collects, stores, and displays CI test results for a variety of our projects.  Since we take a strong TDD approach in all teams at Doctolib, test-failures is the beating heart of all our devs work.  The most critical—and trickiest—asset to migrate was our very large (&amp;gt;500GiB) and very active (&amp;gt;7000 commits per &lt;em&gt;second&lt;/em&gt;) PostgreSQL database.  &lt;/p&gt;
+
+&lt;p&gt;Since test-failures has become such an irreplaceable part of the day to day work for our entire tech team and in crisis situations, we wanted to minimize downtime as much as possible, even on nights and weekends.  Testing showed that a full dump and restore of the database takes at least 16 hours!  To migrate this way would require a full day of downtime, which would have been unacceptable.  Obviously the ideal would be to use native PostgreSQL replication to mirror the old and new databases. However, we were disappointed (but not surprised) to learn that Heroku does not support PostgreSQL replication to another server outside of their infrastructure, in our case to Amazon Aurora PostgreSQL-compatible RDS.  Not taking “no” for an answer, we decided to produce an applicative solution for migrating the data to our shiny new Aurora cluster without downtime.&lt;/p&gt;
+
+&lt;p&gt;The idea was to start by running a &lt;code&gt;pg_dump&lt;/code&gt; (primary, Heroku) → &lt;code&gt;pg_restore&lt;/code&gt; (replica, Aurora) during normal database operations.  This will populate the replica database schema and bring it to a state close to the primary database.  Next we need to continually update the replica database with the Δ from primary database.  By leveraging the “updated at” timestamp for each row, we can query all rows which have “updated at” timestamps later than the start of a dump and insert those rows with an &lt;code&gt;ON CONFLICT&lt;/code&gt; clause to update with new values (a bulk “upsert” operation).  Repeating the query again against the time we started the first upsert and looping we can achieve a result very similar to logical replication.  This only works because we never &lt;code&gt;DELETE&lt;/code&gt; rows only &lt;code&gt;INSERT&lt;/code&gt; and &lt;code&gt;UPDATE&lt;/code&gt; them, otherwise we would have no record of what rows need to be deleted from the replica, however we would have been able to “soft-delete” rows by setting a “deleted at” timestamp and ignoring those rows in our main Rails application.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Example of &lt;code&gt;ON CONFLICT&lt;/code&gt; clause used to perform an upsert operation:&lt;/em&gt;&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;INSERT INTO employee (id, created_at, name, salary)
+VALUES (1, '2018-06-13 21:10:34.769555+08', 'Jane Doe', 123456)
+ON CONFLICT (id) DO
+  UPDATE SET
+    created_at=EXCLUDED.created_at,
+    name=EXCLUDED.name,
+    salary=EXCLUDED.salary;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;In the end, this allowed us to keep a replica of the Heroku PostgreSQL database in sync with our Aurora database with less than 15s of latency under full load!  Our required downtime was reduced from more than 8 hours to do a dump-restore offline to less than 5 minutes just to switch the database configuration in our application.  The &lt;strong&gt;Go&lt;/strong&gt; source code is available &lt;a href=&quot;https://github.com/tomyl/pg-dump-upsert/tree/master/cmds/pg_unprivileged_replication&quot;&gt;here&lt;/a&gt;, it was useful for us and I hope it can be useful for someone else too.  There’s not full support for all modern PostgreSQL data types, but there was enough for us.  Of course, I'd never suggest this over native replication unless you have no choice.  Use it wisely if you use it at all ... and have a backup on hand. 😉&lt;/p&gt;
+
+</description>
+      <category>cloud</category>
+      <category>go</category>
+      <category>postgres</category>
+      <category>heroku</category>
+    </item>
+    <item>
+      <title>GitHub actions: how to push a GitHub status in addition of GitHub checks</title>
+      <dc:creator>Bertrand Paquet</dc:creator>
+      <pubDate>Fri, 27 Aug 2021 12:29:17 +0000</pubDate>
+      <link>https://dev.to/doctolib/github-actions-how-to-push-a-github-status-in-addition-of-github-checks-3d27</link>
+      <guid>https://dev.to/doctolib/github-actions-how-to-push-a-github-status-in-addition-of-github-checks-3d27</guid>
+      <description>&lt;p&gt;&lt;a href=&quot;https://docs.github.com/en/actions&quot;&gt;GitHub actions&lt;/a&gt; are incredibly efficient to quickly deploy a CI on a project, especially because of the native parallelism system.&lt;/p&gt;
+
+&lt;p&gt;But we found some downsides along the way. One downside is the result of a GitHub actions is a &lt;a href=&quot;https://docs.gitHub.com/en/rest/reference/checks&quot;&gt;Check&lt;/a&gt;, not a &lt;a href=&quot;https://docs.gitHub.com/en/rest/reference/repos#statuses&quot;&gt;Status&lt;/a&gt;.&lt;br&gt;
+There are identical in the UI, but are not in the API. In the image below, the last line is a status in the API, but all the lines above are checks at API Level. &lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--fJsxoyU8--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/625rbgzo27n4g5s7i826.png&quot; class=&quot;article-body-image-wrapper&quot;&gt;&lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--fJsxoyU8--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/625rbgzo27n4g5s7i826.png&quot; alt=&quot;image&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;What is wrong with that? At Doctolib, we have a lot of automation relying on statuses, not on checks. To onboard some of our projects on Github action, we were looking for an elegant solution.&lt;/p&gt;
+
+&lt;p&gt;The first idea is to add a step at the end of the workflows, which push a status from here.&lt;br&gt;
+Something like:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight yaml&quot;&gt;&lt;code&gt;      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Create status&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;curl --request POST \&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;--url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_commit.id }} \&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;--header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;--header 'content-type: application/json' \&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;--data '{&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;state&quot;: &quot;${{ github.event.workflow_run.conclusion }}&quot;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;context&quot;: &quot;unit test (kube)&quot;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;target_url&quot;: &quot;${{ github.event.workflow_run.html_url }}&quot;&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;}' \&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;--fail&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;This solution is working, but only for green build (successful build). For red build (failed build), we can use a &lt;a href=&quot;https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#failure&quot;&gt;failure condition&lt;/a&gt;. If we have workflows with multiple jobs, we have to put this failure condition in every job. This can be painful, and add code duplication.&lt;/p&gt;
+
+&lt;p&gt;So we found a simpler solution: have an independent GitHub workflow which &lt;a href=&quot;https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onevent_nametypes&quot;&gt;listen&lt;/a&gt; to the CI workflow (success AND failure), and set a status accordingly.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight yaml&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Set test status&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;workflow_run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;workflows&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Run&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;tests&quot;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;types&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;completed&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;set_status&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;permissions&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;statuses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;write&lt;/span&gt; 
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Create status&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;curl --request POST \&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;--url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_commit.id }} \&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;--header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;--header 'content-type: application/json' \&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;--data '{&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;state&quot;: &quot;${{ github.event.workflow_run.conclusion }}&quot;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;context&quot;: &quot;unit test (kube)&quot;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;target_url&quot;: &quot;${{ github.event.workflow_run.html_url }}&quot;&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;}' \&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;--fail&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Feel free to reuse it, you just have to change:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The name of your CI workflow in the &lt;code&gt;on&lt;/code&gt; clause.&lt;/li&gt;
+&lt;li&gt;The name of the status you want to push on GitHub in the &lt;code&gt;context&lt;/code&gt; params.&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+      <category>github</category>
+      <category>git</category>
+    </item>
+    <item>
+      <title>Database... or Goose?</title>
+      <dc:creator>Thomas Hareau</dc:creator>
+      <pubDate>Mon, 28 Jun 2021 13:56:00 +0000</pubDate>
+      <link>https://dev.to/doctolib/database-or-goose-58hi</link>
+      <guid>https://dev.to/doctolib/database-or-goose-58hi</guid>
+      <description>&lt;p&gt;Once a platform reaches a certain amount of usage, database migration can quickly bring a platform down. For example, adding a column, if not done carefully, &lt;a href=&quot;https://medium.com/doctolib/stop-worrying-about-postgresql-locks-in-your-rails-migrations-3426027e9cc9&quot;&gt;can block entirely lock a table&lt;/a&gt; for a few minutes.&lt;/p&gt;
+
+&lt;p&gt;At Doctolib, we developed &lt;a href=&quot;https://github.com/doctolib/safe-pg-migrations&quot;&gt;safe-pg-migrations&lt;/a&gt;, a tool which automatically makes migrations safe. In 2018, we open-sourced this library. From an internal solution developed by our team only, it is now used on other projects, and even received contribution from external authors.&lt;/p&gt;
+
+&lt;p&gt;To acknowledge, we decided to give safe-pg-migrations a logo. Our design team came up with two propositions.&lt;/p&gt;
+
+&lt;div class=&quot;table-wrapper-paragraph&quot;&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--mmuhHGVy--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/aveqh0v09mg7s9khd76v.png&quot; alt=&quot;parachute logo&quot;&gt;&lt;/th&gt;
+&lt;th&gt;&lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--BsaRL7MV--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/hh35yxdp132zhcbgmxdq.png&quot; alt=&quot;bird logo&quot;&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;We would like you to help us choose the best logo. To do so, answer to the survey on the tweet bellow: &lt;/p&gt;
+
+
+&lt;blockquote class=&quot;ltag__twitter-tweet&quot;&gt;
+
+  &lt;div class=&quot;ltag__twitter-tweet__main&quot;&gt;
+    &lt;div class=&quot;ltag__twitter-tweet__header&quot;&gt;
+      &lt;img class=&quot;ltag__twitter-tweet__profile-image&quot; src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--dvbC4XDr--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://pbs.twimg.com/profile_images/1394945381281243137/lJ-Y2YBp_normal.jpg&quot; alt=&quot;Docto Tech Life profile image&quot;&gt;
+      &lt;div class=&quot;ltag__twitter-tweet__full-name&quot;&gt;
+        Docto Tech Life
+      &lt;/div&gt;
+      &lt;div class=&quot;ltag__twitter-tweet__username&quot;&gt;
+        @doctotechlife
+      &lt;/div&gt;
+      &lt;div class=&quot;ltag__twitter-tweet__twitter-logo&quot;&gt;
+        &lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--ir1kO05j--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev.to/assets/twitter-f95605061196010f91e64806688390eb1a4dbc9e913682e043eb8b1e06ca484f.svg&quot; alt=&quot;twitter logo&quot;&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;ltag__twitter-tweet__body&quot;&gt;
+      So, what is going to be the logo of safe-pg-migrations?
+    &lt;/div&gt;
+    &lt;div class=&quot;ltag__twitter-tweet__date&quot;&gt;
+      07:59 AM - 28 Jun 2021
+    &lt;/div&gt;
+
+
+    &lt;div class=&quot;ltag__twitter-tweet__actions&quot;&gt;
+      &lt;a href=&quot;https://twitter.com/intent/tweet?in_reply_to=1409421282773549058&quot; class=&quot;ltag__twitter-tweet__actions__button&quot;&gt;
+        &lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--fFnoeFxk--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev.to/assets/twitter-reply-action-238fe0a37991706a6880ed13941c3efd6b371e4aefe288fe8e0db85250708bc4.svg&quot; alt=&quot;Twitter reply action&quot;&gt;
+      &lt;/a&gt;
+      &lt;a href=&quot;https://twitter.com/intent/retweet?tweet_id=1409421282773549058&quot; class=&quot;ltag__twitter-tweet__actions__button&quot;&gt;
+        &lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--k6dcrOn8--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev.to/assets/twitter-retweet-action-632c83532a4e7de573c5c08dbb090ee18b348b13e2793175fea914827bc42046.svg&quot; alt=&quot;Twitter retweet action&quot;&gt;
+      &lt;/a&gt;
+      &lt;a href=&quot;https://twitter.com/intent/like?tweet_id=1409421282773549058&quot; class=&quot;ltag__twitter-tweet__actions__button&quot;&gt;
+        &lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--SRQc9lOp--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev.to/assets/twitter-like-action-1ea89f4b87c7d37465b0eb78d51fcb7fe6c03a089805d7ea014ba71365be5171.svg&quot; alt=&quot;Twitter like action&quot;&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/blockquote&gt;
+ 
+
+</description>
+    </item>
+    <item>
+      <title>How to release a new gem version</title>
+      <dc:creator>Thomas Hareau</dc:creator>
+      <pubDate>Thu, 18 Mar 2021 15:13:45 +0000</pubDate>
+      <link>https://dev.to/doctolib/release-a-new-gem-version-je0</link>
+      <guid>https://dev.to/doctolib/release-a-new-gem-version-je0</guid>
+      <description>&lt;p&gt;At Doctolib, we proudly maintain and develop the gem &lt;a href=&quot;https://github.com/doctolib/safe-pg-migrations&quot;&gt;safe-pg-migrations&lt;/a&gt;, which &lt;a href=&quot;https://medium.com/doctolib/stop-worrying-about-postgresql-locks-in-your-rails-migrations-3426027e9cc9&quot;&gt;makes migrations safer&lt;/a&gt;. Once in a while, after each relevant update, we release a new version. &lt;/p&gt;
+
+&lt;p&gt;The process is easy, but not well documented. I usually rely on my bash history to remember the different steps, but today, &lt;code&gt;history | grep &quot;gem push&quot;&lt;/code&gt; gave me an empty result. So I decided that a blog post was more reliable than a self-deleting history.&lt;/p&gt;
+
+
+
+
+&lt;p&gt;The process presented below is the same for creating or updating your gem. In the example below, we use &lt;code&gt;safe-pg-migrations&lt;/code&gt; and &lt;code&gt;1.2.0&lt;/code&gt; as examples, they will need to be adapted to fit your needs.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Be sure of what you are going to publish.
+&lt;/h2&gt;
+
+&lt;p&gt;Before starting the release process, you need to make sure the code you are about to publish is working as expected.&lt;/p&gt;
+
+&lt;p&gt;Have a look at the git history, make sure you are updated with the latest version of the main branch. Launching the tests is also a good idea.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Bump the version of the gem
+&lt;/h2&gt;
+
+&lt;p&gt;First: update the version. It is specified in the gemspec file. You will need to open it with an editor:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;vim safe-pg-migrations.gemspec
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;And then update the version definition:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;  s.version = '1.2.0'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;When choosing the new version, remember to follow the &lt;a href=&quot;https://guides.rubygems.org/patterns/#semantic-versioning&quot;&gt;semantic versioning policies&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The version is also duplicated into &lt;code&gt;Gemfile.lock&lt;/code&gt;. You can only update the CHANGELOG, if you maintain one.&lt;/p&gt;
+
+&lt;p&gt;Once the version is bumped, you can commit the changes:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;git commit &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;v1.2.0&quot;&lt;/span&gt;
+git push
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h2&gt;
+  
+  
+  Tag the new release
+&lt;/h2&gt;
+
+&lt;p&gt;Once the version is updated, even if non-necessary, it is good to create a new tag. To do so, in your terminal, execute:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;git tag &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; v1.2.0 &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Changelog...&quot;&lt;/span&gt;
+git push origin v1.2.0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Tags are useful because they help other developers to see exactly which version of the code is associated to which version. &lt;br&gt;
+Every release can be fetched with &lt;code&gt;git tag&lt;/code&gt;.&lt;br&gt;
+A specific version can be checked-out with &lt;code&gt;git checkout v1.2.0&lt;/code&gt;. &lt;br&gt;
+Tags will also be listed in a &lt;a href=&quot;https://github.com/doctolib/safe-pg-migrations/releases&quot;&gt;specific page on GitHub&lt;/a&gt;, highlighting each release. &lt;/p&gt;
+&lt;h2&gt;
+  
+  
+  Publish the new release to RubyGem
+&lt;/h2&gt;
+
+&lt;p&gt;Now the version was bumped and tagged, you can now proceed by publishing it to RubyGem. &lt;/p&gt;
+
+&lt;p&gt;First, you need to build a &lt;code&gt;.gem&lt;/code&gt; file:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;gem build safe-pg-migrations
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Once created, the file can be finally published. If you haven't done it already, you will need to create an account at &lt;a href=&quot;https://rubygems.org/users/new&quot;&gt;https://rubygems.org/users/new&lt;/a&gt;.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;gem push safe-pg-migrations-1.2.0.gem
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;This last step will take a few seconds to complete. You should receive an email shortly after, confirming that a new release was published.&lt;/p&gt;
+
+
+
+
+&lt;p&gt;Congratulation, you have published a new version of your gem!&lt;/p&gt;
+
+&lt;p&gt;If you find any most effective way to release, make sure to let us know in the comments!&lt;/p&gt;
+
+
+
+
+&lt;p&gt;Cover picture by &lt;a href=&quot;https://www.makingof-photo.com/&quot;&gt;Pierre Emmanuel Poublanc&lt;/a&gt;&lt;/p&gt;
+
+</description>
+      <category>ruby</category>
+      <category>opensource</category>
+      <category>github</category>
+      <category>tutorial</category>
+    </item>
+    <item>
+      <title>Learn about Ractors and build a mini sidekiq</title>
+      <dc:creator>Alexandre Ignjatovic</dc:creator>
+      <pubDate>Wed, 10 Mar 2021 10:31:35 +0000</pubDate>
+      <link>https://dev.to/doctolib/learn-about-ractors-and-build-a-mini-sidekiq-3ba2</link>
+      <guid>https://dev.to/doctolib/learn-about-ractors-and-build-a-mini-sidekiq-3ba2</guid>
+      <description>&lt;p&gt;&lt;em&gt;In this article, you'll learn more about Ractor, and how you can use them to build your own clone of &lt;a href=&quot;https://sidekiq.org/&quot;&gt;sidekiq&lt;/a&gt; (a background processing framework for Ruby).&lt;/em&gt;&lt;/p&gt;
+
+&lt;h1&gt;
+  
+  
+  What is Ractor?
+&lt;/h1&gt;
+
+&lt;p&gt;Ruby 3.0 introduced the &lt;a href=&quot;https://github.com/ruby/ruby/blob/master/doc/ractor.md&quot;&gt;Ractor&lt;/a&gt; class. This is Ruby's Actor-like concurrent abstraction, and its goal is to provide a parallel execution feature of Ruby without thread-safety concerns.&lt;/p&gt;
+
+&lt;p&gt;According to &lt;a href=&quot;https://en.wikipedia.org/wiki/Actor_model&quot;&gt;wikipedia&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The actor model in computer science is a mathematical model of concurrent computation that treats actor as the universal primitive of concurrent computation.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Actors are able to:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Create more actors&lt;/li&gt;
+&lt;li&gt;Receive messages&lt;/li&gt;
+&lt;li&gt;Send messages&lt;/li&gt;
+&lt;li&gt;Take local decisions &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Be aware that the Ractor implementation is not stable yet, do &lt;strong&gt;NOT&lt;/strong&gt; use them for production code. See the warning displayed when you use them if you still need to be convinced to not use it (yet) in production:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;warning: Ractor is experimental, and the behavior may change in future versions of Ruby! Also there are many implementation issues.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2&gt;
+  
+  
+  Creating a ractor
+&lt;/h2&gt;
+
+&lt;p&gt;Creating a ractor is as simple as using &lt;code&gt;Ractor.new&lt;/code&gt;:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;ractor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Hello Ractor!'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h2&gt;
+  
+  
+  Receiving a message
+&lt;/h2&gt;
+
+&lt;p&gt;There are two ways to receive a message, depending if you have a reference on the ractor sending it.&lt;/p&gt;
+
+&lt;p&gt;Use &lt;code&gt;Ractor.receive&lt;/code&gt; if you don't know who is sending the message:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;receive&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;And use &lt;code&gt;Ractor#take&lt;/code&gt; if you have a reference on the ractor sending the message:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;take&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;As those method calls are blocking until you receive a message, &lt;strong&gt;avoid expecting a message from a ractor that will never send one&lt;/strong&gt;, or your program is going to be stuck forever.&lt;/p&gt;
+
+&lt;p&gt;Also, please be aware that the &lt;a href=&quot;https://docs.ruby-lang.org/en/3.0.0/Ractor.html#class-Ractor-label-Shareable+and+unshareable+objects&quot;&gt;objects you are sending must be shareable&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Sending a message
+&lt;/h2&gt;
+
+&lt;p&gt;If you know your recipient:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# or&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ractor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# `&amp;lt;&amp;lt;` is an alias to `send`&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;And if you don't:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yield&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;&lt;code&gt;Ractor.yield&lt;/code&gt; is blocking as well until some ractor receive your message.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Taking local decision
+&lt;/h2&gt;
+
+&lt;p&gt;You can do pretty much anything you want in the block given to &lt;code&gt;Ractor.new&lt;/code&gt;. &lt;strong&gt;Unless accessing shared objects&lt;/strong&gt;. An exception will be raised if you try to use a variable defined outside of your block. In order to share a variable between several ractors, you can, for example, use the &lt;a href=&quot;https://github.com/ko1/ractor-tvar&quot;&gt;Ractor::TVar gem&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Another interesting method I'm going to use later on is the &lt;code&gt;Ractor.select(*actors)&lt;/code&gt; method. It takes several ractors as an input, and returns the first ractor to send something, and its output:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;slow_ractor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yield&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:too_late&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;fast_ractor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yield&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:fast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;output&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;slow_ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fast_ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# output == :fast &amp;amp;&amp;amp; ractor == fast_ractor&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h1&gt;
+  
+  
+  Let's build a mini sidekiq!
+&lt;/h1&gt;
+
+&lt;p&gt;Please be aware that this crude POC will only allow you to use a pool of 10 ractors to achieve parallel execution of jobs. It won't handle error flow control, statistics, queueing and all the other features that make sidekiq a super useful project.&lt;/p&gt;
+
+&lt;p&gt;We'll build a simple design with:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A &lt;code&gt;WorkerPool&lt;/code&gt;, taking care of our pool of ractors&lt;/li&gt;
+&lt;li&gt;A &lt;code&gt;Job&lt;/code&gt; base class, that all our dedicated jobs will inherit from.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The goal being to allow people to easily implement their own jobs without having to handle all the pool logic.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  WorkerPool
+&lt;/h2&gt;
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;WorkerPool&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:ractors&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@ractors&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spawn_worker&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;spawn_worker&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yield&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:ready&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;kp&quot;&gt;loop&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Job&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parameters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_ignored_result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Ractor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@instance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ractors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;ractor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parameters&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;There is a trick here. When using &lt;code&gt;Ractor.yield(:ready)&lt;/code&gt;, we are just making sure that the ractors of the pool have something to send for the initial &lt;code&gt;Ractor.select&lt;/code&gt; to work (remember, it's blocking).&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Job base class
+&lt;/h2&gt;
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Job&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;WorkerPool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;args: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;args: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Be aware that anything you will provide as argument must be shareable.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Implementing a specific job
+&lt;/h2&gt;
+
+&lt;p&gt;Let's say that we'd like to create an asynchronous job that prints something:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PrintJob&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Job&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Using it asynchronously is now as simple as:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;PrintJob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Hello World!'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h1&gt;
+  
+  
+  Conclusion
+&lt;/h1&gt;
+
+&lt;p&gt;Ractor introduces a new and interesting model for parallel execution in Ruby.&lt;/p&gt;
+
+&lt;p&gt;If you found the ractor topic interesting, I suggest you check out these interesting resources:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ruby/ruby/blob/master/doc/ractor.md&quot;&gt;https://github.com/ruby/ruby/blob/master/doc/ractor.md&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.ruby-lang.org/en/3.0.0/Ractor.html&quot;&gt;https://docs.ruby-lang.org/en/3.0.0/Ractor.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And if you liked this post, check out our &lt;a href=&quot;https://doctolib.engineering/engineering-news-ruby-rails-react&quot;&gt;awesome weekly tech newsletter&lt;/a&gt;. We are regularly sharing top ruby &amp;amp; javascript content!&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Photo by &lt;a href=&quot;https://unsplash.com/photos/QM3suFW_Y4E&quot;&gt;Mark Thompson&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+
+</description>
+      <category>ruby</category>
+      <category>programming</category>
+    </item>
+    <item>
+      <title>Run Code Tours without leaving Github</title>
+      <dc:creator>Quentin Ménoret</dc:creator>
+      <pubDate>Mon, 18 Jan 2021 16:23:53 +0000</pubDate>
+      <link>https://dev.to/doctolib/run-code-tours-without-leaving-github-1dj3</link>
+      <guid>https://dev.to/doctolib/run-code-tours-without-leaving-github-1dj3</guid>
+      <description>&lt;p&gt;tl;dr: I made this: &lt;a href=&quot;https://github.com/doctolib/code-tours-github&quot;&gt;https://github.com/doctolib/code-tours-github&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Code tours
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://marketplace.visualstudio.com/items?itemName=vsls-contrib.codetour&quot;&gt;Code tours&lt;/a&gt; are an amazing tool to help people discover your codebase. It's simple and brilliant!&lt;/p&gt;
+
+&lt;p&gt;Basically, you will be able to walk people through the code, highlighting specific parts of the code with your explication. It's great to explain how a feature work, or how you apply certain patterns.&lt;/p&gt;
+
+&lt;p&gt;Here is what a Code Tour looks like:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--KaTs9-FK--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_66%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/i/1nb2tev6wb8vvyrb5emp.gif&quot; class=&quot;article-body-image-wrapper&quot;&gt;&lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--KaTs9-FK--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_66%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/i/1nb2tev6wb8vvyrb5emp.gif&quot; alt=&quot;What Code Tour looks like&quot; width=&quot;880&quot; height=&quot;729&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Only in VSCode?
+&lt;/h2&gt;
+
+&lt;p&gt;Unfortunately, this extension is built for VSCode. They recently added support for CodeSpace as well, but that's basically it. Since I'm not using VSCode, I felt like I had to do something about it!&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Introducing the Code Tours Github extension
+&lt;/h2&gt;
+
+&lt;p&gt;So I decided to reimplement part of the features directly in the Browser. This way, Code Tours are available to everyone!&lt;/p&gt;
+
+&lt;p&gt;Here is what a tour looks like:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--wMFJfeiX--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_66%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/i/k5bw9q8lkfjtk0bisgca.gif&quot; class=&quot;article-body-image-wrapper&quot;&gt;&lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--wMFJfeiX--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_66%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/i/k5bw9q8lkfjtk0bisgca.gif&quot; alt=&quot;Code Tour using the Browser Extension&quot; width=&quot;880&quot; height=&quot;445&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Of course there is still a lot to do to have as many features as the original extension, but I'll keep working on it.&lt;/p&gt;
+
+&lt;p&gt;You can check the repository &lt;a href=&quot;https://github.com/doctolib/code-tours-github&quot;&gt;here&lt;/a&gt;, and install the extension for &lt;a href=&quot;https://chrome.google.com/webstore/detail/code-tours-github/emmipndjppboloecpfgnckbkcehhhpkc/&quot;&gt;Chrome&lt;/a&gt; or &lt;a href=&quot;https://addons.mozilla.org/en-US/firefox/addon/code-tours-github/&quot;&gt;Firefox&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Let me know what you think!&lt;/p&gt;
+
+</description>
+      <category>news</category>
+      <category>chrome</category>
+      <category>firefox</category>
+      <category>extension</category>
+    </item>
+    <item>
+      <title>Testing Windows installers with Jest</title>
+      <dc:creator>Quentin Ménoret</dc:creator>
+      <pubDate>Mon, 11 Jan 2021 16:47:09 +0000</pubDate>
+      <link>https://dev.to/doctolib/testing-windows-installers-with-jest-n23</link>
+      <guid>https://dev.to/doctolib/testing-windows-installers-with-jest-n23</guid>
+      <description>&lt;p&gt;At Doctolib, we've been building native software for a few years now, which we install directly on doctor's computers to improve their Doctolib experience.&lt;/p&gt;
+
+&lt;p&gt;Of course, we do write unit and integration tests to make sure that the software does what it is supposed to. But sometimes, it's not enough.&lt;/p&gt;
+
+&lt;p&gt;Once, we made a major change to a feature and for the new code to work properly, the updater needed to write a new line in the software's config file. Of course we manually tested that a fresh install would write this line. &quot;That should be enough right?&quot;, we thought until the support calls started coming in.&lt;/p&gt;
+
+&lt;p&gt;Apparently, this tiny line was not written when the installer ran in update mode. Luckily we only had a few beta testers at that time, so that the error had only a low impact.&lt;/p&gt;
+
+&lt;p&gt;Today we can't afford to make a mistake like that again.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  So what do we do now?
+&lt;/h2&gt;
+
+&lt;p&gt;We release new versions of our native software weekly, and we need the updates to be thoroughly tested.&lt;/p&gt;
+
+&lt;p&gt;The risk of making a mistake with an installer is that it might completely corrupt your software. For example, an update could cause a crash on startup, which would stop users from even being able to subsequently update to a version with a fix. Imagine this happening on tens of thousands of computers at the same time. It would be impossible to fix, unless you call all 20k users one after another.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, testing installers and executables is &lt;strong&gt;really&lt;/strong&gt; hard. Most companies actually test those manually like we used to do. To automate this process, you cannot write unit tests: you have to completely install your software, validate that everything works properly and that all files are copied in the right place. On top, you need to do this for &lt;strong&gt;all supported operating systems and architectural varieties&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is why we built several tools and processes to allow us to run end-to-end tests for installers and executables on our CI. In the rest of this post I will walk you through the process of creating such a safety net.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Setup
+&lt;/h2&gt;
+
+&lt;h3&gt;
+  
+  
+  Stateless environment
+&lt;/h3&gt;
+
+&lt;p&gt;Before you start, you will need to set up a stateless environment where you can run your tests. We chose &lt;a href=&quot;https://medium.com/r?url=https%3A%2F%2Fazure.microsoft.com%2Fen-us%2Fservices%2Fdevops%2F&quot;&gt;Azure Devops&lt;/a&gt; because it allows us to run tests on Windows, Linux and Mac but there are other CI providers that offer the same service.&lt;/p&gt;
+
+&lt;p&gt;It is important that the environment is stateless because installers have the tendency to persist a lot of things which are a pain to cleanup after each run (files, registry, permissions…). If you don't isolate the test runs, you might have unexpected behaviours, or worse, false positives.&lt;/p&gt;
+
+&lt;p&gt;Just picture a case in which your installer needs to write a critical registry key. Unfortunately, your feature is broken. If your environment is not cleaning up the registry, the next run will be green, no matter how broken your code might be, since the registry key was written in a previous test run.&lt;/p&gt;
+
+&lt;h3&gt;
+  
+  
+  Headless testing
+&lt;/h3&gt;
+
+&lt;p&gt;Most installers have a tendency to ask you stuff. Unfortunately, it's harder to simulate user inputs on an installer UI compared to a browser. So you'll need to skip that part.&lt;/p&gt;
+
+&lt;p&gt;With a standard &lt;a href=&quot;https://nsis.sourceforge.io/Main_Page&quot;&gt;NSIS&lt;/a&gt; installer (which is what we use at Doctolib) this means running the installer with the /S argument (silent mode - runs the installer without a UI). There are operations that can block the installer in silent mode, leaving you waiting forever. For those situations we came up with two solutions:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use &lt;a href=&quot;https://nsis.sourceforge.io/mediawiki/index.php?title=Reference/IfSilent&amp;amp;oldid=21362&quot;&gt;IfSilent&lt;/a&gt; to explicitly skip blocking operations.&lt;/li&gt;
+&lt;li&gt;Use registry keys instead of user inputs. Inside of your installer you can check for the presence of registry keys (which is never the case in production) and use that value in the tests instead of prompting the user.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Once your installer is able to run in non-interactive mode, you can start the actual testing.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  File system and registry checks
+&lt;/h2&gt;
+
+&lt;p&gt;Now we can talk about ensuring the installer works fine. Let's run it:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight typescript&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;child_process&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;promisify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;installerPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; /S`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;What you want to assert is that your files get copied to the right place. This is very easy to do with Jest. Use &lt;a href=&quot;https://jestjs.io/docs/en/snapshot-testing&quot;&gt;snapshot testing&lt;/a&gt;:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight typescript&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// You can snapshot test the content of all the folders you &lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// install files in, such as your AppData folder&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;entries&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fsPromises&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;folder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;entries&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toMatchSnapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;entries in folder&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;no folder&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toMatchSnapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;entries in folder&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;You could also take a snapshot of the content of the registry if you save any important values there:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight typescript&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;list&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;regedit&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;values&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;promisify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;yourKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;yourKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toMatchSnapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Same thing for the content of any text/config files you write. And since values are sometimes dynamic, you'll want to use &lt;a href=&quot;https://jestjs.io/docs/en/snapshot-testing#property-matchers&quot;&gt;property matchers&lt;/a&gt; on the snapshot's file content after parsing:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight typescript&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ini&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;./config.ini&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toMatchSnapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;my_section&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;my_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;jest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringMatching&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/expected_value/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h2&gt;
+  
+  
+  Testing the binary architecture
+&lt;/h2&gt;
+
+&lt;p&gt;When building native software for Windows, you are often building for either a 32-bit or 64-bit architecture. It is critical to get this right, if you don't want your process to crash.&lt;/p&gt;
+
+&lt;p&gt;If you were to ship a 64 bit exe for a 32 bit computer, or mixed architectures for your EXE and DLLs, your program would most likely not work, or even crash. This is why we built &lt;a href=&quot;https://github.com/doctolib/windows-binary-architecture&quot;&gt;windows-binary-architecture&lt;/a&gt;. With this module you can easily assert the architecture of your binaries (exe or dll):&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight typescript&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getTargetArchitecture&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;filePath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toBe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;I386&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h2&gt;
+  
+  
+  Ensuring binaries are signed
+&lt;/h2&gt;
+
+&lt;p&gt;Unless you want your users to see those annoying SmartScreen messages, you will have to sign your binaries.&lt;br&gt;
+There are probably a lot of files to sign, and it's a tedious process to check them manually.&lt;/p&gt;
+
+&lt;p&gt;Don't worry, we got your back here too! We wrote a small JavaScript tool to assert that a binary is properly signed: &lt;a href=&quot;https://github.com/doctolib/authenticode&quot;&gt;authenticode&lt;/a&gt;. It is pretty easy to use:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight typescript&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;signature&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getAuthenticode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;filePath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;signature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toBe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SignatureStatus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Valid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h2&gt;
+  
+  
+  Actually starting the thing
+&lt;/h2&gt;
+
+&lt;p&gt;The last thing you might want to do is to actually start your process. This highly depends on the type and size of software you are building. The following test cases might not be worth it if your software takes 15 minutes to boot up.&lt;/p&gt;
+
+&lt;p&gt;But if you can afford it, there are three things you can easily get out of this:&lt;/p&gt;
+
+&lt;h3&gt;
+  
+  
+  Is the process crashing when starting?
+&lt;/h3&gt;
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight typescript&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;spawn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;yourProcessPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stdout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// Maybe if the process starts writing on stdout&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// it means it is working? Depends on your software!&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h3&gt;
+  
+  
+  Is the process writing anything to stdout / stderr that you should be worried about?
+&lt;/h3&gt;
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight typescript&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;spawn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;yourProcessPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stdout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;''&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stderr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;''&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stdout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;stdout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;stderr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// You will need to implement custom logic to know when your process&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// is &quot;ready&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;processInitOver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stdout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toMatchSnapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toMatchSnapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h3&gt;
+  
+  
+  Is the process loading the DLLs you expect it to load?
+&lt;/h3&gt;
+
+&lt;p&gt;It's pretty easy to test this using the listDlls executable:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight typescript&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;listDllsOutput&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(.&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Listdlls&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exe&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;processName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/accepteula`&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;.stdou&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;t
+&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;listDllsOutput&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toMatchSnapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h2&gt;
+  
+  
+  The Mac and Linux case
+&lt;/h2&gt;
+
+&lt;p&gt;We focused a lot on Windows tests here but you can implement the same thing for Linux and Mac as well! If you want to achieve this, feel free to look at our &lt;a href=&quot;https://github.com/doctolib/jest-os-detection&quot;&gt;jest-os-detection&lt;/a&gt; module, which allows you to &lt;a href=&quot;https://medium.com/doctolib/how-to-run-the-same-jest-test-suite-across-several-platforms-jest-os-detection-plugin-included-f8113832482b&quot;&gt;run the same test suite on a different OS&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Conclusion
+&lt;/h2&gt;
+
+&lt;p&gt;At Doctolib, we enforce that every single piece of software we build is tested. We extend this beyond pure feature testing (eg. unit or integration tests), and also test the output of our automated build processes. This includes installers and binaries.&lt;/p&gt;
+
+&lt;p&gt;These installer tests have protected us several times from serious issues that could have otherwise reached production and would have had significant consequences. A few months ago, we refactored our build pipelines, and almost published unsigned binaries. Our tests saved us.&lt;/p&gt;
+
+
+
+
+&lt;p&gt;If you like tests as much as we do, don't hesitate to subscribe to the &lt;a href=&quot;https://doctolib.us14.list-manage.com/subscribe?u=6f3cf1e1e4554097575191f5d&amp;amp;id=a22645bb6c&quot;&gt;docto-tech-life&lt;/a&gt; newsletter to receive our weekly selection of technical content!&lt;/p&gt;
+
+</description>
+      <category>javascript</category>
+      <category>typescript</category>
+      <category>testing</category>
+      <category>native</category>
+    </item>
+    <item>
+      <title>Rails + React + ActionCable without the fuss</title>
+      <dc:creator>Paul-Etienne Coisne</dc:creator>
+      <pubDate>Sun, 03 Jan 2021 14:44:21 +0000</pubDate>
+      <link>https://dev.to/doctolib/rails-react-actioncable-without-the-fuss-4ebn</link>
+      <guid>https://dev.to/doctolib/rails-react-actioncable-without-the-fuss-4ebn</guid>
+      <description>&lt;p&gt;The code for this article is &lt;a href=&quot;https://github.com/coisnepe/reaction_cable&quot;&gt;on Github&lt;/a&gt;&lt;br&gt;
+If you've landed here I'm going to bet that you simply want to know how to add ActionCable to a Rails app running React with Webpacker, nothing more, nothing less. I also assume that you know Rails and React, so I will spare explanations.&lt;br&gt;
+This is meant to be the absolute bare minimum: I haven't added any gem or yarn package, no check on params, no authentication, etc. It's merely a help to jumpstart your project.&lt;/p&gt;
+
+&lt;p&gt;Let's cut to the chase!&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;$ rails new reaction_cable -T --webpack=react
+$ rails g model Message content
+$ rails db:setup
+$ rails db:migrate
+$ rails s
+# In another terminal…
+$ webpack-dev-server
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;$ touch app/controllers/messages_controller.rb
+$ rails g channel messages
+      create  app/channels/messages_channel.rb
+   identical  app/javascript/channels/index.js
+   identical  app/javascript/channels/consumer.js
+      create  app/javascript/channels/messages_channel.js
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config/routes.rb&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;draw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;mount&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActionCable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/cable'&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;resources&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:messages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;only: &lt;/span&gt;&lt;span class=&quot;sx&quot;&gt;%i(index create)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/controllers/messages_controller.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MessagesController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;$ touch app/javascript/packs/messages.js
+$ mkdir app/views/messages
+$ touch app/views/messages/index.html.erb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Now that we have the files set up, let's fill them in:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/views/messages/index.html.erb&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sx&quot;&gt;%= javascript_packs_with_chunks_tag 'messages' %&amp;gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight javascript&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// app/javascript/packs/messages.js&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;channels&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useEffect&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;react&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ReactDOM&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;react-dom&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MessagesChannel&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;channels/messages_channel&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MessagesBoard&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Empty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/div&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addEventListener&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;DOMContentLoaded&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;ReactDOM&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;MessagesBoard&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;At this point, &lt;a href=&quot;http://localhost:3000/messages&quot;&gt;http://localhost:3000/messages&lt;/a&gt; should be browsable, albeit empty :-)&lt;/p&gt;
+
+&lt;p&gt;Export the channel subscription in order to use it in the Messages component.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight javascript&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// app/javascript/channels/messages_channel.js&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;consumer&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;./consumer&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MessagesChannel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;consumer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;subscriptions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;MessagesChannel&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;connected&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// Called when the subscription is ready for use on the server&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+
+  &lt;span class=&quot;nx&quot;&gt;disconnected&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// Called when the subscription has been terminated by the server&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+
+  &lt;span class=&quot;nx&quot;&gt;received&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// Called when there's incoming data on the websocket for this channel&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MessagesChannel&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight javascript&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// app/javascript/packs/messages.js&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;channels&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useEffect&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;react&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ReactDOM&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;react-dom&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MessagesChannel&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;channels/messages_channel&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MessagesBoard&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;messages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setMessages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([])&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setMessage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;nx&quot;&gt;useEffect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;MessagesChannel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;received&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setMessages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;messages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt;
+
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;handleSubmit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;preventDefault&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// Add the X-CSRF-TOKEN token so rails accepts the request&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;http://localhost:3000/messages&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;POST&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;application/json&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;X-CSRF-TOKEN&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;querySelector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;[name=csrf-token]&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}),&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;setMessage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;onChange&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{({&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setMessage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;button&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;onClick&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;handleSubmit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Send&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/button&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ul&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;messages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/li&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;        &lt;span class=&quot;p&quot;&gt;))}&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/ul&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/div&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addEventListener&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;DOMContentLoaded&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;ReactDOM&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;MessagesBoard&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/channels/messages_channel.rb&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MessagesChannel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationCable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Channel&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;subscribed&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;stream_from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'messages'&lt;/span&gt;
+
+    &lt;span class=&quot;no&quot;&gt;ActionCable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;broadcast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'messages'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;messages: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;unsubscribed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Add a &lt;code&gt;#create&lt;/code&gt; method in your &lt;code&gt;MessagesController&lt;/code&gt;:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;content: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ActionCable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;broadcast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'messages'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;messages: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;You should now have a working Rails+React+ActionCable app 🚀&lt;br&gt;
+Please let me know in the comments if you'd like to know more about React+Rails+ActionCable!&lt;/p&gt;
+
+</description>
+      <category>ruby</category>
+      <category>react</category>
+      <category>actioncable</category>
+      <category>websockets</category>
+    </item>
+    <item>
+      <title>Painless i18n for Moment.js</title>
+      <dc:creator>Paul-Etienne Coisne</dc:creator>
+      <pubDate>Thu, 24 Dec 2020 10:31:22 +0000</pubDate>
+      <link>https://dev.to/doctolib/painless-i18n-for-moment-js-2b5</link>
+      <guid>https://dev.to/doctolib/painless-i18n-for-moment-js-2b5</guid>
+      <description>&lt;p&gt;You serve a multi-lingual JS app, use Moment.js and need to internationalize how times are displayed? Why bother with an expansive new NPM package where you could do it yourself in just a few lines of code?&lt;/p&gt;
+
+&lt;p&gt;First create a file that'll store the various formats you need, as well as the function that'll pass them to your custom Moment.js &lt;code&gt;localize&lt;/code&gt; function:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight javascript&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// First find a way to determine the user's locale&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getLocale&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;locale&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;fr&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Define as many formats as you wish.&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;formats&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;ddd DD&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;fr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;ddd DD&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;de&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;ddd Do&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;en&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;ddd Do&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;en-US&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;ddd Do&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;ddd DD&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;D MMM YYYY à HH:mm&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;fr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;D MMM YYYY à HH:mm&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;de&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;Do MMM YYYY [um] H:mm&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;en&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;D MMM YYYY [at] H:mm&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;en-US&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;MMM Do YYYY [at] H:mm&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;D MMM YYYY [alle] HH:mm&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Whether you want the function to fail or not if the name doesn't exist is up to you. &lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i18nFormat&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;locale&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getLocale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;formats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`Unknown format definition for &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;formats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;locale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;s2&quot;&gt;`Missing format definition for &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; in locale &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;locale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;`&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;formats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;locale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i18nFormat&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Now you can create a file defining your &lt;code&gt;localize&lt;/code&gt; function...&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight javascript&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;moment&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;moment&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;moment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;localize&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;localize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;inputString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i18nFormats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;inputString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;...and import it at the root of your project. You're hot to trot!&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight javascript&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;react&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;./setupMoment&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;moment&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;moment&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;App&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;className&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;App&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;h1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Internationalize&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Moment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;easy&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;way&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/h1&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;h2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;dddd&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;moment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;localize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;dddd&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/h2&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;h2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;D MMM YYYY à HH:mm&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;moment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;localize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;D MMM YYYY à HH:mm&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/h2&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/div&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;App&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;&lt;a href=&quot;https://codesandbox.io/s/confident-feather-e9h50?file=/src/App.js&quot;&gt;Functional demo on Codesandbox&lt;/a&gt;&lt;/p&gt;
+
+</description>
+      <category>javascript</category>
+      <category>i18n</category>
+      <category>momentjs</category>
+    </item>
+    <item>
+      <title>What's your most used shortcut?</title>
+      <dc:creator>Fábio Guerreiro</dc:creator>
+      <pubDate>Mon, 07 Dec 2020 15:35:34 +0000</pubDate>
+      <link>https://dev.to/doctolib/what-s-your-most-used-shortcut-17lp</link>
+      <guid>https://dev.to/doctolib/what-s-your-most-used-shortcut-17lp</guid>
+      <description>&lt;p&gt;As I’m writing this article, I just finished adding two new commands alias to my git config file :&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;code&gt;git config --global alias.list-old-branches &quot;!git branch -vv | grep 'origin/.*: gone]' | awk '{print $1}'&quot;&lt;/code&gt; - to list all the branches that exist on my local repository but have been deleted from remote&lt;/li&gt;
+&lt;li&gt;
+&lt;code&gt;git config --global alias.clean-old-branches &quot;!git list-old-branches | xargs git branch -D&quot;&lt;/code&gt; - to pick the list of branches returned by the previous command and delete them from my local repository&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And then it made me think &lt;strong&gt;'How can we improve our productivity with more of these shortcuts? 🤔'&lt;/strong&gt; &lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--b9cYjnAh--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/i/rksj3fch0b7y0ca8445q.png&quot; class=&quot;article-body-image-wrapper&quot;&gt;&lt;img src=&quot;https://res.cloudinary.com/practicaldev/image/fetch/s--b9cYjnAh--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/i/rksj3fch0b7y0ca8445q.png&quot; alt=&quot;Alt Text&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that each one of us has one or more shortcuts added either to our terminal/VSCode/git. So I decided to write this article for it to work as a centralized repository of shortcuts that can easily be shared among us.&lt;/p&gt;
+
+&lt;p&gt;It's not convenient to go through the whole history of 'that'-hot-tips channel. Or having to go through individual SO questions, to look for that &lt;a href=&quot;https://medium.com/doctolib/automated-rails-tests-in-vs-code-331ac26f71ec&quot;&gt;VSCode shortcut&lt;/a&gt; that allows you to run all the tests from a single file.&lt;/p&gt;
+
+&lt;p&gt;Hope this article helps everyone, from an experienced programmer to a newbie! And please, add your own shortcuts in the comments.&lt;/p&gt;
+
+&lt;p&gt;Take care, BEAR hugs ฅʕ•ᴥ•ʔฅ&lt;/p&gt;
+
+</description>
+      <category>productivity</category>
+      <category>hottips</category>
+      <category>vscode</category>
+      <category>zsh</category>
+    </item>
+  </channel>
+</rss>

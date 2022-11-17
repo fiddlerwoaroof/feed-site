@@ -1,0 +1,1462 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://aboobacker.in/feed.xml" rel="self" type="application/atom+xml"><link href="https://aboobacker.in/" rel="alternate" type="text/html"><updated>2022-09-05T11:14:00+00:00</updated><id>https://aboobacker.in/feed.xml</id><title type="html">Aboobacker’s world</title><subtitle>Personal website of Aboobacker MK, Ruby on Rails developer in Kannur, Kerala</subtitle><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><entry><title type="html">Postgres transaction pitfalls for rails developers</title><link href="https://aboobacker.in/2022/04/12/postgres-transaction-pitfalls-for-rails-developers.html" rel="alternate" type="text/html" title="Postgres transaction pitfalls for rails developers"><published>2022-04-12T07:02:00+00:00</published><updated>2022-04-12T07:02:00+00:00</updated><id>https://aboobacker.in/2022/04/12/postgres-transaction-pitfalls-for-rails-developers</id><content type="html" xml:base="https://aboobacker.in/2022/04/12/postgres-transaction-pitfalls-for-rails-developers.html">&lt;p&gt;Rails abstract lot of database stuff away using Active record which is very convenient. But the convenience can bite back if we are not careful enough.&lt;/p&gt;
+
+&lt;p&gt;Here I am going to list some common mistakes rails developers make and how to avoid them.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Having network calls on rails after_create/before_create callbacks&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Active record provides callback methods to perform some operations based on the changes in data. it includes &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;before_create&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;after_create&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;after_commit&lt;/code&gt; etc. Rails wrap before_create and after_create inside the same transaction so that it can roll back when the exception is raised from any of these callbacks. after_commit is executed after the transaction is committed to the database. So if you have calls like&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MyModel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;before_create&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:fetch_data_from_server&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fetch_data_from_server&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;attribute&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;SlowApi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The transaction will remain open for long time and that will cause locks and potentially deadlocks on tables.&lt;/p&gt;
+
+&lt;p&gt;Solutions:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. Make network calls before transaction begins, ie before the save method is called
+
+2. Make the API call in after commit callback
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Scheduling Background jobs from after_create/before_create callbacks&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This is very similar to the previous point, as the backgrounds jobs typically use another data store like Redis and the communication will be over the network. This may not be significant on a small scale if the Redis is in the same infra and network latency is not significant. But any performance degradation on redis infra will cause a sudden spike in long transactions and can potentially cause cascading failures on the infrastructure.&lt;/p&gt;
+
+&lt;p&gt;Solutions:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. Schedule background jobs from after_commit callback
+2. Move job scheduling out of rails callbacks
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Nested transactions&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;When you have nested services you might end up with nested transactions as well.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderCreator&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;adjust_currency_conversion&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;InventoryUpdateService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;InventoryUpdateService&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;
+   &lt;span class=&quot;no&quot;&gt;Inventory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;require_new: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+     &lt;span class=&quot;n&quot;&gt;deduct_inventory_from_primary_store&lt;/span&gt;
+     &lt;span class=&quot;n&quot;&gt;run_inventory_sync&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This can cause performance bottlenecks due to the SAVEPOINT behaviour, Skipping it here as Gilab wrote a great blog on this &lt;a href=&quot;https://about.gitlab.com/blog/2021/09/29/why-we-spent-the-last-month-eliminating-postgresql-subtransactions/&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Last but the not least is about adding transaction block where it is not necessary, for instance if there won’t any data corruption if the operations ran individually, or the impact is very minimal which gets fixed on background worker retry, then avoid using database transactions&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Also checkout these two great gems which allows us to reduce transaction burdern on database.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/Envek/after_commit_everywhere&quot;&gt;after_commit_everywhere&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/palkan/isolator&quot;&gt;isolator&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><category term="rails"/><category term="postgres"/><summary type="html">Rails abstract lot of database stuff away using Active record which is very convenient. But the convenience can bite back if we are not careful enough.</summary></entry><entry><title type="html">Bootsnap and Spring, Understanding rails boottime optimisations</title><link href="https://aboobacker.in/2021/06/28/bootsnap-and-spring-understanding-rails-boottime-optimisations.html" rel="alternate" type="text/html" title="Bootsnap and Spring, Understanding rails boottime optimisations"><published>2021-06-28T08:33:00+00:00</published><updated>2021-06-28T08:33:00+00:00</updated><id>https://aboobacker.in/2021/06/28/bootsnap-and-spring-understanding-rails-boottime-optimisations</id><content type="html" xml:base="https://aboobacker.in/2021/06/28/bootsnap-and-spring-understanding-rails-boottime-optimisations.html">&lt;p&gt;Being the default the gem file entries in a rails project, you may have encountered spring and bootsnap. Here we are going through how they work and how they can improve boot time of your applications and why you get some weird errors in the app(Looking at you Spring).&lt;/p&gt;
+
+&lt;p&gt;Before diving into details, let’s go through some fundamentals to understand things better. Traditionally there were two kinds of languages, Compiled languages and interpreted languages.  Compiled languages convert the code into binary format and that binary gets executed as the program. C, C++, Java etc are examples for this pattern. Another set of languages which were primarily designed for scripting read individual lines in the code and converted to machine instructions on runtime.&lt;/p&gt;
+
+&lt;p&gt;With ruby 1.9, a new virtual machine replaced the interpreter in ruby which was called Mat’s Ruby Interpreter(MRI). With a new virtual machine. Here instead of directly executing the code, ruby  code will be converted to an intermediate representation called instruction sequence and the YARV virtual machine will execute them.&lt;/p&gt;
+
+&lt;p&gt;You can refer to the following diagram for reference.
+&lt;img src=&quot;/images/tokenize.png&quot; alt=&quot;'tokenize.png'&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Credit: Ruby under a microscope&lt;/p&gt;
+
+&lt;p&gt;There are also bulletin tools to inspect what is happening in the process, let’s check what happens for a 3 line code.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'ripper'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'pp'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;CODE&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+def add(x, y)
+  x + y
+end
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;CODE&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s split the code into tokens using ripper utility&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;043&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Ripper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tokenize&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;def&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;add&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;(&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;x&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;,&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;x&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;+&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;end&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;And see the parsed form using ripper sexp&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;042&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pp&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Ripper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sexp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:program&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:@ident&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;add&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]],&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:paren&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:@ident&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;x&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:@ident&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]],&lt;/span&gt;
+     &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]],&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:bodystmt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:binary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:var_ref&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:@ident&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;x&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]],&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:var_ref&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:@ident&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]]]],&lt;/span&gt;
+    &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can also take look at how the Instruction sequence(yarv code) looks like&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;052&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RubyVM&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;InstructionSequence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;compile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;disasm&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;disasm: &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;ISeq:&amp;lt;compiled&amp;gt;@&amp;lt;compiled&amp;gt;:1 (1,0)-(3,3)&amp;gt; (catch: FALSE)&lt;/span&gt;
+&lt;span class=&quot;mo&quot;&gt;0000&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;definemethod&lt;/span&gt;                           &lt;span class=&quot;ss&quot;&gt;:add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;                 &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Li&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;mo&quot;&gt;0003&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;putobject&lt;/span&gt;                              &lt;span class=&quot;ss&quot;&gt;:add&lt;/span&gt;
+&lt;span class=&quot;mo&quot;&gt;0005&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;leave&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;disasm: &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;lt;ISeq:add@&amp;lt;compiled&amp;gt;:1 (1,0)-(3,3)&amp;gt; (catch: FALSE)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;size: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;argc: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;opts: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;rest: &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;post: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;block: &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;kw: &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;kwrest: &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;mo&quot;&gt;0000&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getlocal_WC_0&lt;/span&gt;                          &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;                       &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;LiCa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;mo&quot;&gt;0002&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getlocal_WC_0&lt;/span&gt;                          &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;mo&quot;&gt;0004&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;opt_plus&lt;/span&gt;                               &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;calldata!mid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ARGS_SIMPLE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;mo&quot;&gt;0006&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;leave&lt;/span&gt;                                                            &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Re&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Explaining the terms in the parsed and compiled code is beyond the scope of this blog post, and I recommend reading Ruby Under a Microscope.&lt;/p&gt;
+
+&lt;p&gt;Newer versions of ruby also allows us to compile the code to binary and execute them later. it is experimental and platform dependent.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;? &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;example.rb
+number &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 23
+puts number + 23
+? ruby &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;File.write('example.bin',RubyVM::InstructionSequence.compile_file('example.rb')
+.to_binary)&quot;&lt;/span&gt;
+? &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;example.bin
+YARB@
+     ?x86_64-darwin18%?#?%?gw
+numberE+Eexampleputs?????????%
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;RubyVM&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;InstructionSequence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;load_from_binary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'example.bin'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;eval&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;46&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;hr /&gt;
+&lt;p&gt;That is it for the ruby compilation process for now. Now let’s how the ruby’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;require&lt;/code&gt; method works.&lt;/p&gt;
+
+&lt;p&gt;Contrary to what I thought initially, require is not a keyword in ruby, it is a method from ruby’s Kernal module.&lt;/p&gt;
+
+&lt;p&gt;Let’s look at the overly simplified version of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;require&lt;/code&gt; method for our context.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;Two main issues with this implementation are&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Requiring same file again will load the file again&lt;/li&gt;
+  &lt;li&gt;Only absolute paths are supported&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;We can fix these issues in the following ways&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;vg&quot;&gt;$LOADED_FEATURES&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;vg&quot;&gt;$LOADED_FEATURES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;include?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;vg&quot;&gt;$LOADED_FEATURES&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;vg&quot;&gt;$LOAD_PATH&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#$LOAD_PATH = += gems_path + stdlib path + application code paths&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;full_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;vg&quot;&gt;$LOAD_PATH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;take&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exist?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;full_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;While above code snippets are dummy implementations, Ruby actually uses the constants &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$LOADED_FEATURES&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$LOAD_PATH &lt;/code&gt;for the same use case. Here is a stat from one of our  app for reference&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;irb&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;main&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:054:0&amp;gt;  &lt;span class=&quot;nv&quot;&gt;$LOADED_FEATURES&lt;/span&gt;.count
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; 6552
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;05&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;vg&quot;&gt;$LOAD_PATH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;count&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;779&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Another important method we need to recall is the fork system call in POSIX systems. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fork&lt;/code&gt; allows the OS to create a new process as the child process with the same  memory space. Modern hardware architectures like x86 allows the OS to optimise the fork with a mechanism called copy on write. In short it is very cheap to create a forked process of an app than loading that app from scratch.&lt;/p&gt;
+
+&lt;p&gt;Now let’s look at the gems from the title.&lt;/p&gt;
+
+&lt;p&gt;Spring is a rails only tool to speedup development and test environments. It creates your app process in the background for development and test environments and acts as a server. When you run a process like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle exec rails server&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle exec rspec&lt;/code&gt; it sends the data like command, ENV values, arguments etc to spring server, and spring server will fork the server process and run the task.&lt;/p&gt;
+
+&lt;p&gt;Since the server process already loaded the app, the loading time of the app will be negligible and your task will run faster.&lt;/p&gt;
+
+&lt;p&gt;But when the code changes, the server process needs to update and it may fail due to various reasons, like adding new directories. That is why you ended up having to run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spring stop&lt;/code&gt; manually or restart the system to make the application behave as expected.&lt;/p&gt;
+
+&lt;p&gt;The serve method in Spring is provided as reference. You can see zipping io values, fetching arguments, env etc from client, forking the new process etc in the below snippet.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;serve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;got client&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;manager&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;puts&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;_stdout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_stdin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;streams&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;recv_io&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;STDOUT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;STDERR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;STDIN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;streams&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reopen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;preload&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;preloaded?&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;gets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;values_at&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;args&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;env&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;command&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Spring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;shift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;connect_database&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;setup&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;command&lt;/span&gt;
+
+      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reloaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;any?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:updated?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reloader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reload!&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;fork&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;Process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setsid&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;IGNORE_SIGNALS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;trap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;DEFAULT&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;trap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;TERM&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;DEFAULT&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Spring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;quiet&lt;/span&gt;
+          &lt;span class=&quot;no&quot;&gt;STDERR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Running via Spring preloader in process &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;pid&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+
+          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;production?&lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;STDERR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;WARNING: Spring is running in production. To fix &quot;&lt;/span&gt;         &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;
+                        &lt;span class=&quot;s2&quot;&gt;&quot;this make sure the spring gem is only present &quot;&lt;/span&gt;            &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;
+                        &lt;span class=&quot;s2&quot;&gt;&quot;in `development` and `test` groups in your Gemfile &quot;&lt;/span&gt;       &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;
+                        &lt;span class=&quot;s2&quot;&gt;&quot;and make sure you always use &quot;&lt;/span&gt;                             &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;
+                        &lt;span class=&quot;s2&quot;&gt;&quot;`bundle install --without development test` in production&quot;&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+        &lt;span class=&quot;no&quot;&gt;ARGV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;vg&quot;&gt;$0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exec_name&lt;/span&gt;
+
+        &lt;span class=&quot;c1&quot;&gt;# Delete all env vars which are unchanged from before Spring started&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;original_env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;delete&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;c1&quot;&gt;# Load in the current env vars, except those which *were* changed when Spring started&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;c1&quot;&gt;# requiring is faster, so if config.cache_classes was true in&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;# the environment's config file, then we can respect that from&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;# here on as we no longer need constant reloading.&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@original_cache_classes&lt;/span&gt;
+          &lt;span class=&quot;no&quot;&gt;ActiveSupport&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Dependencies&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;mechanism&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:require&lt;/span&gt;
+          &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cache_classes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;connect_database&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;srand&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;invoke_after_fork_callbacks&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;shush_backtraces&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;disconnect_database&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;forked &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;manager&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;wait&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;streams&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;rescue&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;exception: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;manager&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt;
+
+      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;streams&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;is_a?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;SystemExit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;print_exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;streams&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;puts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;close&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;ensure&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# Redirect STDOUT and STDERR to prevent from keeping the original FDs&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# (i.e. to prevent `spring rake -T | grep db` from hanging forever),&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# even when exception is raised before forking (i.e. preloading).&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;reset_streams&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Bootsnap is a gem released by shopify by extracting boot time improvements they made in their app. We can categorise them into two parts&lt;/p&gt;
+&lt;h3 id=&quot;path-prescanning&quot;&gt;Path prescanning&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Kernel#require and Kernel#load are modified to eliminate $LOAD_PATH scans&lt;/li&gt;
+  &lt;li&gt;ActiveSupport::Dependencies.{autoloadable_module?,load_missing_constant,depend_on} are overridden to eliminate scans of ActiveSupport::Dependencies.autoload_paths.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;compilation-caching&quot;&gt;Compilation Caching&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;RubyVM::InstructionSequence.load_iseq is implemented to cache the result of Ruby bytecode compilation&lt;/li&gt;
+  &lt;li&gt;YAML.load_file is modified to cache the result of loading a YAML object in MessagePack format (or Marshal, if the message uses types unsupported by MessagePack)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If you look at the pseudo code above to demonstrate the LOAD_PATH behaviour, you will see that we need to check file existence every time we do a require, which is an io operation and not very cheap to perform. What if we can do something like this?&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;vg&quot;&gt;$CACHED_PATH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;full_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;vg&quot;&gt;$CACHED_PATH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;full_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;vg&quot;&gt;$LOAD_PATH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;take&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exist?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;full_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;load path for a library is not something that changes very often, especially for gem paths and standard library paths, bootsnap caches them to save redundant file checks. Not that cache duration and expiration vary with files, so caching them in a constant won’t work. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CACHED_PATH&lt;/code&gt; is just for reference and not used by the gem.&lt;/p&gt;
+
+&lt;p&gt;Another important optimization by bootsnap is the compilation cache. We covered the ruby compilation process in the beginning and saw that every single file needed to go through the compilation process every single time they got called. Bootsnap addresses this by caching yarv code(instruction sequence) and compiling the code only if the code changes.&lt;/p&gt;
+
+&lt;p&gt;There are also other optimised YAML loading by caching in an optimised format. overall Bootsnap gives impressive benefits as it works on production as well. We got about 30% reduction in boottime for our production ecommerce app.&lt;/p&gt;
+
+&lt;p&gt;Note: This was originaly presented in internal tech talk in Sephora and made some tweaks to the content for wider audience.&lt;/p&gt;</content><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><category term="bootsnap"/><category term="rails"/><category term="spring"/><summary type="html">Being the default the gem file entries in a rails project, you may have encountered spring and bootsnap. Here we are going through how they work and how they can improve boot time of your applications and why you get some weird errors in the app(Looking at you Spring).</summary></entry><entry><title type="html">Intermediate Postgresql for rails developers, Part 0: Get your environment</title><link href="https://aboobacker.in/2021/04/30/intermediate-postgresql-for-rails-developers-part-0-get-your-enviornoments-ready.html" rel="alternate" type="text/html" title="Intermediate Postgresql for rails developers, Part 0: Get your environment"><published>2021-04-30T17:42:00+00:00</published><updated>2021-04-30T17:42:00+00:00</updated><id>https://aboobacker.in/2021/04/30/intermediate-postgresql-for-rails-developers-part-0-get-your-enviornoments-ready</id><content type="html" xml:base="https://aboobacker.in/2021/04/30/intermediate-postgresql-for-rails-developers-part-0-get-your-enviornoments-ready.html">&lt;p&gt;Postgresql is one of the most advanced open source database available in the market. Adherence to the SQL standards and super cool extra features are few of the reason by Postgres being the most popular database among rails community. This is neither introduction to Postgres nor rails. This series is for the folks who have been using rails and Postgres for one or more years.&lt;/p&gt;
+
+&lt;p&gt;In part 0 we will walk through the tips for postgres setup to increase the productivity.&lt;/p&gt;
+
+&lt;p&gt;ActiveRecord orm which is built into rails provides a lot of cool methods to access the data in rubyistic way. But it is important to get familiarize with the native Postgres tooling for many tasks.&lt;/p&gt;
+
+&lt;h2 id=&quot;psql&quot;&gt;Psql&lt;/h2&gt;
+
+&lt;p&gt;Psql is the official commandline client for postgresql, rails does have shortcut to open &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;psql&lt;/code&gt; using the configuration from database configuration as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails dbconsole&lt;/code&gt;. But you can also open by using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;psql&lt;/code&gt; command on your command line client.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;psql -h localhost -U username databasename&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Above is the basic syntax for opening psql console, Once you enter that you will be greeted with psql console if the credentials given are correct.&lt;/p&gt;
+
+&lt;p&gt;Now let’s go through few psql tips&lt;/p&gt;
+
+&lt;h3 id=&quot;backward-slash-commands&quot;&gt;Backward slash commands&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;psql&lt;/code&gt; supports a lot of useful configuration options to improve the experiance in postgresql shell.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;\timing&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;Timing command add the time taken to run the command, this is handy when optimizing query performance&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;abomk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cv_dump&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;COUNT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;45129&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;?????????&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;abomk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cv_dump&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timing&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Timing&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;abomk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cv_dump&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;COUNT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;45129&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;?????????&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;412&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;\s&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;Get posgtres commands history, this is handy for documenting the stuff after doing experiments with different queries and many more. You can also choose to save the history by providing filename as the parameter as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;\s filename&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;\i filename&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Load query from file. Big queries are often convent to write in a text editor, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;\i&lt;/code&gt; enables loading a query from a file and execute it.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;\e&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This another approach to solve the difficulty of writing multi line queries in a shell environment, When you give &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;\e&lt;/code&gt; command, psql will open the text editor you set $EDITOR to open the query. You can edit and close the file, content will be copied to posql shell, and you can execute.&lt;/p&gt;
+
+&lt;p&gt;You can find more such commands from &lt;a href=&quot;https://www.postgresqltutorial.com/psql-commands/&quot;&gt;posgrestutorials&lt;/a&gt; and &lt;a href=&quot;https://pgdash.io/blog/postgres-psql-tips-tricks.html&quot;&gt;pgdash&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;managing-multiple-versions-of-postgres&quot;&gt;Managing multiple versions of postgres&lt;/h3&gt;
+
+&lt;p&gt;It is important to have the same version of postgres in your development setup as the production version. If you have multiple apps with diffrent versions of postgres versions, you can use &lt;a href=&quot;https://github.com/theory/pgenv&quot;&gt;pgenv&lt;/a&gt; to configure multiple versions of Postgres in your local. There are other options like &lt;a href=&quot;https://github.com/smashedtoatoms/asdf-postgres&quot;&gt;asdf-postgres&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;use-different-pager&quot;&gt;Use different pager&lt;/h3&gt;
+
+&lt;p&gt;The default pager is somewhat difficult to read when there are too many columns. &lt;a href=&quot;https://github.com/okbob/pspg&quot;&gt;pspg&lt;/a&gt; is an alternate pager you can use with Postgres&lt;/p&gt;
+
+&lt;h3 id=&quot;save-your-psql-settings-in-your-psqlrc&quot;&gt;Save your psql settings in your psqlrc&lt;/h3&gt;
+
+&lt;p&gt;You can save the psql configurations we discussed above in a file so that you don’t need to repeat every time you open the psql shell. Here is my psql configuration for reference&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-SQL&quot;&gt;\set ON_ERROR_ROLLBACK interactive
+\set COMP_KEYWORD_CASE upper
+\set HISTFILE ~/.psql/history- :DBNAME
+\set VERBOSITY verbose
+\set PROMPT1 '%[%033[1m%]%M %n@%/%R%[%033[0m%]%#'
+\setenv PAGER pspg
+\pset border 2
+\pset linestyle unicode
+\set null '(null)'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can find explanation of individual configurations from &lt;a href=&quot;https://thoughtbot.com/blog/an-explained-psqlrc&quot;&gt;thoughtbot blog&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;pgcli&quot;&gt;Pgcli&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.pgcli.com/&quot;&gt;Pgcli&lt;/a&gt; is an alternate postgresql client with additional features like autocompletion of table and sql queries.&lt;/p&gt;
+
+&lt;p&gt;We will go through more tips in coming articles, while it is not mandatory to follow the above setup for cominig articles, it is good to have to get hands on with psql shell&lt;/p&gt;</content><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><category term="psql"/><category term="rails"/><category term="postresql"/><summary type="html">Postgresql is one of the most advanced open source database available in the market. Adherence to the SQL standards and super cool extra features are few of the reason by Postgres being the most popular database among rails community. This is neither introduction to Postgres nor rails. This series is for the folks who have been using rails and Postgres for one or more years.</summary></entry><entry><title type="html">Intellectual property, Open source and mimemagic</title><link href="https://aboobacker.in/2021/03/28/intellectual-property-open-source-and-mimemagic.html" rel="alternate" type="text/html" title="Intellectual property, Open source and mimemagic"><published>2021-03-28T18:47:00+00:00</published><updated>2021-03-28T18:47:00+00:00</updated><id>https://aboobacker.in/2021/03/28/intellectual-property-open-source-and-mimemagic</id><content type="html" xml:base="https://aboobacker.in/2021/03/28/intellectual-property-open-source-and-mimemagic.html">&lt;p&gt;The alleged GPL violation in a ruby library called mimemagic which broke builds of rails projects across the world brought discussion of Intellectual property in the software world one more time last week. It is important to have a general idea about these terms for a software developer to avoid getting into big troubles in the future.&lt;/p&gt;
+
+&lt;p&gt;This is my attempt to write down my understanding about open source and Intellectual property, I am not a lawyer and the implementation of IP is based on the local laws which is not universal.&lt;/p&gt;
+
+&lt;p&gt;Though the modern concept of IP is originated from the exclusive access to rights and grants by the British monarch, it soon became a mechanism to promote the creation of intellectual goods, by giving the inventors some rights to the work they made.&lt;/p&gt;
+
+&lt;p&gt;Though IP may sound an alien term, it is something critical for any company, for instance, company name, logo, design of the logo etc are &lt;strong&gt;trademarks&lt;/strong&gt; which is a kind of intellectual property. This enables companies to protect reputation and goodwill of the brand by preventing others from copying same brand symbols to sell their products.&lt;/p&gt;
+
+&lt;p&gt;Content produced by the company is protected by &lt;strong&gt;copyright&lt;/strong&gt;, this also includes the software they made, in almost all legislations content produced is inherently owned by the author and protected by copyright, this prevents unauthorized access and redistribution of content by other people.&lt;/p&gt;
+
+&lt;p&gt;Another important intellectual property is &lt;strong&gt;patent&lt;/strong&gt; which provides protection for innovative ideas, unlike copyright patent requires registration within a particular timeframe to the government agency. In general Patent protects ideas and copyright protects manifestation of that idea&lt;/p&gt;
+
+&lt;p&gt;There are other IPs like trade secrets which I am not covering here to limit the scope of the article.&lt;/p&gt;
+
+&lt;p&gt;Historically hardware was the most expensive piece of a computer and program or the software that runs on them wasn’t valued as important. But as more software distribution patterns emerged people started distributing just binaries of the software which prevented users from changing the software as per their needs. Richard R Stallman who was working in MIT lab during this period had a big trouble because of this, they used to adjust the printer firmware as per their need of paper size, But the new printer firmware came with just binary format which prevented from making the modification which caused wastage of papers they already had, Stallman requested the firmware owner to share the source code, but he refused.&lt;/p&gt;
+
+&lt;p&gt;That incident hit him big as usage of a computer owned by the user is dictated by the firmware owner. He believed this is a big ethical and social issue. He launched the GNU project in 1983 to create an operating system consisting of only free software. As per his own words the word free of “free” as in “free speech,” not as in “free beer”. Many including Linux followed this approach and many free software programs became available in the market.&lt;/p&gt;
+
+&lt;p&gt;In late 90s some people in industry realized the advantage of having free software in the enterprise world, i.e. when the code is shared more people can learn and adapt from it and there by saving time and cost. They also a coined a term called “Open Source” since people may easily interpret free software as free of cost software.&lt;/p&gt;
+
+&lt;p&gt;While free softwares and open source softwares and practically largely the same, they are two movements with different motivations but almost the same path to achieve their goals. While free software movement is from the perspective of the user to have full control of his/her system, open source is from the perspective of software engineer or company to get benefit from shared source code.&lt;/p&gt;
+
+&lt;p&gt;Open source Initiative, which formalized the open source with 10 &lt;a href=&quot;https://opensource.org/osd&quot;&gt;rules&lt;/a&gt; and listed software licenses compatible with these rules as open source licenses.&lt;/p&gt;
+
+&lt;p&gt;But why does an open source software need license?&lt;/p&gt;
+
+&lt;p&gt;The Answer is simple, as we discussed in the initial section, any content produced is owned by the author and others can’t redistribute without author’s permission. Licenses are contract from a software developer to  the user to share some of his/her/their rights to the user, In the case of open source it will be freedom to redistribute, make derived work etc. In other words open source licenses  Grants certain IP rights to users who are subject to license. This is different from EULA(End user license agreement) we see in the proprietary softwares which is to limit what the user can do with the software we purchased.&lt;/p&gt;
+
+&lt;p&gt;Also keep in mind that open source is not public domain which are the work which is not owned by anyone&lt;/p&gt;
+
+&lt;p&gt;There are many kinds of open source licenses ranging from permissive license which doesn’t ask the users anything more than attribution to copyleft licenses which mandate you to make your software of also open source if you use one in your software.&lt;/p&gt;
+
+&lt;p&gt;I’ll be writing another article about commonly used licenses and things to be taken care of while using such licenses in another post, till then you can refer &lt;a href=&quot;https://tldrlegal.com/&quot;&gt;this awesome website&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now let’s go back to the incident that happened in the last week. freedesktop is a project on interoperability of free software projects, they maintain the list of &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types&quot;&gt;mime types&lt;/a&gt; and is licensed under &lt;a href=&quot;https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)&quot;&gt;GPL&lt;/a&gt;. GPL is a very restrictive license and if you want to link your software to a GPLed software and distribute, then you will have to license your software with the same restrictions. In other words, you can’t directly link a  software linked with a gpled software/code and distribute under proprietary or permissive open source license like MIT. The mimemagic gem which is MIT licensed used this GPLed code from freedesktop which is violation of GPL license. Initial fix to convert mimemagic license to GPL. But due to the nature of copyleft licenses, software which includes mimemagic will also have to comply GPL rules. So they later removed the GPLed file and made the library to use mime data from the user’s computer.&lt;/p&gt;
+
+&lt;p&gt;This may raise some questions about using GPL programs you use with your closed source(projects which are not open source) projects. First, you don’t have to care much about GPL in backend of software as service model like most websites does, as you are just distributing the output of the software, not the software itself to the end user, this is also called as &lt;a href=&quot;https://resources.whitesourcesoftware.com/blog-whitesource/the-saas-loophole-in-gpl-open-source-licenses&quot;&gt;saas loophole&lt;/a&gt;. Even if you aren’t, it is unlikely that mysql being part of your source code, if you are just mysql as database, you are using its SQL interface and not as part of your programs.&lt;/p&gt;
+
+&lt;p&gt;Now let’s look at the common errors developers make due to lack of awareness about IP,&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Copy and paste snippets from stackoverflow (read more &lt;a href=&quot;https://meta.stackexchange.com/questions/12527/do-i-have-to-worry-about-copyright-issues-for-code-posted-on-stack-overflow&quot;&gt;here&lt;/a&gt;).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Copy open source code snippets from GitHub&lt;/p&gt;
+
+    &lt;p&gt;Even if the code is open source, some may require making your code also open source, some require attribution.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Copy code snippets from GitHub or other publically available places&lt;/p&gt;
+
+    &lt;p&gt;If you found some code on GitHub or any publically accessible places, you shouldn’t assume that code is open source unless license is explicitly given. For instance projects without explicit license in GitHub, all you can do is read the code and fork, you aren’t supposed to change the code&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Forking open source projects without changing trademarks&lt;/p&gt;
+
+    &lt;p&gt;Even when the open source project is licensed under permissive open source license, it doesn’t grant you to use it’s trademark for redistribution. For example you can’t simply fork mysql and sell it as mysql&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Open sourcing stuff without proper planning&lt;/p&gt;
+
+    &lt;p&gt;When you are open sourcing certain part of codebase, you must have a plan for what to do with the contributions, For instance when you release a component of your code base as open source and someone from community send a pull request and you merged to your repo, by default the person who contributed will have the copyright of the code, company can only use that code as per the license given in the repository. &lt;a href=&quot;https://en.wikipedia.org/wiki/Contributor_License_Agreement&quot;&gt;CLA&lt;/a&gt; Can be used as a workaround for this&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Do you have more examples? Feel free to comment below.&lt;/p&gt;
+
+&lt;p&gt;We covered the general IP concepts and it’s significanse in open source, I am not a lawyer and this blogpost is not a legal opinion. So talk to your lawyer before making legal decisons&lt;/p&gt;</content><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><category term="open source"/><category term="free software"/><category term="intellectual property"/><summary type="html">The alleged GPL violation in a ruby library called mimemagic which broke builds of rails projects across the world brought discussion of Intellectual property in the software world one more time last week. It is important to have a general idea about these terms for a software developer to avoid getting into big troubles in the future.</summary></entry><entry><title type="html">Let’s learn rack by implementing it from scratch</title><link href="https://aboobacker.in/2017/02/15/lets-learn-rack-by-implementing-it-from-scratch.html" rel="alternate" type="text/html" title="Let’s learn rack by implementing it from scratch"><published>2017-02-15T19:58:20+00:00</published><updated>2017-02-15T19:58:20+00:00</updated><id>https://aboobacker.in/2017/02/15/lets-learn-rack-by-implementing-it-from-scratch</id><content type="html" xml:base="https://aboobacker.in/2017/02/15/lets-learn-rack-by-implementing-it-from-scratch.html">&lt;p&gt;Rack is a framework for ruby web frameworks. If you developed apps in ruby frameworks like rails, hanami, Sinatra, you already used  Rack. Almost all ruby web frameworks use rack under the hood, If you are already familiar with rack then you can skip next step and go to re building  part&lt;/p&gt;
+
+&lt;h2 id=&quot;introduction-to-rack&quot;&gt;Introduction To Rack&lt;/h2&gt;
+
+&lt;p&gt;Rack provides minimalistic API to interact, First let’s have a look at rack&lt;/p&gt;
+
+&lt;p&gt;A rack app is an object which takes request environment hash and provides array of 3 elements the output, rack object should respond to the method &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;call&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The HTTP response code&lt;/li&gt;
+  &lt;li&gt;Headers hash&lt;/li&gt;
+  &lt;li&gt;response body object which responds to each&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The obvious question here is why does rack says about responding to the particular method. This one of the powerful paradigm available in ruby called &lt;a href=&quot;https://en.wikipedia.org/wiki/Duck_typing&quot;&gt;duck typing&lt;/a&gt;. ie rack doesn’t care about the object or it’s implementation as long as it responds to the particular method&lt;/p&gt;
+
+&lt;p&gt;Let’s take a look at a simple example.&lt;/p&gt;
+
+&lt;p&gt;Install rack&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  gem &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;rack
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;create a file with name &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.ru&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config.ru&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Proc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'200'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Content-Type'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'text/html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Hello World\'d'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and run the command &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rackup&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Now open the browser and vist &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;localhost:9292&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Congratulations !, You just made a rack app with just a single line&lt;/p&gt;
+
+&lt;p&gt;Now let’s have look at the above example&lt;/p&gt;
+
+&lt;p&gt;We have a proc object which responds to &lt;a href=&quot;https://ruby-doc.org/core-2.2.0/Proc.html#method-i-call&quot;&gt;call&lt;/a&gt; method. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;200&lt;/code&gt;as status  code  , an array consist of
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{'Content-Type' =&amp;gt; 'text/html'}&lt;/code&gt; as Response header
+and
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;['Hello World \'d']&lt;/code&gt; as body&lt;/p&gt;
+
+&lt;p&gt;Since rack do not care about the kind of rack object, we can do the same using class or an object&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SuperCoolApp&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'200'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Content-Type'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'text/html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Hello World\'d'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;SuperCoolApp&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CoolApp&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'200'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Content-Type'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'text/html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Hello World\'d'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;SuperCoolApp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;But this doesn’t do anything interesting, this will just display &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello World&lt;/code&gt; for all requests . Because we were returning same output without even considering the parameter &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;env&lt;/code&gt; . Let’s have a look into by returning env hash as output&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CoolApp&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'200'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Content-Type'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'text/html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;inspect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rackup&lt;/code&gt; and goto &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;localhost:9292/hello/world&lt;/code&gt;
+Output will be something like this&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;rack.version&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rack.errors&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;gt;&amp;gt;, &quot;rack.multithread&quot;=&amp;gt;true, &quot;rack.multiprocess&quot;=&amp;gt;false, &quot;rack.run_once&quot;=&amp;gt;false, &quot;SCRIPT_NAME&quot;=&amp;gt;&quot;&quot;, &quot;QUERY_STRING&quot;=&amp;gt;&quot;&quot;, &quot;SERVER_PROTOCOL&quot;=&amp;gt;&quot;HTTP/1.1&quot;, &quot;SERVER_SOFTWARE&quot;=&amp;gt;&quot;puma 3.6.0 Sleepy Sunday Serenity&quot;, &quot;GATEWAY_INTERFACE&quot;=&amp;gt;&quot;CGI/1.2&quot;, &quot;REQUEST_METHOD&quot;=&amp;gt;&quot;GET&quot;, &quot;REQUEST_PATH&quot;=&amp;gt;&quot;/hello/world&quot;, &quot;REQUEST_URI&quot;=&amp;gt;&quot;/hello/world&quot;, &quot;HTTP_VERSION&quot;=&amp;gt;&quot;HTTP/1.1&quot;, &quot;HTTP_HOST&quot;=&amp;gt;&quot;localhost:9292&quot;, &quot;HTTP_CONNECTION&quot;=&amp;gt;&quot;keep-alive&quot;, &quot;HTTP_UPGRADE_INSECURE_REQUESTS&quot;=&amp;gt;&quot;1&quot;, &quot;HTTP_USER_AGENT&quot;=&amp;gt;&quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36&quot;, &quot;HTTP_ACCEPT&quot;=&amp;gt;&quot;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&quot;, &quot;HTTP_DNT&quot;=&amp;gt;&quot;1&quot;, &quot;HTTP_ACCEPT_ENCODING&quot;=&amp;gt;&quot;gzip, deflate, sdch, br&quot;, &quot;HTTP_ACCEPT_LANGUAGE&quot;=&amp;gt;&quot;en-US,en;q=0.8,ml;q=0.6&quot;, &quot;SERVER_NAME&quot;=&amp;gt;&quot;localhost&quot;, &quot;SERVER_PORT&quot;=&amp;gt;&quot;9292&quot;, &quot;PATH_INFO&quot;=&amp;gt;&quot;/hello/world&quot;, &quot;REMOTE_ADDR&quot;=&amp;gt;&quot;127.0.0.1&quot;, &quot;puma.socket&quot;=&amp;gt;#, &quot;rack.hijack?&quot;=&amp;gt;true, &quot;rack.hijack&quot;=&amp;gt;#, &quot;rack.input&quot;=&amp;gt;#&amp;gt;, &quot;rack.url_scheme&quot;=&amp;gt;&quot;http&quot;, &quot;rack.after_reply&quot;=&amp;gt;[], &quot;puma.config&quot;=&amp;gt;#&quot;development&quot;, :pid=&amp;gt;nil, :Port=&amp;gt;9292, :Host=&amp;gt;&quot;localhost&quot;, :AccessLog=&amp;gt;[], :config=&amp;gt;&quot;/home/tachyons/code/rack/config.ru&quot;}, {:log_requests=&amp;gt;false, :environment=&amp;gt;&quot;development&quot;, :binds=&amp;gt;[&quot;tcp://localhost:9292&quot;], :app=&amp;gt;#, @content_length=nil&amp;gt;&amp;gt;, @logger=#&amp;gt;&amp;gt;&amp;gt;&amp;gt;}, {:environment=&amp;gt;&quot;development&quot;}, {}], @defaults={:min_threads=&amp;gt;0, :max_threads=&amp;gt;16, :log_requests=&amp;gt;false, :debug=&amp;gt;false, :binds=&amp;gt;[&quot;tcp://0.0.0.0:9292&quot;], :workers=&amp;gt;0, :daemon=&amp;gt;false, :mode=&amp;gt;:http, :worker_timeout=&amp;gt;60, :worker_boot_timeout=&amp;gt;60, :worker_shutdown_timeout=&amp;gt;30, :remote_address=&amp;gt;:socket, :tag=&amp;gt;&quot;rack&quot;, :environment=&amp;gt;&quot;development&quot;, :rackup=&amp;gt;&quot;config.ru&quot;, :logger=&amp;gt;#&amp;gt;, :persistent_timeout=&amp;gt;20}&amp;gt;, @plugins=#&amp;gt;, &quot;rack.tempfiles&quot;=&amp;gt;[]}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Now change url and see the changes output&lt;/p&gt;
+
+&lt;p&gt;To make it clear Let’s build a simple app to hello&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CoolApp&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'200'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Content-Type'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'text/html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'REQUEST_PATH'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;CoolApp&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Run rackup again, and go to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;localhost:9292/aboobacker/mk&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;App will respond “Hi aboobacker mk”&lt;/p&gt;
+
+&lt;p&gt;You can implement your own logic using the env variable provided by rack&lt;/p&gt;
+
+&lt;p&gt;Rack also provides &lt;a href=&quot;http://www.rubydoc.info/gems/rack/Rack/Request&quot;&gt;Rack Request&lt;/a&gt; Abstraction which provides a convenient interface to a Rack environment.&lt;/p&gt;
+
+&lt;p&gt;But that is not the end, rack also provides feature called middleware, which let you use multiple rack apps as pipeline . ie output of one rack app will feed as input to next rack app . Let’s check that by one example&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ReverseOutput&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt; 
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reverse&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; 
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; 
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; 
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CoolApp&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'200'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Content-Type'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'text/html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'REQUEST_PATH'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ReverseOutput&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;CoolApp&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here we made a simple middleware &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ReverseOutput&lt;/code&gt; which will reverse the response body, You can add any number of middlewares like this, also you can use pre defined middlewares provided by the rack and open source general purpose middlewares. &lt;a href=&quot;https://github.com/rack/rack/wiki/List-of-Middleware&quot;&gt;List of middlewares&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;building-from-scratch&quot;&gt;Building from scratch&lt;/h2&gt;
+&lt;p&gt;Now let’s have a look at how the rack works by making a rack like library from scratch, Let’s name it Srack. But one obvious question here is why rackup file is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.ru&lt;/code&gt;, not &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.rb&lt;/code&gt; ? . Also from where the methods like use, run etc are coming&lt;/p&gt;
+
+&lt;p&gt;Let’s look at our first code sample in a different way&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app.rb&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Rack&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Proc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'200'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Content-Type'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'text/html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Hello World\'d'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Here we can see that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.ru&lt;/code&gt; is a block that is to be passed to Rack::Builder.app method&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bundle gem srack
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Now remove all TODOs from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;srack.gemspec&lt;/code&gt; So that we can run the test cases . Now if we run test cases it will show one failure message&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Failed examples:
+
+rspec ./spec/srack_spec.rb:8 # Srack does something useful
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And it is true, we haven’t done anything useful yet&lt;/p&gt;
+
+&lt;p&gt;First thing we have to do is to build an executable equiallant to rackup, Let’s call it srackup&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;touch exe/srackup
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env ruby&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;srack&quot;&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Srack&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I copied above file from &lt;a href=&quot;https://github.com/rack/rack/blob/master/bin/rackup&quot;&gt;rack repo&lt;/a&gt; to make sure that we are following the same way . Since we haven’t implemenetd Srack::Server this won’t work yet . So let’s make that first&lt;/p&gt;
+
+&lt;p&gt;Since we have to make instance of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rack::Server&lt;/code&gt; we can make it as a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;class&lt;/code&gt; and define &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;start&lt;/code&gt; as the class method&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Srack&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Server&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now we have Srack::Server.start method. But it is doing nothing. Since we want Server object, we can delegate our start method to it’s instance method.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Srack&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Server&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now let’s set some default options for our app&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Srack&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Server&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;
+     &lt;span class=&quot;vi&quot;&gt;@options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;default_options&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;default_options&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;environment: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;localhost&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;Port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;9393&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;localhost&quot;&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Now we have to build the app from config.ru or the file specified as argument, we can store it in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@options&lt;/code&gt; hash with the key &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Srack&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Server&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;default_options&lt;/span&gt; 
+      &lt;span class=&quot;vi&quot;&gt;@options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ARGV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ARGV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;build_app&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;default_options&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;environment: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;localhost&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;Port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;9393&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;localhost&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;config: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'config.ru'&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;build_app&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Here we are we are using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Srack::Builder&lt;/code&gt; to parse the config file and load app from it . Let’s implement that logic in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Builder&lt;/code&gt; factory&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Srack&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Builder&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;config_file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;new_from_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new_from_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;builder_script&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Rack::Builder.new {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;builder_script&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;}.to_app&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;The first method is self-explanatory, it just read the file and passes the file body to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;new_from_string&lt;/code&gt; . The method &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;new_from_string&lt;/code&gt; takes the file contents, convert it into a proc and pass to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rack::Builder.new&lt;/code&gt; . So that we can execute the contents of config.ru in the context of the builder&lt;/p&gt;
+
+&lt;p&gt;Remember our first rack app ?&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config.ru&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Proc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'200'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Content-Type'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'text/html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Hello World\'d'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;In order to execute this&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Builder class should accept block for initialize method&lt;/li&gt;
+  &lt;li&gt;And execute it within the context of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Builder object&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Builder class also should have methods run and to_app as setter and getter
+Let’s see it in code
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Srack&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Builder&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+   &lt;span class=&quot;nb&quot;&gt;instance_eval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;block_given?&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+ &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+   &lt;span class=&quot;vi&quot;&gt;@app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+ &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;to_app&lt;/span&gt;
+   &lt;span class=&quot;vi&quot;&gt;@app&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+ &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;config_file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;new_from_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+ &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new_from_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;builder_script&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+   &lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Srack::Builder.new {&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;builder_script&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;}.to_app&quot;&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Now we have Builder class, But start method in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Srack::Server&lt;/code&gt; class is still empty, In order to do that we have to connect to some real server. Remember when we mentioned rack is an interface to web servers?&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Srack&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Server&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@options&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;server&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Srack&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Handler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;default&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Srack will have handlers for each type of servers, So that we can global api for handlers, ie all handlers should respond to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;run&lt;/code&gt; method with 2 arguments &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@app&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@options&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# lib/srack/handler.rb`&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Srack&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Handler&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;autoload&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:Thin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'srack/handler/thin'&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;default&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Handler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Thin&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# lib/srack/handler/thin.rb&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'thin'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Srack&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Handler&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Thin&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:Port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Thin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here made handler module which can accomodate multple handlers, In this example we used thin as the default server . To use thin inside our app, we have to include it in our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;srack.gemspec&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;add_dependency&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;thin&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Now you can build the gem to test&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem build srack.gemspec
+gem install srack-0.1.0.gem
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now our srack is capable for running our first rack app
+Just goto the directory with the file &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.ru&lt;/code&gt; and run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;srackup&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;implementing-middleware&quot;&gt;Implementing middleware&lt;/h2&gt;
+
+&lt;p&gt;As discussed earlier one of the widely used feature in the rack is middleware. Let’s see how it works&lt;/p&gt;
+
+&lt;p&gt;A middleware will take the output(triplet) of rack app and modify it and give to next middleware or the app&lt;/p&gt;
+
+&lt;p&gt;We can make some tweaks in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Srackup::Builder&lt;/code&gt; to accommodate this&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Builder&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@use&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+      &lt;span class=&quot;nb&quot;&gt;instance_eval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;block_given?&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@run&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;middleware&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@use&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;proc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;middleware&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;to_app&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@run&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reverse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;inject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here we defined an extra method &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;use&lt;/code&gt; which will accept middleware as input. Also we have a new instance variable array &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@use&lt;/code&gt; which will store procs which accept app as input and returns new middleware object in return&lt;/p&gt;
+
+&lt;p&gt;Also, we changed &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;to_app&lt;/code&gt; in such way that middlewares will be executed in the reverse order of calling&lt;/p&gt;
+
+&lt;p&gt;Now our app can also handle middlewares&lt;/p&gt;
+
+&lt;p&gt;If something is missing, or getting some errors, you can cross check with my &lt;a href=&quot;https://github.com/tachyons/srack&quot;&gt;repo here&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://github.com/rack&lt;/li&gt;
+  &lt;li&gt;http://www.kavinder.com/blog/2014-10-10-rebuild-a-gem-rack/&lt;/li&gt;
+  &lt;li&gt;http://www.kavinder.com/blog/2014-10-10-rebuild-a-gem-rack/&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><category term="ruby"/><category term="rack"/><summary type="html">Rack is a framework for ruby web frameworks. If you developed apps in ruby frameworks like rails, hanami, Sinatra, you already used Rack. Almost all ruby web frameworks use rack under the hood, If you are already familiar with rack then you can skip next step and go to re building part</summary></entry><entry><title type="html">Behind the scenes of hash table performance in ruby 2.4</title><link href="https://aboobacker.in/2017/01/30/behind-scenes-hash-table-performance-ruby-2-4.html" rel="alternate" type="text/html" title="Behind the scenes of hash table performance in ruby 2.4"><published>2017-01-30T04:00:13+00:00</published><updated>2017-01-30T04:00:13+00:00</updated><id>https://aboobacker.in/2017/01/30/behind-scenes-hash-table-performance-ruby-2-4</id><content type="html" xml:base="https://aboobacker.in/2017/01/30/behind-scenes-hash-table-performance-ruby-2-4.html">&lt;p&gt;Ruby 2.4 got released this Christmas with lot of exciting features. One of the most underrated features in ruby 2.4 is hash table improvements. Before going into details about implementation, let’s first check the benchmark to know how this change gonna affect your ruby application.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Getting keys and values of a hash&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+
+&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Get all hash values&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Benchmark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;measure&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;values&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Get all hash keys&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Benchmark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;measure&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;keys&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Ruby 2.3&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;=&amp;gt; #&amp;lt;Benchmark::Tms:0x00000002a0f990 @label=&quot;&quot;, @real=2.8023432340005456, @cstime=0.0, @cutime=0.0, @stime=0.13000000000000012, @utime=2.6799999999999997, @total=2.8099999999999996&amp;gt;
+#&amp;lt;Benchmark::Tms:0x00000002963398 @label=&quot;&quot;, @real=2.767410662000657, @cstime=0.0, @cutime=0.0, @stime=0.029999999999999805, @utime=2.729999999999997, @total=2.7599999999999967&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Ruby 2.4&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#&amp;lt;Benchmark::Tms:0x0000000226d700 @label=&quot;&quot;, @real=0.8854832770002758, @cstime=0.0, @cutime=0.0, @stime=0.08999999999999997, @utime=0.7999999999999998, @total=0.8899999999999998&amp;gt;
+#&amp;lt;Benchmark::Tms:0x000000022b1018 @label=&quot;&quot;, @real=0.8476084579997405, @cstime=0.0, @cutime=0.0, @stime=0.06999999999999995, @utime=0.7799999999999994, @total=0.8499999999999993&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;the above two operations executed ~ 3 times faster on my laptop. Though these numbers can vary with your machine and processor, the performance improvements will be significant on all modern processors. Not all operations became 3 times faster , average perfomence improvement is more than 50%.&lt;/p&gt;
+
+&lt;h3 id=&quot;hash-table&quot;&gt;Hash Table&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;In computing, hash table (hash map) is a data structure that is used to implement an associative array, a structure that can map keys to values. Hash table uses a hash function to compute an index into an array of buckets or slots, from which the desired value can be found. Wikipedia
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In other words, it is a data structure that allows you to store key value pair and helps to fetch specific data using the key in an efficient way. Unlike arrays, you don’t have to iterate through all elements to find a given element in the hash. If you are new to this data structure, check this &lt;a href=&quot;https://www.youtube.com/watch?v=h2d9b_nEzoA&quot;&gt;s50&lt;/a&gt; for the better understanding.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;key1: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;key2: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;pre-ruby-24&quot;&gt;Pre Ruby 2.4&lt;/h3&gt;
+
+&lt;p&gt;Let’s first check how ruby implemented Hash in pre 2.4 old hash representation , hash table&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://aboobacker.in/images/prehash.png&quot; alt=&quot;Pre hash&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Ruby internally uses a structure called st_table to represent hash. st_table contains type, the number of bins, the number of entries and pointers to bin array. Bin array is an array with 11 default size and can grow when required. Let’s take an example of hash and see how it will be represented using above diagram.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;sample_hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;a: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;b: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;c: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;d: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;e: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s take keys :c and :d&lt;/p&gt;
+
+&lt;h4 id=&quot;step-1&quot;&gt;Step 1:&lt;/h4&gt;
+
+&lt;p&gt;First thing ruby does is it will take the hash of the key using the internal hash function.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2.3.1 :075 &amp;gt; :c.hash
+=&amp;gt; 2782
+2.3.1 :076 &amp;gt; :d.hash
+=&amp;gt; 2432
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;step-2&quot;&gt;Step 2:&lt;/h4&gt;
+&lt;p&gt;After getting the hash value, result ?it  takes modulo of 11 to get figure in which bin ruby can store the given pair&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2.3.1 :073 &amp;gt; :c.hash % 11
+=&amp;gt; 10
+2.3.1 :074 &amp;gt; :d.hash % 11
+=&amp;gt; 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This means we can put :c =&amp;gt; 30 in 10’th bin and :d in 1st bin&lt;/p&gt;
+
+&lt;h4 id=&quot;step-3&quot;&gt;Step 3&lt;/h4&gt;
+
+&lt;p&gt;What if there are multiple modulo operations that give the same result? This is called hash collision. To resolve this, ruby uses a separate chaining approach  i.e, it will make a doubly linked list and add it to the existing value in the bin&lt;/p&gt;
+
+&lt;h4 id=&quot;step-4&quot;&gt;Step 4&lt;/h4&gt;
+
+&lt;p&gt;What if the hash is too large ?? Linked list will start growing and will make the hash slower. So, ruby will allocate more bins and do an operation called Rehashing to utilise newly added bins.&lt;/p&gt;
+
+&lt;h5 id=&quot;improvements-in-20&quot;&gt;Improvements in 2.0&lt;/h5&gt;
+
+&lt;p&gt;In ruby 2.0, Ruby eliminated the need for extra data structures for smaller hashes and uses linear search for better performance.&lt;/p&gt;
+
+&lt;h5 id=&quot;improvements-in-22&quot;&gt;Improvements in 2.2&lt;/h5&gt;
+
+&lt;p&gt;In 2.2.0, Ruby has used bin array sizes that correspond to powers of two (16, 32, 64, 128, …).&lt;/p&gt;
+
+&lt;h3 id=&quot;changes-in-24&quot;&gt;Changes in 2.4&lt;/h3&gt;
+&lt;p&gt;new hash structure in ruby 2.4 , hash table
+&lt;img src=&quot;https://aboobacker.in/images/prehash.png&quot; alt=&quot;Pre hash&quot; /&gt;
+Source: https://github.com/ruby/ruby/blob/trunk/st.c&lt;/p&gt;
+
+&lt;p&gt;In ruby 2.4, Hash table is moved to open addressing model i.e, we no longer have the separate doubly linked list for collision resolution. Here, we will be storing records in the entries array itself i.e, there is no need of pointer chasing and data will be stored in the adjacent memory location (Data locality). The hash table has two arrays called bins and entries. Entry array contains hash entries in the order of insertion and the bin array provides access to entry the by their keys. The key hash is mapped to a bin containing the index of the corresponding entry in the entry array.&lt;/p&gt;
+
+&lt;h3 id=&quot;inserting-entries-in-hash&quot;&gt;Inserting entries in Hash&lt;/h3&gt;
+
+&lt;h4 id=&quot;step-1-1&quot;&gt;Step 1:&lt;/h4&gt;
+
+&lt;p&gt;Ruby will insert an entry to entries array in sequential order.&lt;/p&gt;
+
+&lt;h4 id=&quot;step-2-1&quot;&gt;Step 2:&lt;/h4&gt;
+
+&lt;p&gt;Ruby will identify the bin from which the entry is to be mapped. Ruby uses first few bits of the hash as the bin index, Explaining the whole process is beyond the scope of this article. You can check the logic in MRI source code &lt;a href=&quot;https://github.com/ruby/ruby/blob/ruby_2_4/st.c#L962&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;accessing-element-by-key&quot;&gt;Accessing element by key&lt;/h3&gt;
+
+&lt;p&gt;Let’s examine it with a sample hash **&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;sample_hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;a: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;b: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;c: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;d: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;e: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, ruby will create two internal arrays, entries and bins as shown below&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;entries&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2297&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;451&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2782&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2432&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1896&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;each record in entries array will contain a hash, key, and value respectively&lt;/p&gt;
+
+&lt;p&gt;Default bin size in ruby is 16 so Bins array for the above hash will be somewhat like this&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;bins&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now what if we want to fetch an element from hash, say ‘c’&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;sample_hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;step-1-2&quot;&gt;Step 1:&lt;/h4&gt;
+
+&lt;p&gt;Find the hash using ruby’s internal hash function&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;:c.hash
+2782
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;step-2-2&quot;&gt;Step 2&lt;/h4&gt;
+
+&lt;p&gt;Find the location in bin array by using find bin method&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;find_bin(2782)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;step-3-1&quot;&gt;Step 3&lt;/h4&gt;
+
+&lt;p&gt;Find the location entries array using bin array&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bins[14] =&amp;gt; 2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;step-4-find-the-entry-using-the-key-we-got&quot;&gt;Step 4. Find the entry using the key we got&lt;/h4&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;entries[2] =&amp;gt; [2782,c,30]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;deleting-an-item&quot;&gt;Deleting an item&lt;/h3&gt;
+&lt;p&gt;Now we have value for the key ‘c’ without iterating through all the records
+Deleting an item&lt;/p&gt;
+
+&lt;p&gt;If the item to be deleted is first one, then ruby will change the index of ‘current first entry ‘, otherwise ruby will mark the item as reserved using a reserved hash value.&lt;/p&gt;
+
+&lt;p&gt;In the ruby source code, DELETED is marked using 0 and EMPTY is marked using 1.&lt;/p&gt;
+
+&lt;p&gt;To summarise this approach made hash implementation in ruby faster because the new bins array stores much smaller reference to the entries instead of storing entries themselves. Hence, it can take advantage of the modern processor caching levels&lt;/p&gt;
+
+&lt;p&gt;** Small hashes will use the linear search to find entries from ruby 2.0 onwards to avoid extra overhead and improve performance. Given example is just for reference only.&lt;/p&gt;
+
+&lt;p&gt;References&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;&quot;&gt;https://bugs.ruby-lang.org/issues/12142&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;&quot;&gt;https://blog.heroku.comruby-2-4-features-hashes-integers-rounding#hash-changes&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;&quot;&gt;https://en.wikipedia.org/wiki/Hash_table&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;&quot;&gt;http://patshaughnessy.net/ruby-under-a-microscope&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><category term="ruby"/><category term="hash"/><category term="2.4"/><category term="data-structure"/><summary type="html">Ruby 2.4 got released this Christmas with lot of exciting features. One of the most underrated features in ruby 2.4 is hash table improvements. Before going into details about implementation, let’s first check the benchmark to know how this change gonna affect your ruby application.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://aboobacker.in/%7B%22feature%22=%3Enil%7D"/><media:content medium="image" url="https://aboobacker.in/%7B%22feature%22=%3Enil%7D" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Deploying Fedena Using Ubuntu 14.04</title><link href="https://aboobacker.in/2015/11/18/deploying-fedena-using-ubuntu-14-04.html" rel="alternate" type="text/html" title="Deploying Fedena Using Ubuntu 14.04"><published>2015-11-18T04:00:13+00:00</published><updated>2015-11-18T04:00:13+00:00</updated><id>https://aboobacker.in/2015/11/18/deploying-fedena-using-ubuntu-14-04</id><content type="html" xml:base="https://aboobacker.in/2015/11/18/deploying-fedena-using-ubuntu-14-04.html">&lt;ul&gt;
+  &lt;li&gt;Install Ruby Dependancies&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Install Ruby Using RVM&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
+curl &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; https://get.rvm.io | bash &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; stable
+&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; ~/.rvm/scripts/rvm
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;source ~/.rvm/scripts/rvm&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.bashrc
+rvm &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;1.8.7
+rvm use 1.8.7 &lt;span class=&quot;nt&quot;&gt;--default&lt;/span&gt;
+ruby &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Setting up MySQL server
+Fedena uses mysql, so run,&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;libmysqlclient-dev mysql-server
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Do remember the mysql password you set during this step, it is required later&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Checking Out modified version version of fedena&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I made some modifications in project fedena to make it easily installable&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+git clone https://github.com/tachyons/project_fedena.git
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;project_fedena
+&lt;span class=&quot;nb&quot;&gt;cp &lt;/span&gt;config/database.yml.example config/database.yml
+bundle &lt;span class=&quot;nb&quot;&gt;install
+&lt;/span&gt;rake db:create
+bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rake fedena:plugins:install_all
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Installing passenger and nginix&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Install passenger PGP key and add HTTPS support for APT&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-key adv &lt;span class=&quot;nt&quot;&gt;--keyserver&lt;/span&gt; hkp://keyserver.ubuntu.com:80 &lt;span class=&quot;nt&quot;&gt;--recv-keys&lt;/span&gt; 561F9B9CAC40B2F7
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; apt-transport-https ca-certificates
+
+&lt;span class=&quot;c&quot;&gt;# Add passenger APT repository&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;sh &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main &amp;gt; /etc/apt/sources.list.d/passenger.list'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update
+
+&lt;span class=&quot;c&quot;&gt;# Install Passenger + Nginx&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; nginx-extras passenger
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Edit /etc/nginx/nginx.conf and uncomment passenger_root and passenger_ruby. For example, you may see this:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# passenger_root /some-filename/locations.ini;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# passenger_ruby /usr/bin/passenger_free_ruby;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Remove the ‘#’ characters, like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;passenger_root /some-filename/locations.ini&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+passenger_ruby /usr/bin/passenger_free_ruby&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Now you can validate the installation using the command&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;passenger-config validate-install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;now create an entry in /etc/ngnix/sites.enabled&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;vim /etc/nginx/sites-enabled/project_fedena
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Now modify and paste following text,ie edit your server name and project path&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    listen       80&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    server_name  fedena.example.com&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    location / &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    	root   /your/fedena/directory/public&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+     	passenger_enabled on&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    error_page   500 502 503 504  /50x.html&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    location &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /50x.html &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        root   html&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  	error_page 413 /413.html&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   	location &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /413.html&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+       root   html&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+       allow all&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+ &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;you can verify above configuration by adding &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;127.0.1.1	fedena.example.com
+&lt;/code&gt; in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Now restart the ngnix server and check fedena.example.com&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;service ngnix restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://www.phusionpassenger.com/library/install/nginx/install/oss/trusty/&lt;/li&gt;
+  &lt;li&gt;http://aboobacker.in/installing-project-fedena-in-14-04/&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><category term="fedena"/><category term="14.04"/><category term="ngnix"/><category term="passenger"/><summary type="html">Install Ruby Dependancies</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://aboobacker.in/%7B%22feature%22=%3Enil%7D"/><media:content medium="image" url="https://aboobacker.in/%7B%22feature%22=%3Enil%7D" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Installing Project Fedena in Ubuntu 14.04</title><link href="https://aboobacker.in/2014/10/30/installing-project-fedena-in-14-04.html" rel="alternate" type="text/html" title="Installing Project Fedena in Ubuntu 14.04"><published>2014-10-30T11:06:20+00:00</published><updated>2014-10-30T11:06:20+00:00</updated><id>https://aboobacker.in/2014/10/30/installing-project-fedena-in-14-04</id><content type="html" xml:base="https://aboobacker.in/2014/10/30/installing-project-fedena-in-14-04.html">&lt;p&gt;Modified version of Fedena Installation guide at project fedena website&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Install Ruby Dependancies&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Install Ruby Using RVM&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
+curl &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; https://get.rvm.io | bash &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; stable
+&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; ~/.rvm/scripts/rvm
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;source ~/.rvm/scripts/rvm&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.bashrc
+rvm &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;1.8.7
+rvm use 1.8.7 &lt;span class=&quot;nt&quot;&gt;--default&lt;/span&gt;
+ruby &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Install Rails 2.3.5&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;rails &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; 2.3.5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Setting up MySQL server
+Fedena uses mysql, so run,&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;libmysqlclient-dev mysql-server
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Do remember the mysql password you set during this step, it is required later&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Clone Fedena Source Code
+```bash&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;git clone https://github.com/projectfedena/fedena.git&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+* Setup your database details in the database.yml
+
+
+Open the file database.yml in the config folder of the fedena soucre. Change the following details:
+
+database: fedena - The name of the database you want to use for fedena
+
+username: root - Mysql username for fedena
+
+password: mypass - The password for the above mysql user
+
+
+* Install the rest of the gems
+
+```bash
+gem uninstall -i ~/.rvm/gems/ruby-1.8.7-head@global rake
+gem install rake -v 0.8.7
+gem install declarative_authorization -v 0.5.1
+gem install i18n -v 0.4.2
+gem install mysql
+gem install rush -v 0.6.8
+gem update --system 1.3.7
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;Set up Fedena databases&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;From the Fedena source directory in terminal run,&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rake db:create
+rake db:migrate
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;followed by,&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rake fedena:plugins:install_all
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Set up pdf setings&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;wkhtmltopdf
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;config/initializers
+&lt;span class=&quot;nb&quot;&gt;cp &lt;/span&gt;wicked_pdf.rb.example wicked_pdf.rb
+vi wicked_pdf.rb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;now change :wkhtmltopdf =&amp;gt; ‘/opt/wkhtmltopdf’, to :wkhtmltopdf =&amp;gt; ‘/usr/bin/wkhtmltopdf’,
+save the file&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Setup Email&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;config
+&lt;span class=&quot;nb&quot;&gt;cp &lt;/span&gt;smtp_settings.yml.example smtp_settings.yml
+vi smtp_settings.yml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Add your settings and save the file&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Setup Sms&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;config
+vi sms_settings.yml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Add your settings and save the file&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Change permissions for scripts&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;From the same directory grant executable permissions for the files in script directory by,&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x script/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;Run the inbuilt server&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If everything went fine till now, you are ready to run fedena server by running the following from fedena source folder,&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;script/server
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Note: This guide is for setting development environment , for fedena deployment refer &lt;a href=&quot;http://aboobacker.in/deploying-fedena-using-ubuntu-14-04/&quot;&gt;Deploying Fedena in 14.04&lt;/a&gt;.&lt;/p&gt;</content><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><summary type="html">Modified version of Fedena Installation guide at project fedena website</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://aboobacker.in/%7B%22feature%22=%3Enil%7D"/><media:content medium="image" url="https://aboobacker.in/%7B%22feature%22=%3Enil%7D" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Apertium Malayalam-english Pair Tools Usage and Directory Structure</title><link href="https://aboobacker.in/2014/08/20/apertium-malayalam-english-pair-tools-usage-and-directory-structure.html" rel="alternate" type="text/html" title="Apertium Malayalam-english Pair Tools Usage and Directory Structure"><published>2014-08-20T02:03:25+00:00</published><updated>2014-08-20T02:03:25+00:00</updated><id>https://aboobacker.in/2014/08/20/apertium-malayalam-english-pair-tools-usage-and-directory-structure</id><content type="html" xml:base="https://aboobacker.in/2014/08/20/apertium-malayalam-english-pair-tools-usage-and-directory-structure.html">&lt;p&gt;Apertium malayalam english pair contain two directories&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;apertium-mal -&amp;gt; conatins malayalam specific rules and resources&lt;/li&gt;
+  &lt;li&gt;apertium-mal-eng -&amp;gt;contains translation rules&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Apertium-mal&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;apertium-mal.mal.lexc  -&amp;gt; contain mono lingual dictionary in lexec format , it is contain morphotactics rules&lt;/li&gt;
+  &lt;li&gt;apertium-mal.mal.twol -&amp;gt; contain morphophonology rules (changes when morphemes are joined together)&lt;/li&gt;
+  &lt;li&gt;apertium-mal.mal.tsx -&amp;gt;tag set to train the tagger&lt;/li&gt;
+  &lt;li&gt;apertium-mal.mal.rlx  -&amp;gt; constarint grammar rules&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Apertium-mal-eng&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;apertium-mal-eng.eng.dix -&amp;gt; mono lingual dictionary for english in lttoolbox format&lt;/li&gt;
+  &lt;li&gt;apertium-mal-eng.post-eng.dix -&amp;gt; English post generator&lt;/li&gt;
+  &lt;li&gt;apertium-mal-eng.eng-mal.t1x – &amp;gt; english to malayalam chunker&lt;/li&gt;
+  &lt;li&gt;apertium-mal-eng.eng-mal.t2x -&amp;gt; english to malayalam interchunk&lt;/li&gt;
+  &lt;li&gt;apertium-mal-eng.eng-mal.t3x -&amp;gt;english to malayalam post chunk&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;translation&quot;&gt;Translation&lt;/h2&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;apertium-mal-eng
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; “മലയാളം വാക്യം ” | apertium &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; mal-eng
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;where&lt;/p&gt;
+
+&lt;p&gt;-d . -&amp;gt; directory=current directory&lt;/p&gt;
+
+&lt;p&gt;mal-eng -&amp;gt; malayalam english mode&lt;/p&gt;
+
+&lt;h2 id=&quot;morphological-analyser&quot;&gt;Morphological analyser&lt;/h2&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; “മലയാളം “| lt-proc mal-eng.automorf.bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;gui-for-translator&quot;&gt;GUI for translator&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://aboobacker.in/images/mltranslator.png&quot; alt=&quot;Qt GUI&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;step-by-step-process-view-developer--modes-viewer&quot;&gt;Step by step process view (Developer -&amp;gt;Modes viewer)&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://aboobacker.in/images/modes.png&quot; alt=&quot;Modes viewer&quot; /&gt;&lt;/p&gt;</content><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><summary type="html">Apertium malayalam english pair contain two directories</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://aboobacker.in/%7B%22feature%22=%3Enil%7D"/><media:content medium="image" url="https://aboobacker.in/%7B%22feature%22=%3Enil%7D" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Install Apertium Malayalam-english Pair Development Environment in Ubuntu</title><link href="https://aboobacker.in/2014/08/20/install-apertium-malayalam-english-pair-development-environment-in-ubuntu.html" rel="alternate" type="text/html" title="Install Apertium Malayalam-english Pair Development Environment in Ubuntu"><published>2014-08-20T01:43:36+00:00</published><updated>2014-08-20T01:43:36+00:00</updated><id>https://aboobacker.in/2014/08/20/install-apertium-malayalam-english-pair-development-environment-in-ubuntu</id><content type="html" xml:base="https://aboobacker.in/2014/08/20/install-apertium-malayalam-english-pair-development-environment-in-ubuntu.html">&lt;p&gt;Apertium is an open source machine translation toolkit .It is an extensible platform so that new language pairs can be added easily . It is currently in incubator state , we have to do a lot to to make it useful for translation of real life examples . I created ppas for the tools to make the process easier&lt;/p&gt;
+
+&lt;p&gt;Platform : ubuntu :14.04&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Add repositories&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wget http://apertium.projectjj.com/apt/install-nightly.sh &lt;span class=&quot;nt&quot;&gt;-O&lt;/span&gt; - | &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;bash
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;add-apt-repository ppa:tinodidriksen/cg3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Install tools&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;locales build-essential automake subversion pkg-config gawk libtool apertium-all-dev
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Install English Malayalam pair data&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+svn co https://svn.code.sf.net/p/apertium/svn/incubator/apertium-mal-eng/
+svn co https://svn.code.sf.net/p/apertium/svn/incubator/apertium-mal
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Compile&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~/apertium-mal
+./autogen.sh
+make
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~/apertium-mal-eng
+./autogen.sh &lt;span class=&quot;nt&quot;&gt;--with-lang1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;../apertium-mal
+make
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Installation is over , now you can test the system using&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; അവന്‍ നല്ല കുട്ടിയാണ്  &quot;&lt;/span&gt; | apertium &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; mal-eng
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will print
+he is nice child&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Prefer Graphical user interface ? , you can try my simple gui for it&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;qt5-default espeak
+git clone https://github.com/tachyons/mltranslator.git
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;mltranslator
+qmake
+make
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;make &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Stuck ? Don’t worry just comment below . :-)&lt;/p&gt;</content><author><name>Aboobacker MK</name><email>aboobackervyd@gmail.com</email><uri>https://aboobacker.in</uri></author><summary type="html">Apertium is an open source machine translation toolkit .It is an extensible platform so that new language pairs can be added easily . It is currently in incubator state , we have to do a lot to to make it useful for translation of real life examples . I created ppas for the tools to make the process easier</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://aboobacker.in/%7B%22feature%22=%3Enil%7D"/><media:content medium="image" url="https://aboobacker.in/%7B%22feature%22=%3Enil%7D" xmlns:media="http://search.yahoo.com/mrss/"/></entry></feed>

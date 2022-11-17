@@ -1,8 +1,0 @@
-{
-  "title":"Joe Marshall: Fold right",
-  "date":"2021-08-18T05:35:00.000000-07:00",
-  "author":null,
-  "id":"http://funcall.blogspot.com/2021/08/fold-right.html",
-  "link":"http://funcall.blogspot.com/2021/08/fold-right.html",
-  "content":"<p><code>fold-left</code> takes arguments like\nthis:<pre>(fold-left <i>function</i> <i>init</i> <i>list</i>)</pre>and\n  computes<pre>* (fold-left (lambda (l r) `(f ,l ,r)) 'init '(a b c))\n(F (F (F INIT A) B) C)</pre>Notice how <code>init</code> is the leftmost\nof all the arguments to the function, and each argument appears left\n  to right as it is folded in.</p>\n<p>Now look at the usual way <code>fold-right</code> is\n  defined:<pre>(fold-right <i>function</i> <i>init</i> <i>list</i>)</pre>It\n  computes <pre>* (fold-right (lambda (l r) `(f ,l ,r)) 'init '(a b c))\n(F A (F B (F C INIT)))</pre>although <code>init</code> appears first\n  and to the left of <code>'(a b c)</code> in the arguments\n  to <code>fold-right</code>, it is actually used as the rightmost\n  argument to the last application.</p>\n<p>It seems to me that the arguments to <code>fold-right</code> should\n  be in this order:<pre>; (fold-right <i>function</i> <i>list</i> <i>final</i>)\n* (fold-right (lambda (l r) `(f ,l ,r)) '(a b c) 'final)\n(F A (F B (F C FINAL)))</pre>\nThe argument lists to <code>fold-left</code>\nand <code>fold-right</code> would no longer match, but I think\n  switching things around so that the anti-symmetry of the arguments\n  matches the anti-symmetry of the folding makes things clearer.</p>"
-}

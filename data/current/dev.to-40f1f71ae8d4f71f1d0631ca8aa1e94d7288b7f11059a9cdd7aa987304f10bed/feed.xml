@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>DEV Community 👩‍💻👨‍💻: OKURA Masafumi</title>
+    <description>The latest articles on DEV Community 👩‍💻👨‍💻 by OKURA Masafumi (@okuramasafumi).</description>
+    <link>https://dev.to/okuramasafumi</link>
+    <image>
+      <url>https://res.cloudinary.com/practicaldev/image/fetch/s--9n8Wmt7Q--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/90228/f93aa564-de07-43ff-94b8-be13bcaea82e.jpg</url>
+      <title>DEV Community 👩‍💻👨‍💻: OKURA Masafumi</title>
+      <link>https://dev.to/okuramasafumi</link>
+    </image>
+    <atom:link rel="self" type="application/rss+xml" href="https://dev.to/feed/okuramasafumi"/>
+    <language>en</language>
+    <item>
+      <title>How to read Gemfile</title>
+      <dc:creator>OKURA Masafumi</dc:creator>
+      <pubDate>Sat, 12 Jun 2021 13:41:11 +0000</pubDate>
+      <link>https://dev.to/okuramasafumi/how-to-read-gemfile-2181</link>
+      <guid>https://dev.to/okuramasafumi/how-to-read-gemfile-2181</guid>
+      <description>&lt;h2&gt;
+  
+  
+  Motivation
+&lt;/h2&gt;
+
+&lt;p&gt;When we join new projects, what we do first is to understand dependencies. Understanding dependencies helps us to grasp the scope of the project and to read source code smoothly.&lt;/p&gt;
+
+&lt;p&gt;For example, if it's a Rails project (and yes, we know it's a Rails project via &lt;code&gt;gem rails&lt;/code&gt; line!), we can tell it treats parts of its data as trees with &lt;code&gt;acts_as_tree&lt;/code&gt; gem installed. With &lt;code&gt;omniauth-github&lt;/code&gt; the project should provide &quot;login with GitHub&quot; feature.&lt;/p&gt;
+
+&lt;p&gt;In Ruby, those dependencies are described in &lt;code&gt;Gemfile&lt;/code&gt;, a file &lt;code&gt;Bundler&lt;/code&gt; provides to define dependencies. Seasoned devs take a look at it and soon find some characteristics or problems.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, novices in software development sometimes struggle to read Gemfile. Everything seems new and unfamiliar. There are too much information.&lt;/p&gt;
+
+&lt;p&gt;This article aims to help these people who find it difficult to understand dependencies when reading Gemfile.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  The basic of Gemfile
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://bundler.io/man/gemfile.5.html&quot;&gt;The official man page&lt;/a&gt; describes the syntax of Gemfile, so I'd like to summarizes it here.&lt;/p&gt;
+
+&lt;p&gt;First of all, Gemfile is actually a Ruby file so you can do everything you can with Ruby. For example, you can define classes in Gemfile, though we usually don't have to do so. &lt;/p&gt;
+
+&lt;p&gt;The most important part of Gemfile is &lt;code&gt;gem&lt;/code&gt; declaration and version constraints. Others are less important.&lt;/p&gt;
+
+&lt;h3&gt;
+  
+  
+  &lt;code&gt;gem&lt;/code&gt;
+&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;gem&lt;/code&gt; declaration tells Bundler that we require that gem as a dependency. Typically it looks like:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'nokogiri'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;In the example above, we tell Bundler that we need &lt;code&gt;nokogiri&lt;/code&gt; gem as a dependency of the project.&lt;/p&gt;
+
+&lt;p&gt;You don't know what &lt;code&gt;nokogiri&lt;/code&gt; does? No worry! We'll talk about how to look up each gem does later in this article.&lt;/p&gt;
+
+&lt;h3&gt;
+  
+  
+  Version constraints
+&lt;/h3&gt;
+
+&lt;p&gt;Each &lt;code&gt;gem&lt;/code&gt; declaration may be followed by version constraints. It looks like this:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'nokogiri'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&amp;gt;= 1.0'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;In this example, we tell Bundler we need &lt;code&gt;nokogiri&lt;/code&gt; but it must be version &lt;code&gt;1.0&lt;/code&gt; or newer. If there's no other dependencies that depend on older &lt;code&gt;nokogiri&lt;/code&gt;, the latest one will be installed.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://guides.rubygems.org/patterns/#pessimistic-version-constraint&quot;&gt;https://guides.rubygems.org/patterns/#pessimistic-version-constraint&lt;/a&gt; explains what we can do with version specifiers, so here we don't cover everything.&lt;/p&gt;
+
+&lt;p&gt;Version constraints are important because it indicates this dependency is treated somewhat different than others. We default to latest version so that we can benefit from new features and bugfixes. If we cannot use the latest version of that gem, there might be something we should take care of.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  How to know what the gem does
+&lt;/h2&gt;
+
+&lt;p&gt;When we read &lt;code&gt;Gemfile&lt;/code&gt;, we see a bunch of gem names. Some are famous, some are not. Each project has unique list of gems it depends. How should we look up their functionalities and why they're in the list?&lt;/p&gt;
+
+&lt;p&gt;There are two aspect in dependencies - what it does in general and why the project needs it. Let's talk one by one.&lt;/p&gt;
+
+&lt;h3&gt;
+  
+  
+  What it does in general
+&lt;/h3&gt;
+
+&lt;p&gt;Let's say we want to know what &lt;code&gt;nokogiri&lt;/code&gt; does. The most reliable source is not something we find with google, but &lt;a href=&quot;https://rubygems.org/&quot;&gt;https://rubygems.org/&lt;/a&gt;, the official rubygems website.&lt;/p&gt;
+
+&lt;p&gt;The top page of the official rubygems site has a search box so just enter the name you want to know the feature of. That guides you to the search result page and you'll soon find a link to that gem. In this example you'll reach &lt;a href=&quot;https://rubygems.org/gems/nokogiri&quot;&gt;https://rubygems.org/gems/nokogiri&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;On the right column, you'll see &quot;homepage&quot; link. Clicking that navigates us to the (yes) homepage of the gem. It might be a dedicated page of the project or a GitHub README, but it should explains what the gem is for. In this example the homepage of &lt;code&gt;nokogiri&lt;/code&gt; is &lt;a href=&quot;https://nokogiri.org/&quot;&gt;https://nokogiri.org/&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;nokogiri&lt;/code&gt;'s homepage provides lots of information and you'll be probably satisfied. If there's no information you want, you should then search the web with the gem name (&quot;nokogiri&quot; in this example).&lt;/p&gt;
+
+&lt;p&gt;When you cannot find you're looking for with the homepage and web search, you might want to take a look at its source code. That's possible by clicking the &quot;Source Code&quot; link also on the right column of the gem page on &lt;a href=&quot;https://rubygems.org&quot;&gt;https://rubygems.org&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3&gt;
+  
+  
+  Why the project needs it
+&lt;/h3&gt;
+
+&lt;p&gt;Some gems are well known and every developer with some experience knows what they're for. Some gems are not that famous but provide good documentations. In these cases it's easy to understand what it provides to the project.&lt;/p&gt;
+
+&lt;p&gt;In some cases, however, you might want to know more about that gem. If the version constraint of the gem points to old version, you might want to know why you have to use that old version instead of newer or the latest one.&lt;/p&gt;
+
+&lt;p&gt;In those situations, bug trackers will help. You can go to bug tracker page by clicking &quot;Bug Tracker&quot; link on the right column. You can find some information about bugs the gem has in bug trackers and sometimes there's a bug that prevents you from using newer versions. For example, &lt;a href=&quot;https://github.com/sparklemotion/nokogiri/issues&quot;&gt;https://github.com/sparklemotion/nokogiri/issues&lt;/a&gt; is a issue tracker for &lt;code&gt;nokogiri&lt;/code&gt; and we can find discussions around bugs.&lt;/p&gt;
+
+&lt;p&gt;Things get complicated when the gem is not well known or well documented. In this case, &lt;code&gt;grep&lt;/code&gt; is your friend. Searching through the code using &lt;code&gt;grep&lt;/code&gt; and other similar tools with the gem name will find the place where the gem is used. That also tells us why we need it.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Conclusion
+&lt;/h2&gt;
+
+&lt;p&gt;We illustrated how to read Gemfile and find the information we need on &lt;a href=&quot;https://rubygems.org&quot;&gt;https://rubygems.org&lt;/a&gt;, issue trackers and the web.&lt;/p&gt;
+
+&lt;p&gt;Reading Gemfile enables us to know more about Ruby's ecosystem. It helps to reduce the possibility of reinventing the wheel and focus on more important things.&lt;/p&gt;
+
+</description>
+      <category>ruby</category>
+    </item>
+    <item>
+      <title>What you should know about JSON serialization solution in Ruby</title>
+      <dc:creator>OKURA Masafumi</dc:creator>
+      <pubDate>Thu, 03 Jun 2021 15:56:38 +0000</pubDate>
+      <link>https://dev.to/okuramasafumi/what-you-should-know-about-json-serialization-solution-in-ruby-4imd</link>
+      <guid>https://dev.to/okuramasafumi/what-you-should-know-about-json-serialization-solution-in-ruby-4imd</guid>
+      <description>&lt;h1&gt;
+  
+  
+  tl;dr
+&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/okuramasafumi/alba&quot;&gt;Alba&lt;/a&gt; is a fast and declarative JSON serializer for Ruby that supports typing, rich error handling and ActiveModelSerializers-like APIs.&lt;/p&gt;
+
+&lt;h1&gt;
+  
+  
+  What is Alba
+&lt;/h1&gt;
+
+&lt;p&gt;Alba is a new Ruby library (rubygems) for JSON serialization I've been recently developing.&lt;/p&gt;
+
+&lt;h1&gt;
+  
+  
+  Why yet another JSON serializer?
+&lt;/h1&gt;
+
+&lt;h2&gt;
+  
+  
+  Does it spark joy?
+&lt;/h2&gt;
+
+&lt;p&gt;As a Ruby developer, I occasionally compare JSON serialization solution in Ruby ecosystem and I'm not fully satisfied with existing ones. They don't spark joy.&lt;/p&gt;
+
+&lt;h3&gt;
+  
+  
+  Pros and cons of existing JSON serializers for Ruby
+&lt;/h3&gt;
+
+&lt;p&gt;Note that this table is totally subjective and not comprehensive, especially in that it doesn't have &lt;a href=&quot;https://jsonapi.org/&quot;&gt;JSON:API&lt;/a&gt; compatible libraries. It's not planned to support JSON:API with Alba and it's not easy to make sense to compare JSON:API compatible ones with &quot;flat&quot; ones.&lt;/p&gt;
+
+&lt;p&gt;If you'd like to point out that I'm wrong, or add something to this list, please comment below or contact &lt;a href=&quot;https://twitter.com/okuramasafumi&quot;&gt;me on Twitter&lt;/a&gt;!&lt;/p&gt;
+
+&lt;div class=&quot;table-wrapper-paragraph&quot;&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Name&lt;/th&gt;
+&lt;th&gt;Pros&lt;/th&gt;
+&lt;th&gt;Cons&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://github.com/rails-api/active_model_serializers&quot;&gt;ActiveModelSerializers&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Stable, lots of articles and documentations&lt;/td&gt;
+&lt;td&gt;Slower than others, not maintained actively, complex&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://github.com/rails/jbuilder&quot;&gt;jbuilder&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Part of Rails official gems, well maintained&lt;/td&gt;
+&lt;td&gt;Lots of DSLs to remember, slow when partials are overused&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://github.com/procore/blueprinter&quot;&gt;blueprinter&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Simple and fast, supports many features&lt;/td&gt;
+&lt;td&gt;The terminology is special such as &quot;views&quot; and not easy to understand&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://github.com/trailblazer/representable&quot;&gt;representable&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Supports JSON, XML and YAML format and many features&lt;/td&gt;
+&lt;td&gt;Not fast nor simple&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://github.com/amatsuda/jb&quot;&gt;jb&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Very simple, fast&lt;/td&gt;
+&lt;td&gt;When building complex JSON the code gets complex and hard to read&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;Overall, I like the speed and simplicity of &lt;code&gt;blueprinter&lt;/code&gt; and feature set &lt;code&gt;representable&lt;/code&gt; provides, but didn't find them the best possible.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  I can build it myself!
+&lt;/h2&gt;
+
+&lt;p&gt;As a programmer I wondered - why can't I create something thats' better than all of them and satisfy myself? And the answer was &quot;yes!&quot;&lt;/p&gt;
+
+&lt;p&gt;I wanted my library to be as simple as possible so I named it Alba. See &lt;a href=&quot;https://github.com/okuramasafumi/alba#why-named-alba&quot;&gt;this section of README&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The primary goal of Alba is to be as simple and fast as &lt;code&gt;blueprinter&lt;/code&gt; and to be as fully featured as &lt;code&gt;representable&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3&gt;
+  
+  
+  Hidden goals
+&lt;/h3&gt;
+
+&lt;p&gt;I wish my code is something that I can achieve with my best effort. There are some hidden goals of Alba that satisfies me as a programmer:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Smallest - I don't like reading long code, even when it's written by myself. I wish the code is smaller than 500 loc.&lt;/li&gt;
+&lt;li&gt;Best test coverage - Yes I know that code coverage is not a perfect index for test quality, but I'm not confident enough to think my code works as expected without tests. I keep code coverage higher than 99%.&lt;/li&gt;
+&lt;li&gt;Best code quality - Thanks to SaaS such as &lt;a href=&quot;https://codeclimate.com/&quot;&gt;CodeClimate&lt;/a&gt; I can tell when my code quality is too low. I try to keep &quot;code smells&quot; absolute zero.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Also I don't want Alba to depend on other gems so that it works well with not only Rails but also in other environments such as Hanami, Sinatra and even standalone. Although some features in Alba depend on ActiveSupport, it's carefully designed not to be required to use Alba itself.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  The result
+&lt;/h2&gt;
+
+&lt;p&gt;So I've built Alba and the result is impressive.&lt;/p&gt;
+
+&lt;p&gt;According to &lt;a href=&quot;https://github.com/okuramasafumi/alba/blob/main/benchmark/collection.rb&quot;&gt;the benchmark&lt;/a&gt; Alba is one of the fastest JSON serializer. It also consumes the least amount of memory.&lt;/p&gt;
+
+&lt;p&gt;Alba has some unique features such as error handling. It also supports types (only &lt;code&gt;representable&lt;/code&gt; supports this) and circular association control (only &lt;code&gt;ActiveModelSerializers&lt;/code&gt; supports this).&lt;/p&gt;
+
+&lt;p&gt;Alba achieves these features and performance by less than 500 lines of code. It's well tested with 99% test coverage.&lt;/p&gt;
+
+&lt;p&gt;I'm proud of my work for now, but there's a still long way to go.&lt;/p&gt;
+
+&lt;h1&gt;
+  
+  
+  The future of Alba
+&lt;/h1&gt;
+
+&lt;p&gt;Alba aims to be the defacto library to serialize objects into JSON in Ruby. It'll provide these advantages over the alternatives:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Speed - Alba will be the fastest among all other JSON serializers&lt;/li&gt;
+&lt;li&gt;Features - Alba will support most of the features we require daily for serialization, plus some unique features such as typing and custom hooks&lt;/li&gt;
+&lt;li&gt;Simplicity - Alba will not depend on external gems except for one I built for hooks, that makes it easy to use Alba outside of Rails&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+      <category>ruby</category>
+    </item>
+    <item>
+      <title>ensure doesn't return value implicitly</title>
+      <dc:creator>OKURA Masafumi</dc:creator>
+      <pubDate>Sat, 27 Feb 2021 15:46:12 +0000</pubDate>
+      <link>https://dev.to/okuramasafumi/be-sure-ensure-doesn-t-return-value-implicitly-8gp</link>
+      <guid>https://dev.to/okuramasafumi/be-sure-ensure-doesn-t-return-value-implicitly-8gp</guid>
+      <description>&lt;p&gt;In Ruby, &lt;code&gt;ensure&lt;/code&gt; clause ensures that the code block is executed when an exception is raised or not.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;
+  &lt;span class=&quot;s1&quot;&gt;'foo'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ensure&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'ensure'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 'ensure' is output&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;However, the value in ensure clause is not returned implicitly.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;
+  &lt;span class=&quot;s1&quot;&gt;'foo'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ensure&lt;/span&gt;
+  &lt;span class=&quot;s1&quot;&gt;'ensure'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 'foo', not 'ensure'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;You need to return value explicitly with &lt;code&gt;return&lt;/code&gt;.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;
+  &lt;span class=&quot;s1&quot;&gt;'foo'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ensure&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'ensure'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 'ensure'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+</description>
+      <category>ruby</category>
+    </item>
+    <item>
+      <title>`Eval`ing twice to define toplevel module from String</title>
+      <dc:creator>OKURA Masafumi</dc:creator>
+      <pubDate>Sat, 06 Feb 2021 15:54:37 +0000</pubDate>
+      <link>https://dev.to/okuramasafumi/eval-ing-twice-to-define-toplevel-module-from-string-33ma</link>
+      <guid>https://dev.to/okuramasafumi/eval-ing-twice-to-define-toplevel-module-from-string-33ma</guid>
+      <description>&lt;p&gt;Sometimes we want to define modules using &lt;code&gt;String&lt;/code&gt; and &lt;code&gt;instance_eval&lt;/code&gt;.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;A&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;CODE&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+  module B
+    module_function
+    def b
+      puts 'b'
+    end
+  end
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;CODE&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;instance_eval&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; Should print 'b'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;However, this code causes &lt;code&gt;NameError&lt;/code&gt; saying &lt;code&gt;uninitialized constant B&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Where has it gone? To know where module B is defined, we use &lt;code&gt;ObjectSpace&lt;/code&gt; class.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Replace `B.b` in the snippet above with this&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;ObjectSpace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=~&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/::B/&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; You see something like &quot;#&amp;lt;Class:0x00007f861b8c8e50&amp;gt;::B&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;OK, with &lt;code&gt;instance_eval&lt;/code&gt; and String combination, the defined module is put in Anonymous class namespace, the way which we don't like. How to define a toplevel module with &lt;code&gt;instance_eval&lt;/code&gt;?&lt;/p&gt;
+
+&lt;p&gt;So here's the answer.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;A&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;CODE&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+  module B
+    module_function
+    def b
+      puts 'b'
+    end
+  end
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;CODE&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;instance_eval&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;b&quot; is printed&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;What happened? We eval &lt;code&gt;code&lt;/code&gt; string in &lt;code&gt;instance_eval&lt;/code&gt; block. I don't know why but this code just does what we want to do.&lt;/p&gt;
+
+</description>
+      <category>ruby</category>
+    </item>
+    <item>
+      <title>Ruby: proc and lambda</title>
+      <dc:creator>OKURA Masafumi</dc:creator>
+      <pubDate>Sat, 23 Jan 2021 12:37:03 +0000</pubDate>
+      <link>https://dev.to/okuramasafumi/ruby-proc-and-lambda-286d</link>
+      <guid>https://dev.to/okuramasafumi/ruby-proc-and-lambda-286d</guid>
+      <description>&lt;h2&gt;
+  
+  
+  Example
+&lt;/h2&gt;
+
+
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;foo: :bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;nested_array&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;proc_printer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Proc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;, b: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;lambda_printer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;, b: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;proc_printer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; a: foo, b: bar&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;nested_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;proc_printer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; a: 1, b: 2&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda_printer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; a: foo, b: bar&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;nested_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda_printer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; wrong number of arguments (given 1, expected 2) (ArgumentError)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h2&gt;
+  
+  
+  What happened?
+&lt;/h2&gt;
+
+&lt;p&gt;A &lt;code&gt;lambda&lt;/code&gt; takes argument differently than a &lt;code&gt;proc&lt;/code&gt; does. In this case, an array in nested array case &quot;gets extracted&quot; into two arguments with a &lt;code&gt;proc&lt;/code&gt;, while it is passes as one array with a &lt;code&gt;lambda&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Proc&lt;/code&gt;s behave like blocks, and &lt;code&gt;lambda&lt;/code&gt;s behave like methods. When used with methods such as &lt;code&gt;each&lt;/code&gt;, which are usually used with blocks, it might be a good idea to use &lt;code&gt;proc&lt;/code&gt;s instead of &lt;code&gt;lambda&lt;/code&gt;s.&lt;/p&gt;
+
+</description>
+      <category>ruby</category>
+    </item>
+    <item>
+      <title>You can `bundle e` instead of `bundle exec`</title>
+      <dc:creator>OKURA Masafumi</dc:creator>
+      <pubDate>Fri, 05 Jun 2020 05:43:39 +0000</pubDate>
+      <link>https://dev.to/okuramasafumi/you-can-bundle-e-instead-of-bundle-exec-5hfk</link>
+      <guid>https://dev.to/okuramasafumi/you-can-bundle-e-instead-of-bundle-exec-5hfk</guid>
+      <description>&lt;p&gt;OK, you're tired of typing &lt;code&gt;bundle exec&lt;/code&gt; all the time when you develop Ruby/Rails application. I'd suggest defining an alias for it, just like:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Save this in your shell profile such as .bashrc or .zshrc&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;bundle exec&quot;&lt;/span&gt;
+
+be rspec &lt;span class=&quot;c&quot;&gt;# bundle exec rspec&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;But if you're lazy enough, you don't have to anything. Just type&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;bundle e rspec
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;and it works! Enjoy saving time!&lt;/p&gt;
+
+</description>
+      <category>bundler</category>
+      <category>alias</category>
+    </item>
+    <item>
+      <title>Installing libxml-ruby on macOS</title>
+      <dc:creator>OKURA Masafumi</dc:creator>
+      <pubDate>Mon, 27 Apr 2020 08:32:23 +0000</pubDate>
+      <link>https://dev.to/okuramasafumi/installing-libxml-ruby-on-macos-1d6m</link>
+      <guid>https://dev.to/okuramasafumi/installing-libxml-ruby-on-macos-1d6m</guid>
+      <description>&lt;p&gt;I always cannot find the way to install &lt;code&gt;libxml-ruby&lt;/code&gt; gem which is used by Rails, so here's a command:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;gem i libxml-ruby -- --with-xml2-dir=`brew --prefix libxml2` --with-xml2-config=`brew --prefix libxml2`/bin/xml2-config
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+</description>
+      <category>ruby</category>
+      <category>libxml</category>
+    </item>
+  </channel>
+</rss>

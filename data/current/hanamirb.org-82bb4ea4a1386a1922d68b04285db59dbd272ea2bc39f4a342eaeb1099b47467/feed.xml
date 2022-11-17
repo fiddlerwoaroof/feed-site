@@ -1,0 +1,1484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+   <title>Hanami</title>
+   <subtitle>Hanami web framework blog</subtitle>
+   <link href="http://hanamirb.org/atom.xml" rel="self">
+   <link href="http://hanamirb.org/blog">
+   <updated>2022-11-08T08:24:53+00:00</updated>
+   <id>http://hanamirb.org/blog</id>
+   <author>
+     <name>Hanami</name>
+     <email>admin@hanamirb.org</email>
+   </author>
+
+     <entry>
+       <title>Announcing Hanami v2.0.0.rc1</title>
+       <id>http://hanamirb.org/blog/2022/11/08/announcing-hanami-200rc1/</id>
+       <link rel="alternate" href="http://hanamirb.org/blog/2022/11/08/announcing-hanami-200rc1/">
+       <updated>2022-11-08T08:24:53+00:00</updated>
+       <author>
+         <name>Luca Guidi</name>
+       </author>
+       <summary>
+         First Release Candidate! Preparing for the stable release, and sharing a preview of our updated guides.
+       </summary>
+       <content type="html"><![CDATA[<p>Hello, folks!</p>
+
+<p>We’re very close to the stable version of Hanami 2!
+We now consider Hanami 2 done.
+Today’s Release Candidate (RC) 2.0.0.rc1 is hopefully the last step before we achieve this great milestone.</p>
+
+      <h2 id="small-changes" class="title"><a name="small-changes" class="anchor" href="#small-changes">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Small changes</h2>
+    
+<p>We’ve spent much of this release’s development cycle getting everything as tidy as possible. Here are a few highlights:</p>
+
+<ul>
+<li>Allow Rack middleware to be mounted directly inside routing scopes and slice scopes</li>
+<li>Introduce <code>Hanami::App.environment</code> (and <code>Hanami::Slice.environment</code>) to run setup code inside a particular environment only</li>
+<li>Simplify assignment of response format: <code>response.format = :json</code> (was <code>response.format = format(:json)</code>)</li>
+<li>Improve error messages for missing action classes</li>
+<li>Remove duplicated <code>config.sessions</code> in favor of <code>config.actions.sessions</code></li>
+<li>Fix <code>hanami routes</code> inspection of nested named routes</li>
+<li>Introduce <code>Hanami::Slice.stop</code> to properly shutdown the app and all slices</li>
+<li>Expect/define nested slices to be within their parent’s namespace</li>
+<li>Use Zeitwerk to autoload the <code>hanami</code> gem’s internal classes</li>
+<li>Remove <code>Hanami::Logger</code> from <code>hanami-utils</code> in favor of <code>Dry::Logger</code> from the new <code>dry-logger</code> gem</li>
+<li>Ensure <code>Hanami::Utils::String.underscore</code> replaces <code>&quot;.&quot;</code> (dot character) to <code>&quot;_&quot;</code> (underscore)</li>
+</ul>
+
+      <h2 id="2-0-0-is-coming-" class="title"><a name="2-0-0-is-coming-" class="anchor" href="#2-0-0-is-coming-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>2.0.0 is coming!</h2>
+    
+<p><strong>Expect 2.0.0 in two weeks.</strong></p>
+
+<p>Since the last Hanami beta, we’ve released stable 1.0.0 versions of (almost) all dry-rb gems. The remaining few will come within the next two weeks.</p>
+
+<p>This means that the Ruby ecosystem will soon have a complete set of modern, <strong>stable</strong> libraries and frameworks to build the next generation of applications.</p>
+
+<p>Between now and then, we need your help: please take the chance to test Hanami 2.0! Pull down this RC and give things a go, and let us know if you hit any issues.</p>
+
+      <h2 id="user-guide-preview" class="title"><a name="user-guide-preview" class="anchor" href="#user-guide-preview">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>User guide preview</h2>
+    
+<p>To help you with your testing, we’re very excited to share a preview of our
+<a href="https://guides.hanamirb.org/v2.0/introduction/getting-started/">Hanami 2.0 Getting Started Guide</a>!</p>
+
+<p>This is still a work in progress, and we plan to finish it over the next two weeks. Many thanks to
+<a href="http://github.com/andrewcroome">Andrew Croome</a> and <a href="https://github.com/swilgosz">Seb Wilgosz</a> for putting this guide together.</p>
+
+      <h2 id="what-s-included-" class="title"><a name="what-s-included-" class="anchor" href="#what-s-included-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s included?</h2>
+    
+<p>Today we’re releasing the following gems:</p>
+
+<ul>
+<li>hanami v2.0.0.rc1</li>
+<li>hanami-cli v2.0.0.rc1</li>
+<li>hanami-controller v2.0.0.rc1</li>
+<li>hanami-router v2.0.0.rc1</li>
+<li>hanami-validations v2.0.0.rc1</li>
+<li>hanami-utils v2.0.0.rc1</li>
+<li>hanami-reloader v2.0.0.rc1 (it now follows Hanami’s versioning)</li>
+<li>hanami-rspec v2.0.0.rc1 (it now follows Hanami’s versioning)</li>
+</ul>
+
+<p>For specific changes in this RC release, please see each gem’s own CHANGELOG.</p>
+
+      <h2 id="how-can-i-try-it-" class="title"><a name="how-can-i-try-it-" class="anchor" href="#how-can-i-try-it-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>How can I try it?</h2>
+    <div class="highlight"><pre class="highlight shell"><code>⚡ gem <span style="color: #0086B3">install </span>hanami <span style="color: #000080">--pre</span>
+⚡ hanami new bookshelf
+⚡ <span style="color: #0086B3">cd </span>bookshelf
+⚡ bundle <span style="color: #0086B3">exec </span>hanami <span style="color: #000080">--help</span>
+</code></pre></div>
+      <h2 id="contributors" class="title"><a name="contributors" class="anchor" href="#contributors">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Contributors</h2>
+    
+<p>Thank you to these fine people for contributing to this release!</p>
+
+<ul>
+<li><a href="https://github.com/jodosha">Luca Guidi</a></li>
+<li><a href="https://github.com/timriley">Tim Riley</a></li>
+<li><a href="https://github.com/solnic">Peter Solnica</a></li>
+<li><a href="https://github.com/andrewcroome">Andrew Croome</a></li>
+<li><a href="https://github.com/tak1n">Benjamin Klotz</a></li>
+<li><a href="https://github.com/fxn">Xavier Noria</a></li>
+</ul>
+
+      <h2 id="thank-you" class="title"><a name="thank-you" class="anchor" href="#thank-you">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Thank you</h2>
+    
+<p>Thank you as always for supporting Hanami!</p>
+
+<p>We can’t wait to hear from you about this release candidate, and we’re looking forward to sharing another update with you in just two weeks! 🌸</p>
+]]></content>
+     </entry>
+     <entry>
+       <title>Announcing Hanami v2.0.0.beta4</title>
+       <id>http://hanamirb.org/blog/2022/10/24/announcing-hanami-200beta4/</id>
+       <link rel="alternate" href="http://hanamirb.org/blog/2022/10/24/announcing-hanami-200beta4/">
+       <updated>2022-10-24T13:15:00+00:00</updated>
+       <author>
+         <name>Tim Riley</name>
+       </author>
+       <summary>
+         Our last beta! Improved Hanami::Action memory usage, simplified body parser config, and a whole lot of polish.
+       </summary>
+       <content type="html"><![CDATA[<p>Hello again, friends! We’re delighted to share the release of Hanami 2.0.0.beta4, the final release of our 2.0.0.beta series!</p>
+
+      <h2 id="improved-memory-performance-for-hanami-action" class="title"><a name="improved-memory-performance-for-hanami-action" class="anchor" href="#improved-memory-performance-for-hanami-action">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Improved memory performance for Hanami::Action</h2>
+    
+<p>Hanami::Action plays a key role in Hanami 2.0 apps, powering each of your HTTP endpoints. For this release we’ve made big improvements to the memory impact of subclassing Hanami::Action, with a memory reduction of over 5x for each subclass. This will help your Hanami apps retain a slim footprint even as they grow in size.</p>
+
+      <h2 id="simplified-body-parser-config" class="title"><a name="simplified-body-parser-config" class="anchor" href="#simplified-body-parser-config">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Simplified body parser config</h2>
+    
+<p>hanami-router’s body parsers are the middleware that parse incoming request bodies to turn them into Ruby structures that you can use within your actions. Now configuring a body parser has become easier than ever. No more requires or class names, just provide the name for your parser:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">App</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">App</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">middleware</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">use</span> <span style="color: #990073">:body_parser</span><span style="background-color: #f8f8f8">,</span> <span style="color: #990073">:json</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>You can now also specify custom action formats and matching body parser configuration both in the same place:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">App</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">App</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">actions</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">format</span> <span style="color: #990073">json: </span><span style="color: #d14">"application/json+scim"</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">middleware</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">use</span> <span style="color: #990073">:body_parser</span><span style="background-color: #f8f8f8">,</span> <span style="background-color: #f8f8f8">[</span><span style="color: #990073">json: </span><span style="color: #d14">"application/json+scim"</span><span style="background-color: #f8f8f8">]</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+      <h2 id="and-a-whole-lot-of-polish-" class="title"><a name="and-a-whole-lot-of-polish-" class="anchor" href="#and-a-whole-lot-of-polish-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>And a whole lot of polish!</h2>
+    
+<p>We’ve spent much of this release’s development cycle getting everything as tidy as possible. Here are a few highlights:</p>
+
+<ul>
+<li>Added helpful output and help messages to all <code>hanami</code> CLI commands</li>
+<li><code>hanami generate</code> now generates tests for slice-based components under <code>spec/slices/[slice_name]/</code></li>
+<li><code>Hanami::Settings</code> subclasses have a nested dry-types <code>Types</code> module auto-generated, for easy type-checking of settings: refer to <code>Types</code> inside your settings class and it’ll just work!</li>
+<li><code>Hanami::Settings#inspect</code> hides values to prevent leakage of sensitive data, with <code>#inspect_values</code> as a way to see everything</li>
+<li><code>request</code> and <code>response</code> objects inside Hanami::Action now share the same <code>session</code> and <code>flash</code> objects, ensuring all session changes are persisted regardless of how they’re made</li>
+<li>Accessing <code>session</code> and <code>flash</code> now raise a helpful error message if sessions are not configured</li>
+<li><code>Hanami.app.configuration</code> is now <code>.config</code>, to better reflect usage in natural language</li>
+</ul>
+
+      <h2 id="2-0-0-is-coming-" class="title"><a name="2-0-0-is-coming-" class="anchor" href="#2-0-0-is-coming-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>2.0.0 is coming!</h2>
+    
+<p>This is the very last of our betas! From here, we expect to make two more releases:</p>
+
+<ul>
+<li>A 2.0.0.rc1 release candidate in two weeks</li>
+<li>The final 2.0.0 release in another two weeks</li>
+</ul>
+
+<p>For these releases, we’ll be focused on minor bug fixes only, plus documentation and the 1.0 releases of our dry-rb gem dependencies. We’ll also be releasing a preview of our 2.0.0 user guide before the rc1 release.</p>
+
+<p>All of this means you can look forward to a 2.0.0 release towards the end of November!</p>
+
+<p>Between now and then, we need your help: please take the chance to test Hanami 2.0! Pull down this beta and give things a go, and let us know if you hit any issues.</p>
+
+      <h2 id="what-s-included-" class="title"><a name="what-s-included-" class="anchor" href="#what-s-included-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s included?</h2>
+    
+<p>Today we’re releasing the following gems:</p>
+
+<ul>
+<li>hanami v2.0.0.beta4</li>
+<li>hanami-router v2.0.0.beta4</li>
+<li>hanami-controller v2.0.0.beta4</li>
+<li>hanami-cli v2.0.0.beta4</li>
+<li>hanami-reloader v1.0.0.beta4</li>
+<li>hanami-rspec v3.11.0.beta4 (it follows RSpec’s versioning)</li>
+</ul>
+
+<p>For specific changes in this beta release, please see each gem’s own CHANGELOG.</p>
+
+      <h2 id="how-can-i-try-it-" class="title"><a name="how-can-i-try-it-" class="anchor" href="#how-can-i-try-it-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>How can I try it?</h2>
+    <div class="highlight"><pre class="highlight plaintext"><code>⚡ gem install hanami --pre
+⚡ hanami new bookshelf
+⚡ cd bookshelf
+⚡ bundle exec hanami --help
+</code></pre></div>
+      <h2 id="contributors" class="title"><a name="contributors" class="anchor" href="#contributors">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Contributors</h2>
+    
+<p>Thank you to these fine people for contributing to this release!</p>
+
+<ul>
+<li><a href="https://github.com/waiting-for-dev">Marc Busqué</a></li>
+<li><a href="https://github.com/cllns">Sean Collins</a></li>
+<li><a href="https://github.com/jodosha">Luca Guidi</a></li>
+<li><a href="https://github.com/tak1n">Benjamin Klotz</a></li>
+<li><a href="https://github.com/timriley">Tim Riley</a></li>
+<li><a href="https://github.com/solnic">Peter Solnica</a></li>
+</ul>
+
+      <h2 id="thank-you" class="title"><a name="thank-you" class="anchor" href="#thank-you">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Thank you</h2>
+    
+<p>Thank you as always for supporting Hanami!</p>
+
+<p>We can’t wait to hear from you about this release, and we’re looking forward to sharing another update with you very soon. 🌸</p>
+]]></content>
+     </entry>
+     <entry>
+       <title>Announcing Hanami v2.0.0.beta3</title>
+       <id>http://hanamirb.org/blog/2022/09/21/announcing-hanami-200beta3/</id>
+       <link rel="alternate" href="http://hanamirb.org/blog/2022/09/21/announcing-hanami-200beta3/">
+       <updated>2022-09-21T14:17:23+00:00</updated>
+       <author>
+         <name>Luca Guidi</name>
+       </author>
+       <summary>
+         Code reloading, Puma support out of the box, routes simplification
+       </summary>
+       <content type="html"><![CDATA[<p>Hello again, friends! We’re excited to share our release of Hanami 2.0.0.beta3!</p>
+
+      <h2 id="code-reloading" class="title"><a name="code-reloading" class="anchor" href="#code-reloading">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Code Reloading</h2>
+    
+<p>Hanami server and console now support code reloading.</p>
+
+<p>New apps are generated with <code>hanami-reloader</code> in <code>Gemfile</code> and with a new <code>Guardfile</code>.
+Code reloading for <code>hanami server</code> is based on <code>guard</code>.
+When the file system changes because of code edits, Guard restarts the Hanami server.</p>
+
+<p>In Hanami 1, we achieved code reloading with an &quot;inside-the-framework&quot; approach that turned to be problematic.
+With <code>hanami-reloader</code>, we implemented this &quot;outside-the-framework&quot; that has positive implications:</p>
+
+<ul>
+<li>File system watching is delegated to Guard</li>
+<li>Hanami is now free from code reloading awareness</li>
+<li>Not bundling <code>hanami-reloader</code> (e.g. in production), eliminates automatically the code reloading logic</li>
+<li>With <code>zeitwerk</code> and <code>dry-container</code> we achieved lazy boot of the app, resulting in <strong>very fast code reloading</strong>.</li>
+</ul>
+
+<p>Regarding the Hanami console, we reintroduced <code>reload</code> command to be invoked from the console to reload its context.</p>
+
+      <h2 id="puma" class="title"><a name="puma" class="anchor" href="#puma">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Puma</h2>
+    
+<p>New apps are generated with <code>puma</code> in <code>Gemfile</code> and with <code>config/puma.rb</code> configuration.</p>
+
+      <h2 id="routes-simplification" class="title"><a name="routes-simplification" class="anchor" href="#routes-simplification">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Routes simplification</h2>
+    
+<p>The routes definition in <code>config/routes.rb</code> looks simpler with the elimination of <code>define</code> wrapper.</p>
+
+<p><strong>Before</strong></p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># frozen_string_literal: true</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Bookshelf</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Routes</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Routes</span>
+    <span style="background-color: #f8f8f8">define</span> <span style="color: #000000;font-weight: bold">do</span>
+      <span style="background-color: #f8f8f8">root</span> <span style="background-color: #f8f8f8">{</span> <span style="color: #d14">"Hello from Hanami"</span> <span style="background-color: #f8f8f8">}</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p><strong>After</strong></p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># frozen_string_literal: true</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Bookshelf</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Routes</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Routes</span>
+    <span style="background-color: #f8f8f8">root</span> <span style="background-color: #f8f8f8">{</span> <span style="color: #d14">"Hello from Hanami"</span> <span style="background-color: #f8f8f8">}</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+      <h2 id="what-s-included-" class="title"><a name="what-s-included-" class="anchor" href="#what-s-included-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s included?</h2>
+    
+<p>Today we’re releasing the following gems:</p>
+
+<ul>
+<li><code>hanami</code> v2.0.0.beta3</li>
+<li><code>hanami-rspec</code> v3.11.0.beta3 (it follows RSpec’s versioning)</li>
+<li><code>hanami-cli</code> v2.0.0.beta3</li>
+<li><code>hanami-reloader</code> v1.0.0.beta3</li>
+</ul>
+
+<p>For specific changes from the last beta release, please see each gem’s own CHANGELOG.</p>
+
+      <h2 id="how-can-i-try-it-" class="title"><a name="how-can-i-try-it-" class="anchor" href="#how-can-i-try-it-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>How can I try it?</h2>
+    <div class="highlight"><pre class="highlight plaintext"><code>⚡ gem install hanami --pre
+⚡ hanami new bookshelf
+⚡ cd bookshelf
+⚡ bundle exec hanami --help
+</code></pre></div>
+      <h2 id="contributors" class="title"><a name="contributors" class="anchor" href="#contributors">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Contributors</h2>
+    
+<p>Thank you to these fine people for contributing to this release!</p>
+
+<ul>
+<li><a href="https://github.com/jodosha">Luca Guidi</a></li>
+<li><a href="https://github.com/waiting-for-dev">Marc Busqué</a></li>
+<li><a href="https://github.com/timriley">Tim Riley</a></li>
+<li><a href="https://github.com/solnic">Piotr Solnica</a></li>
+</ul>
+
+      <h2 id="thank-you" class="title"><a name="thank-you" class="anchor" href="#thank-you">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Thank you</h2>
+    
+<p>Thank you as always for supporting Hanami!</p>
+
+<p>We can’t wait to hear from you about this release, and we’re looking forward to checking in with you again soon. 🌸</p>
+]]></content>
+     </entry>
+     <entry>
+       <title>Announcing Hanami v2.0.0.beta2</title>
+       <id>http://hanamirb.org/blog/2022/08/16/announcing-hanami-200beta2/</id>
+       <link rel="alternate" href="http://hanamirb.org/blog/2022/08/16/announcing-hanami-200beta2/">
+       <updated>2022-08-16T13:30:00+00:00</updated>
+       <author>
+         <name>Tim Riley</name>
+       </author>
+       <summary>
+         Slice and action generators, middlwares inspection, and conditional slice loading
+       </summary>
+       <content type="html"><![CDATA[<p>Hello again, friends! We’re excited to share our release of Hanami 2.0.0.beta2!</p>
+
+      <h2 id="slice-and-action-generators" class="title"><a name="slice-and-action-generators" class="anchor" href="#slice-and-action-generators">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Slice and action generators</h2>
+    
+<p>Last month we reintroduced the <code>hanami new</code> app generator, and this time around we’re happy to add another couple of generators.</p>
+
+<p><code>hanami generate slice</code> will generate a new slice into <code>slices/</code>. Right now it gives you a base action class and an <code>actions/</code> directory for your own actions.</p>
+
+<p>To create those actions, you can use <code>hanami generate action</code>. This generates action classes into <code>app/actions/</code> by default, but you can also use <code>--slice [slice_name]</code> to specify a particular slice as the target.</p>
+
+      <h2 id="middlewares-inspection" class="title"><a name="middlewares-inspection" class="anchor" href="#middlewares-inspection">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Middlewares inspection</h2>
+    
+<p>To go along with our <code>hanami routes</code> CLI command, we’ve added <code>hanami middlewares</code>, which displays the middlewares you’ve configured for your Hanami rack app. This will be useful for understanding the flow of requests through middleware stacks, especially for stacks with middleware active at particular route prefixes.</p>
+
+<p>For a new Hanami app with cookie sessions configured, it’ll look like this:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>&gt; hanami middlewares
+
+/    Dry::Monitor::Rack::Middleware (instance)
+/    Rack::Session::Cookie
+</code></pre></div>
+<p>You can also provide <code>--with-arguments</code> to see the arguments provided for each middlware:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>&gt; hanami middlewares --with-arguments
+
+/    Dry::Monitor::Rack::Middleware (instance) args: []
+/    Rack::Session::Cookie args: [{:secret=&gt;"abc123"}]
+</code></pre></div>
+      <h2 id="conditional-slice-loading" class="title"><a name="conditional-slice-loading" class="anchor" href="#conditional-slice-loading">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Conditional slice loading</h2>
+    
+<p>Slices are one of the superpowers we’re introducing with Hanami 2: by organising your application logic into distinct slices, you can create a truly modular app structure. Today with beta2 we’re introducing conditional slice loading, which will allow you to take advantage of that modularity by loading different sets of slices for different deployed workloads.</p>
+
+<p>You can specify the slices to load with a new <code>config.slices</code> setting:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># config/app.rb</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">AppName</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">App</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">App</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">slices</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #d14">%w[blog shop]</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>You can also populate this setting directly via an <code>HANAMI_SLICES</code> environment variable, using commas to separate the slice names, e.g. <code>HANAMI_SLICES=blog,shop</code>.</p>
+
+<p>Any slices not incuded in this list will be completely ignored: their slice class will not be loaded, nor any of their other Ruby source files; effectively, they will not exist.</p>
+
+<p>Specifying slices like this will <strong>improve boot time and minimize memory usage</strong> for specific workloads (imagine a job runner that needs only a single slice), as well as help ensure clean boundaries between your slices.</p>
+
+      <h2 id="what-s-included-" class="title"><a name="what-s-included-" class="anchor" href="#what-s-included-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s included?</h2>
+    
+<p>Today we’re releasing the following gems:</p>
+
+<ul>
+<li><code>hanami</code> v2.0.0.beta2</li>
+<li><code>hanami-rspec</code> v3.11.0.beta2 (it follows RSpec’s versioning)</li>
+<li><code>hanami-cli</code> v2.0.0.beta2</li>
+<li><code>hanami-router</code> v2.0.0.beta2</li>
+</ul>
+
+<p>For specific changes from the last alpha release, please see each gem’s own CHANGELOG.</p>
+
+      <h2 id="how-can-i-try-it-" class="title"><a name="how-can-i-try-it-" class="anchor" href="#how-can-i-try-it-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>How can I try it?</h2>
+    <div class="highlight"><pre class="highlight plaintext"><code>⚡ gem install hanami --pre
+⚡ hanami new bookshelf
+⚡ cd bookshelf
+⚡ bundle exec hanami --help
+</code></pre></div>
+      <h2 id="contributors" class="title"><a name="contributors" class="anchor" href="#contributors">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Contributors</h2>
+    
+<p>Thank you to these fine people for contributing to this release!</p>
+
+<ul>
+<li><a href="https://github.com/jodosha">Luca Guidi</a></li>
+<li><a href="https://github.com/waiting-for-dev">Marc Busqué</a></li>
+<li><a href="https://github.com/swilgosz">Seb Wilgosz</a></li>
+<li><a href="https://github.com/timriley">Tim Riley</a></li>
+</ul>
+
+      <h2 id="thank-you" class="title"><a name="thank-you" class="anchor" href="#thank-you">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Thank you</h2>
+    
+<p>Thank you as always for supporting Hanami!</p>
+
+<p>We can’t wait to hear from you about this release, and we’re looking forward to checking in with you again soon. 🌸</p>
+]]></content>
+     </entry>
+     <entry>
+       <title>Announcing Hanami v2.0.0.beta1</title>
+       <id>http://hanamirb.org/blog/2022/07/20/announcing-hanami-200beta1/</id>
+       <link rel="alternate" href="http://hanamirb.org/blog/2022/07/20/announcing-hanami-200beta1/">
+       <updated>2022-07-20T07:54:53+00:00</updated>
+       <author>
+         <name>Luca Guidi</name>
+       </author>
+       <summary>
+         Hanami 2 first beta: app-centric revolution &amp; CLI. What to expect in 2.0 and 2.1.
+       </summary>
+       <content type="html"><![CDATA[<p>Hello Hanami community! We’re thrilled to announce the release of Hanami 2.0.0.beta1!</p>
+
+      <h2 id="app-centric-revolution" class="title"><a name="app-centric-revolution" class="anchor" href="#app-centric-revolution">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>App-centric revolution</h2>
+    
+<p>With this release, we’ve revolutionized the Hanami app structure: the <strong><code>app/</code> directory is the primary home for your code</strong>, and <strong>slices are now optional</strong>.</p>
+
+<p>“What&#39;s a slice?,” you may ask! Think of slices as distinct modules of your application. A typical case is to use slices to separate your business domains (e.g. billing, accounting, admin). For our earlier 2.0 alpha releases, slices were the only way to build Hanami apps, which presupposed you wanted a full modular monolith composed of multiple domains.</p>
+
+<p>With this change, you can just as easily build small services with Hanami, with minimal ceremony.</p>
+
+<p>Let’s dissect a newly generated application (this one being named “Bookshelf”):</p>
+
+<ul>
+<li><code>app/</code> is home for your application code</li>
+<li><code>app/actions/</code> holds your actions and <code>app/action.rb</code>, with <code>Bookshelf::Action</code> as their superclass</li>
+<li><code>config/app.rb</code> defines your application (<code>Bookshelf::App</code>) and its configuration</li>
+<li><code>config/settings.rb</code> defines your app’s settings, such as the database URL</li>
+<li><code>config/routes.rb</code> defines your app’s HTTP routes</li>
+<li><code>lib/</code> is the home for any general purpose code used by your application code</li>
+<li><code>lib/bookshelf/types.rb</code> defines your custom Ruby data types (using the dry-types gem)</li>
+<li><code>lib/tasks/</code> is there for any custom Rake tasks</li>
+<li><code>spec/</code> holds your tests (using RSpec)</li>
+<li><code>spec/requests/</code> holds your HTTP integration tests (using the rack-test gem)</li>
+</ul>
+<div class="highlight"><pre class="highlight plaintext"><code>⚡ tree .
+.
+├── Gemfile
+├── Gemfile.lock
+├── README.md
+├── Rakefile
+├── app
+│   ├── action.rb
+│   └── actions
+├── config
+│   ├── app.rb
+│   ├── routes.rb
+│   └── settings.rb
+├── config.ru
+├── lib
+│   ├── bookshelf
+│   │   └── types.rb
+│   └── tasks
+└── spec
+    ├── requests
+    │   └── root_spec.rb
+    ├── spec_helper.rb
+    └── support
+        ├── requests.rb
+        └── rspec.rb
+
+9 directories, 14 files
+</code></pre></div>
+<p><strong>Simple. In the spirit of Hanami.</strong></p>
+
+      <h2 id="cli" class="title"><a name="cli" class="anchor" href="#cli">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>CLI</h2>
+    
+<p>This first beta comes with new CLI commands:</p>
+
+<ul>
+<li><code>hanami new</code> to generate a new application</li>
+<li><code>hanami server</code> to start the HTTP server (Puma)</li>
+<li><code>hanami routes</code> to print application routes</li>
+</ul>
+
+<p>Remember, <code>hanami --help</code>, is also your friend 😉.</p>
+
+      <h2 id="hanami-2-0-amp-2-1" class="title"><a name="hanami-2-0-amp-2-1" class="anchor" href="#hanami-2-0-amp-2-1">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Hanami 2.0 &amp; 2.1</h2>
+    
+<p>Some of you may have noticed in the previous section we didn&#39;t mention views. Where have the views gone?</p>
+
+<p>We want to release Hanami 2 stable as soon as possible, so we decided to split the remaining scope across Hanami 2.0 and 2.1 releases.</p>
+
+      <h3 id="hanami-2-0" class="title"><a name="hanami-2-0" class="anchor" href="#hanami-2-0">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Hanami 2.0</h3>
+    
+<p>The roadmap until 2.0 is straightforward: solidify the app structure as presented above. We plan to add more commands to CLI code generators, support code reloading, and write documentation.</p>
+
+<p>That&#39;s it!</p>
+
+<p>This way you can learn Hanami 2 by building apps (hint: this would be great for API apps, the router is <em>really</em> fast).</p>
+
+      <h3 id="hanami-2-1" class="title"><a name="hanami-2-1" class="anchor" href="#hanami-2-1">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Hanami 2.1</h3>
+    
+<p>For this release, things will look complete from a full stack web framework perspective. Hanami apps will support views, helpers, assets, and persistence (based on <a href="https://rom-rb.org">rom-rb</a>).</p>
+
+      <h2 id="what-s-included-" class="title"><a name="what-s-included-" class="anchor" href="#what-s-included-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s included?</h2>
+    
+<p>Today we’re releasing the following gems:</p>
+
+<ul>
+<li><code>hanami</code> v2.0.0.beta1</li>
+<li><code>hanami-rspec</code> v3.11.0.beta1 (it follows RSpec’s versioning)</li>
+<li><code>hanami-cli</code> v2.0.0.beta1</li>
+<li><code>hanami-controller</code> v2.0.0.beta1</li>
+<li><code>hanami-router</code> v2.0.0.beta1</li>
+<li><code>hanami-validations</code> v2.0.0.beta1</li>
+<li><code>hanami-utils</code> v2.0.0.beta1</li>
+</ul>
+
+<p>For specific changes from the last alpha release, please see each gem’s own CHANGELOG.</p>
+
+      <h2 id="how-can-i-try-it-" class="title"><a name="how-can-i-try-it-" class="anchor" href="#how-can-i-try-it-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>How can I try it?</h2>
+    <div class="highlight"><pre class="highlight plaintext"><code>⚡ gem install hanami --pre
+⚡ hanami new bookshelf
+⚡ cd bookshelf
+⚡ bundle exec hanami --help
+</code></pre></div>
+      <h2 id="contributors" class="title"><a name="contributors" class="anchor" href="#contributors">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Contributors</h2>
+    
+<p>Thank you to these fine people for contributing to this release!</p>
+
+<ul>
+<li><a href="https://github.com/andrewcroome">Andrew Croome</a></li>
+<li><a href="https://github.com/tak1n">Benjamin Klotz</a></li>
+<li><a href="https://github.com/jodosha">Luca Guidi</a></li>
+<li><a href="https://github.com/waiting-for-dev">Marc Busqué</a></li>
+<li><a href="https://github.com/narinda">Narinda Reeders</a></li>
+<li><a href="https://github.com/solnic">Peter Solnica</a></li>
+<li><a href="https://github.com/timriley">Tim Riley</a></li>
+</ul>
+
+      <h2 id="thank-you" class="title"><a name="thank-you" class="anchor" href="#thank-you">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Thank you</h2>
+    
+<p>Thank you as always for supporting Hanami!</p>
+
+<p>We can’t wait to hear from you about this release, and we’re looking forward to checking in with you again soon. 🌸</p>
+]]></content>
+     </entry>
+     <entry>
+       <title>Announcing Hanami v2.0.0.alpha8</title>
+       <id>http://hanamirb.org/blog/2022/05/19/announcing-hanami-200alpha8/</id>
+       <link rel="alternate" href="http://hanamirb.org/blog/2022/05/19/announcing-hanami-200alpha8/">
+       <updated>2022-05-19T12:00:00+00:00</updated>
+       <author>
+         <name>Tim Riley</name>
+       </author>
+       <summary>
+         New base action and view classes, and a few fixes
+       </summary>
+       <content type="html"><![CDATA[<p>After a month’s break, we’re back with another Hanami 2.0.0 alpha release for you all!</p>
+
+<p>This release includes new base action and view classes, plus a few small fixes.</p>
+
+      <h2 id="new-base-action-and-view-classes" class="title"><a name="new-base-action-and-view-classes" class="anchor" href="#new-base-action-and-view-classes">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>New base action and view classes</h2>
+    
+<p>This release includes new base classes for actions and views that integrate with their surrounding Hanami application: <code>Hanami::Application::Action</code>, <code>Hanami::Application::View</code>, and <code>Hanami::Application::View::Context</code>. Your base classes should now look like this:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># lib/my_app/action/base.rb:</span>
+
+<span style="color: #0086B3">require</span> <span style="color: #d14">"hanami/application/action"</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Action</span>
+    <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Base</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Action</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div><div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># lib/my_app/view/base.rb:</span>
+
+<span style="color: #0086B3">require</span> <span style="color: #d14">"hanami/application/view"</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">View</span>
+    <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Base</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">View</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div><div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># lib/my_app/view/context.rb:</span>
+
+<span style="color: #0086B3">require</span> <span style="color: #d14">"hanami/application/view/context"</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">View</span>
+    <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Context</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">View</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Context</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>Our current <a href="https://github.com/hanami/hanami-2-application-template">application template</a> has been updated to use these new classes.</p>
+
+<p>We’ve also relocated the code for these classes from hanami-controller and hanami-view into the hanami gem itself, which will help us maintain the best possible integrated experience as we work towards 2.0.0 and beyond.</p>
+
+<p>Any supporting code for these integrated classes is conditionally loaded based on the presence of their counterpart gems (hanami-controller and hanami-view), so you can continue to pare back the framework to suit different needs by removing hanami-controller and/or hanami-view from your application’s <code>Gemfile</code>.</p>
+
+      <h2 id="a-few-small-fixes" class="title"><a name="a-few-small-fixes" class="anchor" href="#a-few-small-fixes">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>A few small fixes</h2>
+    
+<p>Thanks very much to our contributors, this release also includes a few small fixes:</p>
+
+<ul>
+<li><code>hanami db</code> CLI commands work again</li>
+<li>Action classes with an already-halted response will no longer attempt to render their automatically paired view</li>
+</ul>
+
+      <h2 id="what-s-included-" class="title"><a name="what-s-included-" class="anchor" href="#what-s-included-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s included?</h2>
+    
+<p>Today we’re releasing the following gems:</p>
+
+<ul>
+<li><code>hanami</code> v2.0.0.alpha8</li>
+<li><code>hanami-cli</code> v2.0.0.alpha8 (with a follow-up fix available in 2.0.0.alpha8.1)</li>
+<li><code>hanami-controller</code> v2.0.0.alpha8</li>
+<li><code>hanami-view</code> v2.0.0.alpha8</li>
+</ul>
+
+      <h2 id="contributors" class="title"><a name="contributors" class="anchor" href="#contributors">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Contributors</h2>
+    
+<p>Thank you to these fine people for contributing to this release!</p>
+
+<ul>
+<li><a href="https://github.com/andrewcroome">Andrew Croome</a></li>
+<li><a href="https://github.com/lcmen">Lucas Mendelowski</a></li>
+<li><a href="https://github.com/timriley">Tim Riley</a></li>
+</ul>
+
+      <h2 id="how-can-i-try-it-" class="title"><a name="how-can-i-try-it-" class="anchor" href="#how-can-i-try-it-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>How can I try it?</h2>
+    
+<p>You can check out our <a href="https://github.com/hanami/hanami-2-application-template">Hanami 2 application template</a>, which is up to date with this latest release and ready for you to use as the starting point for your own app.</p>
+
+      <h2 id="what-s-coming-next-" class="title"><a name="what-s-coming-next-" class="anchor" href="#what-s-coming-next-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s coming next?</h2>
+    
+<p>We’re still working away at porting our view helpers to Hanami 2, which we hope to share with you in some form next month.</p>
+
+<p>Thank you as always for supporting Hanami!</p>
+]]></content>
+     </entry>
+     <entry>
+       <title>Announcing Hanami v2.0.0.alpha7</title>
+       <id>http://hanamirb.org/blog/2022/03/08/announcing-hanami-200alpha7/</id>
+       <link rel="alternate" href="http://hanamirb.org/blog/2022/03/08/announcing-hanami-200alpha7/">
+       <updated>2022-03-08T12:00:00+00:00</updated>
+       <author>
+         <name>Tim Riley</name>
+       </author>
+       <summary>
+         Concrete slice classes, consistent action and view class structures
+       </summary>
+       <content type="html"><![CDATA[<p>Hi again, Hanami friends, we’re happy to be back this month to share the release of Hanami 2.0.0.alpha7.</p>
+
+<p>Before we go further, we want to make it clear that <strong>we stand with the people of Ukraine in the face of the senseless, horrific attacks on their homeland by the Russian military.</strong></p>
+
+<p>We stand with all victims of this war: all the people who didn’t want this war, but are now directly or indirectly impacted. People who have lost their lives, their friends, their hopes. People who have had to escape their country because there is no future left for them. <strong>We stand for people, not for flags.</strong></p>
+
+<p>If you can, <a href="https://razomforukraine.org"><strong>please donate to support Ukrainians in this time of need</strong></a>.</p>
+
+<p>At very least, take the time to <a href="https://zverok.space/blog/2022-03-03-WAR.html">read this perspective</a> from our Ruby friend Victor “zverok” Shepelev, who is currently sheltering in the heavily bombarded Kharkiv, Ukraine, with his family. Victor should be spreading his Ruby magic, not dodging missiles.</p>
+
+<p>As for this Hanami alpha release: it contains improvements to slice configuration, as well as the action and view class structure within generated applications.</p>
+
+      <h2 id="slice-configuration-via-concrete-classes" class="title"><a name="slice-configuration-via-concrete-classes" class="anchor" href="#slice-configuration-via-concrete-classes">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Slice configuration via concrete classes</h2>
+    
+<p>You can now configure your slices by creating concrete classes for each slice in <code>config/slices/</code>:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># config/slices/main.rb:</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Main</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Slice</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Slice</span>
+    <span style="color: #999988;font-style: italic"># slice config here</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>The application-level <code>config.slice(slice_name, &amp;block)</code> setting has been removed in favour of these classes, which provide much a clearer place for configuration.</p>
+
+<p>As of this release, you can use the slice classes to configure your slice imports:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># config/slices/main.rb:</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Main</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Slice</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Slice</span>
+    <span style="color: #999988;font-style: italic"># Import all exported components from "search" slice</span>
+    <span style="background-color: #f8f8f8">import</span> <span style="color: #990073">from: :search</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>As well as particular components to export:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># config/slices/search.rb:</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Search</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Slice</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Slice</span>
+    <span style="color: #999988;font-style: italic"># Export the "index_entity" component only</span>
+    <span style="background-color: #f8f8f8">export</span> <span style="background-color: #f8f8f8">[</span><span style="color: #d14">"index_entity"</span><span style="background-color: #f8f8f8">]</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>Hanami slices use dry-system to manage their internal container of components. Hanami does all the work to configure this container to work according to framework conventions as well as your own specific application configuration. However, for advanced cases, you can also directly configure the slice’s container using <code>prepare_container</code> on the slice class:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># config/slices/search.rb:</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Search</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Slice</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Slice</span>
+    <span style="background-color: #f8f8f8">prepare_container</span> <span style="color: #000000;font-weight: bold">do</span> <span style="color: #000000;font-weight: bold">|</span><span style="background-color: #f8f8f8">container</span><span style="color: #000000;font-weight: bold">|</span>
+      <span style="color: #999988;font-style: italic"># `container` (a Dry::System::Container subclass) is available here with</span>
+      <span style="color: #999988;font-style: italic"># slice-specific configuration already applied</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>Finally, for simple Hanami applications, you don’t need to worry about creating these classes yourself: the framework will generate them for you in the absence of matching files in <code>config/slices/</code>.</p>
+
+      <h2 id="application-shutdown-completeness" class="title"><a name="application-shutdown-completeness" class="anchor" href="#application-shutdown-completeness">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Application shutdown completeness</h2>
+    
+<p><code>Hanami::Application</code> provides a three-stage boot lifecycle, consisting of <code>.prepare</code>, <code>.boot</code>, and <code>.shutdown</code> methods, with the latter two steps calling <code>start</code> and <code>stop</code> respectively on each of the application’s registered providers.</p>
+
+<p>As of this release, <code>Hanami::Slice</code> also exposes its own <code>.shutdown</code> method, and <code>Hanami::Application.shutdown</code> will also call <code>.shutdown</code> on all the registered slices.</p>
+
+      <h2 id="consistent-action-and-view-class-structure" class="title"><a name="consistent-action-and-view-class-structure" class="anchor" href="#consistent-action-and-view-class-structure">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Consistent action and view class structure</h2>
+    
+<p>As of this release we’ve settled upon a consistent structure for the action and view classes within generated applications.</p>
+
+<p>For actions, for example, the following classes will be generated:</p>
+
+<ul>
+<li>A single application-level base class, e.g. <code>MyApp::Action::Base</code> in <code>lib/my_app/action/base.rb</code>. This is where you would put any logic or configuration that should apply to every action across all slices within the application.</li>
+<li>A base class for each slice, e.g. <code>Main::Action::Base</code> in <code>slices/main/lib/action/base.rb</code>, inheriting from the application-level base class. This is where you would put anything that should apply to all the actions only in the particular slice.</li>
+<li>Every individual action class would then go into the <code>actions/</code> directory within the slice, e.g. <code>Main::Actions::Articles::Index</code> in <code>slices/main/actions/articles/index.rb</code>.</li>
+</ul>
+
+<p>For views, the structure is much the same, with <code>MyApp::View::Base</code> and <code>Main::View::Base</code> classes located within an identical structure.</p>
+
+<p>The rationale for this structure is that it provides a clear place for any code to live that serves as supporting “infrastructure” for your application’s actions and views: it can go right alongside those <code>Base</code> classes, in their own directories, clearly separated from the rest of your concrete actions and views.</p>
+
+<p>This isn’t an imagined requirement: in a standard Hanami 2 application, we’ll already be generating additional classes for the view layer, such as a view context class (e.g. <code>Main::View::Context</code>) and a base view part class (e.g. <code>Main::View::Part</code>).</p>
+
+<p>This structure is intended to serve as a hint that your own application-level action and view behavior can and should be composed of their own single-responsibility classes as much as possible.</p>
+
+<p>To put it all together, the following represents the expected structure in generated applications:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>lib/
+  app_template/
+    action/
+      base.rb                  # AppTemplate::Action::Base &lt; Hanami::Action
+    view/
+      base.rb                  # AppTemplate::View::Base &lt; Hanami::View
+      context.rb               # AppTemplate::View::Context &lt; Hanami::View::Context
+      part.rb                  # AppTemplate::View::Part &lt; Hanami::View::Part
+slices/
+  main/
+    lib/
+       action/
+         base.rb               # Main::Action::Base &lt; AppTemplate::Action::Base
+         authentication.rb     # Main::Action::Authentication (EXAMPLE APP-SPECIFIC MODULE)
+       view/
+         base.rb               # Main::View::Base &lt; AppTemplate::View::Base
+         context.rb            # Main::View::Context &lt; AppTemplate::View::Context
+         part.rb               # Main::View::Part &lt; AppTemplate::View::Part
+         part_builder.rb       # Main::View::PartBuilder &lt; Hanami::View::PartBuilder (OPTIONAL)
+         helpers/
+           authentication.rb   # Main::View::Helpers::Authentication (EXAMPLE APP-SPECIFIC MODULE)
+         parts/
+           article.rb          # Main::View::Parts::Article &lt; Main::View::Part
+
+    actions/                   # Concrete action classes (Main::Actions namespace)
+    views/                     # Concrete view classes (Main::Views namespace)
+</code></pre></div>
+<p>Along with these changes, we’ve also streamlined the default view templates directory, changing it from <code>web/templates/</code> to just <code>templates/</code>.</p>
+
+      <h2 id="what-s-included-" class="title"><a name="what-s-included-" class="anchor" href="#what-s-included-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s included?</h2>
+    
+<p>Today we’re releasing the following gems:</p>
+
+<ul>
+<li><code>hanami</code> v2.0.0.alpha7 (with a follow-up fix available in 2.0.0.alpha7.1)</li>
+<li><code>hanami-cli</code> v2.0.0.alpha7</li>
+<li><code>hanami-view</code> v2.0.0.alpha7</li>
+</ul>
+
+      <h2 id="contributors" class="title"><a name="contributors" class="anchor" href="#contributors">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Contributors</h2>
+    
+<p>Thank you to these fine people for contributing to this release!</p>
+
+<ul>
+<li><a href="https://github.com/jodosha">Luca Guidi</a></li>
+<li><a href="https://github.com/timriley">Tim Riley</a></li>
+<li><a href="https://github.com/cllns">Sean Collins</a></li>
+</ul>
+
+      <h2 id="how-can-i-try-it-" class="title"><a name="how-can-i-try-it-" class="anchor" href="#how-can-i-try-it-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>How can I try it?</h2>
+    
+<p>You can check out our <a href="https://github.com/hanami/hanami-2-application-template">Hanami 2 application template</a>, which is up to date with this latest release and ready for you to use as the starting point for your own app.</p>
+
+      <h2 id="what-s-coming-next-" class="title"><a name="what-s-coming-next-" class="anchor" href="#what-s-coming-next-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s coming next?</h2>
+    
+<p>We’re currently hard at work on porting our view helpers to Hanami 2, which we hope to share with you in some form next month.</p>
+
+<p>Thank you as always for supporting Hanami!</p>
+]]></content>
+     </entry>
+     <entry>
+       <title>Announcing Hanami v2.0.0.alpha6</title>
+       <id>http://hanamirb.org/blog/2022/02/10/announcing-hanami-200alpha6/</id>
+       <link rel="alternate" href="http://hanamirb.org/blog/2022/02/10/announcing-hanami-200alpha6/">
+       <updated>2022-02-10T11:04:32+00:00</updated>
+       <author>
+         <name>Luca Guidi</name>
+       </author>
+       <summary>
+         Hanami Providers, Partial Slice Import/Export. Ruby 3.0+ only.
+       </summary>
+       <content type="html"><![CDATA[<p>Hello Hanami community! We&#39;re thrilled to announce the release of Hanami 2.0.0.alpha6!</p>
+
+<p>With this new cycle of monthly based releases we have a smaller set of changes, but delivered more frequently.</p>
+
+<p>This month we focused mainly on the internals of the framework.
+The work that Tim Riley is doing is epic.
+Hanami 2 is modeled around dry-system, which powers the booting process and the dependencies of an app.</p>
+
+      <h2 id="hanami-providers" class="title"><a name="hanami-providers" class="anchor" href="#hanami-providers">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Hanami Providers</h2>
+    
+<p>First thing first, <strong>we renamed <em>bootable compontents</em> into <em>providers</em></strong>.
+This change was reflected in the public API.</p>
+
+<p>We also renamed the provider <code>init</code> lifecycle step to <code>prepare</code>.</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #008080">Hanami</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">application</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">register_provider</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">:metrics</span><span style="background-color: #f8f8f8">)</span> <span style="color: #000000;font-weight: bold">do</span>
+  <span style="background-color: #f8f8f8">prepare</span> <span style="color: #000000;font-weight: bold">do</span>
+    <span style="color: #0086B3">require</span> <span style="color: #d14">"datadog/statsd"</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+
+  <span style="background-color: #f8f8f8">start</span> <span style="color: #000000;font-weight: bold">do</span>
+    <span style="color: #999988;font-style: italic"># See application's config/settings.rb</span>
+    <span style="background-color: #f8f8f8">settings</span> <span style="color: #000000;font-weight: bold">=</span> <span style="background-color: #f8f8f8">target</span><span style="background-color: #f8f8f8">[</span><span style="color: #990073">:settings</span><span style="background-color: #f8f8f8">].</span><span style="color: #990000;font-weight: bold">statsd</span>
+
+    <span style="background-color: #f8f8f8">register</span> <span style="color: #d14">"metrics"</span><span style="background-color: #f8f8f8">,</span> <span style="color: #008080">Datadog</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Statsd</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">new</span><span style="background-color: #f8f8f8">(</span><span style="background-color: #f8f8f8">settings</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">host</span><span style="background-color: #f8f8f8">,</span> <span style="background-color: #f8f8f8">settings</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">port</span><span style="background-color: #f8f8f8">)</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+
+  <span style="background-color: #f8f8f8">stop</span> <span style="color: #000000;font-weight: bold">do</span>
+    <span style="color: #999988;font-style: italic"># triggered when the application is shut down</span>
+    <span style="background-color: #f8f8f8">metrics</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">close</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div><div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">API</span>
+  <span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Actions</span>
+    <span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Users</span>
+      <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Create</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">API</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Action</span>
+        <span style="color: #000000;font-weight: bold">include</span> <span style="color: #008080">Deps</span><span style="background-color: #f8f8f8">[</span><span style="color: #d14">"application.metrics"</span><span style="background-color: #f8f8f8">]</span>
+
+        <span style="color: #000000;font-weight: bold">def</span> <span style="color: #990000;font-weight: bold">handle</span><span style="background-color: #f8f8f8">(</span><span style="background-color: #f8f8f8">req</span><span style="background-color: #f8f8f8">,</span> <span style="background-color: #f8f8f8">res</span><span style="background-color: #f8f8f8">)</span>
+          <span style="color: #999988;font-style: italic"># ...</span>
+          <span style="background-color: #f8f8f8">metrics</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">increment</span><span style="background-color: #f8f8f8">(</span><span style="color: #d14">"user.create"</span><span style="background-color: #f8f8f8">)</span>
+        <span style="color: #000000;font-weight: bold">end</span>
+      <span style="color: #000000;font-weight: bold">end</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>Read more about Provider&#39;s changes in <a href="https://github.com/hanami/hanami/blob/main/CHANGELOG.md#v200alpha6---2022-02-10">CHANGELOG</a>.</p>
+
+      <h2 id="partial-slice-import-export" class="title"><a name="partial-slice-import-export" class="anchor" href="#partial-slice-import-export">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Partial Slice Import/Export</h2>
+    
+<p>A Slice in your application can be used to provide a single responsibility functionality.
+You can think of it as having <strong>microservices in your monolith</strong> but without the complexity!</p>
+
+<p>For instance, the <code>search</code> Slice can expose the search functionality to other slices.</p>
+
+<p>To ensure unwanted functionalities exports, you have the option of declaring which functionalities to export.
+Here&#39;s a few examples</p>
+
+<p>Import from <code>search</code> slice, uses <code>search</code> as the imported key namespace:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># config/application.rb</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">slice</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">:admin</span><span style="background-color: #f8f8f8">)</span> <span style="color: #000000;font-weight: bold">do</span>
+      <span style="background-color: #f8f8f8">import</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">from: :search</span><span style="background-color: #f8f8f8">)</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>Import from <code>search</code> slice with custom namespace:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># config/application.rb</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">slice</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">:admin</span><span style="background-color: #f8f8f8">)</span> <span style="color: #000000;font-weight: bold">do</span>
+      <span style="background-color: #f8f8f8">import</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">from: :search</span><span style="background-color: #f8f8f8">,</span> <span style="color: #990073">as: :search_engine</span><span style="background-color: #f8f8f8">)</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>Import specific keys from <code>search</code> slice</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># config/application.rb</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">slice</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">:admin</span><span style="background-color: #f8f8f8">)</span> <span style="color: #000000;font-weight: bold">do</span>
+      <span style="background-color: #f8f8f8">import</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">keys: </span><span style="background-color: #f8f8f8">[</span><span style="color: #d14">"run_query"</span><span style="background-color: #f8f8f8">],</span> <span style="color: #990073">from: :search</span><span style="background-color: #f8f8f8">)</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>Export only specific keys from <code>search</code> slice, and import them in <code>admin</code></p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># config/application.rb</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">slice</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">:admin</span><span style="background-color: #f8f8f8">)</span> <span style="color: #000000;font-weight: bold">do</span>
+      <span style="background-color: #f8f8f8">import</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">from: :search</span><span style="background-color: #f8f8f8">)</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">slice</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">:search</span><span style="background-color: #f8f8f8">)</span> <span style="color: #000000;font-weight: bold">do</span>
+      <span style="background-color: #f8f8f8">container</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">exports</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #d14">%w[run_query index_item]</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+      <h2 id="ruby-3-0-only" class="title"><a name="ruby-3-0-only" class="anchor" href="#ruby-3-0-only">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Ruby 3.0+ only</h2>
+    
+<p>We took this decision for a clear cut with the past of Ruby.
+At the time of the writing (Feb 2022), Ruby 2.6 will reach <a href="https://www.ruby-lang.org/en/downloads/branches/">End Of Life</a> (EOL) in a month.
+It didn&#39;t make sense to still support it.</p>
+
+<p>We want further than that, given the opportunity that we have with Hanami 2 to &quot;start fresh&quot; with the Ruby versions to support.
+We opted for taking 2.7 out as well.</p>
+
+<p>There are a few inconsistencies that have been fixed in Ruby 3.0 and we want to take advantage of this.</p>
+
+      <h2 id="what-s-included-" class="title"><a name="what-s-included-" class="anchor" href="#what-s-included-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s included?</h2>
+    
+<p>Today we’re releasing the following gems:</p>
+
+<ul>
+<li><code>hanami</code> v2.0.0.alpha6</li>
+<li><code>hanami-cli</code> v2.0.0.alpha6</li>
+<li><code>hanami-view</code> v2.0.0.alpha6</li>
+<li><code>hanami-controller</code> v2.0.0.alpha6</li>
+<li><code>hanami-router</code> v2.0.0.alpha6</li>
+<li><code>hanami-utils</code> v2.0.0.alpha6</li>
+</ul>
+
+      <h2 id="how-can-i-try-it-" class="title"><a name="how-can-i-try-it-" class="anchor" href="#how-can-i-try-it-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>How can I try it?</h2>
+    
+<p>You can check out our <a href="https://github.com/hanami/hanami-2-application-template">Hanami 2 application template</a>, which is up to date with this latest release and ready for you to use as the starting point for your own app.</p>
+
+<p>We’d really love for you to give the tires a good kick for this release in particular: the more real-world testing we can have of our code loading changes, the better!</p>
+
+      <h2 id="what-s-coming-next-" class="title"><a name="what-s-coming-next-" class="anchor" href="#what-s-coming-next-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s coming next?</h2>
+    
+<p>Thank you as always for supporting Hanami! We can’t wait to hear from you about this release, and we’re looking forward to checking in with you again next month. 🙇🏻‍♂️🌸</p>
+]]></content>
+     </entry>
+     <entry>
+       <title>Announcing Hanami v2.0.0.alpha5</title>
+       <id>http://hanamirb.org/blog/2022/01/12/announcing-hanami-200alpha5/</id>
+       <link rel="alternate" href="http://hanamirb.org/blog/2022/01/12/announcing-hanami-200alpha5/">
+       <updated>2022-01-12T11:00:00+00:00</updated>
+       <author>
+         <name>Tim Riley</name>
+       </author>
+       <summary>
+         Sensible default logger, full source dirs config, router loading flexibility, route helpers in views
+       </summary>
+       <content type="html"><![CDATA[<p>Happy new year, Hanami community! To get 2022 started, we&#39;re excited to announce the release of Hanami 2.0.0.alpha5!</p>
+
+<p>This release brings the last month of our work on Hanami 2.0 (with an extra week added for good measure, while we all returned from our end of year breaks). It includes:</p>
+
+<ul>
+<li>Sensible default configuration for the application logger</li>
+<li>Comprehensive source dirs configuration (for advanced users)</li>
+<li>Lazy router and Rack app initialization</li>
+<li>Access to the application route helpers from the view context</li>
+<li>RSS support in our default MIME type list</li>
+</ul>
+
+      <h2 id="default-application-logger-configuration" class="title"><a name="default-application-logger-configuration" class="anchor" href="#default-application-logger-configuration">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Default application logger configuration</h2>
+    
+<p>In our ongoing effort to strip boilerplate from our <a href="https://github.com/hanami/hanami-2-application-template">application template</a>, we now ship a sensible default configuration for the application logger.</p>
+
+<p>The defaults are:</p>
+
+<ul>
+<li>In <strong>production</strong>, log for level <code>info</code>, send logs to <code>$stdout</code> in JSON format without colors</li>
+<li>In <strong>development</strong>, log for level <code>debug</code>, send logs to <code>$stdout</code> in single-line format with colors</li>
+<li>In <strong>test</strong>, log for level <code>debug</code>, send logs to <code>log/test.log</code> in single-line format without colors</li>
+</ul>
+
+<p>These defaults mean we&#39;ve now achieved sensible behavior for a zero-configuration Hanami application class:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># config/application.rb</span>
+
+<span style="color: #0086B3">require</span> <span style="color: #d14">"hanami"</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>You can customize the logger config as much as you need:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">level</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #990073">:info</span>
+
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">stream</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #008080">$stdout</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">stream</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #d14">"/path/to/file"</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">stream</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #008080">StringIO</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">new</span>
+
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">format</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #990073">:json</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">format</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #008080">MyCustomFormatter</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">new</span>
+
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">color</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #000000;font-weight: bold">false</span> <span style="color: #999988;font-style: italic"># disable coloring</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">color</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #008080">MyCustomColorizer</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">new</span>
+
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">filters</span> <span style="color: #000000;font-weight: bold">&lt;&lt;</span> <span style="color: #d14">"secret"</span> <span style="color: #999988;font-style: italic"># add</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">filters</span> <span style="color: #000000;font-weight: bold">+=</span> <span style="background-color: #f8f8f8">[</span><span style="color: #d14">"yet"</span><span style="background-color: #f8f8f8">,</span> <span style="color: #d14">"another"</span><span style="background-color: #f8f8f8">]</span> <span style="color: #999988;font-style: italic"># add</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">filters</span> <span style="color: #000000;font-weight: bold">=</span> <span style="background-color: #f8f8f8">[</span><span style="color: #d14">"foo"</span><span style="background-color: #f8f8f8">]</span> <span style="color: #999988;font-style: italic"># replace</span>
+
+    <span style="color: #999988;font-style: italic"># See https://ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger.html</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">options</span> <span style="color: #000000;font-weight: bold">=</span> <span style="background-color: #f8f8f8">[</span><span style="color: #d14">"daily"</span><span style="background-color: #f8f8f8">]</span> <span style="color: #999988;font-style: italic"># time based log rotation</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">options</span> <span style="color: #000000;font-weight: bold">=</span> <span style="background-color: #f8f8f8">[</span><span style="color: #009999">0</span><span style="background-color: #f8f8f8">,</span> <span style="color: #009999">1048576</span><span style="background-color: #f8f8f8">]</span> <span style="color: #999988;font-style: italic"># size based log rotation</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>You can also customize the config specifically for given environments:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">environment</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">:staging</span><span style="background-color: #f8f8f8">)</span> <span style="color: #000000;font-weight: bold">do</span>
+      <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">level</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #990073">:info</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>And finally, you can assign a completely custom logger object:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">logger</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #008080">MyCustomLogger</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">new</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+      <h2 id="comprehensive-source-dirs-configuration-for-advanced-users-" class="title"><a name="comprehensive-source-dirs-configuration-for-advanced-users-" class="anchor" href="#comprehensive-source-dirs-configuration-for-advanced-users-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Comprehensive source dirs configuration (for advanced users)</h2>
+    
+<p>In the 2.0.0.alpha3 release, we introduced <a href="/blog/2021/11/09/announcing-hanami-200alpha3/">streamlined source directories</a> for the Ruby source files within each slice. Just like we’re doing with our application logger, we ship a sensible default configuration out of the box. Now with alpha5, we’re introducing a new <code>config.source_dirs</code> setting that you can use to fully customize this configuration.</p>
+
+<p>This will allow you to add and configure your own additional component dirs (which are the directories used to auto-register application components):</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="color: #999988;font-style: italic"># Adding a simple component dir</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">source_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">component_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">add</span> <span style="color: #d14">"serializers"</span>
+
+    <span style="color: #999988;font-style: italic"># Adding a component dir with custom configuration</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">source_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">component_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">add</span> <span style="color: #d14">"serializers"</span> <span style="color: #000000;font-weight: bold">do</span> <span style="color: #000000;font-weight: bold">|</span><span style="background-color: #f8f8f8">dir</span><span style="color: #000000;font-weight: bold">|</span>
+      <span style="background-color: #f8f8f8">dir</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">auto_register</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #0086B3">proc</span> <span style="background-color: #f8f8f8">{</span> <span style="color: #000000;font-weight: bold">|</span><span style="background-color: #f8f8f8">component</span><span style="color: #000000;font-weight: bold">|</span>
+        <span style="color: #000000;font-weight: bold">!</span><span style="background-color: #f8f8f8">component</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">identifier</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">start_with?</span><span style="background-color: #f8f8f8">(</span><span style="color: #d14">"structs"</span><span style="background-color: #f8f8f8">)</span>
+      <span style="background-color: #f8f8f8">}</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>You can also customize the configuration of the default component dirs (&quot;lib&quot;, &quot;actions&quot;, &quot;repositories&quot;, &quot;views&quot;):</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="color: #999988;font-style: italic"># Customising a default component dir</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">source_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">component_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">dir</span><span style="background-color: #f8f8f8">(</span><span style="color: #d14">"lib"</span><span style="background-color: #f8f8f8">).</span><span style="color: #990000;font-weight: bold">auto_register</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #0086B3">proc</span> <span style="background-color: #f8f8f8">{</span> <span style="color: #000000;font-weight: bold">|</span><span style="background-color: #f8f8f8">component</span><span style="color: #000000;font-weight: bold">|</span>
+      <span style="color: #000000;font-weight: bold">!</span><span style="background-color: #f8f8f8">component</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">identifier</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">start_with?</span><span style="background-color: #f8f8f8">(</span><span style="color: #d14">"structs"</span><span style="background-color: #f8f8f8">)</span>
+    <span style="background-color: #f8f8f8">}</span>
+
+    <span style="color: #999988;font-style: italic"># Setting default config to apply to all component dirs</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">source_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">component_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">auto_register</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #0086B3">proc</span> <span style="background-color: #f8f8f8">{</span> <span style="color: #000000;font-weight: bold">|</span><span style="background-color: #f8f8f8">component</span><span style="color: #000000;font-weight: bold">|</span>
+      <span style="color: #000000;font-weight: bold">!</span><span style="background-color: #f8f8f8">component</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">identifier</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">start_with?</span><span style="background-color: #f8f8f8">(</span><span style="color: #d14">"entities"</span><span style="background-color: #f8f8f8">)</span>
+    <span style="background-color: #f8f8f8">}</span>
+
+    <span style="color: #999988;font-style: italic"># Removing a default component dir</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">source_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">component_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">delete</span><span style="background-color: #f8f8f8">(</span><span style="color: #d14">"views"</span><span style="background-color: #f8f8f8">)</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>The <code>config.source_dirs.component_dirs</code> setting is provided by <a href="http://dry-rb.org/gems/dry-system/0.21/">dry-system’s</a> own <code>Dry::System::Config::ComponentDirs</code>, so you can use this to configure any aspect of component loading as you require.</p>
+
+<p>In addition to component dirs, you can also configure your own autoload paths, for source files you don’t want registered as components, but whose classes you still want to access inside your application. These directories are helpful for any classes that you will directly instantiate with their own data rather than dependencies, such as entities, structs, or any other kind of value class.</p>
+
+<p>Out of the box, our <code>autoload_paths</code> is <code>[&quot;entities&quot;]</code>. You can configure this as required:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="color: #999988;font-style: italic"># Adding your own autoload paths</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">source_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">autoload_paths</span> <span style="color: #000000;font-weight: bold">&lt;&lt;</span> <span style="color: #d14">"structs"</span>
+
+    <span style="color: #999988;font-style: italic"># Or providing a full replacement</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">source_dirs</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">autoload_paths</span> <span style="color: #000000;font-weight: bold">=</span> <span style="background-color: #f8f8f8">[</span><span style="color: #d14">"structs"</span><span style="background-color: #f8f8f8">]</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+      <h2 id="lazy-router-and-rack-app-initialization" class="title"><a name="lazy-router-and-rack-app-initialization" class="anchor" href="#lazy-router-and-rack-app-initialization">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Lazy router and Rack app initialization</h2>
+    
+<p>One of the most powerful features of Hanami 2 is your ability to partially boot the application, loading only the specific components you need to complete a particular task. This makes testing considerably faster, but it also opens up flexible deployment opportunities, such as optimising the performance of certain production workloads by only loading particular subsets of your application.</p>
+
+<p>With this release, this flexibility has been extended to the application router and its Rack interface, which are now initialized lazily, allowing you to access the router and rack app even if your application has not fully booted. The rack app is now available as <code>.rack_app</code> on your application class, and can be accessed at any time after the application’s initial &quot;init&quot; step:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># Example config.ru</span>
+
+<span style="color: #999988;font-style: italic"># Loads the Hanami app at config/application.rb and runs Hanami.init</span>
+<span style="color: #999988;font-style: italic">#</span>
+<span style="color: #999988;font-style: italic"># n.b. this does _not_ fully boot the application, so most components are not</span>
+<span style="color: #999988;font-style: italic"># loaded, but routes are still accessible and their supporting components will</span>
+<span style="color: #999988;font-style: italic"># also be lazily loaded when required</span>
+<span style="color: #0086B3">require</span> <span style="color: #d14">"hanami/init"</span>
+
+<span style="background-color: #f8f8f8">run</span> <span style="color: #008080">Hanami</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">rack_app</span>
+</code></pre></div>
+<p>Access to the Rack app in this way opens up the possibility of a slimline deployment of a your application configured to serve only a small subset of its overall routes. In this case, only the minimal subset of components will be loaded to serve the given routes. This may be helpful for fine-grained deployment to resource-constrained targets like serverless functions.</p>
+
+<p>Closer to home, this is also the first step towards faster code reloading when running the application in development mode. We’ll be working on this in future releases.</p>
+
+      <h2 id="route-helpers-via-the-view-context" class="title"><a name="route-helpers-via-the-view-context" class="anchor" href="#route-helpers-via-the-view-context">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Route helpers via the view context</h2>
+    
+<p>Last month we made the <a href="/blog/2021/12/07/announcing-hanami-200alpha4/">route helpers available in actions</a>, and now we’re making them available in views too, via our default <a href="https://dry-rb.org/gems/dry-view/0.7/context/">view context</a>. This means  you can access <code>routes</code> inside any template:</p>
+<div class="highlight"><pre class="highlight slim"><code><span style="color: #999988;font-style: italic">/ slices/main/web/templates/books/index.html.slim</span>
+
+<span style="background-color: #f8f8f8">-</span> <span style="background-color: #f8f8f8">books</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">each</span> <span style="color: #000000;font-weight: bold">do</span> <span style="color: #000000;font-weight: bold">|</span><span style="background-color: #f8f8f8">book</span><span style="color: #000000;font-weight: bold">|</span>
+  <span style="color: #000080">p</span>
+    <span style="color: #000080">a</span><span style="color: #bbbbbb"> </span><span style="color: #008080">href</span><span style="background-color: #f8f8f8">=</span><span style="background-color: #f8f8f8">routes</span><span style="color: #445588;font-weight: bold">.url</span>(:book,<span style="color: #bbbbbb"> </span>id:<span style="color: #bbbbbb"> </span>book<span style="color: #445588;font-weight: bold">.id</span>)<span style="color: #bbbbbb"> </span><span style="background-color: #f8f8f8">=</span> <span style="background-color: #f8f8f8">book</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">title</span>
+</code></pre></div>
+<p>Given the context is exposed to view <a href="https://dry-rb.org/gems/dry-view/0.7/parts/">parts</a> and <a href="https://dry-rb.org/gems/dry-view/0.7/scopes/">scopes</a>, you can access <code>routes</code> there as well.</p>
+
+      <h2 id="rss-support-in-our-default-mime-type-list" class="title"><a name="rss-support-in-our-default-mime-type-list" class="anchor" href="#rss-support-in-our-default-mime-type-list">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>RSS support in our default MIME type list</h2>
+    
+<p>You can now configure your Hanami actions to work with RSS formatted requests and responses via the new <code>rss</code> entry in our default MIME types list.</p>
+
+      <h2 id="what-s-included-" class="title"><a name="what-s-included-" class="anchor" href="#what-s-included-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s included?</h2>
+    
+<p>Today we’re releasing the following gems:</p>
+
+<ul>
+<li><code>hanami v2.0.0.alpha5</code></li>
+<li><code>hanami-controller v2.0.0.alpha5</code></li>
+<li><code>hanami-view v2.0.0.alpha5</code></li>
+</ul>
+
+      <h2 id="contributors" class="title"><a name="contributors" class="anchor" href="#contributors">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Contributors</h2>
+    
+<p>Thank you to these fine people for contributing to this release!</p>
+
+<ul>
+<li><a href="https://github.com/jodosha">Luca Guidi</a></li>
+<li><a href="https://github.com/waiting-for-dev">Marc Busqué</a></li>
+<li><a href="https://github.com/parndt/">Philip Arndt</a></li>
+<li><a href="https://github.com/timriley">Tim Riley</a></li>
+</ul>
+
+      <h2 id="how-can-i-try-it-" class="title"><a name="how-can-i-try-it-" class="anchor" href="#how-can-i-try-it-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>How can I try it?</h2>
+    
+<p>You can check out our <a href="https://github.com/hanami/hanami-2-application-template">Hanami 2 application template</a>, which is up to date for this release and ready for you to try as the starting point for your own app.</p>
+
+      <h2 id="what-s-coming-next-" class="title"><a name="what-s-coming-next-" class="anchor" href="#what-s-coming-next-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s coming next?</h2>
+    
+<p>We’ll be back in February for alpha6, bringing our next month of development direct to you.</p>
+]]></content>
+     </entry>
+     <entry>
+       <title>Announcing Hanami v2.0.0.alpha4</title>
+       <id>http://hanamirb.org/blog/2021/12/07/announcing-hanami-200alpha4/</id>
+       <link rel="alternate" href="http://hanamirb.org/blog/2021/12/07/announcing-hanami-200alpha4/">
+       <updated>2021-12-07T13:15:19+00:00</updated>
+       <author>
+         <name>Luca Guidi</name>
+       </author>
+       <summary>
+         New API for Content Security Policy, Router helpers from actions, CLI enhancements.
+       </summary>
+       <content type="html"><![CDATA[<p>Hello Hanami community! We&#39;re thrilled to announce the release of Hanami 2.0.0.alpha4!</p>
+
+<p>With this new cycle of monthly based releases we have smaller set of changes, but delivered more frequently.</p>
+
+<p>Specifically, we&#39;re focusing on the cleanup of our application template.
+The template is essential for <strong>you</strong> to try Hanami 2, but also for <strong>us</strong> to shape the ergonomics of the framework.</p>
+
+<ul>
+<li>Content Security Policy (new API)</li>
+<li>Router helpers to be accessible from actions</li>
+<li>CLI enhancements</li>
+</ul>
+
+      <h2 id="content-security-policy" class="title"><a name="content-security-policy" class="anchor" href="#content-security-policy">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Content Security Policy</h2>
+    
+<p>We proudly share this story: Hanami was <strong>the first Ruby framework</strong> to ship with <a href="https://en.wikipedia.org/wiki/Content_Security_Policy">Content Security Policy (CSP)</a> support.</p>
+
+<p>In Hanami 1 the public API to handle CSP was less than optimal.
+You had to deal with a string blob, with all the complexity of CSP keys and their values.
+That was error prone and – frankly – ugly to see.</p>
+
+<p>Let&#39;s start from the last concern: <strong>you won&#39;t see CSP setting in newly generated Hanami 2 applications</strong>.
+Hanami 2 now has a default CSP shipped with the framework, instead of generating it during application creation.
+First problem solved. 😎</p>
+
+<p>If you need to change a value, or turn off the feature, the <a href="https://github.com/hanami/controller/pull/353">API is simplified</a>.</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="color: #999988;font-style: italic"># This line will generate the following CSP fragment</span>
+    <span style="color: #999988;font-style: italic"># script-src 'self' https://my.cdn.test;</span>
+
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">actions</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">content_security_policy</span><span style="background-color: #f8f8f8">[</span><span style="color: #990073">:script_src</span><span style="background-color: #f8f8f8">]</span> <span style="color: #000000;font-weight: bold">+=</span> <span style="color: #d14">" https://my.cdn.test"</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div><div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">MyApp</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Application</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span>
+    <span style="background-color: #f8f8f8">config</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">actions</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">content_security_policy</span> <span style="color: #000000;font-weight: bold">=</span> <span style="color: #000000;font-weight: bold">false</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+<p>Second problem solved. ✌️</p>
+
+      <h2 id="router-helpers" class="title"><a name="router-helpers" class="anchor" href="#router-helpers">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>Router Helpers</h2>
+    
+<p>Router helpers are now accessible from actions as <code>routes</code>.
+It exposes two methods: <code>url</code> for absolute URLs and <code>path</code> for relative ones.</p>
+
+<p>It accepts a <code>Symbol</code> that corresponds to the named route (e.g. <code>:book</code>) and a set of arbitrary arguments to interpolate the route variables (e.g. <code>:id</code>).</p>
+<div class="highlight"><pre class="highlight ruby"><code><span style="color: #999988;font-style: italic"># frozen_string_literal: true</span>
+
+<span style="color: #0086B3">require</span> <span style="color: #d14">"hanami/application/routes"</span>
+
+<span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">AppPrototype</span>
+  <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Routes</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Hanami</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Application</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Routes</span>
+    <span style="background-color: #f8f8f8">define</span> <span style="color: #000000;font-weight: bold">do</span>
+      <span style="background-color: #f8f8f8">slice</span> <span style="color: #990073">:admin</span><span style="background-color: #f8f8f8">,</span> <span style="color: #990073">at: </span><span style="color: #d14">"/admin"</span> <span style="color: #000000;font-weight: bold">do</span>
+        <span style="background-color: #f8f8f8">get</span> <span style="color: #d14">"/book/:id"</span> <span style="color: #990073">to: </span><span style="color: #d14">"book.show"</span><span style="background-color: #f8f8f8">,</span> <span style="color: #990073">as: :book</span>
+      <span style="color: #000000;font-weight: bold">end</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div><div class="highlight"><pre class="highlight ruby"><code><span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Admin</span>
+  <span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Actions</span>
+    <span style="color: #000000;font-weight: bold">module</span> <span style="color: #555555">Books</span>
+      <span style="color: #000000;font-weight: bold">class</span> <span style="color: #445588;font-weight: bold">Update</span> <span style="color: #000000;font-weight: bold">&lt;</span> <span style="color: #008080">Admin</span><span style="color: #000000;font-weight: bold">::</span><span style="color: #008080">Action</span>
+        <span style="color: #000000;font-weight: bold">def</span> <span style="color: #990000;font-weight: bold">handle</span><span style="background-color: #f8f8f8">(</span><span style="color: #000000;font-weight: bold">*</span><span style="background-color: #f8f8f8">,</span> <span style="background-color: #f8f8f8">res</span><span style="background-color: #f8f8f8">)</span>
+          <span style="color: #999988;font-style: italic"># update the book</span>
+
+          <span style="background-color: #f8f8f8">res</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">redirect_to</span> <span style="background-color: #f8f8f8">routes</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">url</span><span style="background-color: #f8f8f8">(</span><span style="color: #990073">:book</span><span style="background-color: #f8f8f8">,</span> <span style="color: #990073">id: </span><span style="background-color: #f8f8f8">book</span><span style="background-color: #f8f8f8">.</span><span style="color: #990000;font-weight: bold">id</span><span style="background-color: #f8f8f8">)</span>
+        <span style="color: #000000;font-weight: bold">end</span>
+      <span style="color: #000000;font-weight: bold">end</span>
+    <span style="color: #000000;font-weight: bold">end</span>
+  <span style="color: #000000;font-weight: bold">end</span>
+<span style="color: #000000;font-weight: bold">end</span>
+</code></pre></div>
+      <h2 id="cli-enhancements" class="title"><a name="cli-enhancements" class="anchor" href="#cli-enhancements">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>CLI enhancements</h2>
+    
+<p>Minor enhancements for the command line:</p>
+
+<ul>
+<li>Display a custom prompt when using IRB based console (consistent with PRY based console)</li>
+<li>Support <code>postgresql://</code> URL schemes (in addition to existing <code>postgres://</code> support) for <code>db</code> subcommands</li>
+<li>Ensure slice helper methods work in console (e.g. top-level <code>main</code> method will return <code>Main::Slice</code> if an app has a &quot;main&quot; slice defined)</li>
+</ul>
+
+      <h2 id="what-s-included-" class="title"><a name="what-s-included-" class="anchor" href="#what-s-included-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s included?</h2>
+    
+<p>Today we’re releasing the following gems:</p>
+
+<ul>
+<li><code>hanami</code> v2.0.0.alpha4</li>
+<li><code>hanami-controller</code> v2.0.0.alpha4</li>
+<li><code>hanami-cli</code> v2.0.0.alpha4</li>
+</ul>
+
+      <h2 id="how-can-i-try-it-" class="title"><a name="how-can-i-try-it-" class="anchor" href="#how-can-i-try-it-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>How can I try it?</h2>
+    
+<p>You can check out our <a href="https://github.com/hanami/hanami-2-application-template">Hanami 2 application template</a>, which is up to date for this latest release and ready for you to use out as the starting point for your own app.</p>
+
+<p>We’d really love for you to give the tires a good kick for this release in this particular: the more real-world testing we can have of our code loading changes, the better!</p>
+
+      <h2 id="what-s-coming-next-" class="title"><a name="what-s-coming-next-" class="anchor" href="#what-s-coming-next-">      <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      <path d="M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z"></path>
+      </svg>
+</a>What’s coming next?</h2>
+    
+<p>Thank you as ever for your support of Hanami! We can’t wait to hear from you about this release, and we’re looking forward to checking in with you again next month. 🙇🏻‍♂️🌸</p>
+]]></content>
+     </entry>
+</feed>

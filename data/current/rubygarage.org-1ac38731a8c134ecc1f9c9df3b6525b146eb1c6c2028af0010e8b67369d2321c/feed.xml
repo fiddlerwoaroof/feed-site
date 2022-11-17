@@ -1,0 +1,1548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>RubyGarage Blog</title>
+    <description>Articles</description>
+    <link>https://rubygarage.org/blog.rss</link>
+    <item>
+      <title>A Brief Guide to Moving from PHP to Ruby</title>
+      <description>
+PHP has long been among the top programming languages in popularity rankings. It has lots of advantages, from a low barrier to entry to a huge and well-developed ecosystem. For this reason, lots of newcomers to the world of programming opt for PHP, and you may be one of them.
+Yet if you’re reading this article, you’re likely considering switching to a different software development technology and Ruby is on your shortlist. Just like PHP, Ruby is a high-level object-oriented programming language that allows developers to implement web applications of any complexity. But is the shift from PHP to Ruby worth it? Definitely yes. Ruby stands out from other programming languages due to its unique philosophy. Unlike other technologies, it’s created to help developers feel happy about their work.
+If you aren’t familiar with Ruby and its developer happiness first philosophy seems far-fetched, this article is for you. We consider the main advantages of this programming language and provide a road map to help PHP developers quickly learn Ruby and related software development technologies.
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2384/popular_programming_languages_from_php_to_ruby_1x.png
+
+Key strengths of Ruby
+As a PHP developer, you know well the advantages and disadvantages of PHP, so there’s no point mentioning them in this article. Besides, what may seem like a significant drawback to you may actually be a plus in the eyes of another programmer. So let’s move to Ruby right away.
+Experienced Ruby developers can praise their favorite language for ages. To cut a long story short, we’re going to draw your attention to the aces Ruby has up its sleeve. Let’s delve in!
+#1 Developer happiness first
+When Yukihiro “Matz” Matsumoto was designing Ruby, he set a goal to make software developers happy. In Matz’s opinion, a person is happy if they can do their job quickly and while having some fun. So he decided to create a programming language that would be both comfortable and intuitive for developers while allowing them to be productive:
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2386/matz_quote_from_php_to_ruby.png
+
+Ruby features an elegant syntax that highly resembles natural human speech. This makes it much easier for developers (and even for non-technical people) to understand code in Ruby compared to code in less intuitive programming languages. To prove this point, take a look at these examples:
+
+This short code snippet prints Hello, world! five times, and even a person with no programming background is likely to understand what it does. Now check out code that does the same thing in PHP:
+
+Compare the two examples above. The majority of developers (regardless of the programming language they work with) will agree that the Ruby syntax is more readable and intuitive.
+Simple and concise code is not only easier to write but also to check, meaning developers can be more productive. The syntax significantly speeds up development and maintenance of applications written with Ruby.
+Another awesome aspect of the Ruby programming language is its pure object-oriented nature: everything is an object in Ruby. All data structures are objects and, therefore, you can manipulate them accordingly. To show you how this works, imagine you need to count the number of characters in a phrase. Here’s how to do it in PHP:
+
+Now the same code in Ruby:
+
+Take a look at these examples and perhaps you’ll agree that the Ruby code is easier to understand.
+#2 Ruby’s synergy
+Now let’s focus on frameworks.
+There are a bunch of PHP frameworks that follow the Model–View–Controller (MVC) architectural pattern. Here are the most popular:
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2387/major_php_mvc_frameworks_1x.png
+
+A variety of frameworks seems to be an advantage for a programming language, but let’s look at the issue from a different angle. All MVC frameworks for PHP listed above serve the same purpose − they help create modern web and mobile applications. The PHP community thus needs to support a variety of frameworks that are quite similar in terms of the tasks they solve.
+The situation is different in Ruby − instead of scattering efforts on supporting several identical tools, the community focuses on supporting frameworks that solve different problems. For example, when the community decided to merge Merb and Ruby on Rails, the two MVC frameworks served the same purpose. As a result of this merger, the Ruby on Rails 3 framework was created and the community focused solely on it.
+In fact, whenever you hear the word “Ruby,” it’s the Ruby on Rails framework that probably comes to mind. Yet there are other Ruby frameworks that serve different purposes:
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2389/ruby_frameworks_1x.png
+
+Ruby on Rails for startups
+Created in 2005 by David Heinemeier Hansson (known as DHH in the community), Ruby on Rails has become a cornerstone of the whole Ruby ecosystem. It’s the dominant Ruby framework, and knowing it is a must for any Ruby developer.
+Ruby on Rails is a great tool for technology startups as it enables programmers to speed up development. Ruby on Rails provides a lot of solutions to common problems developers face when implementing a web application. Instead of writing excess code, Ruby programmers can focus on proper implementation of an application’s business logic.
+Ruby on Rails relies on a large number of skilled developers that support it and keep it up to date. There are over 3,600 Ruby on Rails contributors on GitHub, which is more than twice as many as the PHP Symfony framework has. The numbers speak for themselves!
+Sinatra for implementing a service-oriented architecture (SOA)
+Sinatra (together with its offspring Padrino) is a framework and a domain-specific language in Ruby for building web services. While Rails is tailored for developing monolithic applications, Sinatra allows programmers to create web servers and build SOA applications.
+When a monolithic application built with Ruby on Rails becomes too big, it becomes reasonable to scale it by splitting the application into several web services. Ruby developers can easily do this with the help of Sinatra.
+Hanami for building enterprise applications
+Hanami (formerly known as Lotus) is a fully featured architecturally sound Ruby framework that follows the Clean Architecture approach. Thanks to this approach, developers can easily scale a Ruby application built with Hanami regardless of its functional complexity and the number of developers on the project.
+The modular structure of Hanami allows Ruby developers to add new functional modules to applications quickly and safely. This makes Hanami an excellent choice for building enterprise applications in which stable performance and high development speed are crucial.
+#3 Ruby gems
+For many developers, the best component of the Ruby ecosystem is the gems or, in other words, open-source libraries that allow developers to easily expand the functionality of any application written in Ruby. Programmers don’t need to write code from scratch; instead, they can simply select a relevant gem and use it. Gems make programmers’ work easier and significantly speed up development.
+Now you might be asking, So what? There are scores of similar libraries in PHP and other programming languages. What makes Ruby special? It’s all about flexibility. For example, lots of PHP libraries are compatible only with a specific framework, which considerably restricts their usability. In Ruby, gems are compatible with any framework, be it Ruby on Rails, Sinatra, or Hanami. 
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2391/most_popular_ruby_gems_1x.png
+
+At an early stage of development of the Ruby ecosystem, developers understood the necessity to ensure the compatibility of gems. To make sure gems were compatible, the community created RubyGems − a package manager for the Ruby programming language that’s included in the standard Ruby on Rails package.
+RubyGems provides a standard format for managing and distributing open-source libraries written in Ruby. It allows developers to install gems with relevant dependencies. The tool integrates with the Ruby runtime loader and automatically installs required gems. Moreover, RubyGems manages dependencies and downloads the version of a gem that’s compatible with a specific Ruby application.
+RubyGems works as a command-line tool called gem. To install a gem, a Ruby developer simply types its name after gem install in the command line:
+
+So far, the Ruby community has developed almost 150,000 gems. There are gems for anything: authentication, payments, content management systems, you name it. Think what functionality you need to implement and there’s certainly a gem that will help you.
+Take a look at a brief list of functionalities that you can easily implement with the help of Ruby gems:
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2393/ruby_gems_from_php_to_ruby_1x.png
+
+#4 Focus on code quality
+The Ruby community puts a strong emphasis on code quality. You could even claim that Ruby developers are obsessed with delivering high-quality code. In our opinion, the very philosophy of developer happiness means that developers should be able to do their job well and, naturally, write good code.
+Before moving on, it’s important to get a clear understanding of what code quality means.
+
+
+Reliability − The software needs to be reliable and predictable to be capable of solving the problems of end users.
+
+Readability − Quality code is easy to read and easy for other programmers to understand.
+
+Maintainability − A good codebase is easy to maintain and update.
+
+High code quality is not only a prerequisite for building fully functional applications; it also facilitates their maintenance and reduces technical debt. In Ruby, writing quality code doesn’t take a rocket scientist and doesn’t require years of experience. There are plenty of tools in the Ruby ecosystem that help programmers ensure code quality.
+Here are the most important tools for:
+General code analysis
+Ruby developers use multiple software development practices that help them write A-level code. For example, programmers remove business logic and finders out of the MVC framework. Yet making sure such practices are followed can be difficult. To mitigate this issue, the Ruby community uses a variety of code metric tools, such as rails_best_practices.
+Detecting code smells
+Code smells (such as bloaters or couplers) are indicators of deep-rooted problems in a codebase that can result in serious problems. Developers need to detect and remove them before the codebase is deployed to production. Ruby programmers can easily do this with the help of such gems as Reek.
+Test automation
+Sometimes developers may neglect to write automated tests, but it’s an integral part of the software development process in the Ruby community. There’s no need to emphasize the importance of automated tests for code quality, and the Ruby ecosystem boasts a rich tool set for test automation:
+
+
+Testing frameworks, such as RSpec and Cucumber, allow Ruby developers to write automated tests, while Capybara lets them create acceptance tests.
+
+Test data generators, such as faker and factory-bot, enable Ruby developers to easily create test data to run automated tests against.
+
+Test coverage
+Test coverage is the major metric for assessing the code quality of software applications. In the Ruby ecosystem, there are lots of tools (like SimpleCov) that help you find out the test coverage in your application and add more automated tests if needed.
+Static code analysis
+In order to write code that’s easy to read and easy for other developers to understand, programmers should follow certain rules, formats, and styles. All of them are included in the Ruby style guide, and to help developers write better code, the community has created multiple gems for static code analysis (such as RuboCop).
+Apart from checking that code follows the guidelines, Ruby developers can easily check a codebase for structural similarities with the help of Flay.
+Code debugging
+No matter how proficient and experienced you are, bugs are inevitable. So it’s essential to be able to track them down and fix them. The Ruby ecosystem has lots of debugging tools (such as Pry) as well as utilities that display detailed error pages (such as Better Errors) and, consequently, facilitate bug fixing.
+#5 Focus on application security
+Application security is the priority for software developers. A vulnerable application is likely to fall victim to hacking or theft of sensitive information, which means reputational and financial losses for business owners.
+The Ruby community has developed plenty of tools to detect and root out application vulnerabilities. Such tools as Brakeman help developers scan their applications for vulnerabilities, while the bundler-audit library allows them to detect vulnerable versions of gems.
+When it comes to security, it’s better safe than sorry. There are also third-party security assessment services such as CodeClimate that Ruby developers can use.
+#6 Mature community
+Two eyes see better than one.
+You can be an exceptionally gifted developer, but it’s much better to rely on a proficient and skilled community. Let’s find out how different the PHP and Ruby communities are.
+As mentioned above, PHP is one of the most popular programming languages in the world, so it’s no wonder there’s a large community of PHP developers. Yet the relatively low barrier to entry of PHP means there are lots of novices in the community, so the size doesn’t match the quality: there are many immature coders.
+In Ruby, the situation is different. The community is smaller in size but comprises mostly professionals who know Ruby up and down. Keep in mind that Ruby is typically the second programming language for developers. It’s no wonder the community is extremely active and productive. According to the The State of the Octoverse 2017 report by GitHub, Ruby outpaces PHP in terms of pull requests per year (870,000 versus 559,000, respectively).
+There’s another positive aspect about a higher level of experience in the Ruby community − salaries. Needless to say, professionalism should be paid accordingly, and the average Ruby developer is paid more than the average PHP developer:
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2396/ruby_and_php_developer_salaries_US_1x.png
+
+That’s exactly what David Heinemeier Hansson (the creator or the Ruby on Rails framework) meant in this tweet:
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2395/dhh_quote_from_php_to_ruby.png
+
+#7 Powerful metaprogramming capabilities
+Metaprogramming is a technique of writing code-generating computer programs. In other words, metaprogramming allows developers to create code that can on its own read, generate, analyze, and transform other code or even itself during runtime.
+This programming technique helps developers write testable, reusable, and flexible code that corresponds to the DRY (don’t repeat yourself) design principle. Also, metaprogramming substantially speeds up development, allowing Ruby developers to spend several minutes accomplishing tasks that usually take hours if implemented in other programming languages.
+A roadmap to moving from PHP to Ruby
+Already eager to transition from PHP to Ruby? If your answer is yes, you might be asking how to do it. There are scores of video tutorials, courses, books, and forums about Ruby, but choosing the most efficient can be a problem. We decided to help out by drawing up a shortlist of the best resources that will help you become a high-level Ruby programmer.
+Step #1 Learn the basics of Ruby
+When learning any new subject you should start from the basics. So if you’re interested in studying (and, hopefully, mastering) Ruby, you should start from the very beginning. There are plenty of guides and books about coding in Ruby, and here are some of the most popular:
+
+
+Learn Ruby the Hard Way, a step-by-step guide to learning Ruby that’s comprised of 52 practical exercises. This book provides you with the necessary skills and tools so that you can move to more complex programming topics.
+
+Ruby Essentials, a free brief guide to the basics of Ruby.
+
+Why’s (Poignant) Guide to Ruby, an offbeat approach to learning Ruby based on stories and comics.
+
+If you’re already familiar with the basics of Ruby but still have questions, make sure to check the official Ruby FAQ.
+This document has been edited with the instant web content converting tool which can be found at htmleditor.tools - give it a try.
+Step #2 Study Ruby frameworks
+After learning the basics of Ruby, you can move to frameworks. To create top-notch applications in Ruby, you need to know:
+Web application frameworks
+First of all, you need to master web application frameworks in Ruby. Most developers study only Ruby on Rails, but if you want to become an expert, you should also be able to use other web application frameworks:
+Ruby on Rails
+
+
+Getting Started with Rails − an official guide to Ruby on Rails that contains clear and detailed instructions on how to get a new Rails application up and running
+
+Ruby on Rails Tutorial (Rails 5) − an in-depth tutorial on Ruby on Rails
+
+Agile Web Development with Rails 5.1 − an end-to-end guide to Rails development
+
+Rails for PHP Developers − a book written specifically for PHP developers that want to switch to Ruby on Rails development
+
+Sinatra
+
+
+Sinatra: Getting Started − the official guide to the Sinatra framework
+
+Sinatra: Up and Running − a book on web development with Sinatra
+
+Hanami
+
+
+Hanami: Getting Started − a comprehensive guide to the Hanami framework
+
+Testing frameworks
+Writing quality code involves a lot of testing, so if you decide to transition from PHP to Ruby, you need to learn testing frameworks, meaning RSpec and Cucumber:
+
+
+The RSpec Book: Behaviour Driven Development with RSpec, Cucumber, and Friends − a detailed guide to BDD with RSpec, Cucumber, and other frameworks
+Everyday Rails Testing with RSpec − a manual on test-driven development using RSpec
+
+Effective Testing with RSpec 3 − a comprehensive guide to RSpec 
+
+Business logic framework
+Writing functional and bug-free code is crucial, but it’s equally important to structure it properly. Trailblazer, a powerful business logic framework, helps programmers efficiently structure the business logic in Ruby applications. Apart from Ruby on Rails, Trailblazer can be used with other web application frameworks (Sinatra and Hanami).
+Trailblazer is growing popular in the Ruby community, so if you want to become a skilled developer, you should know how to apply this business logic framework. Here are some handy resources you can opt for:
+
+
+Trailblazer in 12 minutes − a brief introduction to Trailblazer
+
+Trailblazer − a book that provides a detailed explanation of how Trailblazer works
+
+Step #3 Enhance your skills in Ruby development
+As you gain experience in Ruby development, you should enhance your coding skills to build more maintainable, scalable, and reliable applications. Here are some useful books that will provide you with the necessary knowledge:
+
+
+Practical Object-Oriented Design in Ruby: An Agile Primer − a complete guide to writing better and more maintainable applications in Ruby
+
+Ruby Performance Optimization: Why Ruby is Slow, and How to Fix It − this book teaches you to write better and more high-performance code
+
+Metaprogramming Ruby 2: Program Like the Ruby Pros − a comprehensive guide to the use of metaprogramming in Ruby
+
+Step #4 Interact with the Ruby community
+Finally, don’t forget that a large and skilled community is one of Ruby’s most notable advantages. You can always interact with the community to get help or to learn new things about Ruby and its ecosystem.
+Here’s a brief list of resources that will help you interact with the community:
+Platforms
+
+
+Stackoverflow − a popular website where you can ask questions and get answers from Ruby developers
+
+GitHub − the world’s leading software development platform where you can not only download gems but also interact with fellow Ruby programmers
+
+Reddit − one more popular platform where you can keep track of the latest news in the world of Ruby
+
+Screencasts
+
+
+Go Rails − informative paid screencasts about Ruby on Rails 
+
+Ruby Tapas − short screencasts that help you pump up your Ruby development skills
+
+Drifting Ruby − paid tutorials about Ruby development
+
+Podcasts
+
+
+The Bike Shed − listen to opinions and recommendations from renowned Ruby developers
+
+Ruby Rogues − interesting discussions about Ruby, Rails, JavaScript, and related software development technologies
+
+The Ruby Testing Podcast − learn more about testing in Ruby
+
+Final thoughts
+Now you realize what’s so special about Ruby: it’s a language created to make developers happy. Moving from PHP to Ruby can be a great solution if you want to be productive and participate in interesting and challenging projects. If that’s what you want, then Ruby is the perfect choice.
+If you want to stay updated on the latest news about Ruby, subscribe to our blog.
+</description>
+      <pubDate>Wed, 20 Feb 2019 13:11:03 +0200</pubDate>
+      <link>https://rubygarage.org/blog/from-php-to-ruby</link>
+      <guid>https://rubygarage.org/blog/from-php-to-ruby</guid>
+    </item>
+    <item>
+      <title>A Complete Guide to the Ruby Programming World</title>
+      <description>I hope to see Ruby help every programmer in the world to be productive, and to enjoy programming, and to be happy. That is the primary purpose of Ruby language.Yukihiro “Matz” Matsumoto, the creator of Ruby
+The first stable version of Ruby was released more than 20 years ago in 1996. This makes Ruby a pretty mature programming language, and it remains one of the most popular and widely used languages in the world. The reason is simple: Ruby satisfies the needs of people, not of machines.
+
+In a 2018 HackerRank study, nearly 40,000 developers were asked about the programming languages they prefer to use in their work and which languages they’re going to study in future. According to this study, Ruby ranks fifth among the most popular programming languages for developers.
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1901/Artboard_15510-08.png
+The relevance of the Ruby language is also confirmed by the results of other studies:
+
+Ruby is one of the 15 most popular programming languages according to the RedMonk rating and the TIOBE index.
+Ruby is in 13th position on the Stack Overflow developer community.
+
+GitHub states that Ruby was one of the top five languages according to the number of pull requests in 2017.
+ https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1903/Artboard_155_copy10-08.png
+In this article, we introduce you to the Ruby world and go over the major reasons why Ruby is so great for both developers and product owners.
+Key principles of Ruby culture
+#1 Created for developers
+First of all, let’s talk about the advantages of Ruby for software developers.
+Ruby supports metaprogramming
+Metaprogramming is a technique that allows developers to write code in Ruby that writes other code. Applied with various tricks and tools such as ghost methods, introspection, and class macros, metaprogramming not only gives developers flexibility but also helps them save time and write less code (though testing this code may eventually be more difficult).
+Ruby is fast to write
+Although Ruby may not be the fastest language in terms of running and processing requests, statistics show that the speed of writing code and, therefore, of developing software products with Ruby is 30 to 40 percent faster than with other programming languages. Our team can confirm these numbers based on our own ample experience.
+Everything is an object
+When you create an object from a class, it can get its own class known as a singleton. For this reason, each object in Ruby can indeed be unique and have its own methods and properties. Other programming languages often have unnecessary and annoying constraints in this respect.
+#2 Focused on code quality
+Code quality is crucial for any application − nobody wants to use laggy software riddled with bugs. Ruby allows developers to ensure the highest code quality standards. What makes Ruby so special? It’s all about syntax. Ruby code is intuitive, so it takes less effort to write, read, and maintain.
+Code quality largely depends on compliance with common standards and best practices. In the Ruby ecosystem, the norms and standards of code structure are approved by a global community of developers and fixed in the Ruby style guide.
+Also, the Ruby ecosystem is perfectly tooled for testing, which is an integral part of producing clean code. The Ruby community has created plenty of testing and test automation frameworks and tools that allow developers to easily write tests and run them against their code bases to ensure impeccable quality. Here are some of the testing tools we use at RubyGarage:  
+Minitest − Ruby’s standard library that provides a complete suite of testing tools 
+RSpec − a behavior-driven development framework for validating the development of applications 
+Capybara − simulates a browser and users’ interactions with an application  Ruby’s focus on quality brings a lot of benefits for both businesses and developers. Let’s name some of them. 
+
+
+Maintainability. Ruby’s intuitiveness makes it easy for developers to understand how an application works so they can quickly pick up an existing project.
+
+Simple debugging. Since Ruby code is easy to understand, developers can track down and fix bugs and errors quickly.
+
+Great application performance. The clean code ensures a smooth and trouble-free performance, delivering a pleasant customer experience.
+
+#3 Maintained by the community
+People tend to unite around great things, so no wonder Ruby has a huge, active, and motivated community.
+In fact, the community is a centerpiece of Ruby’s success and popularity: not only does it lend a helping hand to new developers through numerous courses, books, and discussion platforms, it also maintains Ruby and moves it forward by constantly creating new frameworks, tools, and libraries for the benefit of developers and, ultimately, end users.
+The best example is Ruby on Rails, the most popular framework for Ruby that has helped scores of projects get off the ground and achieve success. Ruby on Rails relies on conventions aimed at writing less code and avoiding repetition. Moreover, this framework is an open source (read: free), which means using it costs nothing at all.
+The Ruby community has crafted lots of open source tools  that help developers easily create fully functional, secure, and cost-effective applications from scratch. Do you need to build an online store? Easy as pie: Ruby on Rails offers open source ecommerce platforms. How about a CMS for managing content on your website? No problem: there are lots of open source content management systems for Ruby on Rails. Think of a function you need to implement in a web application, and the Ruby community is likely to provide a tool to help you. This is an awesome advantage of Ruby as a programming language and Rails as a framework.
+Also, it’s impossible to speak about the Ruby language without mentioning gems − libraries that handle a variety of typical development tasks. For example, gems help Ruby programmers implement authentication, detect vulnerabilities, root out bugs, manage payments, and do many other things. The Ruby community has developed over 140,000 gems that facilitate programming and help developers create amazing applications with Ruby.
+If you want to know how our team benefits from open source libraries, take a look at this list of the most popular gems we use at RubyGarage.
+Ruby devotees, also known as Rubyists, keep contributing to the Ruby ecosystem around the clock, updating old tools and gems and releasing new ones. The community does a terrific job keeping Ruby fit for building applications of different complexities and for various business purposes.
+#4 Vibrant culture
+Ruby’s active community has created a unique, vibrant culture around this programming language − a culture of fun that results in delivering quality software products; a culture that motivates developers to share their experiences with each other and keep learning new things all the time.
+Rubyists strongly believe that success lies in cooperation and joint effort, so they organize and participate in conferences, events, meetups, and webinars. Here are just some of the annual international Ruby conferences:  
+RailsConf − the world’s largest gathering of Ruby on Rails developers, enthusiasts, and businesses 
+RubyKaigi − a major conference that takes places in Japan, Ruby’s native land RubyC − a European conference devoted to the Ruby programming language, the Rails framework, and related technologies 
+RubyConf − a conference that brings together the leading minds and enthusiasts in the world of Ruby 
+The Ruby culture is inclusive, always welcoming new people who want to become part of the community. No matter your location or gender, you’ll find a place in the world of Ruby. Rails Girls, for example, promotes the values of Ruby among women and incentivizes them to learn this technology to build awesome projects.
+For Ruby developers and enthusiasts like us, Ruby isn’t just a tool; it’s a lifestyle. No wonder Rubyists are so devoted to their language. Despite all the rumors about the so-called “death” of Ruby, it was, is, and (hopefully) will remain one of the top programming languages in the world.
+Ruby on Rails
+Ruby on Rails is sometimes unfairly called an outdated and slow framework. RubyGarage doesn’t agree with this opinion. Recent versions of Rails, including version 5, support a modern frontend and offer reliable tools that are convenient and pleasant to work with.
+Products and platforms built with Rails
+According to Built With, there are more than one million web platforms built with Ruby on Rails. Probably you’ve heard of at least one of them:
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1905/Artboard_16510-08.png
+Let's look at what famous platforms think about using Ruby on Rails in their projects.
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1909/Artboard_16610-08.png
+What types of businesses can benefit from Ruby on Rails?
+Most of the companies and platforms listed above began their path to success as startups and today are huge businesses. Ruby on Rails is a fairly startup-friendly framework due to its flexibility, development speed, scalability, and code quality. So a combination of the Ruby programming language and the Ruby on Rails framework is an optimal choice for startups.
+But over the course of time, the Rails community has proven that Rails is an enterprise-friendly framework as well. In fact, Ruby on Rails copes with lots of enterprise demands.
+
+
+Reliability. At least during the last decade, Rails has proven its reliability and demonstrated opportunities for consistently scaling any product. Therefore, it’s fair to consider this framework a solid basis for successful platforms of any size, from startups and growing companies to large enterprises.
+
+Performance. The level of Ruby on Rails performance (accounting for speed, efficiency, and software resources required) is high enough for enterprise use. In fact, this is nothing new, as the Rails framework has demonstrated rather high performance since Ruby 1.9 and Rails 3 were released, and Rails continues to show even higher success rates.
+
+Integrations. Thanks to the Rails community and the activities of IT leaders (including Apple and Microsoft), integrating enterprise software with Ruby on Rails is much faster and more efficient today than it was five to seven years ago. In addition, Ruby can integrate and coexist effectively with Java, .NET, and other platforms.
+
+Digital transformation. Ruby is a perfect solution to current issues of enterprise digitalization. It offers ready-made solutions for any large business needs, from automating operational processes to improving custom order processing, establishing employee management processes, handling financial resources, and managing all types of data that companies collect and process.
+
+A further benefit of this technology is the companies that specialize in it. Unlike classic outsourcing companies, most Ruby on Rails outsourcing companies have a boutique culture. They focus on solving specific customer tasks and working with a product as if it were their own. The culture of Ruby on Rails companies, from design to technical consulting, is based on a service-oriented approach.
+How to learn Ruby on Rails
+Ruby on Rails is a full-stack framework that covers both frontend and backend development. As frontend development has a lower barrier to entry, it’s preferable to start learning frontend basics such as HTML, CSS, and JavaScript. After that, you can start learning the backend, where the Ruby language is essential (and the easiest part to start with). After getting to know Ruby, you can continue with Rails.
+Check out our comprehensive guide to learning Ruby on Rails where you can find a roadmap for boosting your skills from complete beginner to senior developer. 
+Ruby restrictions
+Ruby has a lot of benefits for solving the most complex issues, but it’s not perfect. Here are some slight drawbacks you may face with Ruby:
+
+
+Performance. Despite the high speed of development, Ruby doesn’t always demonstrate the highest performance. On the one hand, Ruby runs many operations for the developer’s convenience, including managing memory for dynamic typing. On the other hand, the volume of such operations affects performance. This isn’t extremely problematic, but it could be better.
+
+Multithreading. Ruby supports multithreading, but the algorithm isn’t implemented perfectly, which can lead to performance issues. In addition, Ruby’s multithreading algorithm is rather unpredictable: it can switch from one thread to another at any time. This affects the result of data processing and the speed of the entire process. The Ruby community is currently working to resolve this issue.
+
+Rails domination. Another restriction of Ruby concerns its frameworks. Rails is a good solution, but its popularity weakens and slows down the development of other frameworks such as Sinatra and Hanami.
+
+Wrapping up
+In summary, here are some key thoughts:
+
+Ruby takes up the challenge both from direct competitors such as Python and PHP and from new languages like Go and Crystal that are gaining popularity.
+Ruby has some restrictions, such as with performance and multithreading, that need to be solved.
+The Ruby ecosystem offers a lot of tools to implement a full range of functionality, including for mobile development, machine learning, robotics, and artificial intelligence.
+The Rails ecosystem powers more than one million web platforms and remains the best solution for startups.
+Ruby is an extremely beginner-friendly language. There are lots of useful resources for learning and advancing in this language both for newcomers and for experienced developers.
+
+We’ve briefly mentioned why we love Ruby as software developers and how Ruby brings lots of advantages to businesses as well. Ruby has revolutionized the IT industry, allowing companies to get their projects up and running quickly and cost-effectively.
+To stay updated on the most recent trends in software development and to find out what stunning projects Ruby helps to build, subscribe to our newsletter.
+</description>
+      <pubDate>Fri, 18 Dec 2015 15:48:49 +0200</pubDate>
+      <link>https://rubygarage.org/blog/cool-stuff-in-ruby-language</link>
+      <guid>https://rubygarage.org/blog/cool-stuff-in-ruby-language</guid>
+    </item>
+    <item>
+      <title>International Ruby Conferences Spring 2018</title>
+      <description>Spring is the perfect time to regain strength, try a new hobby, and master your development skills. Are you a devoted Ruby fan? We’ve created a list of must-visit conferences this spring, enlightened keynote speakers, and major topics. Read, choose, attend, and get inspiration for your future work.
+
+#1. RubyConf AU
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1188/rubyconf-au-2018.png
+
+When: March 8–9
+Where: Sydney, Australia
+RubyConf AU is returning to Sydney. This time, the conference will take place at the beautiful harbor. You’ll get to meet skilled Ruby professionals: Sandi Metz, the author of Practical Object-Oriented Design in Ruby (POODR) and 99 Bottles of OOP; Lauren Tan, a full stack engineer at Netflix; and Paolo Perrotta, the author of Metaprogramming Ruby. Speakers will touch on a range of topics from Blockchain to Elixir so that even savvy developers will be satisfied.
+Conference organizers promise to impress with a variety of social events including a rooftop pool party, Chinese garden party, sightseeing, and a visit to Sydney’s famous Taronga Zoo where cute koalas live. Eat, drink, watch the sunset, and learn the latest on Ruby.
+You can find tickets here. Unfortunately, the super early bird and early bird tickets are already sold. But you still can buy standard tickets. There’s a group discount for orders of three or more.
+#2. RubyConf Philippines 2018
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1189/rubyconf-philippines-2018.png
+
+When: March 15–17
+Where: Manila, Philippines
+At RubyConf Philippines, Ruby lovers will gather from all over the world at the heart of bayside Manila. This is the only Ruby conference held in the Philippines. The conference’s main goal is to promote Ruby and the strong community behind it. RubyConf Philippines is suited to both highly-skilled Rubyists and newcomers to Ruby and related technologies.
+You’ll hear from Sam Phippen, a senior engineer at DigitalOcean; Daniel Kehoe, the author of Learn Ruby on Rails; Darren Oliver, an award-winning IT Leader;  Harisankar P S,
+the CEO of Red Panthers; and Gautam Rege, the founder of Josh Software and an experienced speaker who has been speaking at conferences for the past eight years. And that’s not the end of the list. More brilliant speakers will be added soon. So register to meet fellow Rubyists.
+#3. Wroc_love.rb
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1202/wroc_love-2018.jpg
+
+When: March 16–18
+Where: Wrocław, Poland
+Are you fluent in Ruby? Then this conference is right for you. Wroc_love.rb is often called “the best Java conference in the Ruby world”. It tends to encourage developers in new ways of writing code. Wroc_love.rb is not just about listening but about communicating, cooperating, and finding smarter solutions together.
+The agenda guarantees fantastic Ruby talks, hot discussions, and advanced ideas on Java and .NET. Speakers aren’t afraid of experimenting with different formats of talks: fights, fishbowls, crowd-moderated discussion panels, and anything else that can inspire. You’re more than welcome to send a quick note of the things you’d like to try out.
+Among special guests this year will be Andrzej Śliwa, also known as the software polyglot ninja; Vladimir Dementyev, a mathematician who programs Ruby and Erlang and the author of AnyCable; and Stefan Wintermeyer, a trainer and consultant for Rails, Phoenix, and WebPerformance and the author of Learn Rails 5.2.
+The organizers of Wroc_love.rb pay great attention to providing a thoughtful, creative, and safe space and take special measures to ensure the safety of all participants with monitoring and security. Come to fulfill your hunger for expertise.
+#4. Bath Ruby Conference
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1185/bathruby-conference-2018.png
+
+When: March 22–23
+Where: Bath, UK
+Bath Ruby Conference left an indelible impression in 2016, hosting 500 developers from across the globe, and now it’s opening its doors one more time. This conference brings together a series of informative talks to nudge hundreds of experienced Ruby developers, enthusiasts, and beginner coders.
+Bath Ruby’s founder, Simon Starr, aims to make people think about and debate technology, inspiration, and culture. He says “the big difference for 2018 is the change from one day to two days,” but notes that “it’s still going to be a single track but we’ll have twice as many talks.”
+Bath Ruby Conference offers a healthy mixture of technical and non-technical talks with a splendid lineup of speakers: Najaf Ali, the owner of Happy Bear Software; Andy Croll, a creator of One Ruby Thing and organizer of Brighton Ruby; Terence Lee, a Ruby core team member at Ruby Hero; and Yukihiro Matsumoto, a creator of the Ruby programming language. And there’ll be more announcements soon.
+Bath Ruby Conference is a great place to share your ideas, find new points of view, and experience the atmosphere of this honey-colored British city. Hurry over and buy your tickets while they’re still available. There’s also a student discount, and 10 percent of all ticket sales will be donated to Bath Cats &amp; Dogs Home.
+#5. Isle of Ruby
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1186/isle-of-ruby-2018.png
+
+When: April 13–15
+Where: Exeter, UK
+The Isle of Ruby community glorifies Ruby as a language of choice and calls its event a festival for technology and Ruby crafts. The conference concerns the social aspects of programming and how the work that programmers do impacts the world around us. The focus this year will be the relationship between programming and the ethical, political, and social aspects of software.
+Isle of Ruby intends to explore this relationship and inspire Rubyists to think, argue, and act. The event will be hosted by professionals from Europe and the UK, including past organizers of eurucamp and EuRuKo. Organizers will also invite people from other programming communities and disciplines to touch on a wide spectrum of ideas and issues.
+The conference isn’t limited to just talks. There will be workshops and moderated discussions too. And don’t forget about great accommodations near Exeter University, with parties and outdoor activities for the whole family.
+The agenda isn’t available yet, so stay updated through the official website and Twitter account.
+#6. RailsConf
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1187/railsconf-2018.png
+
+When: April 17–19
+Where: Pittsburgh, PA
+RailsConf is the biggest and longest-running gathering of Ruby on Rails developers. This year, it will host Ruby enthusiasts for the thirteenth time but in a new location ‒ the vibrant post-industrial Pittsburgh. RailsConf is organized by Ruby Central, a nonprofit organization that aspires to support and advocate the Ruby community.
+This year’s conference promises to be even bigger than before. The program includes sessions and workshops on refactoring, unit tests and functional tests, math for Rails engineers, GraphQL on Rails, and many more topics.
+You’ll meet top talent, companies, and project representatives from around the world: David Heinemeier Hansson, the creator of Ruby on Rails and founder and CTO of Basecamp; Aaron Patterson, Ruby and Rails maintainer at Github; and Eileen Uchitelle, a senior systems engineer on the Platform Systems Team at GitHub and a member of the Rails Core team.
+Whether you’re an amateur or a full-stack pro, visit RailsConf to get insights on the present and future of Rails development from leading voices. You can register here. Tickets will be available starting March 16.
+#7. RubyConfBY
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1201/rubyconf-by.png
+
+When: April 21
+Where: Minsk, Belarus
+RubyConfBy, the third-largest conference on Ruby and related technologies, is coming again to Minsk. RubyConfBy aims to unite Rubyists in a close-knit community to network, collaborate, discuss the technological aspects of Ruby development, and advance Ruby together. 
+Last year’s conference gathered leaders from the USA, Japan, and Eastern and Western Europe, including Bozhidar Batsov, VP of Engineering at Toptal; Aaron Patterson, Ruby and Rails maintainer at Github; and Charles Nutter, a Senior Principal Software Engineer at Red Hat. You can see images from RubyConfBY 2017 on their official Facebook page as well as videos on their YouTube channel.
+Among the first confirmed speakers for this April are Nick Sutterer, a software architect and creator of Trailblazer and the world-renowned Bozhidar Batsov. The call for proposals will be open until March 11. If you want to submit a proposal, make sure to provide as detailed of a presentation as possible.
+This year, conference organizers are trying to deliver an even more enjoyable and fulfilling experience. So hurry up to book tickets at the most attractive price.
+#8. Ruby X Elixir Conf Taiwan
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1193/ruby-x-elixir-conf-2018-taiwan.png
+
+When: April 27–28
+Where: Taipei, Taiwan
+This April, we’ll see the seventh edition of  Ruby X Elixir Conf Taiwan. This conference is co-hosted by the Elixir community and will take place in Taipei, a modern metropolis with contemporary buildings.
+The conference will feature talks by Yukihiro Matsumoto (Matz), the Japanese computer scientist and programmer known as the chief designer of the Ruby programming language; José Valim, a well-known Rubyist and creator of the Elixir language; and Akira Matsuda, a contributor to Ruby and Rails and a chief organizer of RubyKaigi.
+During the two-day session, speakers will give talks on new developments and ideas in the world of Ruby and Elixir programming: integrating Ruby and Elixir apps in production, unplugging the web with Elixir, using Blockchain, methods for using the JIT compiler for MRI, and others. You can find the whole program on the official website.
+April is a great time to visit Taiwan. You can enjoy pre-parties and the official party, relax, and catch up with your comrades. Ruby X Elixir Conf even offers free accommodations for overseas speakers. So come and beef up your knowledge.
+#9.RubyHACK
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1190/rubyhack-2018.png
+
+When: May 3–4
+Where: Salt Lake City, Utah
+If you’ll be near Salt Lake City, don’t miss a chance to visit this coding conference with high attitude. This will be  RubyHack conference’s second year. RubyHACK aims to foster knowledge sharing, innovation, and career advancement within the Ruby community.
+This year’s event will bring together students, hobbyists, and seasoned professionals to network, cooperate, and learn from each other. The conference will have a single-track format with space for HACKing: mentoring, whiteboarding, and meeting with presenters.
+There are a limited number of scholarships available for students who would like to attend the event. To apply for a scholarship, just write a few words about yourself and the reasons why you should receive a scholarship. The cherry on the cake at this conference is the bright and fancy stickers provided by RubyHack’s sponsor ‒ Sticker Mule.
+What about outdoor activities? You can find the Wasatch Front, one of the greatest ski destinations in the world with nine fantastic world-class resorts within an hour’s drive of the Salt Lake International Airport. Catch some great spring skiing!
+The Call for Papers is still open, so you can try to get on the schedule as a speaker. The agenda isn’t available yet. Follow RubyHACK’s Twitter account to get the latest news about the conference.
+#10. Ruby Unconf Hamburg
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1192/ruby-unconf-hamburg-2018.png
+
+When: May 5–6
+Where: Hamburg, Germany
+Ruby Unconf Hamburg is a community-focused event for people who want to learn Ruby, work with Ruby, or are Rubyists themselves. It offers a unique format where everyone can add their ideas to a list, porose their own talks, and vote for the talks they want to hear. At Ruby Unconf, you decide what will happen! Have any ideas? Add them to the list.
+Ruby Unconf runs a scholarship program to help underrepresented groups in tech and those who can’t afford going to the event. Additionally, Ruby Unconf covers the travel and accommodation expenses for scholarship recipients. If you want to apply for a scholarship, submit your application by March 18.
+The venue is near the picturesque Eilbek Canal, a channel that runs directly to the Alster lake, which is especially worth seeing on a sunny spring day. Will this be your first time in Hamburg? Don't worry – conference organizers have some tips for getting around and a collection of must-have places to visit. So book a place to talk, code, and get inspired.
+#11. Balkan Ruby
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1184/balkan-ruby-2018.png
+
+When: May 25–26
+Where: Sofia, Bulgaria
+Bulgaria isn’t a common location for Ruby conferences. In fact, Partial in 2017 was the first conference of its kind in the country. Balkan Ruby is the second try of local experts to organize an event not just for Bulgaria but for the whole Balkan region.
+Balkan Ruby aims to introduce local communities to each other and invites developers from all over Europe to work together and share their expertise.
+Among the confirmed speakers so far are Zach Holman, the founder and CEO of During and an adviser to such startups as GitLab and Dockbit; Robert Mosolgo, a Ruby developer at GitHub who’s focused on the GraphQL API; and Nick Sutterer, a software architect and creator of Trailblazer.
+Pack your luggage and arrive in Sofia for sandy beaches, warm water, smart solutions, new development ideas, and long-lasting friendships with like-minded developers. Tickets aren’t available yet, but you can follow Balkan Ruby’s Twitter account or subscribe to the newsletter so you don’t miss a thing.
+#12. RubyKaigi
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/1191/ruby-kaigi-2018.png
+
+When: May 31–June 2
+Where: Sendai, Japan
+Japan is the motherland of Ruby. So it’s no the surprise that our next conference is located in a Japanese city full of historical artifacts ‒ Sendai. RubyKaigi 2018 is an international three-day multi-track conference for Rubyists.
+RubyKaigi has been organized since 2006, and has been astonishing even the wisest minds with comprehensive talks and innovative ideas. In the last Kaigi, you could come across leading voices in Ruby including Yukihiro “Matz” Matsumoto, with his brilliant talk about the many faces of the modules. This year’s agenda hasn’t been drawn up yet.
+The call for proposals will remain open until February 28, meaning you still have a chance to submit. Even if your proposal isn’t accepted, by submitting one you’ll automatically be eligible to buy a RubyKaigi ticket at the Super Early Bird price. So hurry up and send your proposal or register to grab tickets.
+RubyKaigi offers a 50 percent discount for students. What’s more, all students can attend the final day of the conference for free without any pre-registration.
+Japan is the perfect place to feel like a samurai lord, dive into centuries-old traditions, and learn the origin of your beloved programming language.
+Keep up with updates on our blog and subscribe for more Ruby-related news.</description>
+      <pubDate>Thu, 22 Feb 2018 14:20:03 +0200</pubDate>
+      <link>https://rubygarage.org/blog/international-ruby-conferences-spring-2018</link>
+      <guid>https://rubygarage.org/blog/international-ruby-conferences-spring-2018</guid>
+    </item>
+    <item>
+      <title>How to Interview Your Ruby on Rails Developer</title>
+      <description>We at RubyGarage want to share our knowledge about how to interview a Ruby on Rails developer. Since our main purpose is to sell great code, we require great coders.
+This article will come in handy for you when you need to test a Ruby on Rails programmer but aren’t sure what questions to ask the Rails interviewee. You can consider this article as a guide for how to interview a Ruby on Rails programmer.
+
+We’re not going to include all the questions you could ask, as that would take more than one article. For example, we decided to omit questions about code idioms and cunning expressions in Ruby. Also, we don’t want to give away all the questions which we might ask during an interview with a developer. We don't want a developer to simply look for answers on the Internet, as our main purpose is to ensure that we check the developer's grasp of the language and framework. We merely want to see how a Ruby software engineer expounds their knowledge of the domain.
+
+Now let's chalk out the structure of a Ruby on Rails interview. The article will be divided into several parts since we usually check separate domains of knowledge. Here is the structure we typically use:
+
+Ruby questions;
+Ruby on Rails questions;
+A pair programming task;
+A home task.
+
+            
+Now it’s time to start asking questions to your Ruby on Rails developer to find out what they know!
+
+Ask Ruby Questions to Test a Web Developer
+Why do we ask Ruby-related questions to a Ruby on Rails developer? Because the Rails framework is written in Ruby. This means that when we write code for Ruby on Rails, we’re using Ruby. The main issue we encounter with Ruby on Rails programmers is actually that they don’t completely understand the basics – the programming language itself. We want to hire forward-thinking software engineers who will create high-quality code, and so we want to assess their Ruby competence.
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/201/ruby-interview-questions.jpg
+
+Our Ruby interview questions usually concern the Object Oriented Programming paradigm and object oriented design patterns. Class hierarchies, encapsulation, inheritance, and polymorphism are key concepts that every Ruby on Rails web developer should know well. 
+
+If you have no idea about object-oriented design principles,
+check this in-depth article. We’ve included useful examples.
+
+If a programmer correctly answers a list of questions similar to the ones below, then we move forward. Quality preparation for a job interview is important for a Ruby programmer. So if they can’t answer the following questions satisfactorily, then the interview is already over.
+
+
+What is a class?
+What is the difference between a class and a module?
+What is an object?
+How would you declare and use a constructor in Ruby?
+How would you create getter and setter methods in Ruby?
+Describe the difference between class and instance variables?
+What are the three levels of method access control for classes and what do they signify?
+What does ‘self’ mean?
+Explain how (almost) everything is an object in Ruby.
+Explain what singleton methods are. What is Eigenclass in Ruby?
+Describe Ruby method lookup path.
+Describe available Ruby callbacks. How can we use them in practice?
+What is the difference between Proc and lambda?
+
+
+The Second Series of Ruby Questions: Business Applications
+Knowing the basics isn't enough to work for RubyGarage or for any other serious web development company. A programmer should also be able to explain how to write code for business applications. Since Rack is a very popular interface that makes it possible to develop an application in Ruby, we ask specific questions about it. Here are four possible questions and challenges:
+
+
+What is Rack?
+Explain the Rack application interface.
+Write a simple Rack application.
+How does Rack middleware works?
+
+
+The Third Series of Ruby Questions: Ruby Gems
+Ruby is a very popular programming language and it has a huge community of developers who create numerous helpful libraries. We at RubyGarage love gems because they simplify and accelerate the work process. Third-party code helps us develop web applications quickly and smoothly.
+
+Grab this
+collection of Ruby gems to boost the productivity of your project.
+
+In this part of the Ruby on Rails interview, we want to learn how a Ruby web developer perceives the basic structure of a gem library. A programmer will use multiple gems when building applications on the job, which is why it’s important for us to see if the developer can read and comprehend code written by other programmers. The interviewee should also describe RubyGems, which is a special system to create, implement, and share gems.
+
+We have built up a series of four questions about Ruby gems:
+
+What is RubyGems? How does it work?
+How can you build your own Ruby gem?
+Explain the structure of a Ruby gem.
+Can you give me some examples of your favorite gems besides Ruby on Rails?
+
+
+Ruby on Rails Interview Questions
+Now it's time to plunge into the world of the Rails framework. A qualified developer should be familiar with the Model-View-Controller approach to building applications. The series of Ruby on Rails interview questions for experienced programmers is divided into three groups. First, we ask some general questions related to the Rails framework. Second, we want to see what the developer knows about routing, controllers, and views – the main parts of any business application.
+
+And finally, the ActiveRecord-related questions let us test how the programmer understands the Model part of an application. In order to work efficiently, a developer should write as little configuration code as possible when making ActiveRecord models. We ask about the conventions used for implementing such logic as well.
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/204/rails-questions.jpg
+
+Top Ruby on Rails Interview Questions
+
+What is ActiveJob? When should we use it?
+What is Asset Pipeline?
+Explain the difference between Page, Action, Fragment, Low-Level, SQL caching types.
+What is a Rails engine?
+
+
+Routing, Controllers, and Views
+
+Provide an example of RESTful routing and controller.
+Describe CRUD verbs and actions.
+How should you test routes?
+How should you use filters in controllers?
+What are Strong Parameters?
+What do we need to test in controllers?
+How should you use content_for and yield?
+How should you use nested layouts?
+
+
+Active Record
+
+Explain the Active Record pattern.
+What is Object-Relational Mapping?
+Describe Active Record conventions.
+Explain the Migrations mechanism.
+Describe types of associations in Active Record.
+What is Scopes? How should you use it?
+Explain the difference between optimistic and pessimistic locking.
+
+
+Ruby on Rails Questions: Security
+We at RubyGarage know that a good application must be secure. We only hire programmers with a deep understanding of what types of attacks can be unleashed against a Ruby on Rails app. Besides possible attacks, a developer should also know everything about existing methods of protection. We want to see that a developer knows when to use such methods and what means of protection are good for what situations. As you will see in the suggested list of questions, we may be interested in not only Ruby on Rails security, but also in general web security concepts, such as the use of HTTPS instead of HTTP.
+
+
+Explain what is a sessions mechanism. How does it work?
+Describe cross-site request forgery, cross-site scripting, session hijacking, and session fixation attacks.
+What is the difference between SQL Injection and CSS Injection?
+How should you store secure data such as a password?
+Why do we need to use HTTPS instead of HTTP?
+    
+
+Questions About Automated Tests in Ruby on Rails
+Writing code for production without automated tests is a bad approach to web development – especially when we code in Ruby, because the language itself expects web developers to write tests. Automated testing in Ruby on Rails helps reduce the workload for the Quality Assurance team, and this will greatly improve the workflow.
+
+Automated testing is crucial for startups.
+Here are the reasons.
+
+Our developers always create automated tests, which is why we demand our interviewees to understand automated testing. All Ruby web developers must have a clear view of why to use automated tests, when to write them, and what types of tests exist. On top of understanding testing methods, every Ruby on Rails developer should know how to create a testing case and should be familiar with testing guidelines and best practices.
+
+Here are some questions we might ask a Ruby on Rails developer about testing:
+
+What is unit testing (in classical terms)?
+What is the primary technique for writing a test?
+What are your favorite tools for writing unit tests?
+What are your favorite tools for writing feature tests?
+
+
+Ask the Ruby on Rails Programmer About Refactoring
+We’ll also ask some Ruby on Rails questions related to code refactoring, because refactoring is an important step during the development of any application. Refactoring means that developers brush up the code they have already written to make it cleaner and more efficient. We want our Rails programmers to write high-quality code that is maintainable and expandable. When refactoring, RubyGarage programmers have to maintain a proper code structure and enhance the application’s performance without changing the behavior of the code.
+
+If a developer knows how to reach high-level performance, then the team will be able to improve the application faster in the future according to the client's changing requests. The next series of Ruby on Rails interview questions will help you gauge a developer's ability to write elegant code. Don’t forget that these question can be altered to focus on your own primary development concerns:
+
+What is a code smell?
+What are your favorite tools to find code smells and potential bugs?
+Why should you avoid fat controllers?
+Why should you avoid fat models?
+Explain extract Value, Service, Form, View, Query, and Policy Objects techniques.
+
+
+ Find out all the
+situations when you’d better refactor the code.
+
+Give a Pair Programming Task
+The next part of our Ruby on Rails interview always involves testing a programmer’s skills while paired with our senior web developer. We explain to the interviewee that this is necessary to unleash their mind. It doesn’t matter whether the interview is held online via Hangouts or Skype or whether it’s in-person, as we simply ask the interviewee to share their screen and start solving a task.
+
+What is the purpose of a pair programming test? First of all, it gives us a look into the developer's line of thinking. Once a Ruby on Rails programmer gets the task, they should suggest some methods or means to resolve it. A pair programming task is very similar to a discussion, as our senior web developer helps the interviewee understand what solution might be not only workable, but best. Secondly, the pair programming tasks helps us determine a developer’s ability to work in a team. Below is an example of the tasks we might give during a Ruby on Rails interview.
+
+Binary Gap
+A binary gap within a positive integer N is any maximal sequence of consecutive zeros that is surrounded by ones at both ends in the binary representation of N. For example, the number 9 has binary representation 1001 and contains a binary gap of length 2. The number 529 has binary representation 1000010001 and contains two binary gaps: one of length 4 and one of length 3. The number 20 has binary representation 10100 and contains one binary gap of length 1. The number 15 has binary representation 1111 and has no binary gaps.
+Write a function def binary_gap(n) that, given a positive integer N, returns the length of its longest binary gap. The function should return 0 if N doesn’t contain a binary gap.
+For example, if N =  1041, the function should return 5, because N has binary representation 10000010001 and its longest binary gap is 5.
+
+Assume that:
+
+N is an integer within the range [1..2,147,483,647].
+
+Complexity:
+
+expected worst-case time complexity is O(log(N));
+expected worst-case space complexity is O(1).
+
+
+
+Home Task for a Ruby on Rails Developer
+This is the last task that we give to the interviewee. We want to figure out if a Rails developer is able to use multiple technologies for both frontend and backend web development. An interviewee should have a good grasp of many frontend tools, including the JavaScript programming language, its frameworks and libraries. Proficient knowledge of a markup language and stylesheets is definitely a must. We further include tasks to test a developer’s ability to write autotests using tools such as RSpec, Capybara, and similar. 
+
+Look at this valuable
+comparison of the best JS frameworks for frontend.
+
+The home task can vary. For example, we may ask a Rails developer to implement a task with React, Ember, or Backbone instead of Angular. The particular task we give may depend on a particular project on which the Rails developer will work if hired.
+
+Once a developer resolves our home task and we check the result, we can know for sure if this programmer is ready to work with us or not. This programming task, to be completed solely by a job seeker, is very valuable to verify his or her skills.
+
+Task Definition
+I'm passionate about productivity. I want to manage my tasks and projects more effectively. I need a simple tool that helps me control my task flow.
+
+Functional Requirements:
+
+I want to be able to sign in/sign up by email/password or Facebook;
+I want to be able to create/update/delete projects;
+I want to be able to add tasks to my project;
+I want to be able to update/delete tasks;
+I want to be able to prioritise tasks within a project;
+I want to be able to set a deadline for my task;
+I want to be able to mark a task as 'done';
+I want to be able to add comments to my tasks;
+I want to be able to delete comments;
+I want to be able to attach files to comments.
+
+
+Technical Requirements
+
+It should be a WEB application:
+
+For the client side, use HTML5, CSS3, Bootstrap, JavaScript, AngularJS, and jQuery;
+For the server side, use Ruby on Rails.
+
+It should have client side and server side validation;
+It should work like a single-page WEB application and should use AJAX technology (load and submit data without reloading a page);
+It should have a user authentication solution. The user should only have access to his/her own projects and tasks (Devise, Cancancan);
+It should have automated tests for all functionality (models - RSpec, controllers - RSpec, acceptance/functional tests - RSpec + Capybara);
+
+
+The result should be similar to the one in the screenshot below:
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/205/home-task-for-a-rails-developer.jpg
+
+To Sum Up
+There are many more Ruby on Rails interview questions that we might ask a programmer before we hire them. Our purpose was to show you how our interviews are organized at RubyGarage. The questions we ask are designed to analyze a programmer’s skills as fully as possible. Ask the right questions to your Ruby on Rails developers to make sure you hire a programmer who will be a great asset for your team!
+
+Are you looking for a skilled Ruby on Rails development team?
+Contact us and we’ll help you build a scalable and secure product of exceptional quality.
+
+</description>
+      <pubDate>Fri, 24 Jun 2016 12:05:00 +0300</pubDate>
+      <link>https://rubygarage.org/blog/how-to-interview-your-ruby-on-rails-developer</link>
+      <guid>https://rubygarage.org/blog/how-to-interview-your-ruby-on-rails-developer</guid>
+    </item>
+    <item>
+      <title>10 Hippest Ruby Conferences You Should Book Tickets to in Spring 2019</title>
+      <description>Winter is almost over, which means it’s time to check out what great Ruby events are out there to make your spring entertaining and busy. We’ve gathered only the hippest conferences where you can meet real Ruby gurus, see your colleagues, and make new friends. We’ve also added some details on these events and useful links to help you make a choice.
+#1 Wroc_love.RB
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2379/wroc-love-rb.png
+
+When: March 22–24, 2019
+Where: Wrocław, Poland
+This is going to be the ninth time Ruby fans will meet in Wroclaw for the three-day Wroc_love.RB conference. The event is targeted at seasoned Ruby developers, as the topics discussed are very advanced.
+The organizers claim they don’t want participants to just listen. They want them to discuss the topics, question each and every idea, argue, and even fight if necessary to prove their point. This atmosphere is encouraged to help developers be more open and to inspire them.
+If you want to try this format of a conference, buy tickets on the official website and follow the Wroc_love.RB Twitter account to stay updated.
+#2 RubyHack
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2378/ruby-hack.png
+
+When: April 4–5, 2019
+Where: Salt Lake City, Utah
+RubyHack is a software engineering conference that mainly focuses on Ruby and some related technologies. It’s a two-day event that offers not only talks from recognized leaders in the development world but also from first-time speakers. The organizers want to attract beginners and encourage developers to share their knowledge and ideas by means of collaboration, mentoring, whiteboarding, and meeting with presenters.
+This year, the organizers have prepared a real bomb for Ruby fans: the headliner of the conference will be the Yukihiro (Matz) Matsumoto!
+You still have time to buy tickets on the official website. Don’t forget to subscribe to RubyHack on Twitter and Facebook to stay updated.
+#3 Rails Camp South
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2377/rails-camp.png
+
+When: April 5–8, 2019
+Where: Bandera, Texas
+Rails Camp South is a four-day conference in the center of Texas with all the consequences that brings.
+The camp is not only about Ruby on Rails; it’s also about different technologies and everyone who’s keen on them. Ruby on Rails just is a link that connects everyone in the camp.
+The organizers of Rails Camp South want to gather like-minded people to spend some time in the outdoors doing mostly offline things. Nevertheless, computers and phones aren’t forbidden.
+The conference takes place on a ranch with on-site cabins and a large territory for camping. After sessions, participants can enjoy the scenery and activities including horseback riding, tubing, trick roping, and archery.
+If you feel like going camping with people who live Ruby just like you, you can buy tickets on the official website and follow their page on Twitter and LinkedIn to get more details on the event.
+#4 Ruby ConfBY
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2381/ruby-conf-by.png
+When: April 6, 2019
+Where: Minsk, Belarus
+Ruby ConfBY is a single-day event that gathers Ruby developers both seasoned and beginners to listen to the best presenters from all over the world.
+Last year, participants listened to Trailblazer creator Nick Sutterer, VP of Engineering at Toptal Bozhidar Batsov, Head of Web Artec 3D Anna Shcherbinina, and many others.
+This year, among the very first confirmed speakers is Aaron Patterson, a Ruby and Rails core team member and the top contributor to Rails.
+To become part of this fantastic event, register and buy a ticket on the Ruby ConfBY website. You can also find a lot of pictures and videos from the last Ruby ConfBY on its Facebook page.
+#5 Ruby Day
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2428/logotipo-rubyday-purple.png
+When: April 10–11, 2019
+Where: Verona, Italy
+Ruby Day 2019 is the seventh edition of this Italian conference for Ruby fans. Although the event was canceled the last two years, this time the organizers promise to make everything better than ever.
+In 2015 the conference was held in Turin, and in 2016 in Florence. This year, Ruby Day is going to be in Verone, where you can not only talk about technologies but also dive into the local culture.
+Ruby Day is a place where ideas are exchanged and where people can meet old friends and make new ones. This is an international conference and all the sessions are in English, so participants from all over the world can feel comfortable and relaxed.
+RubyDay is a single-day conference with talks for those with both an advanced and basic level of expertise. This year the organizers have prepared two extra activities for guests. The first activity is a day-long workshop for Rubyists in the Italian language that will take place a day before, on April 10. The topic of the workshop is Rails+Vue.js and the speaker is Andrea Vassallo, a full-stack developer at Nebulab. If you are fluent in Italian and would like to enhance your skills, you can register for this event here.
+Another surprise from the event host is Rails Girls Verona seminar that aims at attracting more girls to the world of coding. This workshop is specifically created for women with no programming knowledge and skills. Rails Girls Verona is a free event but the number of participants is limited. To get an invitation, you need to fill this form and explain why you want to participate and what it means for you.
+Already interested? Here’s the website where you can buy tickets. You can also check out the Ruby Day Twitter account for more details and news. By the way, the organizers promise discounts for students!
+#6 Ruby Wine
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2383/ruby-wine.png
+
+When: April 13, 2019
+Where: Chișinău, Moldova
+Ruby Wine is a one-day event that will be held in the picturesque city of Chisinau in Moldova. The hosts promise to entertain participants with top-notch talks by talented Ruby developers, the incredible local atmosphere, and tasty wine.
+The hosts of Ruby Wine have decided to make the upcoming conference for developers with all levels of experience and even for people without any experience at all. The organizers believe that anyone can start programming and offer special discounts for parents of babies (0–3 years) who are on maternity leave.
+The cheapest tickets for this conference cost only $7(!), and you can find them here. You can also participate as a speaker if you fill in this form. On the Ruby Wine Facebook page, you can vote for the topics you want to discuss.
+Guess what! Kirill Shevchenko, one of the best Ruby developers at RubyGarage, has been chosen as a speaker for this conference. His speech “Event-driven architecture and messaging pattern for Ruby microservices” got the majority of votes. You can find a lot of his articles on Medium and meet him in person at Ruby Wine conference!
+#7 Ruby Kaigi
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2375/ruby-kaigi.png
+When: April 18–20, 2019
+Where: Fukuoka, Japan
+Ruby Kaigi, held in Japan, is one of the oldest Ruby conferences globally. The event gathers only the the most experienced and well-known speakers from Asia and beyond. In 2018, speakers included Yukihiro “Matz” Matsumoto, Kouhei Sutou, Benoit Daloze, Aaron Patterson, and many other great developers who have made huge contributions to Ruby.
+At this conference, you won’t find any first-time speakers and won’t hear any talks for beginners. This is an event for experienced developers with serious topics to discuss.
+The conference will last for three days. Although we don't know the names of the speakers yet, I’m sure Ruby Kaigi won’t disappoint even the most demanding participants.
+Don’t miss this fantastic Ruby-centric event and the opportunity to meet your heroes in person at Ruby Kaigi 2019. You can buy tickets here. If you’re a student, you can get a discount. Also, all students can visit the last day of the event free of charge without registering. Follow the Ruby Kaigi Twitter page and be the first to find out the names of speakers and other details.
+#8 Rails Conf
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2376/rails-conf.png
+When: April 30 – May 2, 2019
+Where: Minneapolis, Minnesota
+This year is the 14th edition of Rails Conf. The conference claims to be the largest and longest-running event for Rubyists in the world!
+This time, the event will be held in beautiful Minneapolis, and the organizers promise it will be a spectacular RailsConf. For three days, participants will plunge into an atmosphere of collaboration, knowledge sharing, and brainstorming.
+The event’s hosts have already announced the names of the lead speakers: David Heinemeier Hansson from Basecamp, Bari A. Williams from All Turtles, and Aaron Patterson from GitHub.
+To make the event as comfortable as possible and encourage young parents to participate, the conference hosts have prepared complimentary on-site childcare with professional, licensed childcare services.
+To buy tickets for RailsConf, visit the official website. You can also find a lot of information about the event on its Twitter page.
+#9 Balkan Ruby
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2380/balkan-ruby.png
+When: May 17–18, 2019
+Where: Sofia, Bulgaria
+If you love Ruby and you’ve always wanted to visit Bulgaria and its beautiful capital Sofia, then Balkan Ruby is a great opportunity for you. This conference doesn’t have a long history, but its organization is always at the highest level. Just take a look at the list of last year’s speakers: Nick Sutterer, Robert Mosolgo, Dinah Shi and Vlad Dementyev.
+This year at Balkan Ruby you can hear from Eileen Uchitelle and Aaron Patterson. You can also join them as a speaker if you fill in this form. The organizers promise to cover the travel expenses and hotel accommodations of speakers. And provide a tour around Sofia!
+If you’re thinking about visiting Balkan Ruby, check out their website where you can read more about past conferences, buy tickets, and subscribe for news. Follow the Balkan Ruby Twitter account to stay tuned.
+#10 Ruby Unconf Hamburg
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2382/unconf.png
+When: May 25–26, 2019
+Where: Hamburg, Germany
+Ruby Unconf Hamburg is an unconference event where attendees rule the day. Here’s how it works: anyone can apply to be a speaker and provide a description of their talk. The participants (everyone who has bought tickets) can vote for speakers and topics they want to hear and choose the activities they want to do.
+The event will last for two days in Hamburg, Germany. If you want to visit an event that’s customized for you, then register now! See more details and news about Ruby Unconf Hamburg on its Twitter page.
+If this post was useful for you, don’t forget to subscribe to our blog to get more news about Ruby events and new technologies as well as step-by-step tutorials. Feel free to start a conversation below!</description>
+      <pubDate>Fri, 15 Feb 2019 14:10:17 +0200</pubDate>
+      <link>https://rubygarage.org/blog/ruby-conferences-spring-2019</link>
+      <guid>https://rubygarage.org/blog/ruby-conferences-spring-2019</guid>
+    </item>
+    <item>
+      <title>How to Learn Ruby on Rails</title>
+      <description>You’ve just taken your first steps in programming and you’re already facing a common problem: you just don’t know where to begin and what to learn first. However, you know what technology you want to work with: Ruby on Rails. Congratulations! You’ve decided to join a vibrant community of likeminded people.
+Our RubyGarage team consists of people dedicated to the Ruby programming language, and we would like to help you in your quest to learn Rails. Follow our simple step-by-step guide and find out how to learn Ruby on Rails.
+1. Ruby on Rails 101, or Master the Beginner Level
+Learn CSS, HTML and JavaScript
+You might wonder why CSS, HTML and JavaScript always go together. Put simply, HTML structures a website’s content (tables, blocks, images, etc.) with the help of tags. CSS then says how these website elements should be displayed. Finally, JavaScript makes a website dynamic so it can respond to clicks, create passwords or change values in form inputs.
+CSS, HTML and JavaScript are the technologies you need to learn to become a front-end developer. Since Ruby on Rails is a full-stack framework that covers backend (what happens on the server) as well as front-end web development (what happens in the browser), it’s important to start with the front-end basics.
+Here a few tools to help you learn the basics of front-end web development:
+
+The Intro to HTML and CSS course on Udacity doesn’t follow the structure of similar courses. This Udacity course gets you thinking like a real front-end developer: you won’t focus on a language’s syntax. Instead, you’ll learn how to convert design mockups to web pages step by step. What’s more, the course includes a chapter on responsive design techniques, something rarely taught within courses about HTML/CSS.
+The Make a Website course by Codecademy teaches you the fundamentals of CSS and HTML while you build your first website. The course is distributed for free, however, you can get additional features with a paid plan.
+
+
+Want to enhance your knowledge about frontend?
+Grab this informative comparison of the best JS frameworks.
+
+Learn Ruby Before Rails
+Just to be clear, Ruby is a programming language, while Ruby on Rails (hint: you’ll sound more knowledgeable if you just say “Rails”) is a web application framework – a collection of pre-written code that simplifies website building. Rails extends the Ruby language and solves everyday problems so you don’t have to reinvent the wheel.
+Beginner developers often wonder if they need to learn Ruby language first before moving to Ruby on Rails. We think you should. Our advice is to learn Ruby first. Of course, Rails offers great solutions out of the box; but when you face more serious issues, you’ll have to struggle with the Ruby code.
+There are many ways to learn Ruby: online courses, books, video tutorials, and even mentorship programs. If you want to learn independently, you’ll probably dig into books and online courses, which are popular today. But remember: no matter how you learn Ruby, the way to succeed is to practice what you learn. A common mistake of beginners is gaining book knowledge without practicing: theory is great, but if you can’t put it into practice it’s not worth much.
+We’ve picked out a few books and courses that’ll help you learn the basics of Ruby:
+
+
+Code School. Code School is an online platform where you can master Ruby and other programming languages including HTML/CSS, JavaScript, Python, and .Net. What makes Code School stand out is their entertaining approach: every lesson has a storyline which you follow while reading short explanations, watching video tutorials and practicing coding straight in the browser. Our RubyGarage team recommends taking the free Try Ruby course. In fact, Code School courses are part of our own educational program. RubyGarage has been running Ruby/Rails courses since we launched in 2011. We implement home assignments on Code School to better immerse our mentees in Ruby/Rails technologies.
+
+Learn to Program (The Facets of Ruby Series) by Chris Pine. This is the book for complete beginners at programming. From writing your first single-line program to creating a basic video game, you’re guided carefully through the learning process. Learn to Program enforces that programming can be learned only by practicing.
+
+
+Our team has gathered a collection of Ruby gems for any occasion from authentication to testing.
+Check it right now.
+
+Learn Ruby on Rails
+Once you know all about Ruby, you can finally start learning Rails! Many novice developers are wondering why learn Ruby on Rails if there are other frameworks. However, the answer is clear: this web application framework is a perfect solution for startups thanks to its extensive out-of-the-box functionality, deployment speed and scalability. Let’s see what educational platforms can help you learn Ruby on Rails online and what books you should read to master the basics of RoR.
+In general, online courses for Rails all look the same and offer the same products. We’ve picked out a few platforms that we personally like:
+
+
+Code School’s Rails for Zombies Redux courses. The playful name of this course shouldn’t fool you: you’ll learn CRUD principles, Active Record models and MVC architecture. This course is designed for those who already have some knowledge of programming, web development and Ruby. By the way – after successfully completing of this course you get a badge you can put on your CV.
+
+Codecademy’s Learn Ruby on Rails course is designed for beginner programmers. Codecademy is a platform for learning skills that you can apply in real life straight after completing a course. At Codecademy you’ll learn how to build a Flipboard-like home page and how to manage versions of your code with Git among plenty of other useful skills. Codecademy lessons combine theory with an in-browser simulator to practice coding. A small tip: take notes while reading the reference material to help you retain information.
+
+We’ve also picked up a few books that our Ruby/Rails developers love and recommend.
+
+
+Agile Web Development with Rails 4 by Sam Ruby, David Thomas, and David Heinemeier Hansson. This is the ultimate guide to basics including Rails installation and architecture (models, views, and controllers). You’ll also learn a bit of Ruby before you create your very first storefront following the practical section of the book. Agile Web Development’s complexity increases gradually throughout the book. The Practical approach of this book is supported by story-driven chapters, iterative exercises and hand-holding narration.
+
+Ruby on Rails Tutorial by Michael Hartl. Many Ruby/Rails developers admit they’ve learned Rails by simply following Michael Hartl’s Rails tutorial. The book takes you by the hand and guides you through full cycle of web development: from coding best practices to writing tests. All the chapters are tied with exercises to practice what you’ve just learned; the main project is a Twitter-like app.
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/296/how-to-learn-Ruby-on-Rails.jpg
+Get yourself a Ruby on Rails Mentor
+Getting yourself a mentor is, probably, the best way to learn Ruby on Rails.. First, you’ll speed up your learning process by having someone beside you who can explain difficult concepts, review your code and guide you to better solutions. Second, a mentor is a source of support who won’t let you stumble on a problem or make the mentor’s previous mistakes. We at RubyGarage have developed a culture of mentorship in our teams to build closer relationships between junior and senior developers and accelerate learning.
+
+Why is the developer mentorship so important?
+We have the answers.
+
+2. Boost Your Skills: Ruby/Rails Intermediate Level
+After you’ve learned the Ruby/Rails basics, you’ll probably want to go further and build more complicated applications with features like import/export of data, implementation of public/ private APIs and admin panels. Here are some resources to help you get there:
+Become high-flying Rubyist
+You shouldn’t underestimate the role of books in studying programming. Despite rapid development of technologies, good books on programming keep up with the times and are updated after new releases and updates. In order not to get lost in the many of books on Ruby and Rails, we’ve selected some especially good resources for you. Here are some books that contain information on extended Ruby features for the high-flying Rubyist:
+
+
+The Well-Grounded Rubyist (Second Edition) by David A.Black. This book assumes some programming background, however, you can always research unfamiliar concepts while you read. From the first to the last page Black introduces you to an object-oriented programming approach. For more experienced developers this book serves as a valuable reference; beginner Rubyists can get a great start from learning the basics (installing Ruby) to more advanced and dynamic Ruby features.
+
+The Ruby Programming Language by David Flanagan and Yukihiro Matsumoto. This book, from Ruby creator Yukihiro Matsumoto and JavaScript/Java developer David Flanagan, is a must-read. Just make sure you already have some programming experience before you start reading. This book offers no practice exercises, which may disappoint some readers. In general, this is a well-structured reference book that covers everything related to Ruby.
+
+Practice Ruby on Rails
+Practice makes perfect. At the beginning you’ll learn Ruby’s syntax and follow pre-written cases. But as you grow as a Rubyist, you need to put what you’ve learned into practice.
+In order to deepen your knowledge, we recommend reading The Rails 4 Way by Obie Fernandez. This so-called “Bible” for Rails developers comes in the form of a reference book that you can refer to whenever you have any questions on a topic. Here you can find an answer to basically any question about Rails core. Readers also mark out in-depth narration and focus on practical chapters about gems and optimization of processes.
+Join Ruby/Rails communities
+Don’t forget that Ruby/Rails has one of the friendliest and most vibrant communities! Don’t miss the chance to join a group of people who will share insights and support you. Here are a few useful resources for you to connect with the Ruby/Rails community:
+
+
+StackOverflow and Quora. StackOverflow is for developers of all kinds: here you can ask any question related to a software development topic and get an enthusiastic response. Quora, on the other hand, is a platform for sharing insights in various areas. On Quora you can ask technical questions as well as less complicated questions such as what programming language you should learn.
+
+Ruby on Rails Link: Rails Slack community. Slack is an extremely popular messenger for teams. By joining a Slack team you can easily communicate with a whole bunch of people who are mad about Rails! Slack conversations are organized into topics that include Front-end, Coding, and Work (for those looking for a job).
+
+GitHub. Join an existing project on GitHub to polish your skills, connect with others and get invaluable experience while creating real software. Even if you aren’t able to write long strings of code, you can contribute to projects by fixing or rep. If you’re interested in finding out more about GitHub and its benefits, read our article about open source projects and their role in a developer’s life.
+
+3. Advanced Ruby/Rails - still a long way to go!
+Once you've learned the fundamentals of Ruby and Rails, you still have work to do. It’s important to build your own applications to get as much experience as you can; make mistakes and learn how to fix them; and get lost in concepts and find solutions. An inspiring example is Jennifer Dewalt who has built 180 websites in 180 days: every time you think you’re about to give up, think of her incredible aspiration.
+As soon as you start writing your own code, it’s important to improve your output. Pay attention to coding best practices including DRY (Don’t Repeat Yourself), KISS (Keep It Simple, Stupid), and YAGNI (You Aren’t Gonna Need It) that allow you to write maintainable code and prevent you from reinventing the wheel and adding gold plating (unnecessary extra features).
+In the future you’re probably going to build web applications as a part of a team. That’s why it’s essential to learn Git – a version control system to maintain your code and save the latest versions. Git is a useful programming practice since it helps you backup changes to your code and monitor your work progress.
+Conclusion
+Learning how to code is challenging, even though you can find plenty of resources that are crafted with diligence and passion. We’ve shared the books and websites we personally like and would recommend for individual study. But no matter what learning method you choose, remember to put theory into practice and get support from more experienced developers. Don’t ask yourself how long to learn Ruby on Rails; just set a goal and do your best to achieve it. Good luck!
+
+Need assistance with the Ruby on Rails project?
+Contact RubyGarage to collaborate with highly qualified and experienced developers.
+
+</description>
+      <pubDate>Wed, 12 Oct 2016 09:06:25 +0300</pubDate>
+      <link>https://rubygarage.org/blog/how-to-learn-ruby-on-rails</link>
+      <guid>https://rubygarage.org/blog/how-to-learn-ruby-on-rails</guid>
+    </item>
+    <item>
+      <title>Why Do People Fall in Love with Ruby?</title>
+      <description>Here at RubyGarage we’re big fans of the Ruby programming language and use the Ruby on Rails framework to develop most web applications for our clients. RubyGarage has grown to around 70 employees – almost 30 of whom are Ruby developers – since its founding in 2011.
+ 
+We’ve chosen Ruby out of hundreds of programming languages. Over the past five years both junior and senior developers have recognized its values. Now it’s time to share what’s made our developers fall in love with Ruby. 
+Reason №1: Ruby is Simple and Clear 
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/300/Fall-in-Love-with-Ruby.jpg
+Our developers love the simplicity and clarity of Ruby’s syntax. And our developers aren’t alone. Vladimir Demchenko says he first loved Ruby precisely because of its syntactic beauty and readability. Other developers, while talking about Ruby’s syntax, also described its beauty:
+ 
+
+ I fell in love with Ruby due to its simplicity in understanding and use, its elegance and readability.  
+Bogdan Cherevatenko
+
+ 
+ 
+  Ruby is pretty simple and clear. It behaves very predictably and it has lovely syntax.  
+Taras Kravchenko
+
+ 
+Denis Kostyrko focused on Ruby’s readability, saying that “It’s simple to write code in Ruby and read someone else’s. Code reads like a book.&quot; Most methods and classes are named very logically, and at first glance they’re easy to understand.  
+ 
+But to read like a book, code must be well-written – no matter what language you’re working in. Clarity should be the main goal of any programmer. And well-written code in Ruby brings one more advantage that our developer Bogdan Cherevatenko mentions:
+ 
+ 
+  In well-written Ruby code, perhaps even a non-programmer can understand (in general terms) what happens and where.  
+Bogdan Cherevatenko
+
+In addition to the comments above, we want to share a funny – but true – story about how Roma Mukhin, one of our Ruby developers, fell in love with Ruby because of its simplicity: 
+
+ I was attending Ruby courses at RubyGarage and liked everything about this language, even its name. But finally I fell in love with Ruby when my friend who was attending Java courses sent me code of the game ‘Rock-paper-scissors’ written in this language. I decided to write this game too, but in Ruby. And what did I finally get? The game written in one line of code.  
+Roma adds that maybe now he wouldn’t be impressed by that first rock-paper-scissors game he wrote, but at that time he was impressed by how easy it was to build. 
+Reason №2: The Friendly Ruby Community
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/301/Fall-in-Love-with-Ruby.jpg
+Stuck on a programming problem or just have a question? You’re always welcome to reach out to the Ruby community. The global Ruby community is filled with generous developers who enjoy helping others. It’s a group where everybody is interested in discussing and learning from each other. That’s what our developer Bogdan Cherevatenko means when he says: ‘The Ruby Community was more educated and cultured’ than the communities around other programming languages. Let’s see how other developers express their love of the Ruby community. 
+ 
+ 
+  I love Ruby because of its community. I’ve never met such a friendly and active community. People love to share their solutions with others, and it really helps to solve a lot of problems. 
+Roman Grytsay
+
+ 
+The Ruby community offers a lot more than social gatherings with friendly Rubyists; the Ruby community maintains tons of helpful resources available online, including frameworks, gems, and tutorials. Most of our developers point to the benefits of Ruby libraries — Gems, Gems, and more Gems that can solve many trivial and specific problems. 
+ 
+ 
+ There are a lot of gems that solve many specific tasks. All that you need is to google and you’ll almost always find a ready-made solution that you’ll just need to connect and a little configure for your concrete task. 
+Taras Kravchenko 
+
+Reason №3: Ruby on Rails
+ 
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/302/Fall-in-Love-with-Ruby.jpg
+George Zhukov says that he loves Ruby first and foremost because of Rails – specifically, because it’s so easy to launch a startup and develop an MVP with Rails. For startups, it’s important not to spend too much time on initial development, and Rails solves this problem. How? Taras Kravchenko explains: 
+ 
+ 
+ Rails does a lot of useful and cool things automatically and by default. It means that you don’t even think about it, and don’t waste time on inventing the bicycle with every new project (where and what to store, how to set it up, etc.). 
+Taras Kravchenko 
+
+ 
+Vladimir Demchenko adds that Ruby on Rails stands out from other competing frameworks:
+
+ 
+  For example if we take PHP, there are a lot of frameworks to choose between and it’s really difficult for programmers when you often change projects. In Ruby everything is predictable. If a project is a web application, it will likely be developed in Rails. 
+Vladimir Demchenko
+ 
+ 
+More Reasons to Fall in Love with Ruby
+We highlighted these three big reasons why our developers have fallen in love with Ruby. But there are other reasons why our developers have come to love this language.
+Our developer Roman Grytsay says he loves Ruby even without Rails, and he solves some of the tasks and problems just using Ruby programming language and functional programming. Vadim Lazebny mentions helpful tools for metaprogramming and functional programming in Ruby. And Bogdan Cherevatenko says that it makes him happy that there’s a large database of helpful (and cool) methods for working with all types of data (particularly with lines, massives and hashes). 
+ 
+Wrapping Up
+For us here at RubyGarage, the Ruby programming language is something like a sport – we’re loyal to our team. We do what we love, and we love what we do. And that’s the greatest thing about Ruby – we get to develop great product for our clients and their end-users with love! 
+ Ready to join the Ruby club? We’d be glad to welcome you!  </description>
+      <pubDate>Mon, 17 Oct 2016 15:17:38 +0300</pubDate>
+      <link>https://rubygarage.org/blog/why-do-people-fall-in-love-with-ruby</link>
+      <guid>https://rubygarage.org/blog/why-do-people-fall-in-love-with-ruby</guid>
+    </item>
+    <item>
+      <title>International Ruby Conferences in Summer 2017</title>
+      <description>It’s been a while since we wrote about Ruby conferences announced for this spring, and there are already new and exciting events waiting for you. Traditionally, summer is a peak season for events of any kind, and Ruby conferences aren’t an exception. This post features ten conferences worth visiting, so make some refreshing lemonade, lean back in a chaise lounge and read about the Ruby conferences that will rock this summer!
+1. RubyC
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/618/ruby-c.jpg
+When: June 3–4, 2017
+Where: Kyiv, Ukraine
+
+Ukraine boasts a truly vibrant community of Rubyists who organize and attend numerous meetups and conferences related to Ruby programming. RubyC has been held since 2011 in Kyiv, the capital of Ukraine. This year, RubyC celebrates a small anniversary: it’s the fifth year the event will be held.
+
+The agenda of RubyC has already been announced. The list of speakers includes local and foreign professionals in Ruby and Ruby on Rails: Piotr Szhotkowski, a Ruby developer and an assistant professor at the Warsaw University of Technology; Xavier Noria, a Ruby on Rails consultant; Bozhidar Batsov, VP of Engineering at Toptal; Marat Kamenschikov, chief of the Ruby on Rails Department at Svitla Systems; Serdar Dogruyol, CEO at Twentify; and Florian Glicher, CEO at Asquera.
+
+This year at RubyC, you’ll have a chance to hear about Ruby smells, Ruby 4.0, gotchas and pitfalls of Elixir, React integration into Rails apps, and more.
+
+Hurry over and buy your tickets: Safe Birds and Ruby Birds offers are available on the official website.
+
+2. RubyConf Kenya 
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/619/ruby-conf-kenya.jpg
+When: June 8–10, 2017
+Where: Nairobi, Kenya
+
+RubyConf Kenya is a major conference on Ruby, Agile, open source and entrepreneurship that will take place in Nairobi, Kenya. This year, the event is warmly welcoming tech specialists to join local speakers and foreign speakers from the USA, the UK, and Ukraine.
+
+The event is organized by NairubyKE, a Nairobian community of Ruby developers. NairubyKE encourages developers of any levels – from beginner to advanced – to join the group and attend meetups, share insights, and write open-source code together.
+
+Here are a few speakers you’ll have a chance to hear from: Mike McQuaid, a senior software engineer and an avid GitHub contributor; Victor Shepelev, a developer at Toptal and a mentor at the Google Summer of Code 2016 &amp; 2017; Ben Hughes, Tech Lead of Performance Engineering at Airbnb; and Ray Hightower, a software developer and organizer of WindCityRails and ChicagoRuby.
+
+Register in advance to be able to visit this conference, which will last for three days in sunny Nairobi.
+
+3. RubyNation
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/622/ruby-nation.jpg
+When: June 16, 2017
+Where: Arlington, Virginia
+RubyNation is an annual Mid-Atlantic conference for Ruby developers. It’s a large-scale event that brings together avid open-source contributors and Ruby/Rails programmers from across the USA.
+
+This year, RubyNation has booked Sam Phippen from DigitalOcean; Casey Watts from Heroku; Eileen Uchitelle, a member of the Rails Core Team; Kerri Miller, a software developer and mentor; and other experienced Ruby programmers.
+
+The agenda isn’t announced yet, so stay in touch through the official website to find out more about the topics that will be discussed at the conference. Tickets are already available on Eventbrite.
+
+4. RedDotRubyConf
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/623/reddot-ruby.jpg
+When: June 22–23, 2017
+Where: Singapore
+Don’t forget this name: RedDotRubyConf 2017. At the end of June, Singapore will host a large conference for Ruby programmers that will last for two days in Biopolis, the international R&amp;D center of Singapore.
+The lineup consists of speakers from world-famous companies and projects like GitHub, MongoDB, Microsoft, Cookpad, and Hanami. As icing on the cake, one of the keynote speakers at the event will be Yukihiro (Matz) Matsumoto ‒ the chief Ruby creator!
+
+Topics include talks on Hanami as a new Ruby web framework, functional architectures, data migration, women in programming, tips for working with large databases, and more.
+
+In addition to the main event, there will be fringe events: a Singapore Ruby Group June Meetup on June 20th and a workshop on Next-Generation Web Apps with dry-rb on June 21st.
+
+Sticker Mule is a sponsor of the conference, so awesome stickers will be applied!
+
+Don’t miss this amazing event and buy the tickets before they’re sold out!
+
+5. GORUCO
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/617/goruco-ruby.jpg
+When: June 24, 2017
+Where: New York City, USA
+It looks like June is the hottest month for Ruby conferences! The fifth conference that will be held in June is GORUCO. It’s no accident that GORUCO’s logo is an apple: the conference will take place in New York, NY.
+
+At this year’s GORUCO you’ll hear about improving Ruby performance, front-end development with Rails, and much more. However, GORUCO’s speakers will delight you with non-Ruby topics as well, including What I Learned to Love About Ruby When I Switched to Python by Lauren Ellsworth; Object Oriented Thinking with Elixir and OTP by Ryan Findley; Beyond OSS by Verónica López; and Developer Productivity Engineering by Panayiotis Thomakos.
+Get your tickets to attend the 11th GORUCO conference this June!
+
+6. GrillRB
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/620/grill-rb.jpg
+When: July 1–2, 2017
+Where: Wrocław, Poland
+
+Grill.rb is Wrocław’s outdoor conference that gathers programmers to discuss best practices, development tips and tricks, and the future of Ruby in a relaxed atmosphere by the grill and with a mug of beer.
+
+The format of Grill.rb is versatile. At the conference, you’re able to attend technical panels where participants discuss vital topics; sit in on lectures; listen to lightning talks on the latest releases and achievements; and, of course, enjoy a BBQ party!
+
+This year, Grill.rb features local Polish speakers: Jan Filipowski, a Ruby developer who gained experience working at Arkency, RightHello, and AgFlow; Piotr Solnica, a Tech Lead at IceLab; Maciej Mensfeld, a Ruby developer and VP of Engineering at Strike Social; Przemysław Świercz, a Ruby Tech Lead at Tooploox; and Marcin Wierzbicki, a Ruby on Rails evangelist and CEO at Appstery.
+
+If you’d like to become a speaker at Grill.rb, you can fill in the call for papers. And if you can’t wait to spend the first day of July in a relaxed atmosphere with like-minded people, then grab a ticket to Grill.rb!
+
+7. Brighton Ruby Conf
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/615/brighton-ruby.jpg
+When: July 7, 2017
+Where: Brighton, England
+
+Brighton is famous not only for its chalk cliffs and pebble beaches. This July, Brighton will host Brighton Ruby Conf, an annual event for avid Rubyists.
+
+The agenda is available on the official website. You can hear from Piotr Solnica (“Dry.rb”); Alex Soles (“Ruby: How a language reflects its people”); Najaf Ali (“Debugging for new developes”); Sarah Mei (“Livable Code”) and many more experienced Ruby developers. After the conference you’ll be able to go to the afterparty and enjoy chatting about coding and non-programming topics.
+
+Don’t forget to grab your tickets and have a quality time at Brighton Ruby Conf!
+
+8. Isle of Ruby
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/621/isle-of-ruby.jpg
+When: August 10–13, 2017
+Where: Devon, England
+
+Isle of Ruby is a brand new conference that will be held for the first time on the 10th to 13th of August at the height of the English summer. The event will be hosted by the professionals from Germany and the UK who brought us eurucamp, EuRuKo 2012, and the Rails Girls Berlin meetup ‒ and we’re sure that Isle of Ruby will be as exciting as the previous events!
+
+The agenda isn’t available yet, so keep in touch through the official website and Twitter account so you don’t miss a thing!
+
+9. Deccan RubyConf 2017
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/616/deccan-ruby.jpg
+When: August 12, 2017
+Where: Deccan, India
+
+India welcomes you to visit Deccan RubyConf 2017! This is a single-track conference, so you won’t miss any talks or workshops that will be held during the event.
+
+At the conference, you’ll hear from Tim Riley of Icelab and visit a workshop by Aditya Goodbole, a software architect consultant. The rest of the speakers aren’t announced yet, so don’t forget to check out the official website to keep posted!
+
+There will also be JRuby Conf in Devon, England on August 11th. We’ll keep you informed with updates regarding this event.</description>
+      <pubDate>Thu, 11 May 2017 11:15:36 +0300</pubDate>
+      <link>https://rubygarage.org/blog/international-ruby-conferences-summer</link>
+      <guid>https://rubygarage.org/blog/international-ruby-conferences-summer</guid>
+    </item>
+    <item>
+      <title>The Benefits of Using Ruby on Rails for Your Startup</title>
+      <description>If you asked us to describe the Ruby on Rails framework in a few words, we would say something like “startup friendly, flexible, well-supported.” We’re not alone in these opinions: the creators of Twitter, Airbnb, Shopify, Twitch, Netflix and many more successful startups are using Ruby on Rails to build their websites. In this post, we’d like to talk in detail about the benefits of Ruby on Rails for your business and inspire you to build your own Ruby on Rails startup.
+
+But before that, let’s take a look at the latest stats and facts that show how popular and commonly used Ruby on Rails is.
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2108/ruby-on-rails-startup-benefits1x.png
+See? Ruby on Rails is really popular and web application development based on this framework can be very beneficial for you. Here’s why.
+Ruby on Rails is Time-efficient
+Ruby on Rails is strongly associated with startups, which should come as no surprise. As a framework, Ruby on Rails contains many ready-made plugins and modules that allow developers to start building a web app without writing boilerplate code. On average, Ruby on Rails teams build applications 30-40% faster than teams using other programming languages and frameworks.
+Another advantage of Ruby on Rails (or a similar framework) is consistency. With Ruby on Rails, your developers will follow standardized file storage and programming conventions (such as naming and pluralization) that keep your project structured and readable. A readable and maintainable codebase means that your developers will require less time to update code in the future.
+Moreover, Ruby on Rails is based on an MVC (Model–View–Controller) design pattern, which supports rapid project development. The MVC pattern, by facilitating parallel development, allows teams to work efficiently; one developer can work on controllers while another works on models, for instance. This workflow allows teams to develop applications up to three times faster than with other design patterns.
+An MVC pattern also suggests separating out the business logic of an application so that it’s not spread across multiple MVC components. This means that strictly following an MVC pattern prevents developers from creating both redundant code and spaghetti code ‒ intricate and unreadable. The MVC pattern results in a maintainable codebase that is easy to read and easy for other development teams to pick up.
+Ruby on Rails is Cost-effective
+Most startups experience the same problems: time constraints and tight budgets. Using Ruby on Rails for startups, entrepreneurs can save their money in several ways.
+Gems for any task
+Rails is a framework that has a lot of fans all over the world. This community is constantly creating gems, third-party libraries to extend capabilities of the technology. Today, there are more than 3000 gems that allow developers to add any functionality from authorization and authentication to file uploading and payments to their projects. You can check the list of our favorite 57 gems for Ruby that our team uses on a daily basis.
+Since gems make it possible to add features without developing them from scratch, they can save plenty of developer time and effort, which translates into faster product development. This variety of gems helps us to create absolutely different web applications with different functionality, starting from CMS to ecommerce stores.
+Easy support and maintenance
+The release stage of a project is just a beginning of its life cycle. Support and maintenance are much more important as they guarantee flawless work of a web app after months and even years of continuous working. If the source code of a web app is of poor quality, the support and maintenance of this project would be very difficult and expensive.
+Ruby on Rails promotes good coding practices. There are gems that help web development companies to improve their coding style, test code and debug it on a short notice. It all results in superior quality of a final product that is easy to support, maintain and scale if needed.
+Ruby on Rails is about Quality
+Every IT startup strives for excellent quality ‒ zero bugs and issues that disappoint end-users. Ruby on Rails promotes bug-free development; the Minitest tool is even built into the Rails core. Minitest is a comprehensive test suite that provides many useful testing features including expectation syntax, test benchmarking, and mocking.
+In addition, Ruby on Rails encourages test driven development (TDD) and behavior-driven development (BDD) approaches. Both TDD and BDD preach the principle of writing automated tests first and coding after. These approaches, provided they are strictly followed, guarantee 100% code coverage with tests and a well-elaborated software architecture.
+Moreover, test driven development not only ensures excellent software quality, but also effectively cuts down development costs by reducing development time and preventing bugs. If you’re interested in finding out more about the advantages of TDD for your project, check out our article “How TDD Helps You Cut Development Costs.”
+Ruby on Rails focuses on software engineering best practices like no other framework. For instance, the Rails developer community preaches code simplicity and adheres to the KISS (Keep it Simple, Stupid!) and DRY (“Don’t Repeat Yourself”) principles. As a result, web applications built with Ruby on Rails boast consistent, maintainable, and testable code.
+Ruby on Rails is Scalable
+When building an IT startup, you need to think about scalability. Scalability is the potential to ramp up your service to handle increased loads, meaning more requests per minute. Getting lots of visitors is what any web or a mobile application strives for. This is why you should prepare in advance and make sure that your website can cope with all the visitors you’re hoping to attract.
+Shopify, an ecommerce platform that powers online stores and POS systems, is likely the most cited example of a scalable IT product built with Ruby on Rails. Recently, Tobias Lütke, Shopify’s CEO, wrote on his Twitter account:
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2110/ruby-on-rails-for-startup1x.png
+Today, according to their official website, Shopify processes 4 million requests per second. Sounds impressive, doesn’t it?
+Surely, scalability doesn’t exclusively depend on your framework. Your deployment strategy and system and database architecture also play an important role in scaling an app. But Rails does have great scaling potential. For starters, Rails is characterized by modularity, which entails dividing the system into modules and gems. Let’s say we have an application in which database queries take too many resources. With Rails, you can divide that application into functional blocks (micro-services) and even move a database to a separate server or Amazon RDS. This means that you can scale your app horizontally to accommodate more requests. You can read our article about possible ways of scaling your Ruby on Rails applications for more detailed information.
+Ruby on Rails is Supported
+It’s a fact: Rails has one of the most vibrant and active communities in the programming world. Rubyists write blogs and books and organize meetups and conferences. They take part in hackathons (events for collaborative software creation) and are always happy to share what they’ve learned.
+Probably, we can explain this devotion by saying that Ruby on Rails is an open source framework. Open source software (OSS) is built by enthusiasts in a collaborative manner and, as a rule, is distributed for free. The motto of OSS creators is to make the world a better place by sharing knowledge and code with each other. Rails is supported by thousands of developers all over the world. In fact, this community updates the technologies so rapidly that it pushes the whole software development industry forward.
+In terms of your own project, this community not only can help to address problems quickly, but can also offer lots of useful, well-documented, and tested plugins and modules for every possible need (e.g. authentication systems, comment systems, email).
+Ruby on Rails is Secure
+Special attention is paid to security in the Ruby on Rails framework. Some security features are built into the framework and enabled by default. Using Ruby on Rails also means following the Secure Development Lifecycle, which is a complex security assurance process.
+Finally, the large developer community always keeps Ruby on Rails up-to-date and tests the security of Ruby plugins and applications prior to release, which makes Ruby on Rails a generally safe environment.
+It turns out that there’s no other equally advanced technology for creating online products or services that can be compared to Ruby on Rails. Besides, Ruby on Rails is not only about the technology, but also about the efficient workflow and ability to create truly awesome products.
+It’s no surprise that Ruby plays such an important role in our work. So important, in fact, that we decided to name our company RubyGarage.</description>
+      <pubDate>Thu, 05 Nov 2015 17:14:30 +0200</pubDate>
+      <link>https://rubygarage.org/blog/why-i-need-to-use-ruby-on-rails-in-my-startup</link>
+      <guid>https://rubygarage.org/blog/why-i-need-to-use-ruby-on-rails-in-my-startup</guid>
+    </item>
+    <item>
+      <title>4 Ruby Conferences to Visit in Winter 2019</title>
+      <description>The upcoming cold snap isn’t a reason to hide under the blankets in your apartment. Get out and warm up your brain at the best Ruby conferences of this winter. We’ve prepared a selection of four high-level conferences where you can grow professionally. Explore, debate, and gain new skills. 
+#1 RubyConf India
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2192/rubyconf-india-2019-1x.png
+When: January 20–21
+Where: Goa, India
+This is the tenth anniversary of RubyConf India, and you’re invited to celebrate it at the picturesque Park Regis in Goa. The venue is perfect, as it’s just five minutes from the famous Baga beach. Nearby, you can find restaurants and nightclubs for any taste.
+RubyConf India is a single-track Ruby conference, so you won’t miss any important talk. This event is focused on all the different parts of the Ruby and Ruby on Rails ecosystem.
+The organizers of RubyConf India promise a diverse lineup of speakers, with topics ranging from beginner-friendly how-tos to insightful presentations for pros. Among keynote speakers are Yukihiro “Matz” Matsumoto, the well-known creator of Ruby; Gautam Rege, a co-founder and director at joshsoftware.com; and Charles Nutter, a senior principal software engineer at Red Hat.
+Speakers will also touch on non-technical topics like team dynamics and communication. The good news is that the call for proposals closes on November 30, so you still have time to send your proposal.
+RubyConf India offers tickets with different room occupancy, so you can either book a whole room or share a room with a friend. This is an amazing opportunity to escape the cold and experience the state where the sun never sets.
+#2 RubyFuza &amp; Friends
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2194/rubyfuza-2019-1x.png
+When: February 7–8
+Where: Cape Town, South Africa
+Started in 2011, RubyFuza is the oldest Ruby conference in Africa, gathering top software engineers and influencers in the programming world. RubyFuza is a two-day conference that suits both tech-savvy professionals and newcomers.
+In previous years, this Ruby conference featured international keynote speakers ‒ all of whom have received Ruby Hero awards ‒ including Nate Berkopec, author of The Complete Guide to Rails Performance; Charles Nutter, a senior principal software engineer at Red Hat; Coraline Ada Ehmke, a creator of the Contributor Covenant; Sarah Mei, founder of Railsbridge and director of Ruby Central; and Aaron Patterson, a Ruby and Rails maintainer at Github.
+This year you’ll hear informative talks on Ruby, React, Elixir, and functional programming and learn more about tools such as Docker, Webpacker, and Hanami. RubyFuza encourages talks on the human side of software as well: soft skills, leadership, and personal growth. Early bird tickets are still available and you can buy one right now.
+RubyFuza is an ideal place to start your speaking career. The call for papers is open till December 15. So don’t waste this chance. Submit your presentation! Share your vision and knowledge with fellow developers.
+#3 RubyConf AU
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2197/rubyconf-au-2019-1x.png
+When: February 7–9
+Where: Melbourne, Australia
+The annual RubyConf AU gathers developers from hundreds of top companies to network, collaborate, and celebrate the Ruby community. RubyConf AU offers a wide range of topics, giving useful content for experienced devs and juniors that are just starting their careers.
+In 2018, we heard Paolo Perrotta explain the basics of machine learning, Andy Nicholson talk about Crystal, and Michael Morris speak about the high-performance Mario Kart on Ruby.
+This February, Rubyconf AU has lined up Nadia Odunayo, CTO at CodeNewbie; Daniel Fone, an experienced Ruby and Ruby on Rails engineer and one of the organizers of the Christchurch Ruby meetups; and Eliza Sorensen, an infrastructure and security engineer and co-founder of the social enterprise Assembly Four. The final set of speakers will be announced soon. Meanwhile, you can keep in touch through the RubyConf Twitter account or by subscribing to their mailing list.
+Early bird tickets have already run out, but you can still purchase standard tickets or apply for the Opportunity Program. RubyConf AU wants to provide everyone with the same opportunities to progress in their careers, which is why event organizers are ready to cover ticket, travel, and accommodation costs for those living outside Melbourne who are selected for the Opportunity Program. The organizers of this Ruby on Rails meetup review Opportunity Program applications once a month. The Opportunity program will close on December 31 or when 80 percent of conference tickets have been sold.
+RubyConf AU is known for its remarkable social events. Last year, RubyConf AU invited attendees to enjoy a rooftop pool party and Chinese garden party. This year conference organizers are preparing something special for you, so you won’t regret going!
+#4 Ruby on Ice
+
+https://rubygarage.s3.amazonaws.com/uploads/article_image/file/2199/ruby-on-ice-2019-1x.png
+When: February 22–24
+Where: Tegernsee, Germany
+Ruby on Ice is opening its doors again to gather Ruby enthusiasts from all over the world. This Ruby on Rails conference is organized by a German non-profit community ‒ Ruby Berlin e.V., a volunteer organization that aims to develop the Ruby community and helps Rubyists exchange knowledge and experience.
+Ruby on Ice is set in fairytale surroundings near the backdrop of the towering Alps at Lake Tegernsee. You can check out images of the sheer beauty here.
+Last year, Ruby on Ice hosted 150 attendees and 12 skilled speakers, including Tobias Pfeiffer, who outlined differences and similarities between Ruby and other languages; Tom Stuart, who explained a systematic approach to software engineering management; Ivo Ango, who talked about spotting unsafe concurrent Ruby patterns; and Jessica Rudder, who guided developers through an example of code that was so bad it was actually good.
+The organizers of this Ruby on Rails conference haven’t announced the full agenda yet. We know only the name of one keynote speaker: Eileen Uchitelle, a senior systems engineer on the Platform Systems Team at GitHub, a member of the Rails Core team, and an open source contributor. Stay tuned for updates on the conference’s Twitter account.
+Early bird tickets have already sold out. Regular tickets cost €330. Diversity tickets are available as well. Ruby on Ice grants free tickets to underrepresented and disadvantaged groups and people facing economic hardship. To apply for a diversity ticket, visit this site.
+Сome to Tegernsee, have fun in the snow, and discuss the future of Ruby in a warm and cozy atmosphere!
+Aren’t you there yet?
+Winter isn’t the high season for Ruby conferences. Yet all of these winter meetups feature meaningful talks for developers of different levels, making them great whether you’re a beginner or a Ruby veteran. You just need to choose the conference that best meets your needs.
+If you want to receive even more valuable information about the latest Ruby trends and events, subscribe to our blog!</description>
+      <pubDate>Tue, 20 Nov 2018 14:07:41 +0200</pubDate>
+      <link>https://rubygarage.org/blog/ruby-conferences-winter-2019</link>
+      <guid>https://rubygarage.org/blog/ruby-conferences-winter-2019</guid>
+    </item>
+    <item>
+      <title>53 Best Ruby Gems We Use at RubyGarage</title>
+      <description>Here at RubyGarage we work closely with Ruby and Ruby on Rails technologies. We like Ruby for its resourcefulness and vibrant community, while Ruby on Rails is appreciated for its multiple ready-made solutions that allow for rapid software development.
+Such rapidity is mainly achieved through using Ruby gems – libraries with specific functionalities that allow us to extend and customize our apps. In Ruby on Rails, there are gems for every purpose: from authentication and authorization, to payments processing and testing.
+Check out our Ruby gems list that features the best libraries we regularly use in our projects – and recommend. Enjoy!
+Active Record
+Active Record is the default ORM for Ruby on Rails. Though it offers rich functionality, some projects require custom solutions or additional features. We’ve picked out a few gems that extend Active Record’s functionality making it more powerful, flexible, and versatile.
+Pagination – Try the pagy gem that is very modular, completely agnostic, and does not load any unnecessary code in your app. Its updated version is faster, lighter, simpler, and more efficient than other pagination gems.
+Clone – If you need to create a copy of an Active Record object and its associations, check out the clowne. This is a flexible and easy-to-use tool that provides the ability to connect various ORM adapters. 
+Soft delete – To add conventions for flagging records as discarded, try discard, a simple ActiveRecord mixin. It doesn't override any ActiveRecord methods and provides convenience methods and scopes for hiding, restoring, and querying records.
+Finite state machines – AASM, which replaces the acts_as_state_machine plugin, works with any Ruby object, including ActiveRecord. AASM adds finite state machines (sets of rules that dictate what an application or a device should do) to Ruby classes.
+Versioning – For logging DB records changes, try logidze. The gem allows you to create a DB-level log, providing you with an API to browse this log. The log is stored with the record itself in JSONB column. No additional tables are required.
+Internationalization – When translating your application into foreign languages, globalize, powered by I18n API, comes in handy. Globalize adds translations of your website’s content to ActiveRecord models, which is especially useful when you deal with the translation of non-static database content.
+Encryption – To ensure security, we choose lockbox that provides modern encryption for Ruby and Rails. We like it because it has zero dependencies, many integrations, and makes migrating existing data easy. This gem works with database fields, files, and strings, maximizing compatibility with existing code and libraries. 
+Testing
+If you’re going to write automated tests for your applications (which is integral to building RoR apps), there are several awesome Ruby gems that will come in handy. While working on our projects, we use RSpec, factory_bot, Capybara, shoulda-matchers, database_cleaner and simplecov to save time and effort.
+We use RSpec – a framework mainly used in BDD and TDD environments – to create tests. Its syntax is neat and descriptive, which allows us to write tests (or specs) as closely as possible to “human” language. We also like RSpec because it’s an effective tool for testing the behavior of a model or a library.
+Database_cleaner is often used with RSpec for cleaning up databases during tests. Database_cleaner provides you with the flexibility to configure when your database will be cleaned up: before tests are launched or both before and after each test. And if you face the problem of external requests during tests, you might want to find a solution like the VCR gem, which snatches all external requests with responses and records them to a file so you can “replay” them during testing.
+In order to create test data, we use factory_bot. This is a gem with a straightforward definition syntax, support for multiple build strategies, and multiple factories for the same class.
+We also use capybara, an acceptance testing library, which effectively automates a user’s interactions in a browser. With Capybara, we’re able to test clickthroughs, form completion (data entry fields, dropdown boxes, checkboxes), availability of items on a page, and more. Bundled with Poltergeist, a popular PhantomJS driver, Capybara provides us with the ability to run testing scenarios in a WebKit from the console.
+For generating fake data such as names, addresses, and phone numbers, faker libraries can \help. Another useful gem is site_prism - a page Object Model DSL for Capybara. It gives you a simple, clean, and semantic DSL for describing your site. 
+Another gem, shoulda-matchers, lets us easily test typical Rails functionality such as validations and associations by writing compact one-line tests compatible with RSpec. In other words, shoulda-matchers offers matchers that help developers to test basic Rails functionality quickly and easily.
+Lastly, the simplecov gem allows us to see the percentage of code covered by unit tests. This gem helps us to track how much code we’ve tested and strive for better results (though achieving 100% coverage is quite challenging).
+Coding Style
+Coding style is important. In order to write quality code, skillful Rubyists follow the best practices found in The Ruby Style Guide. But why do developers care so much about style? According to the Ruby Style Guide, well-written Ruby reads like a natural language and can be understood even by non-developers. Moreover, well-written code is easy to maintain, modify, and scale.
+To assure code quality, developers apply gems that analyze their code and suggest improvements. Let’s see which gems our RubyGarage team prefers.
+The rails_best_practices gem is a static code metric tool that analyzes code to find code smells: pieces of code that aren’t technically bugs but that may lead to software issues in the future. Rails_best_practices offers suggestions to improve your code – for example, suggesting the removal of tabs, annotation of models, or additional database indexes. You can share the analysis results with your collaborators and track your results over time to see how your code has improved.
+Another code analyzer – with the menacing name RuboCop – assures that your code conforms to the Ruby Style Guide. Style guide freaks and geeks adore RuboCop since it leaves no chance for style violations – they’re reported right in the command line. Some developers find this pretty annoying, but you can configure RuboCop to show only the refactoring suggestions you want. The great thing about RuboCop is that it automatically fixes issues like line breaks, syntax, and the amount of gaps.
+We also use lefthook to automatically support our clean code writing. This is a fast and powerful Git hooks manager for any type of projects. It features parallel execution, flexible list of files, gGlob, regexp filters and optional output. 
+Debugging
+Errors happen all the time when you’re writing code. Whether you make a typo or a gem doesn’t integrate properly, you get unpleasant results. To eliminate these issues, there are a few handy tools we use for debugging errors in Ruby code.
+Pry-byebug is another tool we use, and it actually extends the functionality of the Pry and Byebug gems. With pry-byebug, you’re able to implement step-by-step code debugging by setting breakpoints. Pry-byebug allows you to set console (IRB or Rails console) break points so you can check how a piece of code is executed at a certain point.
+Last but not least, we must mention the Letter Opener gem, which allows you to preview emails sent from an application straight in your browser’s tab. This is quite useful for applications that send emails (for example, notifications) to multiple users or in cases when you require a quick email preview. With Letter Opener, you don’t have to wait for an email to be delivered to your mailbox but you can quickly preview emails in your browser and make changes if necessary.
+Authentication and Authorization
+Whether you’re building a social network, an ecommerce solution, or nearly any other kind of application, you generally need to offer login functionality, which means you need to provide authentication and authorization. Some developers prefer to write their own user authentication and authorization solutions, but others use popular ready-to-go Ruby gems that save a whole bunch of time and effort.
+It’s hard to find a Ruby developer who hasn’t heard about the Devise gem. It is a flexible authentication solution for Rails based on Warden that should be used together with activeadmin or for monolithic applications. This monstrous gem, based on the Rails MVC stack, adds OmniAuth support to verify users, resetting passwords, if necessary, and storing passwords in the database to simplify authentication. Moreover, Devise tracks metrics including IP addresses and timestamps, expires user sessions after a specified period of time, and locks accounts in case of multiple failed login attempts. Devise can do even more for you – check their GitHub page for more details.
+Logging into websites using social accounts such as Facebook or LinkedIn is a regular practice that saves users’ time and nerves. As a rule, social logins in Rails applications are powered by the OmniAuth gem, which creates authentication providers (for social networks including Facebook, Google, and even GitHub), which are integrated into a Rails application. Easy as a pie!
+If you need a flexible tool to build an authorization layer for your application, try action_policy. Being composable and extensible, it outperforms older solutions with similar functionality, such as Pundit and CanCanCan. 
+Another helpful library is Rolify, which allows you to establish and manage user roles – definitions of what users can do while using an application. For example, when building a marketplace like Airbnb, you’ll probably define two user roles: hosts, who provide their apartments for rent, and users, who rent apartments and receive a completely different set of functions. Rolify is also easily integrated with CanCanCan and Devise to extend their capabilities of user management.
+Finally, for providing configurable, manageable, and safe stateful sessions based on JSON Web Tokens, try jwt_sessions. It is designed to be framework agnostic yet easily integrable, and Rails integration is available out of the box.
+APIs
+In a nutshell, APIs are sets of requirements for exchanging data between applications. You can log in to online stores with your Facebook account thanks to APIs or look for nearby restaurants on Foursquare via Google Maps – also thanks to APIs. Building APIs can sometimes be challenging, but in other cases only requires a few lines of code.
+Thanks to many existing Ruby gems for APIs, you don’t have to reinvent the wheel. One great time saver is a gem called jsonapi-serializer - a fast JSON:API serializer for Ruby. It declares syntax similar to active model serializer and features optimized serialization of compound documents. You can also benefit from dox to automate the documentation writing process. This gem generates API documentation from Rspec controller/request specs in a Rails application.
+Security
+When developing applications that store users’ personal information or financial details, it’s important to ensure data security.
+Brakeman is a static security scanner that identifies vulnerabilities in Rails applications. While it may report vulnerabilities even if there aren’t any (since it’s static), you can easily configure a list of warnings in order not to receive unnecessary notifications. If you need to block abusive requests, try rack-attack. 
+In case you want to check your application’s gems for vulnerabilities, take a look at bundler-audit, which runs on top of Bundler. With bundler-audit you can sleep tight and save plenty of time not checking every single gem in your Rails application since the bundler-audit reviews your gemfile.lock for vulnerable gem versions and prevents unreliable gem fetching.
+The gem which takes care of applying security-related HTTP headers to Rails application’s responses is Secure Headers. Secure Headers allows you to apply headers like CSP to prevent cross-site scripting and mixed-content attacks and XFO to prevent your content from potential clickjacking attacks.
+Payments
+If you build an ecommerce solution, you’ll definitely need to provide fast, secure, and convenient payment options.
+Active Merchant is a library from the creators of Shopify that provides a centralized API to integrate with many popular payment gateways. This open-source library is well maintained by the Shopify team and currently supports 145 payment gateways available all around the globe.
+At RubyGarage, we prefer to work with popular gateways like PayPal, Stripe, and Braintree. But even though Active Merchant handles Stripe and Braintree integration, we often use Braintree Ruby, stripe-ruby, and stripe_event in order to provide lightweight solutions for our applications. Since Active Merchant is a large library, which might slow down an application’s performance, it’s more effective to integrate several payment gateways and not to overload the app.
+Uploading Files
+Quite often we build web applications that allow users to upload files of various kinds: documents, images, audio, and video. shrinerb/shrine: is a useful toolkit for handling file uploads in Ruby. It’s memory friendly, has a modular design and flexible processing. 
+When it comes to images, one of the most effective solutions available is image_processing. It provides higher-level helpers that are commonly needed when handling image uploads.
+Scheduled and Recurring Jobs
+Background jobs in Ruby applications are processed outside the normal request/response flow and are literally operations in a queue, executed one after another. Processing background jobs is critical for an application’s performance. To provide you with a vivid example, let’s imagine we build an application that sends an email to a user after they sign up. Obviously, an email should be delivered as fast as possible: we all hate to wait two or three seconds expecting a message to pop up in our mailbox. To speed things up, we need to leverage background jobs for operations like sending emails, importing data, calling third-party APIs, and resizing images.
+For scheduled jobs the RubyGarage team employs the Sidekiq Redis-supported library that uses Redis as a job management store. This gem impresses developers with its multi-threading capabilities, resulting in impressive speed. Other benefits include convenient monitoring of job processing status the opportunity to execute jobs in parallel. 
+There’s also an add-on for Sidekiq – sidekiq-cron. It checks for new jobs to schedule every 30 seconds and doesn't schedule the same job multiple times when more than one Sidekiq worker is running. This gem allows you to set up any kind of jobs, like sending congratulation messages to your app users on New Year’s Eve and other holidays. 
+Search
+Most web applications require a built-in search functionality. To power your application with a search, you might want to take a look at a few helpful gems.
+Elasticsearch is a popular search engine for enterprises. By leveraging Elasticsearch, you’re able to implement search on a website, index catalogs of goods (if you’re running an ecommerce store), enable automatic insertion of data, develop a solution for price notifications by indexing prices, implement reverse search, store transactions and actions, and analyze and retrieve data to get comprehensive statistics. We use the Elasticsearch gem for Ruby integrations in Rails applications.
+“Awesome,” “great,” “amazing” – these are the words our developers use to describe the Ransack gem. Ransack is appreciated by Ruby developers because it helps them create smart and simple, yet advanced, search forms. Unfortunately, the gem currently isn’t maintained on GitHub, but it doesn’t prevent it from being popular.
+Finally, to enable full-text search in a PostgreSQL database, we use the PgSearch gem.
+Environment Variables
+Storing application configurations in environment variables is a widely used practice derived from the principle of a twelve-factor application; by doing so, you’re able to keep sensitive data like passwords or API keys outside the code repository, but the data is still available during execution. The library that might be helpful in this case is anyway_config. It allows abstractize the configuration layer by introducing configuration classes that describe available parameters and their defaults. 
+Admin Panel 
+Being a website owner or administrator, you need a dashboard where you’re able to manage your website. In the Ruby world, the most common admin panel tool is Active Admin. It provides its users with out-of-the-box features, including data export to CSV, JSON, and XML, custom search and filtering by types, as well as custom authentication and authorization to differentiate user roles. Active Admin requires manual modifications and customization since it has its own view/controller pattern.
+View Helper
+Recently, the trend has been towards keeping models, views, and controllers as skinny as possible. So how can we keep everything skinny? View Helpers are modules that contain methods to help you write DRY (Don’t Repeat Yourself), clean, and maintainable code. Let’s look at a few gems that save a whole bunch of time for our developers here at RubyGarage.
+In Rails, we have objects everywhere. Draper is a gem-decorator that adds an object-oriented presentation to your web application. If you find the logic in your templates and helpers overly complex, then this gem might be what you need – Draper helps you clean things up with a more object-oriented approach by adding, replacing, or extending an object’s behavior.
+Simple Form is a gem that does what its name suggests: it helps you create forms for your Rails applications. In a nutshell, Simple Form helps developers write more elegant code, as well as quicky create dropdown lists, and offers amazing flexibility when working with checkboxes and radio buttons. It can even help you internationalize form elements.
+Another useful gem is MetaTags, which helps you create SEO-friendly Rails applications by adding View Helpers for meta tags. MetaTags makes SEO management efficient by giving a more straightforward way to create meta tags while sticking to SEO best practices.
+Finally, when developing an ecommerce solution, we need to consider money and currency conversions. The Money-Rails gem solves these tasks in your Rails application by integrating with the Money gem. The Money-Rails gem offers a number of benefits over the Money gem, such as a money class, monetary values, and currency conversion. Moreover, you’re able to create fancy money entry fields which are automatically split into hundreds and thousands with decimal points.
+Conclusion
+It’s a standard practice to use Ruby gems when working with Ruby on Rails applications. Popular gems solve common problems in Rails applications, including file uploads, authentication, authorization, and testing. Ruby gems also eliminate the need to reinvent the wheel and build your own solutions for each unique app. That said, gems aren’t the silver bullet for all your problems. Gems are more like frozen food from the store; they’re mostly ready to go, but you can’t eat them straight out of the box. Use gems frequently, but remember about serving them right!
+
+</description>
+      <pubDate>Mon, 21 Nov 2016 14:11:52 +0200</pubDate>
+      <link>https://rubygarage.org/blog/best-ruby-gems-we-use</link>
+      <guid>https://rubygarage.org/blog/best-ruby-gems-we-use</guid>
+    </item>
+    <item>
+      <title>How Ruby on Rails Speeds Up the Launch of Your Ecommerce Store</title>
+      <description>When launching an ecommerce store from scratch, you should think over the essential pieces of functionality that will help you sell efficiently: product management, a reliable payment gateway, an efficient shipping system, and so on. 
+Ruby on Rails (RoR) is a smart choice for starting your ecommerce store as this framework provides lots of free ready-made solutions to implement basic functionality for online stores in 2019. 
+Moreover, Ruby on Rails ecommerce platforms such as Spree Commerce and Solidus as well as separate Ruby gems give you complete control over your store.
+
+https://d3smn0u2zr7yfv.cloudfront.net/uploads/articleimage/file/1815/launch-your-ecommerce-store-1x.png
+Let’s look at solutions that Rails offers for different parts of an ecommerce store.
+1. Inventory management
+Inventory management is a vital part of your online store as it gives you control over all your products and product lines. Ruby on Rails makes it easy to 
+
+Track how many units are in stock
+Implement real-time stock level updates and prevent run-outs
+Examine your assortment
+Identify and remove products with low customer satisfaction rates 
+
+Ruby on Rails provides numerous solutions that help you arrange your inventory so you can increase conversions, maximize sales, and grow profit for your company.
+
+
+Product variations: Show your products in multiple sizes, colors, materials, and more. Each product variation has its own price, weight, and inventory. This feature is available by default as part of the Spree Commerce platform.
+
+Multiple images: Add multiple images for your products to demonstrate them from all angles. This feature is also available by default with Spree Commerce.
+
+Product organization: Organize products by category, type, season, price, sale, and other parameters. You can implement this feature with the spree_product_groups extension.
+
+Bundles and kits: Offer several products for sale in a bundle for a special price. You can also advertise bundles and kits as single products across advertising platforms and marketplaces. The spree-product-assembly gem adds bundle and kit options to ecommerce stores.
+
+Importing and exporting products: Create or update products in bulk, add new categories, or rearrange existing ones using CSV files. This feature is available through the datashift_spree extension.
+
+Dropshipping: Transfer customer orders and shipment details to either the manufacturer, another retailer, or a wholesaler. Set up your dropshipping business with the spree_drop_ship extension.
+
+But what if you’re running a digital store and don’t have physical products at all? Rails has solutions for that. For instance, with spree_digital, you can sell digital products such as e-books, images, music, and web elements right from your online store. 
+You might also think about personalization tools in your online store. In fact, 88 percent of customers want to shop with retailers that deliver personalized offers. You can offer personal engravings on products you sell, let customers order goods with specific sizes, or let customers upload images to put on products. These features can be added with the Spree_flexi_variants extension.
+Once you’re finished with inventory management, you need to think through how your clients will see your products and the whole appearance of your online store.
+2. Storefront
+The ecommerce storefront is everything your clients see and experience when entering your website: images and descriptions of goods or services offered, pricing information, a shopping cart, and contact information. When talking about a storefront, we need to outline the user experience (UX).
+The user experience is the overall experience the user has when visiting your store. It determines how easy and enjoyable it is for customers to navigate your store, find what they’re looking for, and make a purchase. 
+  2018 is the year for focusing on user experience and conversion rate optimization. Today’s customers have different expectations than just a year ago they expect pages to load quickly, the relevant content they seek to be found above the fold and easily digestible, there to be easy navigation to find other information they may need, and clear calls to action. Larry Engel, Director of Search Engine Marketing at OuterBox 
+When your competitors can offer a comparable product or service that’s simpler to buy, customers won’t hesitate to leave you. A well-thought-out UX can raise conversion rates up to 400 percent and encourage people to stay loyal to your brand for a long time. 
+The user interface (UI) is no less important, as a good UI can yield up to a 200 percent increase in your store’s conversion rate. 
+  Problems with visual design can turn users off so quickly that they never discover all the smart choices you made with navigation or interaction design. Jesse James Garrett, Information Architect and Co-founder of Adaptive Path 
+UI design should support and enhance UX aspects you’ve chosen for your ecommerce store and strengthen emotional feedback. And, of course, you need to know your target audience and give your customers what they truly want. 
+A/B testing is the best way to check that your storefront matches your business goals, such as increasing the number of sales. It allows you to test different variations of your store’s pages or elements on a page that may impact customer behavior. You can find more tips on designing a successful ecommerce storefront in our article with UX tips for creating an online store that really sell.
+Fortunately, Spree offers tons of themes that are fully customizable so that you don’t need to spend lots of time and money creating an appealing storefront to stay competitive on the market.
+Beyond customized UX and UI, you need to ensure that your online store is adaptive so it looks good and runs equally well on all devices and screens. An adaptive store allows customers to browse and purchase items and services using any device, including a mobile phone or tablet.
+A recommendation system is another valuable feature in your ecommerce store. People like to get personalized experiences when visiting an online shop. It makes them feel special. Show your customers products they’ve recently looked at and related products they might be interested in. Spree extensions like spree_related_products and spree_recently_viewed can help you with this.
+Among possible extra functionalities for your storefront are:
+
+
+A content management system (CMS): A СMS helps you create high-converting landing pages, which is the foundation of a successful online business. There are a wide variety of CMSs that can be easily integrated in Spree-based stores or any store written on Rails. We’ve featured the best ones in this article. 
+
+Blogging platform: With blog posts, you can reach a wider audience and stimulate them to make more purchases. The spree_editor and spree-blogging-spree extensions provide the ability to curate your own blog, publish and categorize articles, create lookbooks, encourage discussion, and moderate comments.
+
+Translation and localization: Expand your store to other countries and start selling to customers around the world. Translate your product names and descriptions with internationalization and localization support. This feature can be added via spree_globalize and spree_i18n.
+
+Product zoom: Let your customers take a closer look at your products. The product zoom feature lets customers focus on a section of an image and increase its size so they can see even the smallest product details. This functionality is available with spree_product_zoom.
+
+With these functionalities, your ecommerce store will look compelling and your customers will be ready to buy. The next step is developing shopping cart functionality.
+3. Shopping cart
+The checkout process conversion rate is the most important metric for ecommerce businesses as completed purchases are what bring you actual revenue. The shopping cart page is a step away from checkout. With an average shopping cart abandonment rate of almost 70 percent, an optimized shopping cart is crucial for online stores. 
+Just think about this: 70 out of 100 potential customers leave your store without making a purchase. How much would you earn if you were capturing those sales instead of losing them?
+While you can’t control organic abandonment from customers who truly aren’t ready to buy, you can design an effective, simple, and secure shopping cart page to convert customers who are ready.
+Shopping cart functionality comprises five main sections: payment, security, order fulfillment, shipping, and taxes. Let’s look under the hood at these sections.
+3.1 Payment
+Let your customers pay easily and quickly with a one-step checkout. This means customers can pay for goods without creating an account or signing in.
+You’ll also need to create an effective tool for storing and managing credit card details. Give your customers the possibility to: 
+
+associate credit cards with accounts so they don’t have to add card details every time they want to buy something;
+add and remove multiple credit cards and choose between them when checking out.
+
+Here some RoR solutions you can use to handle payments in your online store:
+
+
+spree_gateway ‒ Provides dozens of payment gateways maintained by the community
+
+spree_multi_currency  ‒ A Spree extension that allows you to implement support for multiple currencies
+
+credit_card_validations - A Ruby gem for validating credit card numbers
+
+Active Merchant - An extraction from the Shopify ecommerce software solution, Active Merchant gives you access to multiple payment gateways and both integrates as a Rails plugin and works as a standalone Ruby library
+
+The Ruby on Rails community also provides integrations with popular payment gateways such as PayPal, Braintree, Stripe, and Amazon Pay.
+
+
+PayPal is an American company that supports online money transfers and payments and lets customers set up merchant accounts. Integrations: spree_paypal_express, Paypal Merchant SDK
+
+
+Braintree, a division of PayPal, provides mobile and web payment systems for ecommerce stores. Integrations: Braintree, spree_braintree_vzero
+
+
+Stripe is an online payment processor for internet businesses. Using Stripe, customers can pay with various cards, wallets, and local payment methods such as AliPay and WeChat Pay. Integration: Stripe Ruby library 
+
+Amazon Pay is an online payment processing service that provides online and mobile payments on ecommerce sites. Amazon Pay lets customers sign in and check out using information from their Amazon accounts. Integration: spree_pay_with_amazon
+
+
+Sometimes, customers don’t have enough money to buy products, especially niche ones. You can help them out by arranging financing options in your online store. Affirm, for example, lets customers split almost any online purchase into monthly payments. This financial company offers solutions in Rails (spree_affirm) that can be easily implemented into any online store built on RoR.
+Each payment on your online store must be secure. Customers need to know that no one will steal their money or identity.
+3.2 Security
+With a 30 percent rise in ecommerce fraud attacks from 2016 to 2017, fraud protection has become an urgent issue in online shopping. Identity theft from online transactions affected 16.7 million Americans in 2017. If an ecommerce store isn’t secure and information isn’t properly encrypted, hackers can obtain card data or account data. 
+Every online store should have a 256-bit SSL certificate. This certificate provides bank-level security to all your store pages, content, credit card details, and transaction information. You can find more information about SSL protection in our article HTTP vs HTTPS: How to Secure Your Site with SSL.
+Another solution is applying an effective fraud protection system. A fraud protection system helps you detect malicious activities and protect your customers from fraudulent transactions by:
+
+verifying customer addresses;
+validating card details;
+tracking the velocity of transactions for a given period;
+… and through other measures.
+
+If card details or address information don’t correspond to real figures, the system will automatically reject the transaction. Transactions are also rejected if the system detects too many financial activities on behalf of a customer within a certain timeframe. 
+Almost all of the payment integrations we’ve mentioned above, including PayPal, Stripe, Braintree, and Amazon Pay, include fraud detection systems. Braintree even offers advanced fraud protection tools including 3D Secure, Kount Standard, and Kount Custom
+Once your customer has paid for goods or services, it’s time to process their order and deliver it.
+3.3 Shipping and order fulfillment
+Hundreds of customers can purchase products in your store at once, especially during the holiday seasons. You need to adopt a flexible order fulfillment system that allows you to process and prepare multiple orders with just one click so that your customers don’t need to wait long for their deliveries. 
+You should also provide your customers with real-time tracking information. This way you can foster trust in your online shop as customers can check where their parcels are at any minute. You can extend your order fulfillment system with:
+
+
+An order management system (OMS): Enter and process orders efficiently with an OMS, which provides a centralized place to manage orders from all sales channels so that you can simplify and optimize your ecommerce sales.
+
+Shipping categories: Address special shipping needs for one or more of your products. Shipping categories mostly apply to items that can’t be shipped in the same box. For instance, let’s say that your customer orders a TV and a lamp. The TV would be considered an oversized item and would require special shipping arrangements, whereas the lamp could be sent via standard shipping.
+
+Shipping methods: Show your customers the full list of carriers and services they can use to receive a purchase.
+
+Shipping calculators: Automatically determine and display exact shipping rates from different carriers.
+
+To ease the shipping routines, you can integrate with diverse shipping providers and tools:
+
+
+ActiveShipping ‒ Provides web services of various carriers including USPS, FedEx, Canada Post, New Zealand Post, Shipwire, and more
+
+Shippo-ruby-client ‒ A shipping API that connects with USPS, UPS, DHL, Canada Post, Australia Post, UberRUSH, and many other carriers through one interface
+
+FedEx ‒ A Ruby library allowing you to interact with the FedEx Rate Web Service
+
+Ups-ruby ‒ A Ruby gem giving you access to UPS services
+
+Spree_easypost ‒ A Ruby gem for accessing the EasyPost API, which is a simple shipping API for multiple shipping services that lets you compare rates, buy postage, track packages, verify addresses, and more
+
+3.4 Taxes
+Some entrepreneurs get confused with how to charge sales tax and on which products they must charge it. Besides, taxes vary from state to state and country to country. That’s why you need to implement a tax calculator to get automatic tax calculations.
+Among the available RoR ecommerce solutions for taxes are: 
+
+
+spree_avatax_certified ‒ A Spree extension allowing you to add instant sales tax calculations to your store
+
+spree_taxjar ‒ A Spree extension that provides access to TaxJar services and lets you automate tax filing and reporting
+
+spree_tax_cloud ‒ A Spree extension for US sales tax based on the free Tax Cloud sales tax compliance service
+
+Taxes, though, are a small part of your accounting. Let’s explore other things you need to keep records of.
+4. Accounting and Finance
+Tracking revenues and profits can be quite burdensome as an online store owner needs to maintain records of each transaction. If you enter orders, number of goods sold, inventory, products, and shipping information manually, you can spend ages and end up with inaccurate data. 
+Handling pricing updates is another problem merchants can face. Make sure you provide your customers with the correct pricing information. 
+With growing sales, manual accounting becomes almost impossible. Integration with accounting services and tools can simplify this process and refine the whole accounting flow:
+
+
+quickbooks-ruby ‒ Lets you leverage the QuickBooks service, an accounting software package designed for small and medium-sized businesses
+
+xeroizer ‒ Allows you to implement Xero cloud-based accounting software.
+
+There’s also a wide range of Ruby gems providing a double entry accounting system, including double_entry, plutus, and keepr. With double entry accounting, each business transaction is tracked on two or more accounts. 
+There are also RoR ecommerce solutions that let you automatically generate PDF invoices for orders, such as spree_print_invoice.
+Managing relationships with your customers is no less important than managing your finances. Customer relationship management (CRM) software offers a rich variety of tools for this.
+5. Customer relationship management
+A CRM helps you manage relationships and interactions with existing and potential customers. Managing contacts is just the beginning. With CRM solutions, you can:
+
+gather valuable customer data including order history, shopping habits, and customer interests and preferences;
+segment customers based on location or purchase history;
+import and export customer lists using CSV files;
+get informative reports and analytics to measure the effectiveness of customer-related processes and streamline business choices;
+provide sufficient customer support;
+automate email marketing campaigns;
+integrate with social media. 
+
+And that’s not the exhaustive list of benefits that a CRM can bring to your ecommerce business. On a global scale, CRM solutions help you reach customers with tailored sales propositions, communicate with your leads through various channels, and generate more leads and bigger profits.
+
+https://d3smn0u2zr7yfv.cloudfront.net/uploads/articleimage/file/1810/crm-benefits-for-ecommerce-1x.png
+Most popular CRMs provide APIs written in Ruby:
+
+
+Salesforce API ‒ Salesforce is an out-of-the-box CRM for ecommerce offering several deployment options (cloud, SaaS, and web) and supporting mobile devices 
+
+Zoho API ‒ Zoho is a functional CRM for ecommerce businesses that provides sales forecasting, mass emailing, reports, and more
+
+HubSpot API ‒ Free for individual sales representatives, the HubSpot CRM keeps all of your customers in a single, easy-to-access database and automatically logs all interactions with customers
+
+A CRM collects data about your customers that you can see, store, and analyze. Yet you need to serve customers with an interface where they can find information related to their payments and orders, too. 
+6. Customer accounts
+Customer accounts encourage repeat shopping on your online store. Accounts store customer billing information and thus streamline the checkout process as customers don’t need to enter billing data for each purchase. 
+Accounts make customers more involved with your brand and your brand’s community. With accounts, customers can leave reviews and participate in forum discussions. 
+One more valuable feature of customer accounts is the wish list. Wish lists allow customers to create a collection of desired products and save them in their account for future reference. Wish lists reduce shopping cart abandonment, remind customers of products, and help merchants measure product interest. The spree_wishlist extension lets you implement wish lists in your customer accounts.
+Customer accounts allow online retailers to personalize the on-site experience as well. You can send specific product recommendations and promotional materials based on items browsed and stored for later by your customer.
+Creating an account for a first-time purchase, however, can scare some customers, so you should make it optional. 
+Once your customer has created an account, they should be able to:
+
+add address information to their account so that it’s autofilled during checkout;
+view order history;
+see the current order status for any purchases they make; 
+add products to wish lists.
+
+Spree Commerce provides most of the above features by default.
+The next block of an ecommerce store that you need to think through is customer support. 
+7. Сustomer support 
+A lack of personal interaction between customers and a company increases the churn rate. More than half of Americans have canceled a planned purchase or transaction due to bad customer service.
+
+https://d3smn0u2zr7yfv.cloudfront.net/uploads/articleimage/file/1814/importance-of-positive-customer-support-1x.png
+You need to build an effective customer service system to assist customers at each step during their experience with your online store. Make sure that customers can easily contact you and get a response immediately whenever they encounter an issue. Customer service covers help during product installation and maintenance, troubleshooting, conflict resolution, and more.
+Great customer service is a decisive factor in whether customers become loyal advocates of your brand. To get the most out of your customer service, offer your customers multi-channel support, including:
+
+
+A call center: Provide phone-based support. Resolve complex issues faster and deliver personalized support for your customers. Your callers can record conversations and forward calls to the appropriate personnel within your company for more complex matters. The ZendeskAPI::Client gem lets you equip your online store with call center functionality.
+
+Live chat: Cater to your customers with 24/7 support they can use anytime and anywhere, even at work. Live chats eliminate hold time and free customers to do other things while chatting with your staff. To add live chat to your online store, use twilio-ruby or intercom-ruby.
+
+Additionally, you can implement forum functionality so your customers can discuss any issues they’re worried about. Discussion forums engage visitors and stimulate them to make more purchases in your ecommerce store. 
+The most popular solutions for forums in Rails include Discourse, an open source platform for community discussions, and thredded, a Rails engine for forums and message boards.
+“Communications is at the heart of e-commerce and community” ‒ Hewlett-Packard CEO Meg Whitman
+And of course, you need to help people learn about your store by marketing it.
+8. Marketing
+If you don’t want to lag behind your competitors, you need to promote your store. Ecommerce marketing helps raise awareness of your brand and product offerings and drive more traffic and sales.
+To keep up with your marketing strategy, you can take advantage of these solutions: 
+8.1 Email marketing 
+Send timely and relevant emails to your customers. You can notify them of upcoming sales or new products. This also serves to remind your customers about your brand. Here are some tools that let you automate email marketing campaigns in your store:
+
+
+spree_chimpy ‒ Lets you implement functionality of MailChimp, the world’s largest marketing automation platform 
+
+maily_herald ‒ A Ruby on Rails gem that helps you manage email marketing campaigns and send daily notifications to your customers
+
+active-campaign-rails ‒ Allows you to automate your email marketing via integrations with ActiveCampaign; ActiveCampaign offers an email template editor and mobile sign-up forms 
+
+8.2 Search engine optimization
+Help potential customers find your store using search engines. Apply search engine optimization (SEO) best practices like customizable H1, titles, meta tags, and site maps. 
+To optimize your site for search engines, you may use:
+
+
+sitemap_generator ‒ Supports video, news, images, pagemap sitemaps, and alternate links 
+
+meta-tags ‒ Lets you specify page description, keywords, date last modified, and other metadata
+
+jekyll-seo-tag ‒ Adds metadata tags for search engines and social networks using Jekyll functionality
+
+friendly_id ‒ Helps you create great URLs for your online store
+
+8.3 Social media integration 
+Integration with social networks helps you gain social media followers, increase your company’s online presence, and promote products across various channels. You can upgrade your ecommerce store with social share buttons, logins, comment systems, and more. 
+Here are some common Ruby ecommerce solutions for social media integration:
+
+
+Spree_social_products ‒ Adds sharing buttons for multiple social networks
+
+fb_graph2 ‒ Lets you implement the main functionality of the Facebook platform:users can share content, leave comments, and log in with their Facebook accounts
+
+instagram-ruby-gem ‒ The official gem for the Instagram API, allowing you to add Instagram log-in, a share button, comments, and other features 
+
+twitter ‒ A Ruby interface for the Twitter API
+
+8.4 Product reviews
+Engage your customers and stimulate sales with product reviews on your website. Customers want to know what others who have used a product or service think about it. In fact, 93 percent of online customers read reviews to form their opinion about a business and 85 percent of online customers trust online reviews as much as personal recommendations. 
+Spree_reviews allows you to implement reviews in your online store.
+8.5 Referrals
+If you want your customers to spread the word about your online store to their friends, family, and colleagues, give them an incentive with an attractive offer like a referral program. Referral programs offer bonuses for your customers for sharing about your brand. Referral programs help you boost sales, create return shoppers, and build trust with your brand. Companies with established referral programs have 70 percent higher conversion rates and close sales 69 percent faster.
+To arrange a referral program, you can use spree_email_to_friend. This Spree extension lets your customers send referrals to their friends via email.
+8.6 Rewards
+Beyond referral programs, you can reward your customers with discounts, promo codes, coupons, and gift cards. You can present your customers with dollars off, a percentage off, or free shipping discounts. Spree provides in-cart promotional functionality to cater to your site’s users with coupons and discounts.
+Alternatively, you can offer a gift card optionor someone from your store or use it as store credit. Consider spree_gift_card to integrate a gift card feature into your credit card.
+8.7 Advertising
+Integrating advertising platforms is one more effective way to increase the online presence of your products and services. Advertising platforms allow you to target many different groups of customers and track the progress of your ad campaigns anytime you want.
+The most popular services helping you advertise your products and reach customers worldwide include Google, Facebook, and Twitter. They each provide Ruby ecommerce solutions: Twitter-ruby-ads-sdk, Google-api-ads-ruby, and Facebook-ruby-business-sdk.
+The final block of your online store is analytics and reporting tools. You can hardly grow your business without monitoring your efforts and evaluating the outcomes. Without knowing which marketing activities are working, you’ll be wasting both time and money.
+9. Analytics and reporting
+Analytics help you track the number of transactions, measure revenue your ecommerce store generates, and gain valuable insights into the overall growth of your store. You can use the data you obtain to inform your future marketing campaigns or to modify your store.
+Ecommerce tracking covers the following features:
+
+
+Sales reports: Determine demand for different groups of products and services and find out selling outsiders 
+
+Traffic reports: Identify the region your online store visitors come from and how they discovered your online store 
+
+Exporting reports: Export analytics reports for further analysis in spreadsheet tools, or send reports to your bookkeeper or accountant
+
+Integration with analytics tools: Integrate with services such as Google Analytics to track sales, visits, and referrals
+
+Here are a few RoR solutions you can apply to implement tracking systems:
+
+
+Spree_analytics_trackers ‒ A Ruby extension allowing you to add support for Google Analytics Enhanced Ecommerce and Segment Ecommerce tracking
+
+Google Analytics API client library ‒ Allows you integrate the Google Analytics API to optimize ecommerce tracking 
+
+Analytical ‒ A gem that helps you manage multiple analytics services in your online store (Google Analytics, Clicky, KISSMetrics, Hubspot, etc.)
+
+Impressionist ‒ A Rails plugin for tracking impressions and page views 
+
+Ahoy ‒ Helps track visits to your store’s site
+
+Ruby it all
+Many successful ecommerce businesses including Amazon, Women’secret, Pedro del Hierro, and Casper are using Ruby on Rails for their web applications. Even Shopify, the leading platform for creating ecommerce websites, is built on top of Rails. Don’t hesitate; adopt the leading technology.
+Here at RubyGarage, we’ve built diverse types of ecommerce stores based on Ruby on Rails technology. If you need help implementing any feature for your online store, contact us and we’ll do everything we can to realize your ideas.</description>
+      <pubDate>Wed, 15 Aug 2018 10:28:21 +0300</pubDate>
+      <link>https://rubygarage.org/blog/launch-online-store-with-ruby-on-rails</link>
+      <guid>https://rubygarage.org/blog/launch-online-store-with-ruby-on-rails</guid>
+    </item>
+  </channel>
+</rss>

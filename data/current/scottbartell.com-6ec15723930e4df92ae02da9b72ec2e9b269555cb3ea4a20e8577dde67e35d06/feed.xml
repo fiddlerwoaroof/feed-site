@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="https://scottbartell.com/feed.xml" rel="self" type="application/atom+xml"><link href="https://scottbartell.com/" rel="alternate" type="text/html"><updated>2022-05-18T03:57:31+00:00</updated><id>https://scottbartell.com/feed.xml</id><title type="html">Scott Bartell</title><subtitle>A blog about Ruby, Rails, Software Performance, and Maintainability</subtitle><author><name>scottbartell</name></author><entry><title type="html">Different Ways to Set Attributes in ActiveRecord (Rails 7)</title><link href="https://scottbartell.com/2022/04/12/set-attributes-in-active-record-rails-7/" rel="alternate" type="text/html" title="Different Ways to Set Attributes in ActiveRecord (Rails 7)"><published>2022-04-12T00:00:00+00:00</published><updated>2022-04-12T00:00:00+00:00</updated><id>https://scottbartell.com/2022/04/12/set-attributes-in-active-record-rails-7</id><content type="html" xml:base="https://scottbartell.com/2022/04/12/set-attributes-in-active-record-rails-7/">&lt;p&gt;Rails 7 has a rich API that allows you to update your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; objects in several ways. 
+Some methods have slightly different behavior which can sometimes result in unexpected consequences, so 
+it’s important to understand their differences.&lt;/p&gt;
+
+&lt;p class=&quot;note&quot;&gt;&lt;strong&gt;Note:&lt;/strong&gt; This cheat sheet is for Rails 7. See cheat sheets for other versions here:&lt;/p&gt;
+&lt;ul class=&quot;note&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;https://davidverhasselt.com/5-ways-to-set-attributes-in-activerecord-in-rails-3/&quot;&gt;Rails 3&lt;/a&gt; (external link)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://davidverhasselt.com/set-attributes-in-activerecord/&quot;&gt;Rails 4&lt;/a&gt; (external link)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/2019/07/15/set-attributes-in-active-record-rails-5/&quot;&gt;Rails 5&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/2020/01/30/set-attributes-in-active-record-rails-6/&quot;&gt;Rails 6&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Here’s a cheat sheet highlighting the differences between all the methods available for setting attributes in Rails 7:&lt;/p&gt;
+
+&lt;h1 id=&quot;cheat-sheet&quot;&gt;Cheat Sheet&lt;/h1&gt;
+
+&lt;table class=&quot;compact-table ar-attributes-table&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Method&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Uses Default Accessor&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Saves to Database&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Runs Validations&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Runs Callbacks&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Updates &lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Timestamp.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updated_at/on&lt;/code&gt;&lt;/a&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Respects &lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/ReadonlyAttributes/ClassMethods.html#method-i-attr_readonly&quot;&gt;Readonly&lt;/a&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://apidock.com/rails/ActiveRecord/AttributeMethods/Write/attribute=&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attribute=&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveModel/AttributeAssignment.html#method-i-attributes-3D&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attributes=&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveModel/AttributeAssignment.html#method-i-assign_attributes&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;assign_attributes&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/AttributeMethods/Write.html#method-i-write_attribute&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;write_attribute&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/AttributeMethods.html#method-i-5B-5D-3D&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[]=&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Persistence.html#method-i-update&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Persistence.html#method-i-update_attribute&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_attribute&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Persistence.html#method-i-update_column&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_column&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Persistence.html#method-i-update_columns&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_columns&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-update&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.update&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Relation.html#method-i-update_all&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.update_all&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-upsert&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.upsert&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-upsert_all&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.upsert_all&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes/No&lt;sup id=&quot;fnref:insert_upsert_all_timestamps&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:insert_upsert_all_timestamps&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-insert&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.insert&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v7.0/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-insert_all&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.insert_all&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes/No&lt;sup id=&quot;fnref:insert_upsert_all_timestamps:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:insert_upsert_all_timestamps&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:insert_upsert_all_timestamps&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Timestamps will be updated depending on the model’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;record_timestamps&lt;/code&gt; config or the value of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;record_timestamps&lt;/code&gt; argument passed into these methods. &lt;a href=&quot;#fnref:insert_upsert_all_timestamps&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt; &lt;a href=&quot;#fnref:insert_upsert_all_timestamps:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>scottbartell</name></author><summary type="html">Rails 7 has a rich API that allows you to update your ActiveRecord objects in several ways. Some methods have slightly different behavior which can sometimes result in unexpected consequences, so it’s important to understand their differences.</summary></entry><entry><title type="html">Exploring Ruby’s `clamp` and `minmax` methods</title><link href="https://scottbartell.com/2021/09/29/ruby-clamp-and-minmax/" rel="alternate" type="text/html" title="Exploring Ruby’s `clamp` and `minmax` methods"><published>2021-09-29T00:00:00+00:00</published><updated>2021-09-29T00:00:00+00:00</updated><id>https://scottbartell.com/2021/09/29/ruby-clamp-and-minmax</id><content type="html" xml:base="https://scottbartell.com/2021/09/29/ruby-clamp-and-minmax/">&lt;p&gt;I came across an interesting problem recently where I was given a value and an array of “buckets” and I basically needed to return which bucket the value was closest to.&lt;/p&gt;
+
+&lt;p&gt;This made me extremely excited at the prospect of having a practical use case for Ruby’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable#clamp&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Enumerable#minmax&lt;/code&gt;!&lt;/p&gt;
+
+&lt;p&gt;In a simplified example I ended up playing around with an implementation similar to this:&lt;/p&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;buckets&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;clamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buckets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;min_max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Super cool stuff! Let’s dig a bit deeper into both &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;clamp&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;minimax&lt;/code&gt;!&lt;/p&gt;
+
+&lt;h2 id=&quot;comparableclamp&quot;&gt;Comparable#clamp&lt;/h2&gt;
+
+&lt;p&gt;Ruby’s &lt;a href=&quot;https://ruby-doc.org/core-3.0.2/Comparable.html#method-i-clamp&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable#clamp&lt;/code&gt;&lt;/a&gt; “clamps” a value within a provided minimum and maximum value.&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;clamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.3&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;clamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.5&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;clamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.4&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;clamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'b'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'d'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;b&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As of Ruby 2.7, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;clamp&lt;/code&gt; can also take a range:&lt;/p&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;clamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+
+&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;clamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+
+&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;clamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;enumerableminmax&quot;&gt;Enumerable#minmax&lt;/h2&gt;
+
+&lt;p&gt;There’s also &lt;a href=&quot;https://ruby-doc.org/core-3.0.2/Enumerable.html#method-i-minmax&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Enumerable#minmax&lt;/code&gt;&lt;/a&gt; which gets both the minimum and maximum value in a given enumerable:&lt;/p&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;minmax&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;sx&quot;&gt;%w[b c a]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;minmax&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;c&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>scottbartell</name></author><summary type="html">I came across an interesting problem recently where I was given a value and an array of “buckets” and I basically needed to return which bucket the value was closest to.</summary></entry><entry><title type="html">Finding and Fixing Missing Indexes in a Rails app</title><link href="https://scottbartell.com/2021/02/24/finding-and-fixing-missing-indexes-in-a-rails-app/" rel="alternate" type="text/html" title="Finding and Fixing Missing Indexes in a Rails app"><published>2021-02-24T00:00:00+00:00</published><updated>2021-02-24T00:00:00+00:00</updated><id>https://scottbartell.com/2021/02/24/finding-and-fixing-missing-indexes-in-a-rails-app</id><content type="html" xml:base="https://scottbartell.com/2021/02/24/finding-and-fixing-missing-indexes-in-a-rails-app/">&lt;p&gt;When looking at the “Most time consuming” database operations for our application in New Relic and I came across something that looked odd to me.&lt;/p&gt;
+
+&lt;p&gt;Looking at the list I noticed two operations that I wouldn’t have expected to be among the most time consuming: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderCreditTransaction find&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Discount find&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In this post we’re going to dig into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderCreditTransaction find&lt;/code&gt; find the problem and fix it.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/queries-new-relic-order-credit-transaction-find-time-consuming-before.png&quot; alt=&quot;Screenshot from New Relic showing the most time consuming database operations over the last 7 days with the Postgres `OrderCreditTransaction find` operation at the top.&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;what-does-most-time-consuming-mean&quot;&gt;What does “Most time consuming” mean?&lt;/h2&gt;
+
+&lt;p&gt;“Most time consuming” tells you how much total time was spent doing an operation in a minute. This is equivalent to the average throughput (number of calls/minute) multiplied by the average response time.&lt;/p&gt;
+
+&lt;p&gt;For example if &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User find&lt;/code&gt; has an average response time of 4.71 ms and an average throughput of 743 cpm then it would consume: 4.71 ms * 743 cpm = 3.5 seconds&lt;/p&gt;
+
+&lt;p&gt;So this means that out of all database operations our application is spending the second most time in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderCreditTransaction find&lt;/code&gt;. And, in order for that to be the case, it’s either being called a ton (high cpm), has a slow response time, or some combination.&lt;/p&gt;
+
+&lt;p&gt;Let’s dig in and find out.&lt;/p&gt;
+
+&lt;h2 id=&quot;determining-the-problem&quot;&gt;Determining the problem&lt;/h2&gt;
+
+&lt;p&gt;First let’s take a look at the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderCreditTransaction find&lt;/code&gt; database operation by itself. Upon inspecting this operation you’ll notice it has relatively low throughput (~6.34 cpm) and a pretty slow avg response time (~196 ms).&lt;/p&gt;
+
+&lt;p&gt;This seems to indicate that the problem is likely related to response time and not throughput.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/queries-new-relic-order-credit-transaction-find-before-1.png&quot; alt=&quot;Screenshot from New Relic showing the query time and throughput for the Postgres `OrderCreditTransaction find` operation.&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s scroll down and see what some of the slow queries are…&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/queries-new-relic-order-credit-transaction-find-before-2.png&quot; alt=&quot;Screenshot from New Relic showing time consumption by caller and slow query traces for the Postgres `OrderCreditTransaction find` operation.&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Interesting! It looks like some simple &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; queries filtering on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;receipt_id&lt;/code&gt; are taking up to almost 400ms! That seems like we could be a missing index… Let’s verify by clicking on one of those “Slow queries” and looking at an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/queries-new-relic-order-credit-transaction-find-before-slow-query-trace.png&quot; alt=&quot;Screenshot from New Relic showing a slow query trace from the Postgres `OrderCreditTransaction find` operation.&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If we look at line 4 of the Explain plan we can see that Postgres is doing a Parallel Sequential Scan on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;order_credit_transactions&lt;/code&gt; table; this means that before this query can return it must look at every single record in the table (which at the time of this writing is 3,320,909 records). This seems to confirm our missing index theory!&lt;/p&gt;
+
+&lt;p&gt;Now, let’s take a look at our codebase and verify that an index is missing.&lt;/p&gt;
+
+&lt;p&gt;First off, let’s take a look at the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;order_credit_transactions&lt;/code&gt; table in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;schema.rb&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;order_credit_transactions&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;force: :cascade&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;integer&lt;/span&gt;  &lt;span class=&quot;s2&quot;&gt;&quot;order_id&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;integer&lt;/span&gt;  &lt;span class=&quot;s2&quot;&gt;&quot;receipt_id&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;datetime&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;created_at&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;                     &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;datetime&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;updated_at&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;                     &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Aha! It looks like there is no index on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;receipt_id&lt;/code&gt; column!&lt;/p&gt;
+
+&lt;p&gt;Ideally, at this point (before we add any new indexes) we would want to confirm the behavior we saw from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; in New Relic on our local machine so that we can understand how the query plan will change once we introduce the new index (and confirm that our change will actually fix the problem).&lt;/p&gt;
+
+&lt;p&gt;We can do this by firing up a rails console locally and running something like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;OrderCreditTransaction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;receipt_id: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;explain&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will run an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; on your local database for the generated query.&lt;/p&gt;
+
+&lt;p&gt;However, there is a problem with this. Running this locally may give us a meaningfully different result that what we saw in production - this is because Postgres dynamically creates query plans depending on several factors, some of which are different between our local environment and production (most notably the number of records in the table).&lt;/p&gt;
+
+&lt;p&gt;To address this we could take some time to first copy some of the relevant data from production to our local machine and then run our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;. But, in this case, we had a very high degree of certainty that this was the issue so we decided that the effort involved in doing that was not worth it.&lt;/p&gt;
+
+&lt;h2 id=&quot;fixing-the-problem&quot;&gt;Fixing the problem&lt;/h2&gt;
+
+&lt;p&gt;Now, let’s add the missing index and make sure that we do it concurrently to ensure there is minimal to no performance impact to the table while the index is being built.&lt;/p&gt;
+
+&lt;p&gt;Rails doesn’t provide a way to cleanly generate a migration that adds an index to an existing column concurrently, so this needs to be a three step process.&lt;/p&gt;
+
+&lt;p&gt;First we generate an empty migration, then we manually edit the migration as outlined below, and finally we run the migration, commit and deploy.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ bin/rails g migration AddIndexToOrderCreditTransactions
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AddIndexToOrderCreditTransactions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Migration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;5.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;disable_ddl_transaction!&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;change&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;add_index&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:order_credit_transactions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:receipt_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;algorithm: :concurrently&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ bin/rails db:migrate
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;verifying-our-fix&quot;&gt;Verifying our fix&lt;/h2&gt;
+
+&lt;p&gt;After the code gets merged and we run the migrations on staging and production let’s make sure we actually fixed the problem.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/queries-new-relic-order-credit-transaction-find-after-1.png&quot; alt=&quot;Screenshot from New Relic showing the query time and throughput for the Postgres `OrderCreditTransaction find` operation within a 4-hour window that starts before and ends after the index was added.&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Woah! Looks like it worked. After deployment (around 11am) the average query time dropped from an average response time of ~196 ms to ~1 ms. That is a 99.49% decrease in response time!&lt;/p&gt;
+
+&lt;p&gt;Finally, let’s take a look a couple days after deployment to make sure that everything still looks good.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/queries-new-relic-order-credit-transaction-find-after-2.png&quot; alt=&quot;Screenshot from New Relic showing the query time and throughput for the Postgres `OrderCreditTransaction find` operation within a 7-day window that starts about 4 days before the index was added.&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It still looks good!&lt;/p&gt;
+
+&lt;p&gt;Also, it’s no longer one of the most time consuming queries and it looks like it’s going to continue to fall down on that list!&lt;/p&gt;</content><author><name>scottbartell</name></author><summary type="html">When looking at the “Most time consuming” database operations for our application in New Relic and I came across something that looked odd to me.</summary></entry><entry><title type="html">RSpec Rails Tip: `have_http_status` matcher</title><link href="https://scottbartell.com/2021/02/16/rspec-tip-http-status-matching/" rel="alternate" type="text/html" title="RSpec Rails Tip: `have_http_status` matcher"><published>2021-02-16T00:00:00+00:00</published><updated>2021-02-16T00:00:00+00:00</updated><id>https://scottbartell.com/2021/02/16/rspec-tip-http-status-matching</id><content type="html" xml:base="https://scottbartell.com/2021/02/16/rspec-tip-http-status-matching/">&lt;p&gt;Sometimes you need to test the status code of a response in a controller, request, or feature spec.
+With the &lt;a href=&quot;https://github.com/rspec/rspec-rails&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rspec-rails&lt;/code&gt;&lt;/a&gt; gem this can be done cleanly using the &lt;a href=&quot;https://relishapp.com/rspec/rspec-rails/docs/matchers/have-http-status-matcher&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;have_http_status&lt;/code&gt; matcher&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;have_http_status&lt;/code&gt; can take three different arguments:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;numeric code (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;200&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;404&lt;/code&gt;, etc)&lt;/li&gt;
+  &lt;li&gt;status name as defined in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rack::Utils::SYMBOL_TO_STATUS_CODE&lt;/code&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:ok&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:not_found&lt;/code&gt;, etc)&lt;/li&gt;
+  &lt;li&gt;generic status type (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:success&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:missing&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:redirect&lt;/code&gt;, or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:error&lt;/code&gt;)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This means that these are actually different:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is_expected&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;have_http_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:ok&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is_expected&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;have_http_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Because &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:ok&lt;/code&gt;, as defined in &lt;a href=&quot;https://github.com/rack/rack/blob/2.2.3/lib/rack/utils.rb#L577:L579&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rack::Utils::SYMBOL_TO_STATUS_CODE&lt;/code&gt;&lt;/a&gt;, only matches status &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;200&lt;/code&gt; while &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:success&lt;/code&gt; is a generic status type that matches all “successful” status types.&lt;/p&gt;
+
+&lt;p&gt;According to the &lt;a href=&quot;https://github.com/rspec/rspec-rails/blob/64b2712da9d12c03a582bb26b62337504f8d1b76/lib/rspec/rails/matchers/have_http_status.rb#L338:L347&quot;&gt;RSpec source code&lt;/a&gt;, the generic status types map to the following status codes:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;expected&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:server_error&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;5xx&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:successful&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;2xx&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:missing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:not_found&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;404&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:redirect&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;3xx&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>scottbartell</name></author><summary type="html">Sometimes you need to test the status code of a response in a controller, request, or feature spec. With the rspec-rails gem this can be done cleanly using the have_http_status matcher.</summary></entry><entry><title type="html">Capybara Tip: Current Path Matcher</title><link href="https://scottbartell.com/2021/02/11/capybara-tip-current-path-matcher/" rel="alternate" type="text/html" title="Capybara Tip: Current Path Matcher"><published>2021-02-11T00:00:00+00:00</published><updated>2021-02-11T00:00:00+00:00</updated><id>https://scottbartell.com/2021/02/11/capybara-tip-current-path-matcher</id><content type="html" xml:base="https://scottbartell.com/2021/02/11/capybara-tip-current-path-matcher/">&lt;p&gt;Sometimes within a Capybara test you need to verify that you are on a particular page. The obvious 
+way to test for this is by making expectations against &lt;a href=&quot;https://rubydoc.info/github/teamcapybara/capybara/master/Capybara/Session:current_path&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;current_path&lt;/code&gt;&lt;/a&gt; or &lt;a href=&quot;https://rubydoc.info/github/teamcapybara/capybara/master/Capybara/Session:current_url&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;current_url&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The problem with this approach is that the previous action that was taken (such as a button click, or some fancy JS / &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;History.pushState()&lt;/code&gt;) 
+may not have completed when your expectation runs against &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;current_path&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;One way to address this is to add an expectation that has waiting logic built into it before the expectation 
+against &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;current_path&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;have_content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Login'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/login'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;An even better way to do this is to use &lt;a href=&quot;https://www.rubydoc.info/github/teamcapybara/capybara/master/Capybara/RSpecMatchers#have_current_path-instance_method&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;have_current_path&lt;/code&gt;&lt;/a&gt; which has 
+waiting/retry logic built in so you don’t need to remember to always add an extra expectation with waiting above it.&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;have_current_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/login'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>scottbartell</name></author><summary type="html">Sometimes within a Capybara test you need to verify that you are on a particular page. The obvious way to test for this is by making expectations against current_path or current_url.</summary></entry><entry><title type="html">Capybara Tip: Disabling CSS Animations</title><link href="https://scottbartell.com/2020/07/06/capybara-tip-disable-animations/" rel="alternate" type="text/html" title="Capybara Tip: Disabling CSS Animations"><published>2020-07-06T00:00:00+00:00</published><updated>2020-07-06T00:00:00+00:00</updated><id>https://scottbartell.com/2020/07/06/capybara-tip-disable-animations</id><content type="html" xml:base="https://scottbartell.com/2020/07/06/capybara-tip-disable-animations/">&lt;p&gt;You can disable CSS animations and transitions globally by setting the &lt;a href=&quot;https://www.rubydoc.info/gems/capybara/Capybara/SessionConfig#disable_animation-instance_method&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Capybara.disable_animation&lt;/code&gt; option&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Stick this in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails_helper.rb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;disable_animation&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Instead of a boolean, you can set this option to a CSS selector and it will only disable animations that match that selector:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;disable_animation&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'#with_animation a'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For a better understanding of how this works take a look at &lt;a href=&quot;https://github.com/teamcapybara/capybara/blob/d76728fe9551106af1211ed8b670c851f47a7976/spec/shared_selenium_session.rb#L362:L438&quot;&gt;the tests for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Capybara.disable_animation&lt;/code&gt; in the Capybara source code&lt;/a&gt;.&lt;/p&gt;</content><author><name>scottbartell</name></author><summary type="html">You can disable CSS animations and transitions globally by setting the Capybara.disable_animation option.</summary></entry><entry><title type="html">Building a Sumo Logic Dashboard for a Rails App on Heroku</title><link href="https://scottbartell.com/2020/02/12/building-sumologic-dashboard-for-rails-heroku-app/" rel="alternate" type="text/html" title="Building a Sumo Logic Dashboard for a Rails App on Heroku"><published>2020-02-12T00:00:00+00:00</published><updated>2020-02-12T00:00:00+00:00</updated><id>https://scottbartell.com/2020/02/12/building-sumologic-dashboard-for-rails-heroku-app</id><content type="html" xml:base="https://scottbartell.com/2020/02/12/building-sumologic-dashboard-for-rails-heroku-app/">&lt;p class=&quot;note&quot;&gt;&lt;strong&gt;Note:&lt;/strong&gt; The dashboard and graphs outlined in this article are simplified examples of what I have used successfully in a production environment in the past. You should modify the dashboard and queries to fit your application’s specific needs.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/sumo-logic-heroku-dashboard.png&quot; alt=&quot;Example Sumo Logic Dashboard for Heroku Rails App&quot; /&gt;
+You can &lt;a href=&quot;https://scottbartell.com/assets/Sumo_Logic_Performance_Overview_Dashboard.json&quot;&gt;download the JSON config to import&lt;/a&gt; this dashboard for your own application.&lt;/p&gt;
+
+&lt;h1 id=&quot;overview&quot;&gt;Overview&lt;/h1&gt;
+
+&lt;p&gt;Our goal is to create a Sumo Logic dashboard that we can use to help us identify trends and problems with the performance of our 
+Heroku Ruby on Rails application.&lt;/p&gt;
+
+&lt;p&gt;To do this we are going to focus on a few key areas:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Rails Application (Web Dynos)
+    &lt;ul&gt;
+      &lt;li&gt;Web dyno load&lt;sup id=&quot;fnref:cpu-load-averages&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:cpu-load-averages&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+      &lt;li&gt;Web dyno memory utilization&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Heroku Postgres
+    &lt;ul&gt;
+      &lt;li&gt;Postgres load&lt;sup id=&quot;fnref:pg-load-averages&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:pg-load-averages&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Worker Dynos and Sidekiq Jobs
+    &lt;ul&gt;
+      &lt;li&gt;Sidekiq worker error rate&lt;/li&gt;
+      &lt;li&gt;Sidekiq worker failures by job&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In order to build dashboards for these different areas, we first need to consider what kinds of logs Heroku makes available.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Heroku runtime dyno performance logs&lt;/strong&gt; (e.g. CPU, memory usage) are available if you enable the Heroku Labs &lt;a href=&quot;https://devcenter.heroku.com/articles/log-runtime-metrics&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;log-runtime-metrics&lt;/code&gt; feature&lt;/a&gt;. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$ heroku labs:enable log-runtime-metrics&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://devcenter.heroku.com/articles/heroku-postgres-metrics-logs&quot;&gt;Heroku Postgres logs&lt;/a&gt;&lt;/strong&gt; are available by default for Heroku Postgres Standard and Premium Tier databases.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Sidekiq logs&lt;/strong&gt; are available by default as standard application logs from worker dynos.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;sumo-logic-graph-implementations&quot;&gt;Sumo Logic Graph Implementations&lt;/h2&gt;
+&lt;p&gt;Some things to note with the implementations below:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;All queries &lt;a href=&quot;https://help.sumologic.com/05Search/Search-Query-Language/Search-Operators/timeslice&quot;&gt;timeslice with buckets&lt;/a&gt;&lt;/strong&gt;: This is done so that the time period can be changed on the dashboard and the graphs auto adjust their precision accordingly.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;All queries omit application specific filters&lt;/strong&gt;: This is done so that the dashboard can be applied to any application with a &lt;a href=&quot;https://help.sumologic.com/Visualizations-and-Alerts/Dashboards/Use-Time-Ranges-and-Filters/05Use-Filters-in-Dashboards&quot;&gt;SumoLogic Dashboard Filter&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;heroku-web-dyno-load&quot;&gt;Heroku Web Dyno Load&lt;/h3&gt;
+&lt;p&gt;This graph is designed to help provide insight into the CPU usage for you application. It uses Heroku’s &lt;a href=&quot;https://devcenter.heroku.com/articles/log-runtime-metrics#cpu-load-averages&quot;&gt;CPU load average&lt;/a&gt; calculation which, in my experience, is mostly useful to identify relative spikes in load.&lt;/p&gt;
+
+&lt;h4 id=&quot;graph&quot;&gt;Graph&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/sumo-logic-heroku-web-dyno-load.png&quot; alt=&quot;Sumo Logic Heroku Web Dyno Load&quot; class=&quot;sumo-logic-heroku-graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;logs&quot;&gt;Logs&lt;/h4&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku logs &lt;span class=&quot;nt&quot;&gt;--dyno&lt;/span&gt; web &lt;span class=&quot;nt&quot;&gt;--source&lt;/span&gt; heroku &lt;span class=&quot;nt&quot;&gt;--app&lt;/span&gt; my-app | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;load_avg | &lt;span class=&quot;nb&quot;&gt;head&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-1&lt;/span&gt;
+2020-01-28T23:59:31.883407+00:00 heroku[web.1]: &lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;web.1 &lt;span class=&quot;nv&quot;&gt;dyno&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;heroku.93034875.4635d2a8-08be-4bf5-93c8-aed05a2fda5c sample#load_avg_1m&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.00 sample#load_avg_5m&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.00 sample#load_avg_15m&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.01
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;query&quot;&gt;Query&lt;/h4&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;source=web.&quot;
+| parse &quot;sample#load_avg_1m=* &quot; as load_avg_1m
+| timeslice 60 buckets
+| avg(load_avg_1m) as load_avg_1m by _timeslice
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;heroku-web-dyno-memory-utilization&quot;&gt;Heroku Web Dyno Memory Utilization&lt;/h3&gt;
+&lt;p&gt;This graph is designed to help identify your application’s utilization of the available memory.&lt;/p&gt;
+
+&lt;h4 id=&quot;graph-1&quot;&gt;Graph&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/sumo-logic-heroku-web-dyno-memory.png&quot; alt=&quot;Sumo Logic Heroku Web Dyno Memory Utilization&quot; class=&quot;sumo-logic-heroku-graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;logs-1&quot;&gt;Logs&lt;/h4&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku logs &lt;span class=&quot;nt&quot;&gt;--dyno&lt;/span&gt; web &lt;span class=&quot;nt&quot;&gt;--source&lt;/span&gt; heroku &lt;span class=&quot;nt&quot;&gt;--app&lt;/span&gt; my-app | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;memory | &lt;span class=&quot;nb&quot;&gt;head&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-1&lt;/span&gt;
+2020-01-29T00:02:49.243705+00:00 heroku[web.1]: &lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;web.1 &lt;span class=&quot;nv&quot;&gt;dyno&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;heroku.93034875.4635d2a8-08be-4bf5-93c8-aed05a2fda5c sample#memory_total&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;338.52MB sample#memory_rss&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;252.74MB sample#memory_cache&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;85.79MB sample#memory_swap&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.00MB sample#memory_pgpgin&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5641245pages sample#memory_pgpgout&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5554583pages sample#memory_quota&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;512.00MB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;query-1&quot;&gt;Query&lt;/h4&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;source=web.&quot;
+| parse &quot;sample#memory_rss=*MB&quot; as memory_rss
+| parse &quot;sample#memory_quota=*MB&quot; as memory_quota
+| timeslice 60 buckets
+| max(memory_rss) as max_memory_rss, max(memory_quota) as max_memory_quota by _timeslice
+| max_memory_rss / max_memory_quota * 100 as memory_utilization
+| fields _timeslice, memory_utilization
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In this query we divide the Resident Memory (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memory_rss&lt;/code&gt;) by the Memory Quota (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memory_quota&lt;/code&gt;) to get a maximum memory utilization rate for our dynos. 
+At the end of the query we do a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fields _timeslice, memory_utilization&lt;/code&gt; so that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memory_rss&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memory_quota&lt;/code&gt; don’t show up in our graph.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Resident Memory (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memory_rss&lt;/code&gt;):&lt;/strong&gt; The portion of the dyno’s memory (megabytes) held in RAM.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Memory Quota (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memory_quota&lt;/code&gt;):&lt;/strong&gt; The resident memory (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memory_rss&lt;/code&gt;) value (megabytes) at which Heroku triggers an R14 error.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Read more about &lt;a href=&quot;https://devcenter.heroku.com/articles/log-runtime-metrics#memory-swap&quot;&gt;the fields Heroku includes for memory consumption&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;heroku-postgres-load&quot;&gt;Heroku Postgres Load&lt;/h3&gt;
+&lt;p&gt;This graph is designed to help identify if your Postgres database is CPU-bound.&lt;/p&gt;
+
+&lt;h4 id=&quot;graph-2&quot;&gt;Graph&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/sumo-logic-heroku-postgres-load.png&quot; alt=&quot;Sumo Logic Heroku Postgres Load&quot; class=&quot;sumo-logic-heroku-graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;logs-2&quot;&gt;Logs&lt;/h4&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku logs &lt;span class=&quot;nt&quot;&gt;--dyno&lt;/span&gt; heroku-postgres &lt;span class=&quot;nt&quot;&gt;--app&lt;/span&gt; my-app | &lt;span class=&quot;nb&quot;&gt;head&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-1&lt;/span&gt;
+2020-01-29T00:36:10+00:00 app[heroku-postgres]: &lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;HEROKU_POSTGRESQL_RED &lt;span class=&quot;nv&quot;&gt;addon&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;postgresql-aerodynamic-12345 sample#current_transaction&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1012345 sample#db_size&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3743972487bytes sample#tables&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;10 sample#active-connections&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;8 sample#waiting-connections&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 sample#index-cache-hit-rate&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.99682 sample#table-cache-hit-rate&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.84557 sample#load-avg-1m&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 sample#load-avg-5m&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 sample#load-avg-15m&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 sample#read-iops&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 sample#write-iops&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.12397 sample#tmp-disk-used&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33849344 sample#tmp-disk-available&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;72944943104 sample#memory-total&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;4044932kB sample#memory-free&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;78976kB sample#memory-cached&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3700368kB sample#memory-postgres&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;23292kB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;query-2&quot;&gt;Query&lt;/h4&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;heroku-postgres&quot;
+| parse &quot;source=* &quot; as db_name
+| parse &quot;sample#load-avg-1m=* &quot; as load_avg_1m
+| (load_avg_1m / 1) * 100 as utilization_rate
+| timeslice 60 buckets
+| max(utilization_rate) as max_utilization_rate by _timeslice
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;sidekiq-error-rate&quot;&gt;Sidekiq Error Rate&lt;/h3&gt;
+&lt;p&gt;This graph is designed to give you insight into your frequency of failed Sidekiq jobs over time.&lt;/p&gt;
+
+&lt;h4 id=&quot;graph-3&quot;&gt;Graph&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/sumo-logic-heroku-sidekiq-error-rate.png&quot; alt=&quot;Sumo Logic Sidekiq Error Rate&quot; class=&quot;sumo-logic-heroku-graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;logs-3&quot;&gt;Logs&lt;/h4&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ heroku logs --source app --dyno worker --app my-app | grep MyExampleJob
+2020-01-26T09:02:44.353201+00:00 app[worker.1]: pid=4 tid=6bjk class=MyExampleJob jid=b027792cdb4a453576377c69 elapsed=10.576 INFO: done
+2020-01-26T09:02:33.777529+00:00 app[worker.1]: pid=4 tid=6bjk class=MyExampleJob jid=b027792cdb4a453576377c69 INFO: start
+2020-01-26T09:02:07.485427+00:00 app[worker.1]: pid=4 tid=5si0 class=MyExampleJob jid=b027792cdb4a453576377c69 elapsed=44.526 INFO: fail
+2020-01-26T09:01:22.959446+00:00 app[worker.1]: pid=4 tid=5si0 class=MyExampleJob jid=b027792cdb4a453576377c69 INFO: start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;query-3&quot;&gt;Query&lt;/h4&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;host app worker.&quot;
+| parse &quot;elapsed=* INFO: *&quot; as run_time, status
+| if (status = &quot;fail&quot;, 100, 0) as unsuccessful
+| timeslice 60 buckets
+| avg(unsuccessful) as error_rate by _timeslice
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In this query we filter for the Sidekiq logs that represent a job being successful or failing. 
+From those logs, we assign the successful messages a value of 100 and assign the failure messages a value of 0.
+Finally, we take the average of all of those logs to get an error rate out of 100%.&lt;/p&gt;
+
+&lt;h3 id=&quot;sidekiq-job-failure-count-by-class&quot;&gt;Sidekiq Job Failure Count by Class&lt;/h3&gt;
+&lt;p&gt;This table is designed to work with the Error Rate graph to help quickly identify which jobs are contributing to the error rate.&lt;/p&gt;
+
+&lt;h4 id=&quot;graph-4&quot;&gt;Graph&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/sumo-logic-heroku-sidekiq-error-class-count.png&quot; alt=&quot;Sumo Logic Sidekiq Error Count by Class&quot; class=&quot;sumo-logic-heroku-graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;logs-4&quot;&gt;Logs&lt;/h4&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ heroku logs --source app --dyno worker --app my-app | grep MyExampleJob
+2020-01-26T09:02:44.353201+00:00 app[worker.1]: pid=4 tid=6bjk class=MyExampleJob jid=b027792cdb4a453576377c69 elapsed=10.576 INFO: done
+2020-01-26T09:02:33.777529+00:00 app[worker.1]: pid=4 tid=6bjk class=MyExampleJob jid=b027792cdb4a453576377c69 INFO: start
+2020-01-26T09:02:07.485427+00:00 app[worker.1]: pid=4 tid=5si0 class=MyExampleJob jid=b027792cdb4a453576377c69 elapsed=44.526 INFO: fail
+2020-01-26T09:01:22.959446+00:00 app[worker.1]: pid=4 tid=5si0 class=MyExampleJob jid=b027792cdb4a453576377c69 INFO: start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;query-4&quot;&gt;Query&lt;/h4&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;host app worker.&quot;
+| parse &quot;class=* &quot; as job_name
+| parse &quot;elapsed=* INFO: *&quot; as run_time, status
+| where status = &quot;fail&quot;
+| count by job_name
+| order by _count
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:cpu-load-averages&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://devcenter.heroku.com/articles/log-runtime-metrics#cpu-load-averages&quot;&gt;CPU load average&lt;/a&gt; is a very complicated calculation that I’ve found to only be useful relative to itself overtime. The calculation uses an exponentially damped moving average of the number of runnable tasks from the previous 30 minutes. &lt;a href=&quot;https://devcenter.heroku.com/articles/log-runtime-metrics#understanding-load-averages&quot;&gt;Read more here&lt;/a&gt;. &lt;a href=&quot;#fnref:cpu-load-averages&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:pg-load-averages&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://devcenter.heroku.com/articles/heroku-postgres-metrics-logs#server-metrics&quot;&gt;Postgres load average&lt;/a&gt; is calculated differently than how Heroku CPU load average for dynos. It is the average system load (for a 1, 5, or 15 min period) divided by the number of available CPUs. &lt;a href=&quot;#fnref:pg-load-averages&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>scottbartell</name></author><summary type="html">Note: The dashboard and graphs outlined in this article are simplified examples of what I have used successfully in a production environment in the past. You should modify the dashboard and queries to fit your application’s specific needs.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://scottbartell.com/assets/sumo-logic-heroku-post.png"/><media:content medium="image" url="https://scottbartell.com/assets/sumo-logic-heroku-post.png" xmlns:media="http://search.yahoo.com/mrss/"/></entry><entry><title type="html">Different Ways to Set Attributes in ActiveRecord (Rails 6)</title><link href="https://scottbartell.com/2020/01/30/set-attributes-in-active-record-rails-6/" rel="alternate" type="text/html" title="Different Ways to Set Attributes in ActiveRecord (Rails 6)"><published>2020-01-30T00:00:00+00:00</published><updated>2020-01-30T00:00:00+00:00</updated><id>https://scottbartell.com/2020/01/30/set-attributes-in-active-record-rails-6</id><content type="html" xml:base="https://scottbartell.com/2020/01/30/set-attributes-in-active-record-rails-6/">&lt;p&gt;Rails 6 has a rich API that allows you to update your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; objects in several different ways. 
+Some methods have slightly different behavior which can sometimes result in unexpected consequences so 
+it’s important to understand their differences.&lt;/p&gt;
+
+&lt;p class=&quot;note&quot;&gt;&lt;strong&gt;Note:&lt;/strong&gt; This article was written for Rails 6. See cheat sheets for other versions here:&lt;/p&gt;
+&lt;ul class=&quot;note&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;https://davidverhasselt.com/5-ways-to-set-attributes-in-activerecord-in-rails-3/&quot;&gt;Rails 3&lt;/a&gt; (external link)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://davidverhasselt.com/set-attributes-in-activerecord/&quot;&gt;Rails 4&lt;/a&gt; (external link)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/2019/07/15/set-attributes-in-active-record-rails-5/&quot;&gt;Rails 5&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/2022/04/12/set-attributes-in-active-record-rails-7/&quot;&gt;Rails 7&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Here’s a cheat sheet highlighting the differences between all the methods available for setting attributes in Rails 6:&lt;/p&gt;
+
+&lt;h1 id=&quot;cheat-sheet&quot;&gt;Cheat Sheet&lt;/h1&gt;
+
+&lt;table class=&quot;compact-table ar-attributes-table&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Method&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Uses Default Accessor&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Saves to Database&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Runs Validations&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Runs Callbacks&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Updates &lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Timestamp.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updated_at/on&lt;/code&gt;&lt;/a&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Respects Readonly&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://apidock.com/rails/ActiveRecord/AttributeMethods/Write/attribute=&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attribute=&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveModel/AttributeAssignment.html#method-i-attributes-3D&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attributes=&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveModel/AttributeAssignment.html#method-i-assign_attributes&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;assign_attributes&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/AttributeMethods/Write.html#method-i-write_attribute&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;write_attribute&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/AttributeMethods.html#method-i-5B-5D-3D&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[]=&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Persistence.html#method-i-update&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Persistence.html#method-i-update_attribute&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_attribute&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Persistence.html#method-i-update_attributes&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_attributes&lt;/code&gt;&lt;/a&gt;&lt;sup id=&quot;fnref:update_attributes_deprecated&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:update_attributes_deprecated&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Persistence.html#method-i-update_column&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_column&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Persistence.html#method-i-update_columns&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_columns&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-update&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.update&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Relation.html#method-i-update_all&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.update_all&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-upsert&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.upsert&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-upsert_all&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.upsert_all&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-insert&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.insert&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-insert_all&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.insert_all&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:update_attributes_deprecated&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_attributes&lt;/code&gt; &lt;a href=&quot;https://github.com/rails/rails/commit/5645149d3a27054450bd1130ff5715504638a5f5&quot;&gt;has been deprecated&lt;/a&gt; in favor of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update&lt;/code&gt; in Rails 6. &lt;a href=&quot;#fnref:update_attributes_deprecated&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>scottbartell</name></author><summary type="html">Rails 6 has a rich API that allows you to update your ActiveRecord objects in several different ways. Some methods have slightly different behavior which can sometimes result in unexpected consequences so it’s important to understand their differences.</summary></entry><entry><title type="html">Automating Rails Database Migrations on Heroku</title><link href="https://scottbartell.com/2020/01/22/automating-rails-database-migrations-on-heroku/" rel="alternate" type="text/html" title="Automating Rails Database Migrations on Heroku"><published>2020-01-22T00:00:00+00:00</published><updated>2020-01-22T00:00:00+00:00</updated><id>https://scottbartell.com/2020/01/22/automating-rails-database-migrations-on-heroku</id><content type="html" xml:base="https://scottbartell.com/2020/01/22/automating-rails-database-migrations-on-heroku/">&lt;p&gt;One problem that teams tend to run into with Rails apps on Heroku is forgetting to run database migrations before the code that depends on them is released.&lt;/p&gt;
+
+&lt;p&gt;Luckily, there is a way to automate the running of database migrations on Heroku and to guarantee that they are always run before the dependent code is released: the &lt;a href=&quot;https://devcenter.heroku.com/articles/release-phase&quot;&gt;Heroku Release Phase&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;heroku-release-phase&quot;&gt;Heroku Release Phase&lt;/h2&gt;
+&lt;p&gt;The Heroku Release Phase allows you run certain tasks &lt;a href=&quot;https://devcenter.heroku.com/articles/release-phase#when-does-the-release-command-run&quot;&gt;after your app is built but before the app is released&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://scottbartell.com/assets/heroku-release-phase-diagram.png&quot; alt=&quot;Heroku Release Phase Diagram&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;specifying-release-phase-tasks&quot;&gt;Specifying release phase tasks&lt;/h2&gt;
+
+&lt;p&gt;To specify the tasks to run during release phase, define a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;release&lt;/code&gt; process type in your app’s &lt;a href=&quot;https://devcenter.heroku.com/articles/procfile&quot;&gt;Procfile&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In our case we want to run database migrations directly in our release task so we do the following:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;web: bundle exec puma -C config/puma.rb
+release: bundle exec rake db:migrate
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;That’s all you need to do. The next time you push code Heroku will see that you have a release task configured and automatically run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle exec rake db:migrate&lt;/code&gt; after the app is built.&lt;/p&gt;
+
+&lt;h2 id=&quot;notable-implications&quot;&gt;Notable Implications&lt;/h2&gt;
+
+&lt;p&gt;In my experience this flow works really well. It helps guarantee that we never forget to run migrations, makes it so that we don’t have to worry about code being released before a migration is run, and couples the running of the database migrations with the releasing of code (giving us an audit trail for when migrations were run).&lt;/p&gt;
+
+&lt;p&gt;That being said, this does introduce some complexity and some new cases that we will need to consider.&lt;/p&gt;
+
+&lt;h4 id=&quot;1-if-the-release-phase-fails-the-app-will-not-be-deployed&quot;&gt;1. If the Release Phase fails the app will not be deployed&lt;/h4&gt;
+
+&lt;p&gt;If the &lt;a href=&quot;https://devcenter.heroku.com/articles/release-phase#release-command-failure&quot;&gt;Release Phase ever fails&lt;/a&gt; (in our case, if the migration fails) the app will not be released. 
+This means that, in order to avoid the database ending up in a partially migrated state, we need to ensure all database migrations are wrapped in transactions.
+For Rails apps this typically isn’t a problem because by default &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; wraps all migrations in a transaction.
+However, if we ever want to take advantage of something like &lt;a href=&quot;https://thoughtbot.com/blog/how-to-create-postgres-indexes-concurrently-in&quot;&gt;Postgres’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CONCURRENTLY&lt;/code&gt; option for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CREATE INDEX&lt;/code&gt;&lt;/a&gt;, or run some sort of large data backfill outside of a transaction, you might need to disable transactions.&lt;/p&gt;
+
+&lt;h4 id=&quot;2-the-release-phase-runs-on-review-apps&quot;&gt;2. The Release Phase runs on Review apps&lt;/h4&gt;
+&lt;p&gt;If you are using &lt;a href=&quot;https://devcenter.heroku.com/articles/github-integration-review-apps&quot;&gt;Heroku Review Apps&lt;/a&gt; you should consider what will happen when the release task runs in that environment.&lt;/p&gt;
+
+&lt;p&gt;For example, if you have configured Review Apps to share the same database as your staging environment, when a Review App is deployed the release task will run which will run database migrations in the Review App code against the staging database.&lt;/p&gt;
+
+&lt;p&gt;One potential solution to this is to have the release task look for an environment variable that is configured differently for Review Apps:&lt;/p&gt;
+
+&lt;p&gt;Create a new file in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bin/release-tasks&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DISABLE_RAILS_DB_MIGRATIONS&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;true&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+  &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;SKIPPING DATABASE MIGRATIONS&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else
+  &lt;/span&gt;bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rake db:migrate
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Update &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Procfile&lt;/code&gt; to call the new task:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;...
+release: bin/release-tasks
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;3-database-migrations-will-always-run-before-the-new-code-is-released&quot;&gt;3. Database Migrations will always run before the new code is released&lt;/h4&gt;
+&lt;p&gt;All database migrations will run before the new code is shipped. 
+This means that certain schema changes (such as column renames) may result in exceptions and/or downtime.&lt;/p&gt;
+
+&lt;p&gt;In order to avoid this you must ensure all of your schema changes/database migrations support both the new code as well as the code that is running before the new code is released.&lt;/p&gt;</content><author><name>scottbartell</name></author><summary type="html">One problem that teams tend to run into with Rails apps on Heroku is forgetting to run database migrations before the code that depends on them is released.</summary></entry><entry><title type="html">Different Ways to Set Attributes in ActiveRecord (Rails 5)</title><link href="https://scottbartell.com/2019/07/15/set-attributes-in-active-record-rails-5/" rel="alternate" type="text/html" title="Different Ways to Set Attributes in ActiveRecord (Rails 5)"><published>2019-07-15T00:00:00+00:00</published><updated>2019-07-15T00:00:00+00:00</updated><id>https://scottbartell.com/2019/07/15/set-attributes-in-active-record-rails-5</id><content type="html" xml:base="https://scottbartell.com/2019/07/15/set-attributes-in-active-record-rails-5/">&lt;p&gt;Rails 5 has a rich API that allows you to update your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; objects in several different ways. 
+Some methods have slightly different behavior which can sometimes result in unexpected consequences so 
+it’s important to understand their differences.&lt;/p&gt;
+
+&lt;p&gt;Over the years I came across &lt;a href=&quot;https://davidverhasselt.com/set-attributes-in-activerecord/&quot;&gt;a really helpful cheat sheet outlining the various methods
+available for Rails 4&lt;/a&gt; so I figured I’d put together something similar for Rails 5!&lt;/p&gt;
+
+&lt;p class=&quot;note&quot;&gt;&lt;strong&gt;Note:&lt;/strong&gt; This article was written for Rails 5. See cheat sheets for other versions here:&lt;/p&gt;
+&lt;ul class=&quot;note&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;https://davidverhasselt.com/5-ways-to-set-attributes-in-activerecord-in-rails-3/&quot;&gt;Rails 3&lt;/a&gt; (external link)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://davidverhasselt.com/set-attributes-in-activerecord/&quot;&gt;Rails 4&lt;/a&gt; (external link)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/2020/01/30/set-attributes-in-active-record-rails-6/&quot;&gt;Rails 6&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/2022/04/12/set-attributes-in-active-record-rails-7/&quot;&gt;Rails 7&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Below is a cheat sheet with in-depth information for Rails 5:&lt;/p&gt;
+
+&lt;h1 id=&quot;cheat-sheet&quot;&gt;Cheat Sheet&lt;/h1&gt;
+
+&lt;table class=&quot;compact-table ar-attributes-table&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Method&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Uses Default Accessor&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Saves to Database&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Runs Validations&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Runs Callbacks&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Updates &lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveRecord/Timestamp.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updated_at/on&lt;/code&gt;&lt;/a&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Respects Readonly&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://apidock.com/rails/ActiveRecord/AttributeMethods/Write/attribute=&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attribute=&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveModel/AttributeAssignment.html#method-i-attributes-3D&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attributes=&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveModel/AttributeAssignment.html#method-i-assign_attributes&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;assign_attributes&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveRecord/AttributeMethods/Write.html#method-i-write_attribute&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;write_attribute&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveRecord/AttributeMethods.html#method-i-5B-5D-3D&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[]=&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;em class=&quot;na&quot;&gt;n/a&lt;/em&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveRecord/Persistence.html#method-i-update&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveRecord/Persistence.html#method-i-update_attribute&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_attribute&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveRecord/Persistence.html#method-i-update_attributes&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_attributes&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveRecord/Persistence.html#method-i-update_column&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_column&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveRecord/Persistence.html#method-i-update_columns&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update_columns&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-update&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.update&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;a href=&quot;https://api.rubyonrails.org/v5.2/classes/ActiveRecord/Relation.html#method-i-update_all&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.update_all&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Yes&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;No&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</content><author><name>scottbartell</name></author><summary type="html">Rails 5 has a rich API that allows you to update your ActiveRecord objects in several different ways. Some methods have slightly different behavior which can sometimes result in unexpected consequences so it’s important to understand their differences.</summary></entry></feed>

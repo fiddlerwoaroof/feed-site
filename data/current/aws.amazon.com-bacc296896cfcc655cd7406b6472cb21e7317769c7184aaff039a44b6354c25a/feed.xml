@@ -1,0 +1,2517 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" version="2.0">
+
+<channel>
+	<title>Ruby – AWS Developer Tools Blog</title>
+	<atom:link href="https://aws.amazon.com/blogs/developer/category/programing-language/ruby/feed/" rel="self" type="application/rss+xml"/>
+	<link>https://aws.amazon.com/blogs/developer/</link>
+	<description/>
+	<lastBuildDate>Wed, 12 Jan 2022 20:52:14 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	
+	<item>
+		<title>Developer Preview: Ruby SDK code generation using Smithy</title>
+		<link>https://aws.amazon.com/blogs/developer/developer-preview-smithy-code-generated-ruby-sdk/</link>
+				
+				<pubDate>Wed, 12 Jan 2022 20:52:14 +0000</pubDate>
+		<dc:creator><![CDATA[Matt Muller]]></dc:creator>
+				<category><![CDATA[AWS SDK for Ruby]]></category>
+		<category><![CDATA[Developer Tools]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[aws-sdk-ruby]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[smithy]]></category>
+
+		<guid isPermaLink="false">8a3de66ac7f79ac4f19b82cbaff35e0edf11e9be</guid>
+				<description>What is this? The AWS SDK For Ruby team is happy to announce the developer preview of smithy-ruby, a toolchain that can be used to code generate a “white label” Ruby SDK for your service API using Smithy modeling. An upcoming future version of the AWS SDK For Ruby will use Smithy code generation. What […]</description>
+								<content:encoded>&lt;h2&gt;What is this?&lt;/h2&gt; 
+&lt;p&gt;The AWS SDK For Ruby team is happy to announce the developer preview of &lt;a href=&quot;https://github.com/awslabs/smithy-ruby&quot;&gt;smithy-ruby&lt;/a&gt;, a toolchain that can be used to code generate a “&lt;a href=&quot;https://en.wikipedia.org/wiki/White-label_product&quot;&gt;white label&lt;/a&gt;” Ruby SDK for your service API using Smithy modeling. An upcoming future version of the AWS SDK For Ruby will use Smithy code generation.&lt;/p&gt; 
+&lt;h2&gt;What is Smithy?&lt;/h2&gt; 
+&lt;p&gt;Smithy is an interface definition language and set of tools that allows developers to build clients and servers in multiple languages. Smithy models define a service as a collection of resources, operations, and shapes. A Smithy model enables API providers to generate clients and servers in various programming languages, API documentation, test automation, and example code. For more information about Smithy, see the &lt;a href=&quot;https://awslabs.github.io/smithy/index.html&quot;&gt;Smithy documentation&lt;/a&gt;.&lt;/p&gt; 
+&lt;h2&gt;What’s included in the Ruby SDK&lt;/h2&gt; 
+&lt;p style=&quot;text-align: center&quot;&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2022/01/07/Screen-Shot-2021-11-30-at-12.34.34-PM.png&quot;&gt;&lt;img class=&quot;alignnone size-medium wp-image-9045&quot; src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2022/01/07/Screen-Shot-2021-11-30-at-12.34.34-PM-211x300.png&quot; alt=&quot;&quot; width=&quot;211&quot; height=&quot;300&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p style=&quot;text-align: center&quot;&gt;&lt;strong&gt;Components of a code generated Ruby SDK&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;A code generated Ruby SDK using Smithy will have generic components and protocol specific components. These components are (in no particular order):&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;&lt;strong&gt;Validators (private)&lt;/strong&gt; – A set of classes that validate Ruby input types against the Smithy model.&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Builders (private, protocol)&lt;/strong&gt; – A set of classes that build a protocol specific request using input (i.e. JSON over HTTP).&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Stubs (private, protocol)&lt;/strong&gt; – A set of classes that build a protocol specific response using stub data, used for testing.&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Parsers (private, protocol)&lt;/strong&gt; – A set of classes that parse a protocol specific response into data structures (i.e. XML over HTTP).&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Types (public)&lt;/strong&gt; – A set of classes that represent structure shapes (Plain Old Ruby Objects).&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Errors (public, protocol)&lt;/strong&gt; – A set of classes that represent error shapes and protocol specific error classes.&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Params (private)&lt;/strong&gt; – A set of modules that convert hash-y input to rigid input types used by the Client operations.&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Paginators (public)&lt;/strong&gt; – A set of classes used for traversing paginated operations automatically.&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Waiters (public)&lt;/strong&gt; – A set of classes used to wait until an operation reaches a desired state before resuming control back to the client.&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Client (public)&lt;/strong&gt; – A class that ties everything together; it is the public interface to the service API. The client is responsible for constructing requests and returning responses using middleware.&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;p&gt;For more information about the components, please see the &lt;a href=&quot;https://github.com/awslabs/smithy-ruby/wiki&quot;&gt;smithy-ruby wiki&lt;/a&gt;.&lt;/p&gt; 
+&lt;h2&gt;Middleware&lt;/h2&gt; 
+&lt;p&gt;Middleware are classes that sit between the client and the server, providing a way to modify the request-response cycle. At minimum, middleware is used to build a request, send a request, and parse a response. Middleware is organized in a stack and are responsible for calling the next middleware.&lt;/p&gt; 
+&lt;p style=&quot;text-align: center&quot;&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2022/01/07/Screen-Shot-2021-05-17-at-1.26.28-PM.png&quot;&gt;&lt;img class=&quot;alignnone size-medium wp-image-9046&quot; src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2022/01/07/Screen-Shot-2021-05-17-at-1.26.28-PM-167x300.png&quot; alt=&quot;&quot; width=&quot;167&quot; height=&quot;300&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p style=&quot;text-align: center&quot;&gt;&lt;strong&gt;Middleware stack&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;In the client, each API operation will have a method that is responsible for creating its own middleware stack and handling the request and response cycle. Seahorse will ship with 6 default middleware. Each middleware will have access to the request, response, and context.&lt;/p&gt; 
+&lt;p&gt;In detail, the middleware components are:&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;&lt;strong&gt;Validate&lt;/strong&gt; – Validates input using the Validator classes if configured to do so. (Optional – client configuration)&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Build&lt;/strong&gt; – Builds a protocol specific request (i.e. JSON over HTTP) using the Builder classes and input.&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;HostPrefix&lt;/strong&gt; – Modifies the endpoint with a host prefix if configured to do so. (Optional – Smithy trait)&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Send&lt;/strong&gt; – Sends the request using a protocol specific client (i.e. HTTP client). The middleware may return responses using the Stubs classes if configured to do so.&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Parse&lt;/strong&gt; – Parses a protocol specific response (i.e. XML over HTTP) using the Parser classes and the raw service response.&lt;/li&gt; 
+ &lt;li&gt;&lt;strong&gt;Retry&lt;/strong&gt; – Retries a request for networking errors and any responses with retry-able or throttling errors.&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;p&gt;Protocol implementations may also insert their own code generated middleware. Middleware may also be added at runtime to a Client class or Client instance, and to individual operation calls.&lt;/p&gt; 
+&lt;h2&gt;Rails JSON Protocol&lt;/h2&gt; 
+&lt;p&gt;A Smithy built Ruby SDK needs a protocol implementation to fully function, much like a car needs an engine. As part of this developer preview, we will be including a protocol implementation that we are calling “&lt;a href=&quot;https://github.com/awslabs/smithy-ruby/wiki/Rails-JSON-Protocol&quot;&gt;Rails JSON&lt;/a&gt;”. With the Rails JSON protocol definition, a Smithy model can be used to code generate a Ruby SDK that communicates directly with a Rails API over JSON. Neat!&lt;/p&gt; 
+&lt;p&gt;As a demo, the following sections will detail how to setup a Rails service and generate an SDK that can communicate with it.&lt;/p&gt; 
+&lt;h3&gt;Setup Rails API Service&lt;/h3&gt; 
+&lt;p&gt;Before we can create an SDK, we need a service for it to communicate to. Let’s first create a new Rails API service with: &lt;code&gt;rails new --api sample-service&lt;/code&gt;.&lt;/p&gt; 
+&lt;p&gt;Next, echoing &lt;a href=&quot;https://guides.rubyonrails.org/command_line.html&quot;&gt;rails documentation&lt;/a&gt;, let’s create a High Score model with &lt;code&gt;rails generate scaffold HighScore game:string score:integer&lt;/code&gt; and run &lt;code&gt;rake db:migrate&lt;/code&gt;.&lt;/p&gt; 
+&lt;p&gt;In &lt;code&gt;models/high_score.rb&lt;/code&gt;, add a length validation to the game’s name by adding: &lt;code&gt;validates :game, length: { minimum: 2 }&lt;/code&gt;. This validation will be used later.&lt;/p&gt; 
+&lt;p&gt;Now it’s time to start our rails app with &lt;code&gt;rails s&lt;/code&gt; and verify it’s running on an endpoint such as &lt;code&gt;http://127.0.0.1:3000&lt;/code&gt;; we will need this endpoint for later.&lt;/p&gt; 
+&lt;p&gt;If you aren’t able to generate a Rails app, don’t worry, a &lt;a href=&quot;https://github.com/awslabs/smithy-ruby/tree/4cba34e43867a84272be12812d66cc032f92a966/sample-service&quot;&gt;copy of this sample Rails service&lt;/a&gt; lives in smithy-ruby for now.&lt;/p&gt; 
+&lt;h3&gt;Add the Smithy model&lt;/h3&gt; 
+&lt;p&gt;To generate the SDK, we need the Smithy model that describes the Rails service we just defined. I’ve conveniently defined this in smithy-ruby in &lt;code&gt;&lt;a href=&quot;https://github.com/awslabs/smithy-ruby/blob/4cba34e43867a84272be12812d66cc032f92a966/codegen/smithy-ruby-rails-codegen-test/model/high-score-service.smithy&quot;&gt;high-score-service.smithy&lt;/a&gt;&lt;/code&gt;. The model tells smithy-ruby to code generate shapes and a client API for the High Score service and to use Rails’ JSON protocol.&lt;/p&gt; 
+&lt;p&gt;Let’s break down some of the important parts.&lt;/p&gt; 
+&lt;p&gt;The first section tells Smithy to create the HighScoreService using the Rails JSON protocol and define its resources and operations. The resource has an identifier (Rails defaults to id), which is used to look up the High Score. The resource has all of the basic Rails CRUD operations: get, create, update, delete, and list&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;@railsJson
+@title(&quot;High Score Sample Rails Service&quot;)
+service HighScoreService {
+    version: &quot;2021-02-15&quot;,
+    resources: [HighScore],
+}
+
+/// Rails default scaffold operations
+resource HighScore {
+    identifiers: { id: String },
+    read: GetHighScore,
+    create: CreateHighScore,
+    update: UpdateHighScore,
+    delete: DeleteHighScore,
+    list: ListHighScores
+}&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;The next sections define the service shapes. HighScoreAttributes is a shape that returns all of the properties of a High Score. HighScoreParams includes all of the properties that a High Score will need. The @length validation of &amp;gt;2 characters is applied to game.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;/// Modeled attributes for a High Score
+structure HighScoreAttributes {
+    /// The high score id
+    id: String,
+    /// The game for the high score
+    game: String,
+    /// The high score for the game
+    score: Integer,
+    // The time the high score was created at
+    createdAt: Timestamp,
+    // The time the high score was updated at
+    updatedAt: Timestamp
+}
+
+/// Permitted params for a High Score
+structure HighScoreParams {
+    /// The game for the high score
+    @length(min: 2)
+    game: String,
+    /// The high score for the game
+    score: Integer
+}&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Next are the operation shapes. The @http trait is applied to each operation with the expected Rails path.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;/// Get a high score
+@http(method: &quot;GET&quot;, uri: &quot;/high_scores/{id}&quot;)
+@readonly
+operation GetHighScore {
+    input: GetHighScoreInput,
+    output: GetHighScoreOutput
+}
+
+/// Input structure for GetHighScore
+structure GetHighScoreInput {
+    /// The high score id
+    @required
+    @httpLabel
+    id: String
+}
+
+/// Output structure for GetHighScore
+structure GetHighScoreOutput {
+    /// The high score attributes
+    @httpPayload
+    highScore: HighScoreAttributes
+}
+
+/// Create a new high score
+@http(method: &quot;POST&quot;, uri: &quot;/high_scores&quot;, code: 201)
+operation CreateHighScore {
+    input: CreateHighScoreInput,
+    output: CreateHighScoreOutput,
+    errors: [UnprocessableEntityError]
+}
+
+/// Input structure for CreateHighScore
+structure CreateHighScoreInput {
+    /// The high score params
+    @required
+    highScore: HighScoreParams
+}
+
+/// Output structure for CreateHighScore
+structure CreateHighScoreOutput {
+    /// The high score attributes
+    @httpPayload
+    highScore: HighScoreAttributes,
+
+    /// The location of the high score
+    @httpHeader(&quot;Location&quot;)
+    location: String
+}
+
+/// Update a high score
+@http(method: &quot;PUT&quot;, uri: &quot;/high_scores/{id}&quot;)
+@idempotent
+operation UpdateHighScore {
+    input: UpdateHighScoreInput,
+    output: UpdateHighScoreOutput,
+    errors: [UnprocessableEntityError]
+}
+
+/// Input structure for UpdateHighScore
+structure UpdateHighScoreInput {
+    /// The high score id
+    @required
+    @httpLabel
+    id: String,
+
+    /// The high score params
+    highScore: HighScoreParams
+}
+
+/// Output structure for UpdateHighScore
+structure UpdateHighScoreOutput {
+    /// The high score attributes
+    @httpPayload
+    highScore: HighScoreAttributes
+}
+
+/// Delete a high score
+@http(method: &quot;DELETE&quot;, uri: &quot;/high_scores/{id}&quot;)
+@idempotent
+operation DeleteHighScore {
+    input: DeleteHighScoreInput,
+    output: DeleteHighScoreOutput
+}
+
+/// Input structure for DeleteHighScore
+structure DeleteHighScoreInput {
+    /// The high score id
+    @required
+    @httpLabel
+    id: String
+}
+
+/// Output structure for DeleteHighScore
+structure DeleteHighScoreOutput {}
+
+/// List all high scores
+@http(method: &quot;GET&quot;, uri: &quot;/high_scores&quot;)
+@readonly
+operation ListHighScores {
+    output: ListHighScoresOutput
+}
+
+/// Output structure for ListHighScores
+structure ListHighScoresOutput {
+    /// A list of high scores
+    @httpPayload
+    highScores: HighScores
+}
+
+list HighScores {
+    member: HighScoreAttributes
+}&lt;/code&gt;&lt;/pre&gt; 
+&lt;h3&gt;Generate the SDK&lt;/h3&gt; 
+&lt;p&gt;With the model and a Rails service, it’s now time to generate the SDK. Smithy code generation and integration is only available in Java environments. Fortunately, for this demo, the High Score Service SDK has already been generated and committed to the smithy-ruby repo. Download it &lt;a href=&quot;https://github.com/awslabs/smithy-ruby/tree/4cba34e43867a84272be12812d66cc032f92a966/codegen/projections/high_score_service&quot;&gt;from here&lt;/a&gt; if you are following along!&lt;/p&gt; 
+&lt;p&gt;If you’d like to generate it yourself, or generate your own Smithy model, you can follow the &lt;a href=&quot;https://github.com/awslabs/smithy-ruby/blob/main/README.md#generating-an-sdk-for-a-rails-json-api&quot;&gt;README instructions&lt;/a&gt; that detail how to use smithy-ruby in your Gradle project.&lt;/p&gt; 
+&lt;h3&gt;Use the SDK&lt;/h3&gt; 
+&lt;p&gt;Now we have a Rails service and an SDK. Start up &lt;code&gt;irb&lt;/code&gt; with &lt;code&gt;irb -I high_score_service/lib&lt;/code&gt; and try it out!&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;require 'high_score_service'
+
+# Create an instance of HighScoreService's Client.
+# This is similar to the AWS SDK Clients.
+# Here we use the endpoint of the Rails service.
+client = HighScoreService::Client.new(endpoint: 'http://127.0.0.1:3000')
+
+# List all high scores
+client.list_high_scores
+# =&amp;gt; #&amp;lt;struct HighScoreService::Types::ListHighScoresOutput high_scores=[]&amp;gt;
+
+# Try to create a high score
+# Should raise an UnprocessableEntityError, let's find out why
+ begin
+  client.create_high_score(high_score: { score: 9001, game: 'X' })
+rescue =&amp;gt; e
+  puts e.data
+  # =&amp;gt; #&amp;lt;struct HighScoreService::Types::UnprocessableEntityError errors={&quot;game&quot;=&amp;gt;[&quot;is too short (minimum is 2 characters)&quot;]}&amp;gt;
+end
+
+# Actually create a high score
+client.create_high_score(high_score: { score: 9001, game: 'Frogger' })
+# =&amp;gt; #&amp;lt;struct HighScoreService::Types::CreateHighScoreOutput
+
+# List high scores again
+resp = client.get_high_score(id: '1')
+resp.high_score
+# =&amp;gt; #&amp;lt;struct HighScoreService::Types::HighScoreAttributes id=1, game=&quot;Frogger&quot;, score=9001 ... &amp;gt;&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;As an exercise, try out the &lt;code&gt;delete_high_score&lt;/code&gt; and &lt;code&gt;update_high_score&lt;/code&gt; operations.&lt;/p&gt; 
+&lt;h2&gt;Future Plans&lt;/h2&gt; 
+&lt;p&gt;Looking forward, smithy-ruby will be used to generate the new service client versions (gem version 2, core version 4) of AWS SDK For Ruby.&lt;/p&gt; 
+&lt;p&gt;We’d like to explore more Smithy Ruby and Rails API use cases. Perhaps a Smithy model can be parsed and translated into a set of &lt;code&gt;rails new&lt;/code&gt; and &lt;code&gt;rails generate&lt;/code&gt; commands; going further, perhaps a “server-side SDK” can be a pluggable Rails engine that handles building and parsing of concrete types and protocols.&lt;/p&gt; 
+&lt;h2&gt;Feedback&lt;/h2&gt; 
+&lt;p&gt;If you have any questions, comments, concerns, ideas, or other feedback, please create an issue or discussion in the &lt;a href=&quot;https://github.com/awslabs/smithy-ruby&quot;&gt;smithy-ruby repository&lt;/a&gt;. We welcome any SDK design feedback and improvements, and we especially welcome any community contributions.&lt;/p&gt; 
+&lt;p&gt;Thanks for reading!&lt;/p&gt; 
+&lt;p&gt;-Matt&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Announcing the end of support for Ruby runtimes 1.9, 2.0, 2.1 and 2.2 for the AWS SDK For Ruby</title>
+		<link>https://aws.amazon.com/blogs/developer/announcing-the-end-of-support-for-ruby-runtimes-1-9-2-0-2-1-and-2-2-for-the-aws-sdk-for-ruby/</link>
+				
+				<pubDate>Fri, 19 Mar 2021 19:55:29 +0000</pubDate>
+		<dc:creator><![CDATA[Matt Muller]]></dc:creator>
+				<category><![CDATA[AWS SDK for Ruby]]></category>
+		<category><![CDATA[Developer Tools]]></category>
+		<category><![CDATA[Programing Language]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[aws-sdk-ruby]]></category>
+		<category><![CDATA[plz move off old ruby]]></category>
+		<category><![CDATA[ruby]]></category>
+
+		<guid isPermaLink="false">a14eb21e48be7f1a0cdc108ac24ddf5fdc73bdfa</guid>
+				<description>Starting September 1, 2021, AWS SDK For Ruby will no longer support these end of life (EOL) Ruby runtime versions: Ruby 1.9.3 – EOL began on 2015-02-23 Ruby 2.0.0 – EOL began on 2016-02-24 Ruby 2.1 – EOL began on 2017-03-31 Ruby 2.2 – EOL began on 2018-03-31 Since these versions have long passed end-of-life, […]</description>
+								<content:encoded>&lt;p&gt;Starting September 1, 2021, AWS SDK For Ruby will no longer support these end of life (EOL) Ruby runtime versions:&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;Ruby 1.9.3 – EOL began on 2015-02-23&lt;/li&gt; 
+ &lt;li&gt;Ruby 2.0.0 – EOL began on 2016-02-24&lt;/li&gt; 
+ &lt;li&gt;Ruby 2.1 – EOL began on 2017-03-31&lt;/li&gt; 
+ &lt;li&gt;Ruby 2.2 – EOL began on 2018-03-31&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;p&gt;Since these versions have long passed end-of-life, we have seen support drop within the Ruby community, including Rake, Bundler, and some of our SDK dependencies. To make sure we’re providing up-to-date and secure libraries, we’re joining this migration. We encourage you to upgrade to Ruby 2.3 or later to ensure your applications and services remain secure.&lt;/p&gt; 
+&lt;p&gt;Customers using &lt;a href=&quot;https://rubygems.org/gems/bundler&quot;&gt;bundler&lt;/a&gt; with these Ruby versions will not be broken and will not download newly released gem versions.&lt;/p&gt; 
+&lt;p&gt;The &lt;code&gt;CHANGELOG.md&lt;/code&gt; provided in each service gem will specify the exact version where support for these runtime versions have been dropped. Customers using Ruby versions that will no longer be supported will have a warning printed out on the last supported version of each service gem.&lt;/p&gt; 
+&lt;p&gt;Please see the &lt;a href=&quot;https://www.ruby-lang.org/en/downloads/branches/&quot;&gt;Ruby maintenance branches webpage&lt;/a&gt; for a complete list of Ruby versions and their maintenance status. For more information regarding maintenance and deprecations for AWS SDK For Ruby, please see the &lt;a href=&quot;https://docs.aws.amazon.com/credref/latest/refdocs/maint-policy.html&quot;&gt;AWS SDKs and Tools Maintenance Policy&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Introducing new features for the aws-sdk-rails gem</title>
+		<link>https://aws.amazon.com/blogs/developer/introducing-new-features-for-the-aws-sdk-rails-gem/</link>
+				
+				<pubDate>Mon, 07 Dec 2020 22:41:26 +0000</pubDate>
+		<dc:creator><![CDATA[Matt Muller]]></dc:creator>
+				<category><![CDATA[AWS SDK for Ruby]]></category>
+		<category><![CDATA[Developer Tools]]></category>
+		<category><![CDATA[Programing Language]]></category>
+		<category><![CDATA[Ruby]]></category>
+
+		<guid isPermaLink="false">120c84a4c92ebc33c2218de6f1b9c616ce3b9375</guid>
+				<description>The Ruby SDK team is happy to announce that we’ve added new features and consolidated existing gems into the aws-sdk-rails&amp;nbsp;gem to make developing Rails applications using AWS easier than ever. Features supported Amazon Simple Queue Service (SQS) queue adapter for ActiveJob (new) ActiveSupport::Notification instrumentation (new) DynamoDB ActiveDispatch::Session&amp;nbsp;implementation (new) Include Aws::Record with Rails migration tasks and […]</description>
+								<content:encoded>&lt;p&gt;The Ruby SDK team is happy to announce that we’ve added new features and consolidated existing gems into the &lt;code&gt;aws-sdk-rails&lt;/code&gt;&amp;nbsp;gem to make developing Rails applications using AWS easier than ever.&lt;/p&gt; 
+&lt;h2&gt;Features supported&lt;/h2&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;Amazon Simple Queue Service (SQS) queue adapter for ActiveJob (new)&lt;/li&gt; 
+ &lt;li&gt; &lt;code&gt;ActiveSupport::Notification&lt;/code&gt; instrumentation (new)&lt;/li&gt; 
+ &lt;li&gt;DynamoDB &lt;code&gt;ActiveDispatch::Session&lt;/code&gt;&amp;nbsp;implementation (new)&lt;/li&gt; 
+ &lt;li&gt;Include &lt;code&gt;Aws::Record&lt;/code&gt; with Rails migration tasks and model generators (new)&lt;/li&gt; 
+ &lt;li&gt;Amazon Simple Email Service (SES) as an ActionMailer Delivery Method (existing)&lt;/li&gt; 
+ &lt;li&gt;Automatically configures SDK logging to the Rails logger (existing)&lt;/li&gt; 
+ &lt;li&gt;Loading of AWS Credentials using Rails encrypted credentials (existing)&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;h2&gt;Using &lt;code&gt;aws-sdk-rails&lt;/code&gt;&lt;br&gt; &lt;/h2&gt; 
+&lt;p&gt;Add this gem to your Rails project’s Gemfile:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# Gemfile
+gem 'aws-sdk-rails'&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;By default, &lt;code&gt;aws-sdk-rails&lt;/code&gt; only enables logging and loading of credentials using Rails encrypted credentials. All other features are optional and will require some additional configuration.&lt;/p&gt; 
+&lt;p&gt;You will have to ensure that you provide AWS credentials for the SDK to use. You can add them to your Rails encrypted credentials under the &lt;code&gt;:aws&lt;/code&gt; key or see the &lt;a href=&quot;https://docs.aws.amazon.com/sdk-for-ruby/v3/api/index.html#Configuration&quot;&gt;AWS SDK for Ruby Documentation&lt;/a&gt; for other ways to configure credentials. &lt;strong&gt;Never commit your credentials to source control.&lt;/strong&gt;&amp;nbsp;Besides being a security risk, it makes it very difficult to rotate your credentials.&lt;/p&gt; 
+&lt;h2&gt;DynamoDB Session Store&lt;/h2&gt; 
+&lt;p&gt;You can configure &lt;a href=&quot;https://api.rubyonrails.org/classes/ActionDispatch/Session.html&quot;&gt;ActionDispatch::Session&lt;/a&gt;&amp;nbsp;storage in Rails to use DynamoDB instead of cookies, allowing access to sessions from other applications and devices. You will need to have an existing DynamoDB session table to use this feature.&lt;/p&gt; 
+&lt;p&gt;This table can be created manually, or using the ActiveRecord migration generator included with this gem:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-bash&quot;&gt;rails generate dynamo_db:session_store_migration&lt;/code&gt;&lt;/pre&gt; 
+&lt;h2&gt;Active Support Notification Instrumentation for AWS SDK calls&lt;/h2&gt; 
+&lt;p&gt;You can now instrument AWS SDK service calls using &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html&quot;&gt;ActiveSupport::Notifications&lt;/a&gt;. From a Rails initializer, you can enable this feature before you construct any SDK clients:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# config/initializers/aws.rb
+Aws::Rails.instrument_sdk_operations
+# create client.. etc&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Once done, you can create a subscriber to perform actions when SDK calls are made:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;ActiveSupport::Notifications.subscribe('put_object.s3.aws') do |name, start, finish, id, payload|
+  # process event
+end
+
+# Or use a regex to subscribe to all service notifications
+ActiveSupport::Notifications.subscribe(/s3[.]aws/) do |name, start, finish, id, payload|
+  # process event
+end&lt;/code&gt;&lt;/pre&gt; 
+&lt;h2&gt;AWS SQS Active Job&lt;/h2&gt; 
+&lt;p&gt;This gem includes a lightweight, high performance SQS backend for &lt;a href=&quot;https://guides.rubyonrails.org/active_job_basics.html&quot;&gt;ActiveJob&lt;/a&gt;. To use SQS for ActiveJob, you first need to:&lt;/p&gt; 
+&lt;p&gt;1. Create a job:&lt;br&gt; &lt;code&gt;rails generate job greeting&lt;/code&gt;&lt;/p&gt; 
+&lt;p&gt;This will generate a job which you can edit:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;class GreetingJob &amp;lt; ApplicationJob
+  queue_as :default
+
+  def perform(name)
+    Rails.logger.info &quot;Hello #{name}&quot; 
+  end
+end&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;2. Configure the queuing backend:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# config/application.rb
+# for non-blocking (async), use :amazon_sqs_async
+config.active_job.queue_adapter = :amazon_sqs&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;3. Map Rails Queues to your SQS Queue URLs:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# config/aws_sqs_active_job.yml
+queues:
+  default: 'https://my-queue-url.amazon.aws'&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;4. Queue up jobs&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# in your business logic or from rails console
+GreetingJob.perform_later('Person1')
+GreetingJob.set(wait: 5.minutes).perform_later('Person2')&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;To start processing jobs, you need to start a separate process using an executable script (&lt;code&gt;bin/aws_sqs_active_job&lt;/code&gt;) provided with this gem. When running in production, its recommended that use a process supervisor such as &lt;a href=&quot;https://github.com/ddollar/foreman&quot;&gt;foreman&lt;/a&gt;, systemd, daemontools, etc. Run the backend poller and execute jobs:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-bash&quot;&gt;RAILS_ENV=development bundle exec aws_sqs_active_job --queue default&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;At this point you should see output from the jobs you queued up earlier. The poller will poll indefinitely until you kill it. You can use &lt;code&gt;CTRL+C&lt;/code&gt; to cleanly shutdown the poller – it will wait for currently executing jobs to finish before exiting.&lt;/p&gt; 
+&lt;h3&gt;Serverless workers: processing activejobs using AWS Lambda&lt;/h3&gt; 
+&lt;p&gt;Rather than managing the worker processes yourself, you can use Lambda with an SQS Trigger. With &lt;a href=&quot;https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/&quot;&gt;Lambda Container Image Support&lt;/a&gt; and the lambda handler provided with &lt;code&gt;aws-sdk-rails&lt;/code&gt; its easy to use lambda to run ActiveJobs for your dockerized rails app (see below for some tips). All you need to do is:&lt;/p&gt; 
+&lt;p&gt;1. Include the &lt;a href=&quot;https://github.com/aws/aws-lambda-ruby-runtime-interface-client&quot;&gt;aws_lambda_ric gem&lt;/a&gt;&lt;br&gt; 2. Push your image to ECR&lt;br&gt; 3. Create a lambda function from your image (see the &lt;a href=&quot;https://docs.aws.amazon.com/lambda/index.html&quot;&gt;Lambda docs&lt;/a&gt; for details).&lt;br&gt; 4. Add an SQS Trigger for the queue(s) you want to process jobs from.&lt;br&gt; 5. Set the ENTRYPOINT to &lt;code&gt;/usr/local/bundle/bin/aws_lambda_ric&lt;/code&gt; and the CMD to &lt;code&gt;config/environment.Aws::Rails::SqsActiveJob.lambda_job_handler&lt;/code&gt; – this will load Rails and then use the lambda handler provided by &lt;code&gt;aws-sdk-rails&lt;/code&gt;. You can do this either as function config or in your Dockerfile.&lt;/p&gt; 
+&lt;h2&gt;Aws::Record integration and generators&lt;/h2&gt; 
+&lt;p&gt;This gem now ships with &lt;code&gt;aws-record&lt;/code&gt; if you would like to use it. &lt;code&gt;aws-record&lt;/code&gt;&amp;nbsp;is a DynamoDB model abstraction similar to ActiveRecord for SQL. Included with this gem is a rails generator for creating models, as well as a rake task for performing migrations (referred to as Table Config).&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-bash&quot;&gt;# generate a model in app/models
+rails generate aws_record:model Forum --table-config primary:10-5&lt;/code&gt;&lt;/pre&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-bash&quot;&gt;# runs all migrations in app/db/table_config
+rake aws_record:migrate&lt;/code&gt;&lt;/pre&gt; 
+&lt;h2&gt;Available Now&lt;/h2&gt; 
+&lt;p&gt;The &lt;code&gt;aws-sdk-rails&lt;/code&gt; gem is available now on &lt;a href=&quot;http://rubygems.org/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;rubygems.org&lt;/a&gt;. As always, we’d love to hear your feedback, and welcome any Issues or Pull Requests at the &lt;a href=&quot;http://github.com/aws/aws-sdk-rails&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;aws-sdk-rails GitHub repo&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>AWS SDK For Ruby V2 Maintenance Mode Reminder</title>
+		<link>https://aws.amazon.com/blogs/developer/reminder-on-aws-sdk-for-ruby-v2-deprecation/</link>
+				
+				<pubDate>Wed, 18 Nov 2020 00:13:27 +0000</pubDate>
+		<dc:creator><![CDATA[Matt Muller]]></dc:creator>
+				<category><![CDATA[AWS SDK for Ruby]]></category>
+		<category><![CDATA[Developer Tools]]></category>
+		<category><![CDATA[Ruby]]></category>
+
+		<guid isPermaLink="false">7e8f23edf3e77d63b40b748998a5a7f4bcf0e98c</guid>
+				<description>This is a reminder that AWS SDK For Ruby Version 2 will enter planned Maintenance Mode starting November 20, 2020. APIs and features released after that date will only be available in Version 3. Upgrading from Version 2 to Version 3 is easy! If you haven’t migrated already, please see the V3 upgrading guide. The […]</description>
+								<content:encoded>&lt;p&gt;This is a reminder that AWS SDK For Ruby Version 2 will enter planned Maintenance Mode starting November 20, 2020. APIs and features released after that date will only be available in Version 3.&lt;/p&gt; 
+&lt;p&gt;Upgrading from Version 2 to Version 3 is easy! If you haven’t migrated already, please see the &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby/blob/master/V3_UPGRADING_GUIDE.md&quot;&gt;V3 upgrading guide&lt;/a&gt;.&lt;/p&gt; 
+&lt;p&gt;The &lt;a href=&quot;https://aws.amazon.com/blogs/developer/deprecation-schedule-for-aws-sdk-for-ruby-v2/&quot;&gt;full maintenance mode announcement&lt;/a&gt; includes additional details about the maintenance plan and migration steps. For more general information about our product lifecycle, please see the &lt;a href=&quot;https://docs.aws.amazon.com/credref/latest/refdocs/maint-policy.html&quot;&gt;SDKs and Tools maintenance policy&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Maintenance Mode and End of Support Dates Announced for AWS SDK For Ruby V2</title>
+		<link>https://aws.amazon.com/blogs/developer/deprecation-schedule-for-aws-sdk-for-ruby-v2/</link>
+				
+				<pubDate>Thu, 18 Jun 2020 20:35:23 +0000</pubDate>
+		<dc:creator><![CDATA[Matt Muller]]></dc:creator>
+				<category><![CDATA[AWS SDK for Ruby]]></category>
+		<category><![CDATA[Developer Tools]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[aws]]></category>
+		<category><![CDATA[aws-sdk-ruby]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[SDK]]></category>
+
+		<guid isPermaLink="false">870aa9801cba6c556ecb9b9f062ff3b865744d3e</guid>
+				<description>We are announcing that version 2 of the AWS SDK For Ruby will enter maintenance mode on 11/20/2020. Support for version 2 will end on 11/21/2021. During maintenance mode we will continue to fix bugs and patch security issues until support for version 2 ends, at which point no further updates to version 2 will […]</description>
+								<content:encoded>&lt;p&gt;We are announcing that version 2 of the AWS SDK For Ruby will enter maintenance mode on 11/20/2020. Support for version 2 will end on 11/21/2021. During maintenance mode we will continue to fix bugs and patch security issues until support for version 2 ends, at which point no further updates to version 2 will be released. We encourage customers to upgrade from version 2 to version 3 to continue receiving regular updates.&lt;/p&gt; 
+&lt;p&gt;Version 3 of the AWS SDK For Ruby &lt;a href=&quot;https://aws.amazon.com/blogs/developer/announcing-the-modularized-aws-sdk-for-ruby-version-3/&quot;&gt;released in August of 2017&lt;/a&gt;. Version 3 maintains API compatibility with version 2 making upgrades easy.&lt;/p&gt; 
+&lt;h2&gt;Benefits of upgrading to V3&lt;/h2&gt; 
+&lt;p&gt;Version 3 introduces many improvements over the version 2 SDK, including modularization. Benefits of modularization include:&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;Per-service &lt;a href=&quot;https://guides.rubygems.org/patterns/#semantic-versioning&quot;&gt;semantic versioning&lt;/a&gt; and change logs. Each new release of V2 does not indicate what services have been updated.&lt;/li&gt; 
+ &lt;li&gt;Statically typed and generated code improves performance, load times, provides better stack traces and is easier to read source code. Version 2 generates clients and types at runtime.&lt;/li&gt; 
+ &lt;li&gt;Users can depend on individual services reducing package sizes when deployed.&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;p&gt;For more detailed benefits, please read the initial &lt;a href=&quot;https://aws.amazon.com/blogs/developer/aws-sdk-for-ruby-modularization-version-3-2/&quot;&gt;V3 Modularization blog post&lt;/a&gt;.&lt;/p&gt; 
+&lt;h2&gt;Migrating from V2 to V3&lt;/h2&gt; 
+&lt;p&gt;The shortest path to upgrade is to move from version 2 to version 3 of the aws-sdk gem.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# Gemfile
+gem 'aws-sdk', '~&amp;gt; 3'&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;The V3 aws-sdk gem is an umbrella package for the 220+ service gems. To reduce the number of gems your application downloads, we recommend that you move your dependencies to the service specific gems. This will reduce the time to install and update dependencies, and will reduce the disk space used. For example, if your application relies on Amazon S3 and Amazon DynamoDB, you can now do the following:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# Gemfile
+# Replace the aws-sdk umbrella gem with service gems
+gem 'aws-sdk-s3', '~&amp;gt; 1'
+gem 'aws-sdk-dynamodb', '~&amp;gt; 1'
+# replace require 'aws-sdk' with service specific gems
+require 'aws-sdk-s3'
+require 'aws-sdk-dynamodb'
+
+s3 = Aws::S3::Client.new
+ddb = Aws::DynamoDB::Client.new&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;For more details, checkout our &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby/blob/master/V3_UPGRADING_GUIDE.md&quot;&gt;V3 upgrading guide on GitHub&lt;/a&gt; or &lt;a href=&quot;https://aws.amazon.com/blogs/developer/upgrading-from-version-2-to-version-3-of-the-aws-sdk-for-ruby-2/&quot;&gt;this blog post&lt;/a&gt;. Upgrading will be straightforward as the client APIs for V3 are backwards compatible with V2. If you are having trouble upgrading, feel free to &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby/issues&quot;&gt;open an issue on Github&lt;/a&gt;!&lt;/p&gt; 
+&lt;h2&gt;Questions?&lt;/h2&gt; 
+&lt;p&gt;Please share your questions, comments, issues, etc. with us on &lt;a href=&quot;https://gitter.im/aws/aws-sdk-ruby&quot;&gt;Gitter&lt;/a&gt; and &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Introducing the ‘aws-rails-provisioner’ gem developer preview</title>
+		<link>https://aws.amazon.com/blogs/developer/introducing-the-aws-rails-provisioner-gem-developer-preview/</link>
+				
+				<pubDate>Mon, 05 Aug 2019 19:19:52 +0000</pubDate>
+		<dc:creator><![CDATA[Jingyi Chen]]></dc:creator>
+				<category><![CDATA[AWS Fargate]]></category>
+		<category><![CDATA[Foundational (100)]]></category>
+		<category><![CDATA[Intermediate (200)]]></category>
+		<category><![CDATA[Programing Language]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[aws-cdk]]></category>
+		<category><![CDATA[build]]></category>
+		<category><![CDATA[deploy]]></category>
+		<category><![CDATA[Developer Tools]]></category>
+		<category><![CDATA[fargate]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[rubygems]]></category>
+
+		<guid isPermaLink="false">1b15483d2f5614054389497f22b60bf7db0aa44d</guid>
+				<description>AWS is happy to announce that the aws-rails-provisioner gem for Ruby is now in developer preview and available for you to try! What is aws-rails-provisioner? The new aws-rails-provisioner gem is a tool that helps you define and deploy your containerized Ruby on Rails applications on AWS. It currently only supports AWS Fargate. aws-rails-provisioner is a […]</description>
+								<content:encoded>&lt;p&gt;AWS is happy to announce that the aws-rails-provisioner gem for Ruby is now in developer preview and available for you to try!&lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;What is &lt;code&gt;aws-rails-provisioner&lt;/code&gt;?&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;The new &lt;a href=&quot;https://rubygems.org/gems/aws-rails-provisioner&quot;&gt;&lt;code&gt;aws-rails-provisioner&lt;/code&gt; gem&lt;/a&gt; is a tool that helps you define and deploy your containerized Ruby on Rails applications on AWS. It currently only supports AWS Fargate.&lt;/p&gt; 
+&lt;p&gt;&lt;code&gt;aws-rails-provisioner&lt;/code&gt; is a command line tool using the configuration file &lt;code&gt;aws-rails-provisioner.yml&lt;/code&gt; to generate &lt;a href=&quot;https://github.com/aws/aws-cdk&quot;&gt;AWS Cloud Development Kit (CDK)&lt;/a&gt; stacks on your behalf. It automates provisioning AWS resources to run your containerized Ruby on Rails applications on &lt;a href=&quot;https://aws.amazon.com/fargate/&quot;&gt;AWS Fargate&lt;/a&gt; with a few commands. It can also generate a CI/CD &lt;a href=&quot;https://aws.amazon.com/codepipeline/&quot;&gt;AWS CodePipeline&lt;/a&gt; pipeline for your applications when you enable its CI/CD option.&lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;Why use aws-rails-provisioner?&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;Moving a local Ruby on Rails application to a well-configured web application running on the cloud is a complicated task. While &lt;code&gt;aws-rails-provisioner&lt;/code&gt; doesn’t change this into a “one-click” task, it helps ease the most monotonous and detail-oriented aspects of the job.&lt;/p&gt; 
+&lt;p&gt;The &lt;code&gt;aws-rails-provisioner&lt;/code&gt; gem shifts your primary focus to component-oriented definitions inside a concise aws-rails-provisioner.yml file. This file defines the AWS resources your application needs, such as container image environment, a database cluster engine, or Auto Scaling strategies. &lt;/p&gt; 
+&lt;p&gt;The new gem handles default details—like VPC configuration, subnet placement, inbound traffic rules between databases and applications—for you. With CI/CD opt-in, &lt;code&gt;aws-rails-provisioner&lt;/code&gt; can also generate and provision a predefined CI/CD pipeline, including a database migration phase.&lt;/p&gt; 
+&lt;p&gt;For containerized Ruby on Rails applications that you already maintain on AWS, &lt;code&gt;aws-rails-provisioner&lt;/code&gt; helps to keep the AWS infrastructure for your application as code in a maintainable way. This ease allows you to focus more on application development.&lt;/p&gt; 
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Prerequisites&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;Before using the preview gem, you must have the following resources:&lt;br&gt; • A Ruby on Rails application with Dockerfile&lt;br&gt; • A Docker daemon set up locally&lt;br&gt; • The AWS CDK installed (requires `Node.js` &amp;gt;= 8.11.x) &lt;code&gt;npm i -g aws-cdk&lt;/code&gt; &lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;Using &lt;code&gt;aws-rails-provisioner&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;Getting started with aws-rails-provisioner is fast and easy.&lt;/p&gt; 
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Step 1: Install aws-rails-provisioner&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;You can download the &lt;code&gt;aws-rails-provisioner&lt;/code&gt; preview gem from RubyGems. &lt;/p&gt; 
+&lt;p&gt;To install the gem, run the following command:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+gem install 'aws-rails-provisioner' -v 0.0.0.rc1
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Step 2: Define your aws-rails-provisioner.yml file&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;The &lt;code&gt;aws-rails-provisioner.yml&lt;/code&gt; configuration file allows you to define how and what components you want &lt;code&gt;aws-rails-provisioner&lt;/code&gt; to provision to run your application image on Fargate. &lt;/p&gt; 
+&lt;p&gt;An &lt;code&gt;aws-rails-provisioner.yml&lt;/code&gt; file looks like the following format:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-yml&quot;&gt;version: '0'
+vpc:
+	max_azs: 2
+services:
+	rails_foo:
+    source_path: ../sandbox/rails_foo
+    fargate:
+      desired_count: 3
+      public: true
+      envs:
+        PORT: 80
+        RAILS_LOG_TO_STDOUT: true
+    db_cluster:
+      engine: aurora-postgresql
+      db_name: myrails_db
+      instance: 2	
+	  scaling:
+		max_capacity: 2
+		on_cpu:
+			target_util_percent: 80
+			scale_in_cool_down: 300
+	rails_bar:
+		...
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;em&gt;&lt;code&gt;aws-rails-provisioner.yml&lt;/code&gt; file overview&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;The aws-rails-provisioner.yml file contains two parts: &lt;code&gt;vpc&lt;/code&gt; and &lt;code&gt;services&lt;/code&gt;. VPC defines networking settings, such as Amazon VPC hosting your applications and databases. It can be as simple as: &lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-yml&quot;&gt;vpc:
+  max_az: 3
+  cidr: '10.0.0.0/21'
+	enable_dns: true
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Left unmodified, &lt;code&gt;aws-rails-provisioner&lt;/code&gt; defines a default VPC with three Availability Zones containing public, private, and isolated subnets with a CIDR range of 10.0.0.0/21 and DNS enabled. If these default settings don’t meet your needs, you can configure settings yourself, such as in the following example, which defines the subnets with details:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-yml&quot;&gt;vpc:
+	subnets:
+		application: # a subnet name
+ 			cidr_mark: 24
+			type: private
+		...
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;You can review the full range of &lt;a href=&quot;https://docs.aws.amazon.com/awsrailsprovisioner/api/Aws/RailsProvisioner/Vpc.html&quot;&gt;VPC configuration options&lt;/a&gt; to meet your exact needs.&lt;/p&gt; 
+&lt;p&gt;The &lt;code&gt;services&lt;/code&gt; portion of aws-rails-provisioner.yml allows you to define your Rails applications, Database cluster, and Auto Scaling policies.&lt;br&gt; For every application, you can add their entry with identifiers like:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-yml&quot;&gt;services:
+	my_awesome_rails_app:
+	  source_path: ../path/to/awesome_app # relative path from `aws-rails-provisioner.yml`
+		...
+	my_another_awesome_rails_app:
+	  source_path: ./path/to/another_awesome_app # relative path from `aws-rails-provisioner.yml`
+		...
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;When you run &lt;code&gt;aws-rails-provisioner&lt;/code&gt; commands later, it takes the configuration values of a service—under &lt;code&gt;fargate:&lt;/code&gt;, &lt;code&gt;db_cluster:&lt;/code&gt;, and &lt;code&gt;scaling:&lt;/code&gt; to provision a Fargate service fronted by an Application Load Balancer (DBClusters resource and Auto Scaling policies are optional for a service).&lt;/p&gt; 
+&lt;p&gt;&lt;em&gt;Database cluster&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;The &lt;code&gt;db_cluster&lt;/code&gt; portion of &lt;code&gt;aws-rails-provisioner.yml&lt;/code&gt; defines database settings for your Rails application. It currently supports Aurora PostgreSQL, Aurora MySQL, and Aurora. You can specify the engine version by appending &lt;code&gt;engine_version&lt;/code&gt; to the command. You can also choose to provide a user name for your databases; if not, &lt;code&gt;aws-rails-provisioner&lt;/code&gt; automatically generates username and password and stores it in AWS Secrets Manager.&lt;/p&gt; 
+&lt;p&gt;To enable storage encryption for the Amazon RDS database cluster, provide &lt;code&gt;kms_key_arn&lt;/code&gt; with the AWS KMS key ARN you use for storage encryption:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-yml&quot;&gt; my_awesome_rails_app:
+	  source_path: ../path/to/awesome_app
+	  db_cluster:
+		engine: aurora-postgresql
+      db_name: awesome_db
+		username: myadmin
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;You can review the full list of &lt;a href=&quot;https://docs.aws.amazon.com/awsrailsprovisioner/api/Aws/RailsProvisioner/DBCluster.html&quot;&gt;db_cluster: configuration options&lt;/a&gt; to meet your specific needs.&lt;/p&gt; 
+&lt;p&gt;&lt;em&gt;AWS Fargate&lt;/em&gt;&lt;br&gt; The &lt;code&gt;fargate:&lt;/code&gt; portion of &lt;code&gt;aws-rails-provisioner.yml&lt;/code&gt; defines which Fargate services and Tasks that running your application image, for example:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-yml&quot;&gt;my_awesome_rails_app:
+	source_path: ../path/to/awesome_app
+	fargate:
+		public: true
+		memory: 512
+		cpu: 256
+		container_port: 80
+		envs:
+			RAILS_ENV: ...
+			RAILSLOGTO_STDOUT: ...
+  ...
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;For HTTPs applications, you can provide &lt;code&gt;certificate&lt;/code&gt; with a certificate ARN from AWS Certificate Manager. This automatically associates with the Application Load Balancer and sets &lt;code&gt;container_port&lt;/code&gt; to 443. You can also provide a domain name and domain zone for your application under &lt;code&gt;domain_name&lt;/code&gt; and &lt;code&gt;domain_zone&lt;/code&gt;. If you don’t provide these elements, the system provides a default DNS address from the Application Load Balancer.&lt;/p&gt; 
+&lt;p&gt;When providing environment variables for your application image, you don’t have to define &lt;code&gt;DATABASE_URL&lt;/code&gt; by yourself; &lt;code&gt;aws-rails-provisioner&lt;/code&gt; computes the value based on your &lt;code&gt;db_cluster&lt;/code&gt; configuration. Make sure to update the &lt;code&gt;config/database.yml&lt;/code&gt; file for your Rails application to recognize the &lt;code&gt;DATABASE_URL&lt;/code&gt; environment variable.&lt;/p&gt; 
+&lt;p&gt;You can review the full list of &lt;a href=&quot;https://docs.aws.amazon.com/awsrailsprovisioner/api/Aws/RailsProvisioner/Fargate.html&quot;&gt;fargate: configuration options&lt;/a&gt; to meet your specific needs.&lt;/p&gt; 
+&lt;p&gt;&lt;em&gt;Scaling&lt;/em&gt;&lt;br&gt; You can also configure the Auto Scaling setting for your service. In this prototype stage, you can configure scaling policies &lt;code&gt;on_cpu&lt;/code&gt;, &lt;code&gt;on_metric&lt;/code&gt;, &lt;code&gt;on_custom_metric&lt;/code&gt;, &lt;code&gt;on_memory&lt;/code&gt;, &lt;code&gt;on_request&lt;/code&gt;, or &lt;code&gt;on_schedule&lt;/code&gt;.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-yml&quot;&gt;my_awesome_rails_app:
+	source_path: ../path/to/awesome_app
+	scaling:
+	  max_capacity: 10
+    on_memory:
+      target_util_percent: 80
+      scale_out_cool_down: 200
+    on_request:
+      requests_per_target: 100000
+      disable_scale_in: true
+    ...
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;You can review the full list of &lt;a href=&quot;https://docs.aws.amazon.com/awsrailsprovisioner/api/Aws/RailsProvisioner/Scaling.html&quot;&gt;scaling: configuration options&lt;/a&gt; to meet your specific needs.&lt;/p&gt; 
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Step 3: Build and deploy&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;With &lt;code&gt;aws-rails-provisioner.yml&lt;/code&gt; defined, you can run a build command. Doing so bootstraps AWS CDK stacks in code, defining all the necessary AWS resources and connections for you.&lt;/p&gt; 
+&lt;p&gt;Run the following:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+aws-rails-provisioner build
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;This command initializes and builds a &lt;a href=&quot;https://github.com/aws/aws-cdk&quot;&gt;CDK&lt;/a&gt; project with stacks—installing all required CDK packages—leaving a deploy-ready project. By default, it generates an &lt;code&gt;InitStack&lt;/code&gt; that defines the VPC and Amazon ECS cluster, hosting Fargate services. It also generates a &lt;code&gt;FargateStack&lt;/code&gt; that defines a database cluster and a load-balanced, scaling Fargate service for each service entry.&lt;/p&gt; 
+&lt;p&gt;When you enable &lt;code&gt;--with-cicd&lt;/code&gt;, the &lt;code&gt;aws-rails-provisioner&lt;/code&gt; also provides a pipeline stack containing source, build, database migration, and deploy stages for each service defined for you. You can enable CI/CD with the following command:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+aws-rails-provisioner build --with-cicd
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;After the build completes, run the following deploy command to deploy all defined AWS resources:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+aws-rails-provisioner deploy
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Instead of deploying everything all at the same time, you can deploy stack by stack or application by application:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+# only deploys the stack that creates the VPC and ECS cluster
+aws-rails-provisioner deploy --init
+
+# deploys the fargate service and database cluster when defined
+aws-rails-provisioner deploy --fargate
+
+# deploy the CI/CD stack
+aws-rails-provisioner deploy --cicd
+
+# deploy only `my_awesome_rails_app` application
+aws-rails-provisioner deploy --fargate --service my_awesome_rails_app
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;You can check on the status of your stacks by logging in to the AWS console and navigating to AWS CloudFormation. Deployment can take several minutes.&lt;/p&gt; 
+&lt;p&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2019/08/02/image1.png&quot;&gt;&lt;img src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2019/08/02/image1.png&quot; alt=&quot;&quot; width=&quot;1437&quot; height=&quot;688&quot; class=&quot;alignnone size-full wp-image-5090&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt;Completing deployment leaves your applications running on AWS Fargate, fronted with the Application Load Balancer.&lt;/p&gt; 
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Step 4: View AWS resources&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;To see your database cluster, log in to the Amazon RDS console.&lt;/p&gt; 
+&lt;p&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2019/08/02/image1.5.png&quot;&gt;&lt;img src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2019/08/02/image1.5.png&quot; alt=&quot;&quot; width=&quot;1715&quot; height=&quot;736&quot; class=&quot;alignnone size-full wp-image-5091&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt;To see an ECS cluster created, with Fargate Services and tasks running, you can also check the Amazon ECS console.&lt;/p&gt; 
+&lt;p&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2019/08/02/image2.png&quot;&gt;&lt;img src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2019/08/02/image2.png&quot; alt=&quot;&quot; width=&quot;1690&quot; height=&quot;656&quot; class=&quot;alignnone size-full wp-image-5092&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt;To view the application via DNS address or domain address, check the Application Load Balancing dashboard.&lt;/p&gt; 
+&lt;p&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2019/08/02/image6.png&quot;&gt;&lt;img src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2019/08/02/image6.png&quot; alt=&quot;&quot; width=&quot;1720&quot; height=&quot;1201&quot; class=&quot;alignnone size-full wp-image-5093&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt;Any applications with databases need rails migration to work. The generated CI/CD stack contains a migration phase. The following CI/CD section contains additional details.&lt;br&gt; To view all the aws-rails-provisioner command line options, run:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+aws-rails-provisioner -h
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Step 5: Trigger the CI/CD pipeline&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;To trigger the pipeline that &lt;code&gt;aws-rails-provisioner&lt;/code&gt; provisioned for you, you must commit your application source code and Dockerfile with AWS CodeBuild build specs into an AWS CodeCommit repository. The &lt;code&gt;aws-rails-provisioner&lt;/code&gt; gem automatically creates this repository for you.&lt;/p&gt; 
+&lt;p&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2019/08/02/image7.png&quot;&gt;&lt;img src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2019/08/02/image7.png&quot; alt=&quot;&quot; width=&quot;1676&quot; height=&quot;1267&quot; class=&quot;alignnone size-full wp-image-5094&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt;To experiment with application image build and database migration on your own, try these &lt;a href=&quot;https://github.com/awslabs/aws-rails-provisioner/tree/master/buildspecs&quot;&gt;example build spec files&lt;/a&gt; from the aws-rails-provisioner GitHub repo.&lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;br&gt; Although &lt;code&gt;aws-rails-provisioner&lt;/code&gt; for RubyGems is currently under developer preview, it provides you with a powerful, time-saving tool. I would love for you to try it out and return with feedback for how AWS can improve this asset before its final launch. As always, you can leave your thoughts and feedback on &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Announcing Amazon Transcribe streaming transcription support in the AWS SDK for Ruby</title>
+		<link>https://aws.amazon.com/blogs/developer/announcing-amazon-transcribe-streaming-transcription-support-in-the-aws-sdk-for-ruby/</link>
+				
+				<pubDate>Fri, 22 Mar 2019 02:13:00 +0000</pubDate>
+		<dc:creator><![CDATA[Jingyi Chen]]></dc:creator>
+				<category><![CDATA[AWS Ruby Development]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[audio]]></category>
+		<category><![CDATA[http2]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[rubygems]]></category>
+		<category><![CDATA[SDK]]></category>
+		<category><![CDATA[Streaming]]></category>
+		<category><![CDATA[transcribe streaming]]></category>
+		<category><![CDATA[transcript]]></category>
+
+		<guid isPermaLink="false">8e5f3e7a35d320aad7c5cca0203e9c6254618bc2</guid>
+				<description>Amazon Transcribe streaming transcription enables you to send an audio stream, and with a single API call, receive a stream of text in real time. We’re excited to announce support for the #start_stream_transcription API with bidirectional streaming usage in the AWS SDK for Ruby. Before calling #start_stream_transcription To use the Amazon Transcribe #start_stream_transcription API, you […]</description>
+								<content:encoded>&lt;p&gt;Amazon &lt;a href=&quot;https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html&quot;&gt;Transcribe streaming transcription&lt;/a&gt; enables you to send an audio stream, and with a single API call, receive a stream of text in real time. We’re excited to announce support for the&lt;code&gt; #start_stream_transcription&lt;/code&gt; API with bidirectional streaming usage in the AWS SDK for Ruby.&lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;Before calling #start_stream_transcription&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;To use the Amazon Transcribe #start_stream_transcription API, you need to have &lt;a href=&quot;https://rubygems.org/gems/http-2&quot;&gt;&lt;code&gt;http-2&lt;/code&gt; gem&lt;/a&gt; and &lt;code&gt;aws-sdk-transcribestreamingservice&lt;/code&gt; gem available, as follows. &lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+gem 'http-2', '~&amp;gt; 0.10'
+gem 'aws-sdk-transcribestreamingservice', '~&amp;gt; 1.0'
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;The Amazon Transcribe &lt;code&gt;#start_stream_transcription&lt;/code&gt; API enables you to send an audio stream and receive a stream of text in real time. Although the AWS SDK for Ruby supports all Ruby versions later than 1.9.3, this API is streamed over the HTTP2 protocol. This means to use the API, you need to have Ruby version 2.1 or later.&lt;/p&gt; 
+&lt;p&gt;To check your Ruby version, run the following.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+ruby -v
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Currently, Amazon Transcribe supports both 16 kHz and 8 kHz audio streams (WAV, MP3, MP4, and FLAC) in 16-bit linear PCM encoding. Make sure your audio stream is under supported sample rates and within supported encoding before trying out the API, or you might get back empty transcripts or bad request exceptions. &lt;/p&gt; 
+&lt;p&gt;You can find more FAQs on Amazon Transcribe streaming transcription &lt;a href=&quot;https://aws.amazon.com/transcribe/faqs/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;#start_stream_transcription API usage pattern&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;Let’s walk through the key parts for making an async API call from an async client and event stream handlers, and a complete example of using the API. &lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Introduction to AsyncClient&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;Following the nature of HTTP2, the AWS SDK for Ruby introduces &lt;code&gt;AsyncClient&lt;/code&gt; for streaming APIs, compared to &lt;code&gt;Client&lt;/code&gt; (which you might be familiar with) for API calls over HTTP1.1. &lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+require 'aws-sdk-transcribestreamingservice'
+
+async_client = Aws::TranscribeStreamingService::AsyncClient.new(region: 'us-west-2')
+
+# List all available HTTP2/Async operations
+async_client.operation_names
+# =&amp;gt; [:start_stream_transcription]
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Introduction to input and output event stream handlers&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;For a bidirectional streaming API, you need to provide an &lt;code&gt;:input_event_stream_handler&lt;/code&gt; for signaling audio events, and an &lt;code&gt;:output_event_stream_handler&lt;/code&gt; registered with callbacks to process events immediately when they arrive. &lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+input_stream = Aws::TranscribeStreamingService::EventStreams::AudioStream.new
+output_stream = Aws::TranscribeStreamingService::EventStreams::TranscriptResultStream.new
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;You can find all of the available event streams for those handlers, and documentation about them, at &lt;code&gt;Aws::TranscribeStreamingService::EventStreams&lt;/code&gt;.&lt;/p&gt; 
+&lt;p&gt;Before we make the request, let’s take a closer look at those handlers. For handling events in responses, although you still can &lt;code&gt;#wait&lt;/code&gt; or &lt;code&gt;#join!&lt;/code&gt; for a final sync response, you get the most benefit out of streaming APIs on HTTP2 by registering callbacks on output_stream to access events with no delay.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+#  Print out transcripts received
+output_stream.on_transcript_event_event do |event|
+	unless event.transcript.results.empty?
+		event.transcript.results.each do |result|
+			result.alternatives.each {|alter| puts alter.transcript.inspect }
+		end
+  end
+end
+
+# Raise an error on bad request exception
+output_stream.on_bad_request_exception_event do |exception|
+	raise exception
+end
+
+# Alternatively, watch all events that arrive
+# output_stream.on_event {|event| # do something}
+
+# Callbacks for error events (unmodeled exceptions)
+# output_stream.on_error_event {|error| # Aws::Errors::EventError }
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;You can find all of the available callback methods for &lt;code&gt;output_stream&lt;/code&gt; in the &lt;code&gt;Aws::TranscribeStreamingService::EventStreams::TranscriptResultStream&lt;/code&gt; documentation.&lt;/p&gt; 
+&lt;p&gt;Then, when it comes to using &lt;code&gt;input_stream&lt;/code&gt;, you can &lt;code&gt;#signal&lt;/code&gt; audio events after initializing an async request.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+input_stream.signal_audio_event_event(audio_chunk: ...# audio bytes ... )
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;strong&gt;Calling the API&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;For a complete example to demo, we’re using an AWS Podcast audio here to show how we use the &lt;code&gt;#start_stream_transcription&lt;/code&gt; API to get real-time transcripts streamed back. &lt;/p&gt; 
+&lt;p&gt;Let’s pick AWS Podcast &lt;a href=&quot;https://aws.amazon.com/podcasts/aws-podcast/#285&quot;&gt;#285&lt;/a&gt;, which talks about AWS Lambda support for the native Ruby runtime and more. &lt;/p&gt; 
+&lt;p&gt;First, download the file and convert the audio to 16kHz rate with 16-bit linear PCM encoding, with the name &lt;code&gt;AwsPodCast285.wav&lt;/code&gt;.&lt;/p&gt; 
+&lt;p&gt;Now we’re set to call the API. Let’s create a &lt;code&gt;demo.rb&lt;/code&gt; file as follows.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+...
+# Omit async client initialization
+# and input/output event stream handler initialization part
+
+# Have an audio file
+audio_file = File.new('AwsPodCast285.wav', 'rb')
+
+# Register callbacks
+output_stream.on_transcript_event_event do |event|
+	unless event.transcript.results.empty?
+		event.transcript.results.each do |result|
+			result.alternatives.each {|alter| puts alter.transcript.inspect }
+		end
+  end
+end
+output_stream.on_bad_request_exception_event do |exception|
+	input_stream.signal_end_stream
+end
+
+# Make an async call
+async_resp = async_client.start_stream_transcription(
+	language_code: &quot;en-US&quot;,
+	media_encoding: &quot;pcm&quot;,
+	media_sample_rate_hertz: 16000,
+	input_event_stream_handler: input_stream,
+	output_event_stream_handler: output_stream
+)
+# =&amp;gt; Aws::Seahorse::Client::AsyncResponse
+
+# Signaling audio chunks
+while !audio_file.eof? do
+	input_stream.signal_audio_event_event(audio_chunk: audio_file.read(30000))
+  sleep(1)
+end
+sleep(0.5)
+input_stream.signal_end_stream
+audio_file.close
+
+# You can call #join! after some time passes, which would end the stream immediately
+resp =  async_resp.wait
+# =&amp;gt; Aws::Seahorse:Client::Response
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Running the code produces the following.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+&quot;This.&quot;
+&quot;This is&quot;
+&quot;This is a&quot;
+&quot;This is EP.&quot;
+&quot;This is episode&quot;
+&quot;This is Episode two&quot;
+&quot;This is episode too, huh?&quot;
+&quot;This is Episode two hundred&quot;
+&quot;This is Episode two hundred and eight.&quot;
+&quot;This is Episode two hundred and eighty&quot;
+&quot;This is Episode two hundred and eighty five.&quot;
+&quot;This is Episode two hundred and eighty five of&quot;
+&quot;This is Episode two hundred and eighty five of the&quot;
+&quot;This is Episode two hundred and eighty five of the eight&quot;
+&quot;This is Episode two hundred and eighty five of the tub.&quot;
+&quot;This is Episode two hundred and eighty five of the W.&quot;
+&quot;This is Episode two hundred and eighty five of the W s.&quot;
+&quot;This is Episode two hundred and eighty five of the W s.&quot;
+&quot;This is Episode two hundred and eighty five of the Ws Po'd.&quot;
+&quot;This is Episode two hundred and eighty five of the Ws podcast.&quot;
+&quot;This is Episode two hundred and eighty five of the Ws podcast.&quot;
+&quot;This is Episode two hundred and eighty five of the Ws podcast Real&quot;
+&quot;This is Episode two hundred and eighty five of the WS podcast released on&quot;
+&quot;This is Episode two hundred and eighty five of the WS podcast released on DIS&quot;
+&quot;This is Episode two hundred and eighty five of the Ws podcast released on December.&quot;
+&quot;This is Episode two hundred and eighty five of the Ws podcast released on December twenty.&quot;
+&quot;This is Episode two hundred and eighty five of the Ws podcast released on December twenty third.&quot;
+&quot;This is Episode two hundred and eighty five of the Ws podcast released on December twenty third, twenty.&quot;
+...
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;For full documentation of how to use this API, see the &lt;a href=&quot;https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/TranscribeStreamingService/AsyncClient.html&quot;&gt;AWS SDK for Ruby API Reference&lt;/a&gt;.&lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;Additional notes&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;Due to the nature of the HTTP2 protocol, request and response happens in parallel, and multiple streams share a single connection. Although you have full control of the speed of signaling audio events from input event streams, when the signal speed is too fast, with huge audio chunks, the bandwidths left for responding to events could be narrowed. To get the most from bidirectional streaming, we recommend a balanced pace in signaling events at input streams. &lt;/p&gt; 
+&lt;p&gt;We recommend calling &lt;code&gt;#signal_end_stream&lt;/code&gt; at the input event stream handler after audio event signaling is completed as a good practice. It sends a clear “end” stream signal to the server side. Some services might be waiting for this “end” stream signal to complete stream communication. If no further audio event is sent and no end stream is signaled, a &lt;code&gt;:bad_request_exception&lt;/code&gt; event might also be returned.&lt;/p&gt; 
+&lt;p&gt;As you might have noticed, different from sync HTTP1.1 API calls, the &lt;code&gt;AsyncResponse&lt;/code&gt; object is returned immediately once an async API call is made. There are two methods for syncing an &lt;code&gt;AsyncResponse&lt;/code&gt;: &lt;code&gt;#wait&lt;/code&gt; and &lt;code&gt;#join!&lt;/code&gt;. The &lt;code&gt;#wait&lt;/code&gt; method would wait on the request until the stream is closed, which can take minutes or even hours (depending on input event signaling). However, when &lt;code&gt;#join!&lt;/code&gt; is called, it would end the stream immediately with no delay.&lt;/p&gt; 
+&lt;p&gt;We also provide &lt;code&gt;#close_connection&lt;/code&gt; and &lt;code&gt;#new_connection&lt;/code&gt; methods for an &lt;code&gt;AsyncClient&lt;/code&gt;, as connection will be shared across multiple requests (streams), we recommend calling &lt;code&gt;#close_connection&lt;/code&gt; when you finished syncing all async responses. By default connection will be closed after 60 sec if no errors occurred when no data is received, you can configure this value by &lt;code&gt;:connection_timeout&lt;/code&gt;.&lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;Final thoughts&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;We walked through async API usage in this blog post and provided some best practices. Although async API usage is new and different from sync API calls in the AWS SDK for Ruby, it’s bringing streaming benefits for many use cases. Free feel to give it a try and let us know if you have any questions.&lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;Feedback&lt;/strong&gt;&lt;/p&gt; 
+&lt;p&gt;Please share your questions, comments, and issues with us on &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby&quot;&gt;GitHub&lt;/a&gt;. You can also catch us in our Gitter channel.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Announcing Amazon Kinesis SubscribeToShard API Support in the AWS SDK for Ruby</title>
+		<link>https://aws.amazon.com/blogs/developer/announcing-amazon-kinesis-subscribetoshard-api-support-in-the-aws-sdk-for-ruby/</link>
+				
+				<pubDate>Fri, 15 Mar 2019 02:29:44 +0000</pubDate>
+		<dc:creator><![CDATA[Jingyi Chen]]></dc:creator>
+				<category><![CDATA[AWS Ruby Development]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[http2]]></category>
+		<category><![CDATA[Kinesis]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[rubygems]]></category>
+		<category><![CDATA[SDK]]></category>
+		<category><![CDATA[Streaming]]></category>
+
+		<guid isPermaLink="false">afec983e51c45b5a8cbe3240ec14f33fb053d46e</guid>
+				<description>Amazon Kinesis launched two significant performance-improving features for Amazon Kinesis Data Streams: enhanced fan-out and an HTTP/2 data retrieval API (“SubscribeToShard”). This API allows data to be delivered from producers to consumers in 70 milliseconds or better. Today, we’re excited to announce the support for Kinesis SubscribeToShard API in the AWS SDK for Ruby. Before […]</description>
+								<content:encoded>&lt;p&gt;Amazon Kinesis &lt;a href=&quot;https://aws.amazon.com/blogs/aws/kds-enhanced-fanout/&quot;&gt;launched&lt;/a&gt; two significant performance-improving features for Amazon Kinesis Data Streams: enhanced fan-out and an HTTP/2 data retrieval API (“SubscribeToShard”). This API allows data to be delivered from producers to consumers in 70 milliseconds or better. Today, we’re excited to announce the support for Kinesis &lt;a href=&quot;https://docs.aws.amazon.com/kinesis/latest/APIReference/API_SubscribeToShard.html&quot;&gt;SubscribeToShard&lt;/a&gt; API in the AWS SDK for Ruby.&lt;/p&gt; 
+&lt;h3&gt;&lt;strong&gt;Before calling the #subscribe_to_shard API&lt;/strong&gt;&lt;/h3&gt; 
+&lt;p&gt;The &lt;code&gt;#subscribe_to_shard&lt;/code&gt; API is available in the &lt;code&gt;aws-sdk-kinesis&lt;/code&gt; &lt;a href=&quot;https://rubygems.org/gems/aws-sdk-kinesis/versions/1.10.0&quot;&gt;gem version 1.10.0&lt;/a&gt; and later for Ruby version 2.1 and later. This API is built on the HTTP/2 protocol for streaming back shard events, instead of the normal API call based on the HTTP1.1 protocol. You need to have &lt;a href=&quot;https://rubygems.org/gems/http-2&quot;&gt;http-2&lt;/a&gt; gem available when using this API.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+gem 'http-2', '~&amp;gt; 0.10'
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;This API is available at &lt;code&gt;AsyncClient&lt;/code&gt; instead of &lt;code&gt;Client&lt;/code&gt;, and an &lt;code&gt;AsyncResponse&lt;/code&gt; object would be available after making the call instead of waiting for a complete sync &lt;code&gt;Response&lt;/code&gt;.&lt;/p&gt; 
+&lt;h4&gt;&lt;strong&gt;&lt;em&gt;Introduction to AsyncClient&lt;/em&gt;&lt;/strong&gt;&lt;/h4&gt; 
+&lt;p&gt;Due to the nature of the HTTP/2 protocol, the AWS SDK for Ruby introduced &lt;code&gt;AsyncClient&lt;/code&gt; for streaming APIs over HTTP/2. This is different from the &lt;code&gt;Client&lt;/code&gt; object, which you might already be familiar with, for APIs over HTTP1.1.&lt;/p&gt; 
+&lt;p&gt;You can create an &lt;code&gt;AsyncClient&lt;/code&gt; for Kinesis as follows.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+require 'aws-sdk-kinesis'
+
+async_client = Aws::Kinesis::AsyncClient.new(region: 'us-west-2')
+
+# list all available HTTP2/Async operations
+async_client.operation_names
+# =&amp;gt; [:subscribe_to_shard]
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;In the next section, we walk through the async unidirectional streaming API usage pattern.&lt;br&gt; For general information about the SubscribeToShardAPI, see the Kinesis &lt;a href=&quot;https://docs.aws.amazon.com/kinesis/latest/APIReference/API_SubscribeToShard.html&quot;&gt;SubscribeToShard API documentation&lt;/a&gt;&lt;/p&gt; 
+&lt;h4&gt;&lt;strong&gt;&lt;em&gt;#subscribe_to_shard API usage pattern&lt;/em&gt;&lt;/strong&gt;&lt;/h4&gt; 
+&lt;p&gt;In this section, we will go through key parts for making a unidirectional async API call.&lt;/p&gt; 
+&lt;h5&gt;&lt;em&gt;Intro to :output_event_stream_handler&lt;/em&gt;&lt;/h5&gt; 
+&lt;p&gt;Waiting for async responses to be synchronized takes minutes and misses all of the benefits of streaming the processing of events. We’ve introduced event stream objects that enable you to register callbacks for specific (or every) event that arrives.&lt;/p&gt; 
+&lt;p&gt;Taking Kinesis as an example, all available &lt;code&gt;EventStreamobjects&lt;/code&gt; would be under &lt;code&gt;Aws::Kinesis::EventStreams&lt;/code&gt;. When looking at the &lt;code&gt;#subscribe_to_shard&lt;/code&gt; API, we have &lt;code&gt;Aws::Kinesis::EventStreams::SubscribeToShardEventStream&lt;/code&gt; available.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+output_stream = Aws::Kinesis::EventStreams::SubscribeToShardEventStream.new
+
+# callback for :on_subscribe_to_shard_event event
+output_stream.on_subscribe_to_shard_event_event do |event|
+	# =&amp;gt; Aws::Kinesis::Types::SubscribeToShardEvent
+end
+
+# callback for :on_resource_in_use_exception event
+output_stream.on_resource_in_use_exception_event do |exception|
+	# =&amp;gt; Aws::Kinesis::Types::ResourceInUseException
+end
+
+# Or if you want to see every event that arrives
+ouput_stream.on_event do |event|
+	puts event.event_type
+  # =&amp;gt; Symbol
+end
+
+# For a full list of available methods for registering callbacks, see
+# Aws::Kinesis::EventStreams::SubscribeToShardEventStream
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;To use those event streams, you just need to provide them in the &lt;code&gt;:output_event_stream_handler&lt;/code&gt; option when making the request. The following sections provide a complete example.&lt;/p&gt; 
+&lt;h5&gt;&lt;em&gt;Prepare the consumer&lt;/em&gt;&lt;/h5&gt; 
+&lt;p&gt;Before calling the API, you would need to have a &lt;a href=&quot;https://docs.aws.amazon.com/streams/latest/dev/amazon-kinesis-consumers.html&quot;&gt;consumer&lt;/a&gt; using enhanced fan-out. If you already have this consumer living in Kinesis data streams, you may skip this section and jump to following section “Calling the API”.&lt;/p&gt; 
+&lt;p&gt;To create a consumer using enhanced fan-out, you can simply call &lt;code&gt;#register_stream_consumer&lt;/code&gt; available at &lt;code&gt;Aws::Kinesis::Client&lt;/code&gt; like:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+client = Aws::Kinesis::Client.new
+resp = client.register_stream_consumer(
+	stream_arn: MY_KINESIS_STREAM_ARN,
+  consumer_name: 'foo'
+)
+# save consumer_arn used for later
+consumer_arn = resp.consumer.consumer_arn
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Make sure check until the consumer is active before using it for subscribing shard events:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+status = client.describe_stream_consumer(
+  stream_arn: MY_KINESIS_STREAM_ARN,
+  consumer_name: 'foo',
+).consumer_description.consumer_status
+# =&amp;gt; 'ACTIVE'
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Then, let pick a shard that we will subscribe to, (you would need the shardId)&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+shard_resp = client.list_shards(
+	stream_name: MY_STREAM_NAME
+)
+# say we want data living in the first shard of the stream
+shard_id = shard_resp.shards.first.shard_id
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;If you already have some fresh data in the stream shard, you can skip the rest of this section and jump to “Calling the API”, else, you can use following code snippets to put some data for testing&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+records = []
+10.times do |i|
+	records &amp;lt;&amp;lt; {
+	  data: &quot;test-data-#{i}&quot;,
+    partition_key: &quot;partition-key-#{i}&quot;
+  }
+end
+client.put_records(
+  records: records,
+  stream_name: MY_STREAM_NAME
+)
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;h4&gt;&lt;em&gt;Calling the API&lt;/em&gt;&lt;/h4&gt; 
+&lt;p&gt;Let’s bring all the pieces together and make the API call.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+require 'aws-sdk-kinesis'
+
+async_client = Aws::Kinesis::AsyncClient.new
+output_stream = Aws::Kinesis::EventStreams::SubscribeToShardEventStream.new
+output_stream.on_subscribe_to_shard_event_event do |event|
+	puts event.inspect
+end
+
+# Note: parameter values in the example are placeholders
+async_resp = async_client.subscribe_to_shard(
+  consumer_arn: &quot;arn:aws:kinesis:us-west-2:ACCOUNTID:stream/foo/consumer/bar:ID&quot;,
+  shard_id: &quot;shardId-SHARDID&quot;,
+  starting_position: {
+    type: 'AT_SEQUENCE_NUMBER',
+    sequence_number: &quot;SEQUENCE_NUMBER&quot;
+  },
+  output_event_stream_handler: output_stream
+)
+
+# Calling wait will wait for h2 stream ends
+# Alternatively, you can call #join! on the async response,
+# which immediately ends the stream and forces a sync response
+resp = async_resp.wait
+puts resp
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;For full documentation of request parameters, see &lt;a href=&quot;https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/Kinesis/AsyncClient.html#subscribe_to_shard-instance_method&quot;&gt;here&lt;/a&gt;. For more information about preparing those parameter values, see the Kinesis documentation &lt;a href=&quot;https://docs.aws.amazon.com/kinesis/latest/APIReference/API_RegisterStreamConsumer.html&quot;&gt;RegisterStreamConsumer&lt;/a&gt;.&lt;/p&gt; 
+&lt;p&gt;When you run the above code, you get output like the following.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+# struct Aws::Kinesis::Types::SubscribeToShardEvent records=[ ... ], continuation_sequence_number=&quot;...&quot;, millis_behind_latest=0, event_type=:subscribe_to_shard_event
+# struct Aws::Kinesis::Types::SubscribeToShardEvent records=[ ... ], continuation_sequence_number=&quot;...&quot;, millis_behind_latest=0, event_type=:subscribe_to_shard_event 
+...
+# struct Aws::Kinesis::Types::SubscribeToShardOutput ...
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;h3&gt;&lt;strong&gt;Additional notes&lt;/strong&gt;&lt;/h3&gt; 
+&lt;p&gt;In addition to providing an &lt;code&gt;Aws::Kinesis::EventStreams::SubscribeToShardEventStream&lt;/code&gt; object with callbacks that are registered (the most recommended usage pattern), you can also simply provide a Ruby Proc object with those callbacks, such as the following.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+...
+output_stream = Proc.new do |stream|
+	stream.on_event do |event|
+    puts &quot;an event arrived!&quot;
+  end
+  ... # other callbacks
+end
+# still need to provide :output_event_stream_handler
+async_resp = async_client.subscribe_to_shard(..., output_event_stream_handler: output_stream)
+...
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;You can also use a block when making the request to access the stream. In this pattern, you don’t have to provide &lt;code&gt;:output_event_stream_handler&lt;/code&gt;.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+async_resp = async_client.subscribe_to_shard(...) do |stream|
+	stream.on_event do |event|
+    puts &quot;an event arrived!&quot;
+  end
+end
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;A hybrid usage pattern is also supported.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+output_stream = Aws::Kinesis::EventStreams::SubscribeToShardEventStream.new
+output_stream.on_subscribe_to_shard_event_event do |event|
+	puts event.inspect
+end
+
+async_resp = async_client.subscribe_to_shard(
+  ..., output_event_stream_handler: output_stream) do |stream|
+	stream.on_error_event do |error|
+    # =&amp;gt; Aws::Errors::EventError
+    error.event_type # =&amp;gt; :error
+  end
+end
+...
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;One more note for the hybrid usage pattern: When extra callbacks are registered from the block, they’re essentially tracked (appended) at &lt;code&gt;:output_stream_handler&lt;/code&gt; still.&lt;/p&gt; 
+&lt;h3&gt;&lt;strong&gt;Final thoughts&lt;/strong&gt;&lt;/h3&gt; 
+&lt;p&gt;We walked through a &lt;code&gt;#subscribe_to_shard&lt;/code&gt; API usage example in Ruby to give you an introduction to &lt;code&gt;AsyncClient&lt;/code&gt; and &lt;code&gt;AsyncResponse&lt;/code&gt;. Feel free to try out the usage pattern to process events with callbacks, and let us know if you have any questions.&lt;/p&gt; 
+&lt;h3&gt;&lt;strong&gt;Feedback&lt;/strong&gt;&lt;/h3&gt; 
+&lt;p&gt;Share your questions, comments, and issues with us on &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby&quot;&gt;GitHub&lt;/a&gt;. You can also catch us in our Gitter channel.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Introducing Transaction Support in aws-record</title>
+		<link>https://aws.amazon.com/blogs/developer/introducing-transaction-support-in-aws-record/</link>
+				
+				<pubDate>Fri, 08 Feb 2019 18:31:07 +0000</pubDate>
+		<dc:creator><![CDATA[Alex Wood]]></dc:creator>
+				<category><![CDATA[AWS Ruby Development]]></category>
+		<category><![CDATA[Developer Tools]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[DynamoDB]]></category>
+		<category><![CDATA[ruby]]></category>
+
+		<guid isPermaLink="false">87279c5bbe79307f6af3a43c410e3f6e75aa8e40</guid>
+				<description>Introducing Transaction Support in aws-record The aws-record Ruby Gem is a data mapper abstraction layer over Amazon DynamoDB, a key-value and document database that delivers single-digit millisecond performance at any scale. Recently, support for transactions was added to DynamoDB. DynamoDB transactions simplify the developer experience of making coordinated, all-or-nothing changes to multiple items both within […]</description>
+								<content:encoded>&lt;h1 id=&quot;introducing-transaction-support-in-aws-record&quot;&gt;Introducing Transaction Support in aws-record&lt;/h1&gt; 
+&lt;p&gt;The &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby-record&quot;&gt;aws-record Ruby Gem&lt;/a&gt; is a data mapper abstraction layer over &lt;a href=&quot;https://aws.amazon.com/dynamodb/&quot;&gt;Amazon DynamoDB&lt;/a&gt;, a key-value and document database that delivers single-digit millisecond performance at any scale.&lt;/p&gt; 
+&lt;p&gt;Recently, support for &lt;a href=&quot;https://aws.amazon.com/blogs/aws/new-amazon-dynamodb-transactions/&quot;&gt;transactions&lt;/a&gt; was added to DynamoDB. DynamoDB transactions simplify the developer experience of making coordinated, all-or-nothing changes to multiple items both within and across tables. Transactions provide atomicity, consistency, isolation, and durability (ACID) in DynamoDB, enabling you to maintain data correctness in your applications easily.&lt;/p&gt; 
+&lt;p&gt;Today, we’re launching support for DynamoDB transactional find and write operations directly from &lt;code&gt;aws-record&lt;/code&gt;. This support enables you to enjoy the benefits of transactional operations, while also getting to use the object abstractions that &lt;code&gt;aws-record&lt;/code&gt; provides.&lt;/p&gt; 
+&lt;h2 id=&quot;how-to-use-dynamodb-transactions-by-example&quot;&gt;How to use DynamoDB transactions by example&lt;/h2&gt; 
+&lt;p&gt;Let’s assume we have two tables for a game where players can buy items with virtual coins (much like Danilo’s example from the announcement post). In &lt;code&gt;aws-record&lt;/code&gt;, you might model the two tables this way.&lt;/p&gt; 
+&lt;pre class=&quot;unlimited-height-code&quot;&gt;&lt;code class=&quot;lang-ruby&quot;&gt;class GameItem
+  include Aws::Record
+  string_attr  :id, hash_key: true
+  string_attr  :name
+  integer_attr :price
+  integer_attr :update_serial, default_value: 1
+  string_attr :owned_by
+end
+
+class GamePlayer
+  include Aws::Record
+  string_attr  :id, hash_key: true
+  integer_attr :coins
+  list_attr    :items, default_value: []
+  boolean_attr :active
+  integer_attr :update_serial, default_value: 1
+end&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Although we could potentially &lt;a href=&quot;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql-B.html&quot;&gt;design this as a single table&lt;/a&gt;, the fact that this example uses two tables also helps us demonstrate that transaction support can span multiple DynamoDB tables in a single transaction.&lt;/p&gt; 
+&lt;h2 id=&quot;transactional-finds&quot;&gt;Transactional finds&lt;/h2&gt; 
+&lt;p&gt;The &lt;code&gt;aws-record&lt;/code&gt; gem provides two approaches to perform transactional finds:&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;The &lt;code&gt;Aws::Record::Transactions.transact_find&lt;/code&gt; operation, which allows you to create transactional finds that span multiple tables, but automatically marshal the response into an array of &lt;code&gt;aws-record&lt;/code&gt; item objects of the appropriate model class.&lt;/li&gt; 
+ &lt;li&gt;Calling the &lt;code&gt;.transact_find&lt;/code&gt; operation directly on an aws-record model class. This is useful when your find transaction does not span multiple tables, and allows your code to be more concise.&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;p&gt;Let’s take a look at two side-by-side examples using the tables we defined above. First, let’s get a set of items using find operations directly on the different tables.&lt;/p&gt; 
+&lt;pre class=&quot;unlimited-height-code&quot;&gt;&lt;code class=&quot;lang-ruby&quot;&gt;items = GameItem.transact_find(
+  transact_items: [
+    { key: { id: 'item-1-id' }},
+    { key: { id: 'item-id-not-found' }},
+    { key: { id: 'item-2-id' }}
+  ]
+).responses
+items.map { |i| i.class } # =&amp;gt; [GameItem, NilClass, GameItem]
+
+players = GamePlayer.transact_find(
+  transact_items: [
+    { key: { id: 'player-1-id' }},
+    { key: { id: 'player-2-id' }}
+  ]
+).responses
+players.map { |i| i.class } # =&amp;gt; [GamePlayer, GamePlayer]&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;The &lt;a href=&quot;https://docs.aws.amazon.com/awssdkrubyrecord/api/Aws/Record/ItemOperations/ItemOperationsClassMethods.html#transact_find-instance_method&quot;&gt;model-level transactional find API&lt;/a&gt; expects a hash including a &lt;code&gt;:key&lt;/code&gt; sub-hash that includes the key to be retrieved for the given item. (You can also optionally provide extra parameters to include in the request, such as a projection expression.)&lt;/p&gt; 
+&lt;p&gt;You can see that the &lt;code&gt;responses&lt;/code&gt; array contains &lt;code&gt;aws-record&lt;/code&gt; items, but can also contain &lt;code&gt;nil&lt;/code&gt; when an item in your transaction isn’t found.&lt;/p&gt; 
+&lt;p&gt;How would we do the same thing in a single transactional find call? That’s where the global variant comes in handy.&lt;/p&gt; 
+&lt;pre class=&quot;unlimited-height-code&quot;&gt;&lt;code class=&quot;lang-ruby&quot;&gt;objects = Aws::Record::Transactions.transact_find(
+  transact_items: [
+    GameItem.tfind_opts(key: { id: 'item-1-id' }),
+    GameItem.tfind_opts(key: { id: 'item-id-not-found' }),
+    GameItem.tfind_opts(key: { id: 'item-2-id' }),
+    GamePlayer.tfind_opts(key: { id: 'player-1-id' }),
+    GamePlayer.tfind_opts(key: { id: 'player-2-id' })
+  ]
+).responses
+objects.map { |i| i.class } # =&amp;gt; [GameItem, NilClass, GameItem, GamePlayer, GamePlayer]&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;The &lt;a href=&quot;https://docs.aws.amazon.com/awssdkrubyrecord/api/Aws/Record/Transactions.html#transact_find-class_method&quot;&gt;top-level transactional find API&lt;/a&gt; involves writing a bit more code, but enables you to mix and match different tables and models in a single batch of finds.&lt;/p&gt; 
+&lt;h2 id=&quot;transactional-writes&quot;&gt;Transactional writes&lt;/h2&gt; 
+&lt;p&gt;The &lt;a href=&quot;https://docs.aws.amazon.com/awssdkrubyrecord/api/Aws/Record/Transactions.html#transact_write-class_method&quot;&gt;transactional write API&lt;/a&gt; provides a way to pass in &lt;code&gt;aws-record&lt;/code&gt; items into transactional writes. It also adds the ability to run “save” commands in a transaction, while allowing &lt;code&gt;aws-record&lt;/code&gt; to determine if a &lt;code&gt;:put&lt;/code&gt; or &lt;code&gt;:update&lt;/code&gt; operation is most appropriate. Additionally, it ports the &lt;code&gt;aws-record&lt;/code&gt; &lt;code&gt;#save&lt;/code&gt; logic (performing a conditional put or an update, depending on what has changed in a given item) to the DynamoDB transactional operations.&lt;/p&gt; 
+&lt;p&gt;Let’s look at how we would perform some transactional writes to implement our game example. Let’s assume we want to take a player ID and an item ID from our game, and attempt to “buy” that item as that player.&lt;/p&gt; 
+&lt;pre class=&quot;unlimited-height-code&quot;&gt;&lt;code class=&quot;lang-ruby&quot;&gt;def buy_item(player_id, item_id)
+  player, item = Aws::Record::Transactions.transact_find(
+    transact_items: [
+      GamePlayer.tfind_opts(key: { id: player_id }),
+      GameItem.tfind_opts(key: { id: item_id })
+    ]
+  ).responses
+  raise ArgumentError if player.nil? || item.nil?
+  player.coins -= item.price
+  item.available = false
+  item.owned_by = player.id
+  player.items &amp;lt;&amp;lt; item.id
+  player.update_serial += 1
+  item.update_serial += 1
+  Aws::Record::Transactions.transact_write(
+    transact_items: [
+      {
+        update: player,
+        condition_expression: &quot;#COINS &amp;gt;= :p AND #SERIAL = :s&quot;,
+        expression_attribute_names: {
+          '#COINS' =&amp;gt; 'coins',
+          '#SERIAL' =&amp;gt; 'update_serial'
+        },
+        expression_attribute_values: {
+          ':p' =&amp;gt; (item.price),
+          ':s' =&amp;gt; (player.update_serial - 1)
+        }
+      },
+      {
+        update: item,
+        condition_expression: &quot;#AVAIL = :true AND #SERIAL = :s&quot;,
+        expression_attribute_names: {
+          '#AVAIL' =&amp;gt; 'available',
+          '#SERIAL' =&amp;gt; 'update_serial'
+        },
+        expression_attribute_values: {
+          ':true' =&amp;gt; true,
+          ':s' =&amp;gt; (item.update_serial - 1)
+        }
+      }
+    ]
+  )
+end&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Because transactional writes either all fail or all succeed, you can avoid race conditions where, for example, multiple players are recorded as owning the same item, or coin/item inventories don’t line up. This remains true even if you’re using multiple tables in your application.&lt;/p&gt; 
+&lt;p&gt;You can also add checks to your transactions. Imagine if we had a global &lt;code&gt;GameState&lt;/code&gt; table, which we used, in part, to determine if any transactions were allowed. We could add a check expression, where an item is checked as a part of the transaction but not changed, like so:&lt;/p&gt; 
+&lt;pre class=&quot;unlimited-height-code&quot;&gt;&lt;code class=&quot;lang-ruby&quot;&gt;Aws::Record::Transactions.transact_write(
+  transact_items: [
+    {
+      update: player,
+      condition_expression: &quot;#COINS &amp;gt;= :p AND #SERIAL = :s&quot;,
+      expression_attribute_names: {
+        '#COINS' =&amp;gt; 'coins',
+        '#SERIAL' =&amp;gt; 'update_serial'
+      },
+      expression_attribute_values: {
+        ':p' =&amp;gt; (item.price),
+        ':s' =&amp;gt; (player.update_serial - 1)
+      }
+    },
+    {
+      update: item,
+      condition_expression: &quot;#AVAIL = :true AND #SERIAL = :s&quot;,
+      expression_attribute_names: {
+        '#AVAIL' =&amp;gt; 'available',
+        '#SERIAL' =&amp;gt; 'update_serial'
+      },
+      expression_attribute_values: {
+        ':true' =&amp;gt; true,
+        ':s' =&amp;gt; (item.update_serial - 1)
+      }
+    },
+    {
+      check: GameState.transact_check_expression(
+        key: { config_set_id: &quot;GLOBAL&quot; },
+        condition_expression: &quot;#A = :true&quot;,
+        expression_attribute_names: {
+          &quot;#A&quot; =&amp;gt; &quot;purchases_active&quot;
+        },
+        expression_attribute_values: {
+          &quot;:true&quot; =&amp;gt; true
+        }
+      )
+    }
+  ]
+)&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;This variant would also fail to complete the item purchase transaction if purchases were globally disabled for any reason, even if the player and item otherwise meet the transaction conditions.&lt;/p&gt; 
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt; 
+&lt;p&gt;With this new feature in &lt;code&gt;aws-record&lt;/code&gt; you can take advantage of the DynamoDB support for transactions, while continuing to represent your DynamoDB items as objects, and leveraging features like intelligent &lt;code&gt;save&lt;/code&gt; behavior.&lt;/p&gt; 
+&lt;p&gt;What can we deliver next to make your experience of using DynamoDB in Ruby even easier? Let me know!&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Announcing Ruby build support for AWS SAM CLI</title>
+		<link>https://aws.amazon.com/blogs/developer/announcing-ruby-build-support-for-aws-sam-cli/</link>
+				
+				<pubDate>Fri, 21 Dec 2018 20:14:07 +0000</pubDate>
+		<dc:creator><![CDATA[Alex Wood]]></dc:creator>
+				<category><![CDATA[AWS Ruby Development]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[aws-sam]]></category>
+		<category><![CDATA[Lambda]]></category>
+		<category><![CDATA[ruby]]></category>
+
+		<guid isPermaLink="false">3e3740f9b8537ece843af9906be5363754da1e86</guid>
+				<description>At AWS re:Invent 2018, we announced Ruby support in AWS Lambda. The Ruby runtime in Lambda has built-in logic to make packaging your dependencies simple. AWS SAM CLI is a CLI tool currently in beta for local development and testing of serverless applications. It encapsulates several build, test, and deployment patterns for Lambda functions. Today, […]</description>
+								<content:encoded>&lt;p&gt;At AWS re:Invent 2018, we &lt;a href=&quot;https://aws.amazon.com/blogs/compute/announcing-ruby-support-for-aws-lambda/&quot;&gt;announced Ruby support in AWS Lambda&lt;/a&gt;. The Ruby runtime in Lambda has built-in logic to make packaging your dependencies simple.&lt;/p&gt; 
+&lt;p&gt;AWS SAM CLI is a CLI tool currently in beta for local development and testing of serverless applications. It encapsulates several build, test, and deployment patterns for Lambda functions. Today, we’ve launched support for Ruby builds in the SAM CLI tool.&lt;/p&gt; 
+&lt;h2 id=&quot;how-to-build-aws-lambda-functions-with-dependencies-in-ruby&quot;&gt;How to build AWS Lambda functions with dependencies in Ruby&lt;/h2&gt; 
+&lt;p&gt;In most cases, vendoring your dependencies for deployment to Lambda is simple. Using Ruby 2.5, you can run &lt;code&gt;bundle install&lt;/code&gt; to create a &lt;code&gt;Gemfile.lock&lt;/code&gt; file if you don’t have one, then vendor and zip your dependencies.&lt;/p&gt; 
+&lt;pre&gt;&lt;code&gt;bundle install --deployment
+zip -r source.zip *&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Because the Ruby runtime looks in &lt;code&gt;/var/task/vendor/bundle/ruby/2.5.0&lt;/code&gt; for dependencies, you don’t need to do any additional configuration for Lambda to automatically recognize your dependencies. However, there are a couple of caveats to building Ruby functions to keep in mind:&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;You must use Ruby 2.5 to build your dependencies. Dependencies that are vendored for deployment are sensitive to the Ruby minor version used when you run the bundle command.&lt;/li&gt; 
+ &lt;li&gt;Dependency installations that include native extensions are platform sensitive. You must build in an environment compatible with Amazon Linux for these dependencies to work on Lambda.&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;h2 id=&quot;using-aws-sam-cli-to-simplify-ruby-function-builds&quot;&gt;Using AWS SAM CLI to simplify Ruby function builds&lt;/h2&gt; 
+&lt;p&gt;With the AWS SAM CLI Ruby build support, you can address both of these build questions. Let’s create a SAM CLI project to see how it works.&lt;/p&gt; 
+&lt;pre&gt;&lt;code&gt;sam init --runtime ruby2.5 --name hello-ruby-sam
+cd hello-ruby-sam&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;This provides an example method using Ruby on Lambda. With the Ruby build support in SAM CLI, we can now reduce the build process to a single command.&lt;/p&gt; 
+&lt;pre&gt;&lt;code&gt;sam build&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;If we include dependencies with native extensions, such as &lt;code&gt;nokogiri&lt;/code&gt;, we want to make sure we’re building on an Amazon Linux-compatible image. With SAM CLI, you can do that in a single command as well.&lt;/p&gt; 
+&lt;pre&gt;&lt;code&gt;sam build --use-container&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;We’re now ready to deploy our function to Lambda.&lt;/p&gt; 
+&lt;h2 id=&quot;exploring-sam-cli&quot;&gt;Exploring SAM CLI&lt;/h2&gt; 
+&lt;p&gt;First, let’s test our function locally. The following command stands up our function on a local endpoint, simulating &lt;a href=&quot;https://aws.amazon.com/api-gateway/&quot;&gt;Amazon API Gateway&lt;/a&gt;.&lt;/p&gt; 
+&lt;pre&gt;&lt;code&gt;sam local start-api&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;You can also run &lt;code&gt;sam local invoke&lt;/code&gt; to test out singular calls with event JSON files. After testing, we can use SAM CLI to help package and deploy our function to Lambda.&lt;/p&gt; 
+&lt;pre&gt;&lt;code&gt;sam package \
+    --template-file template.yaml \
+    --output-template-file packaged.yaml \
+    --s3-bucket REPLACE_THIS_WITH_YOUR_S3_BUCKET_NAME
+
+sam deploy \
+    --template-file packaged.yaml \
+    --stack-name sam-app \
+    --capabilities CAPABILITY_IAM
+
+aws cloudformation describe-stacks \
+    --stack-name sam-app --query 'Stacks[].Outputs'&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;The final command gives you an API Gateway endpoint that you can navigate to so that you can see your function in action!&lt;/p&gt; 
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt; 
+&lt;p&gt;One of the goals of the AWS SAM CLI project is to standardize on several best practices around building, testing, and deploying AWS Lambda functions. We hope this launch makes it even easier to develop Ruby functions for Lambda.&lt;/p&gt; 
+&lt;p&gt;One thing to note, SAM CLI is an open-source project. Customers have added functionality for &lt;a href=&quot;https://www.awsadvent.com/2018/12/10/aws-sam-my-exciting-first-open-source-experience/&quot;&gt;.NET Core&lt;/a&gt; and Node.js into the SAM CLI. We welcome your feedback and contributions on GitHub to &lt;a href=&quot;https://github.com/awslabs/aws-sam-cli&quot;&gt;AWS SAM CLI&lt;/a&gt; and &lt;a href=&quot;https://github.com/awslabs/aws-lambda-builders&quot;&gt;AWS Lambda Builders!&lt;/a&gt;&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Advanced client stubbing in the AWS SDK for Ruby Version 3</title>
+		<link>https://aws.amazon.com/blogs/developer/advanced-client-stubbing-in-the-aws-sdk-for-ruby-version-3/</link>
+				
+				<pubDate>Mon, 13 Aug 2018 16:18:54 +0000</pubDate>
+		<dc:creator><![CDATA[Alex Wood]]></dc:creator>
+				<category><![CDATA[AWS Ruby Development]]></category>
+		<category><![CDATA[Developer Tools]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Local Testing]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[SDK]]></category>
+		<category><![CDATA[Testing]]></category>
+
+		<guid isPermaLink="false">e8273f4ccd1df5a6ca1a5120e315e08963377bdc</guid>
+				<description>The AWS SDK for Ruby provides a robust set of features for stubbing your clients, to make unit tests easier and less fragile. Many of you have used these features to stub your client calls. But in this post, we’re going to explore both a new stub feature in version 3 of the AWS SDK […]</description>
+								<content:encoded>&lt;p&gt;The &lt;a href=&quot;https://aws.amazon.com/sdk-for-ruby/&quot;&gt;AWS SDK for Ruby&lt;/a&gt; provides a robust set of features for stubbing your clients, to make unit tests easier and less fragile. Many of you have used these features to stub your client calls. But in this post, we’re going to explore both a new stub feature in version 3 of the AWS SDK for Ruby, and some advanced stubbing techniques you can add to your testing toolbox.&lt;/p&gt; 
+&lt;h2 id=&quot;how-to-stub-a-client&quot;&gt;How to stub a client&lt;/h2&gt; 
+&lt;p&gt;The &lt;a href=&quot;https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html&quot;&gt;Aws::ClientStubs documentation&lt;/a&gt; has several examples of how to write client stubs, but in the most basic form, you do the following:&lt;/p&gt; 
+&lt;ol type=&quot;1&quot;&gt; 
+ &lt;li&gt;Set the &lt;code&gt;:stub_responses&lt;/code&gt; parameter at client creation.&lt;/li&gt; 
+ &lt;li&gt;Write out the stubbed responses you want, sequentially.&lt;/li&gt; 
+&lt;/ol&gt; 
+&lt;p&gt;For a simple example of stubbing an operation, consider the following.&lt;/p&gt; 
+&lt;pre class=&quot;unlimited-height-code&quot;&gt;&lt;code class=&quot;lang-ruby&quot;&gt;s3 = Aws::S3::Client.new(stub_responses: true)
+s3.stub_responses(:list_buckets, { buckets: [{ name: &quot;my-bucket&quot; }] })
+s3.list_buckets.buckets.map(&amp;amp;:name) #=&amp;gt; ['my-bucket']
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;You can also stub the same operation to provide different responses for sequential calls.&lt;/p&gt; 
+&lt;pre class=&quot;unlimited-height-code&quot;&gt;&lt;code class=&quot;lang-ruby&quot;&gt;s3 = Aws::S3::Client.new(stub_responses: true)
+s3.stub_responses(:get_object,
+  'NoSuchKey',
+  { body: &quot;Hello!&quot; }
+)
+begin
+  s3.get_object(bucket: &quot;test&quot;, key: &quot;test&quot;)
+rescue Aws::S3::Errors::NoSuchKey
+  # You don't NEED to do this, but maybe your test function would be doing this.
+  s3.put_object(bucket: &quot;test&quot;, key: &quot;test&quot;, body: &quot;Doesn't matter&quot;)
+end
+s3.get_object(bucket: &quot;test&quot;, key: &quot;test&quot;).body.read #=&amp;gt; &quot;Hello!&quot;
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;This works pretty well for most test use cases, but it can be fragile in others. We’re expecting that API calls will come in a certain sequence, and for that &lt;code&gt;#put_object&lt;/code&gt; call, the &lt;code&gt;:body&lt;/code&gt; parameter value didn’t matter at all – the stub is fixed. In some cases, we want our stubs to have a bit of dynamic logic, and that’s where dynamic client stubbing is an option.&lt;/p&gt; 
+&lt;h2 id=&quot;dynamic-client-stubbing&quot;&gt;Dynamic client stubbing&lt;/h2&gt; 
+&lt;p&gt;The &lt;code&gt;#stub_responses&lt;/code&gt; method accepts more than static response objects in sequence. You can also provide a &lt;code&gt;Proc&lt;/code&gt; object, which is able to inspect the request context and dynamically determine a response. To take the previous &lt;a href=&quot;https://aws.amazon.com/s3/&quot;&gt;Amazon S3&lt;/a&gt; example, we could have an in-memory bucket that dynamically tracks objects in the database, and can even be pre-seeded.&lt;/p&gt; 
+&lt;pre class=&quot;unlimited-height-code&quot;&gt;&lt;code class=&quot;lang-ruby&quot;&gt;bucket = {
+  &quot;SeededKey&quot; =&amp;gt; { body: &quot;Hello!&quot; }
+}
+s3 = Aws::S3::Client.new(stub_responses: true)
+s3.stub_responses(:get_object, -&amp;gt; (context) {
+  obj = bucket[context.params[:key]]
+  if obj
+    obj
+  else
+    'NoSuchKey'
+  end
+})
+s3.stub_responses(:put_object, -&amp;gt; (context) {
+  bucket[context.params[:key]] = { body: context.params[:body] }
+  {}
+})
+begin
+  s3.get_object(bucket: &quot;test&quot;, key: &quot;test&quot;)
+rescue Aws::S3::Errors::NoSuchKey
+  s3.put_object(bucket: &quot;test&quot;, key: &quot;test&quot;, body: &quot;DOES matter!&quot;)
+end
+s3.get_object(bucket: &quot;test&quot;, key: &quot;test&quot;).body.read #=&amp;gt; &quot;DOES matter!&quot;
+s3.get_object(bucket: &quot;test&quot;, key: &quot;SeededKey&quot;).body.read #=&amp;gt; &quot;Hello!&quot;
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;We’ll take this even further in the final example.&lt;/p&gt; 
+&lt;h2 id=&quot;new-feature-recorded-api-requests&quot;&gt;New feature: recorded API requests&lt;/h2&gt; 
+&lt;p&gt;While developing the &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby-record&quot;&gt;aws-record&lt;/a&gt; gem, we discovered that we needed additional testing functionality around client calls. When creating &lt;a href=&quot;https://aws.amazon.com/dynamodb/&quot;&gt;Amazon DynamoDB&lt;/a&gt; tables from attribute and metadata specifications, the main thing we wanted to test was that the &lt;code&gt;#create_table&lt;/code&gt; parameters exactly matched what we would have otherwise handcrafted. The stubbed response was mostly irrelevant.&lt;/p&gt; 
+&lt;p&gt;To solve that problem, our tests added a lightweight “handler” that recorded the request parameters. These could then be inspected by our tests and compared to expectations. Starting with version &lt;code&gt;3.23.0&lt;/code&gt; of &lt;code&gt;aws-sdk-core&lt;/code&gt;, this is now a &lt;a href=&quot;https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html#api_requests-instance_method&quot;&gt;built-in feature&lt;/a&gt; of stubbed SDK clients!&lt;/p&gt; 
+&lt;p&gt;You can access this set of API requests directly from your stubbed client, as follows.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;require 'aws-sdk-s3'
+
+s3 = Aws::S3::Client.new(stub_responses: true)
+s3.create_bucket(bucket: &quot;foo&quot;)
+s3.api_requests.size # =&amp;gt; 1
+create_bucket_request = s3.api_requests.first
+create_bucket_request[:params][:bucket] # =&amp;gt; &quot;foo&quot;
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;To see how this is used, here is how we’d rewrite one of the &lt;code&gt;Aws::Record::TableConfig&lt;/code&gt; &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby-record/blob/master/spec/aws-record/record/table_config_spec.rb#L54&quot;&gt;unit tests&lt;/a&gt; and its prerequisites.&lt;/p&gt; 
+&lt;pre class=&quot;unlimited-height-code&quot;&gt;&lt;code class=&quot;lang-ruby&quot;&gt;require 'rspec'
+require 'aws-record'
+
+class TestModel
+  include Aws::Record
+
+  string_attr :hk, hash_key: true
+  string_attr :rk, range_key: true
+end
+
+module Aws
+  module Record
+    describe TableConfig do
+      describe &quot;#migrate!&quot; do
+        it 'will attempt to create the remote table if it does not exist' do
+          cfg = TableConfig.define do |t|
+            t.model_class(TestModel)
+            t.read_capacity_units(1)
+            t.write_capacity_units(1)
+            t.client_options(stub_responses: true)
+          end
+          stub_client = cfg.client
+
+          # Sequential responses are appropriate, so a proc stub is more than
+          # we need.
+          stub_client.stub_responses(
+            :describe_table,
+            'ResourceNotFoundException',
+            { table: { table_status: &quot;ACTIVE&quot; } }
+          )
+          cfg.migrate!
+
+          # We don't need to know how many calls happened around describing
+          # state. We can find the call we care about.
+          create_table_request = stub_client.api_requests.find do |req|
+            req[:operation_name] == :create_table
+          end
+
+          # Parameters are separated into their own key. Full context is available
+          # if you want it.
+          expect(create_table_request[:params]).to eq(
+            table_name: &quot;TestModel&quot;,
+            provisioned_throughput:
+            {
+              read_capacity_units: 1,
+              write_capacity_units: 1
+            },
+            key_schema: [
+              {
+                attribute_name: &quot;hk&quot;,
+                key_type: &quot;HASH&quot;
+              },
+              {
+                attribute_name: &quot;rk&quot;,
+                key_type: &quot;RANGE&quot;
+              }
+            ],
+            attribute_definitions: [
+              {
+                attribute_name: &quot;hk&quot;,
+                attribute_type: &quot;S&quot;
+              },
+              {
+                attribute_name: &quot;rk&quot;,
+                attribute_type: &quot;S&quot;
+              }
+            ]
+          )
+        end
+      end
+    end
+  end
+end
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;This is one way to make tests a little less fragile, and test both how you handle client responses (via stubbing) and how you form your requests (via the &lt;code&gt;#api_requests&lt;/code&gt; log of requests made to the client).&lt;/p&gt; 
+&lt;h2 id=&quot;advanced-stubbing-test-example&quot;&gt;Advanced stubbing test example&lt;/h2&gt; 
+&lt;p&gt;Let’s bring all of this together into a runnable test file.&lt;/p&gt; 
+&lt;p&gt;Let’s say we’re testing a class that interacts with Amazon S3. We’re performing relatively basic operations around writing and retrieving objects, but don’t want to keep track of which fixed stubs go in which order.&lt;/p&gt; 
+&lt;p&gt;The code below creates a very simple “Fake S3” with an in-memory hash, and implements the &lt;code&gt;#create_bucket&lt;/code&gt;, &lt;code&gt;#get_object&lt;/code&gt;, and &lt;code&gt;#put_object&lt;/code&gt; APIs for their basic parameters. With this, we’re able to verify that our code makes the client calls we intend and handles the responses, without tracking API client call order details as the tests get more complex.&lt;/p&gt; 
+&lt;p&gt;(A caveat: In reality, you likely wouldn’t be testing the client stubbing functionality directly. Instead, you’d be calling into your own functions and then making these checks. However, for example purposes, the file is standalone.)&lt;/p&gt; 
+&lt;pre class=&quot;unlimited-height-code&quot;&gt;&lt;code class=&quot;lang-ruby&quot;&gt;require 'rspec'
+require 'aws-sdk-s3'
+
+describe &quot;Enhanced Stubbing Example Tests&quot; do
+  let(:fake_s3) { {} }
+  let(:client) do
+    client = Aws::S3::Client.new(stub_responses: true)
+    client.stub_responses(
+      :create_bucket, -&amp;gt;(context) {
+        name = context.params[:bucket]
+        if fake_s3[name]
+          'BucketAlreadyExists' # standalone strings are treated as exceptions
+        else
+          fake_s3[name] = {}
+          {}
+        end
+      }
+    )
+    client.stub_responses(
+      :get_object, -&amp;gt;(context) {
+        bucket = context.params[:bucket]
+        key = context.params[:key]
+        b_contents = fake_s3[bucket]
+        if b_contents
+          obj = b_contents[key]
+          if obj
+            { body: obj }
+          else
+            'NoSuchKey'
+          end
+        else
+          'NoSuchBucket'
+        end
+      }
+    )
+    client.stub_responses(
+      :put_object, -&amp;gt;(context) {
+        bucket = context.params[:bucket]
+        key = context.params[:key]
+        body = context.params[:body]
+        b_contents = fake_s3[bucket]
+        if b_contents
+          b_contents[key] = body
+          {}
+        else
+          'NoSuchBucket'
+        end
+      }
+    )
+    client
+  end
+
+  it &quot;raises an exception when a bucket is created twice&quot; do
+    client.create_bucket(bucket: &quot;foo&quot;)
+    client.create_bucket(bucket: &quot;bar&quot;)
+    expect {
+      client.create_bucket(bucket: &quot;foo&quot;)
+    }.to raise_error(Aws::S3::Errors::BucketAlreadyExists)
+    expect(client.api_requests.size).to eq(3)
+  end
+
+  context &quot;bucket operations&quot; do
+    before do
+      client.create_bucket(bucket: &quot;test&quot;)
+    end
+
+    it &quot;can write and retrieve an object&quot; do
+      client.put_object(bucket: &quot;test&quot;, key: &quot;obj&quot;, body: &quot;Hello!&quot;)
+      obj = client.get_object(bucket: &quot;test&quot;, key: &quot;obj&quot;)
+      expect(obj.body.read).to eq(&quot;Hello!&quot;)
+      expect(client.api_requests.size).to eq(3)
+      expect(client.api_requests.last[:params]).to eq(
+        bucket: &quot;test&quot;,
+        key: &quot;obj&quot;
+      )
+    end
+
+    it &quot;raises the appropriate exception when a bucket doesn't exist&quot; do
+      expect {
+        client.put_object(
+          bucket: &quot;sirnotappearinginthistest&quot;,
+          key: &quot;knight_sayings&quot;,
+          body: &quot;Ni!&quot;
+        )
+      }.to raise_error(Aws::S3::Errors::NoSuchBucket)
+      expect(client.api_requests.size).to eq(2)
+    end
+
+    it &quot;raises the appropriate exception when an object doesn't exist&quot; do
+      expect {
+        client.get_object(bucket: &quot;test&quot;, key: &quot;404NoSuchKey&quot;)
+      }.to raise_error(Aws::S3::Errors::NoSuchKey)
+      expect(client.api_requests.size).to eq(2)
+    end
+  end
+end
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt; 
+&lt;p&gt;Client stubs in the AWS SDK for Ruby are a powerful tool for unit testing. They provide a way to test without hitting the network, but allow your code to behave like it’s calling the AWS API clients without having to form mocks for full response objects. This can bring your testing closer to “the real thing” and help you develop code with the SDK with increased confidence.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Introducing support for Amazon S3 Select in the AWS SDK for Ruby</title>
+		<link>https://aws.amazon.com/blogs/developer/introducing-support-for-amazon-s3-select-in-the-aws-sdk-for-ruby/</link>
+				
+				<pubDate>Tue, 22 May 2018 23:58:45 +0000</pubDate>
+		<dc:creator><![CDATA[Jingyi Chen]]></dc:creator>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[rubygems]]></category>
+		<category><![CDATA[S3]]></category>
+
+		<guid isPermaLink="false">8252dad29abdaba1721c8f45f253ff0d515b4bc7</guid>
+				<description>We’re excited to announce support for the Amazon Simple Storage Service (Amazon S3) #select_object_content API with event streams in the AWS SDK for Ruby. Amazon S3 Select enables you to retrieve only a subset of data from an object by using simple SQL expressions. Amazon S3 streams the responses as a series of events, instead […]</description>
+								<content:encoded>&lt;p&gt;We’re excited to announce support for the Amazon Simple Storage Service (Amazon S3) &lt;code&gt;#select_object_content&lt;/code&gt; API with event streams in the AWS SDK for Ruby. &lt;a href=&quot;https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectSELECTContent.html&quot; title=&quot;undefined&quot; target=&quot;_blank&quot;&gt;Amazon S3 Select&lt;/a&gt; enables you to retrieve only a subset of data from an object by using simple SQL expressions.&lt;/p&gt; 
+&lt;p&gt;Amazon S3 streams the responses as a series of events, instead of returning the full response all at once. This provides performance benefits by enabling you to process response messages as they come in. To support this behavior, the AWS SDK for Ruby now supports processing events asynchronously, instead of needing to wait for the full response to be loaded before you can process it.&lt;/p&gt; 
+&lt;h2&gt;SDK version requirement&lt;/h2&gt; 
+&lt;p&gt;To use event streams and the Amazon S3 &lt;code&gt;#select_object_content&lt;/code&gt; API, you need to use &lt;a href=&quot;https://aws.amazon.com/blogs/developer/announcing-the-modularized-aws-sdk-for-ruby-version-3&quot; title=&quot;undefined&quot; target=&quot;_blank&quot;&gt;version 3 of the AWS SDK for Ruby&lt;/a&gt;. You also need to have the &lt;code&gt;aws-sdk-s3 &lt;/code&gt;gem version &lt;code&gt;1.13.0&lt;/code&gt; or later available.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+require ‘aws-sdk-s3’
+
+client = Aws::S3::Client.new(region: ‘us-west-2’)
+
+# Some basic S3 client usage
+# take S3 #put_object API as an example
+resp = client.put_object(bucket: ‘my-bucket’, key: ‘foo’, body: ‘Hello World!’)
+# =&amp;gt; Aws::S3::Types::PutObjectOutput
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;For more information about the AWS SDK for Ruby and its guides, check out our GitHub &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby/blob/master/README.md&quot; title=&quot;undefined&quot; target=&quot;_blank&quot;&gt;README&lt;/a&gt;.&lt;/p&gt; 
+&lt;h2&gt;Amazon S3 select usage pattern&lt;/h2&gt; 
+&lt;p&gt;Let’s try an SQL query against a CSV file in Amazon S3. Given that I have a CSV document named &lt;code&gt;target_file.csv&lt;/code&gt; stored in an S3 bucket named &lt;code&gt;my-bucket&lt;/code&gt; in the AWS Region &lt;code&gt;us-west-2&lt;/code&gt;, with contents describing user and age information:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-csv&quot;&gt; user  age
+ foo    12
+ bar    15
+ baz    10
+ ...
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Assuming this is a huge file and you want to select data of rows of users whose age is over 12 years old, you would have a SQL expression like the following:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-sql&quot;&gt;
+SELECT * FROM S3Object WHERE cast(age as int) &amp;gt; 12
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;By following the SDK for Ruby API &lt;a href=&quot;https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#select_object_content-instance_method&quot; title=&quot;undefined&quot; target=&quot;_blank&quot;&gt;documentation&lt;/a&gt; for &lt;code&gt;#select_object_content&lt;/code&gt; request syntax, we could come up with input parameters for the operation, like this:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+params = {
+  bucket: ‘my-bucket’,
+  key: ‘target_file.csv’,
+  expression_type: ‘SQL’,
+  expression: “SELECT * FROM S3Object WHERE cast(age as int) &amp;gt; 12”,
+  input_serialization: {
+    csv: { file_header_info: ‘USE’}
+  },
+  output_serialization: {
+    csv: {}
+  }
+}
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Now we have everything ready to make the API call. To process events once they arrive, you can use a block statement attached to the S3 Select call, or provide a handler that has callbacks registered for events.&lt;/p&gt; 
+&lt;h3&gt;Using a Ruby block statement&lt;/h3&gt; 
+&lt;p&gt;The following example shows how to use a block to process all events.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+client.select_object_content(params) do |stream|
+
+  # Callback for every event that arrives
+  stream.on_event do |event|
+     puts event.event_type
+     # =&amp;gt; :records / :stats / :end / :cont etc
+     # Do Something with event object
+  end
+
+end
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;h3&gt;Pass in &lt;code&gt;:event_stream_handler&lt;/code&gt;&lt;/h3&gt; 
+&lt;p&gt;You can pass in a handler that can be an EventStream object or a Ruby Proc object that is registered with callbacks for the &lt;code&gt;:event_stream_handler&lt;/code&gt; option.&lt;/p&gt; 
+&lt;p&gt;&lt;em&gt;Using an EventStream object&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;Let’s try using the &lt;code&gt;:event_stream_handler&lt;/code&gt; option with an &lt;code&gt;Aws::S3::EventStreams::SelectObjectEventStream&lt;/code&gt; &lt;a href=&quot;https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/EventStreams/SelectObjectContentEventStream.html&quot; title=&quot;undefined&quot; target=&quot;_blank&quot;&gt;object&lt;/a&gt;.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+handler = Aws::S3::EventStreams::SelectObjectContentEventStream.new
+handler.on_records_event do |event|
+  # get :records event payload that contains selected contents
+  puts event.payload.read
+  # =&amp;gt; &quot;bar,15\n …&quot;
+end
+handler.on_stats_event do |event|
+   # get :stats event that contains progress information
+   puts event.details.inspect
+   # =&amp;gt; Aws::S3::Types::Stats bytes_scanned=xx, bytes_processed=xx, bytes_returned=xx
+end
+
+# Add :event_stream_handler option
+params[:event_stream_handler] = handler
+client.select_object_content(params)
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;em&gt;Using a Proc object&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;Using a Proc object is also supported with the same pattern.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+handler = Proc.new do |stream|
+
+  stream.on_records_event do |event|
+    # Do Something with :records event
+  end
+
+  stream.on_stats_event do |event|
+     # Do Something with :stats event
+  end
+
+end
+
+# Add :event_stream_handler option
+params[:event_stream_handler] = handler
+client.select_object_content(params)
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;em&gt;Using a hybrid pattern&lt;/em&gt;&lt;/p&gt; 
+&lt;p&gt;You can also try a hybrid of the previous two usage patterns, as follows.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+handler = Aws::S3::EventStreams::SelectObjectContentEventStream.new
+handler.on_records_event do |event|
+  # get :records event payload that contains selected contents
+  puts event.payload.read
+  # =&amp;gt; &quot;bar,15\n …” 
+end
+
+# Add :event_stream_handler option
+params[:event_stream_handler] = handler
+client.select_object_content(params) do |stream|
+  # raise the error in the event stream
+  stream.on_error_event do |event|
+    raise event
+    # =&amp;gt; Aws::Errors::EventError
+    # event.event_type =&amp;gt; :error
+    # event.error_code =&amp;gt; String
+    # event.error_message =&amp;gt; String
+  end
+
+end
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Notice that in the previous example, the &lt;code&gt;on_error_event&lt;/code&gt; callback is available for capturing all error events that happened after a stream connection is established. If an error happened when the request started, but before the stream response started, you can still rescue it from &lt;code&gt;Aws::S3::Errors::ServiceError&lt;/code&gt;.&lt;/p&gt; 
+&lt;p&gt;When using a hybrid pattern, also note that callbacks passed in with a block statement attached to the API call would be registered to the &lt;code&gt;:event_stream_handler&lt;/code&gt; that was passed in. Thus, if the handler object is reused, it will contain all registered callbacks.&lt;/p&gt; 
+&lt;h3&gt;Wait for a full response&lt;/h3&gt; 
+&lt;p&gt;Of course, you can still wait for a full response to complete to fetch all events that are available from an Enumerator. (Notice that with the above streaming usage pattern, full response is also available.)&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+resp = client.select_object_content(params)
+# =&amp;gt; Aws::S3::Types::SelectObjectContentOutput payload= Aws::S3::Types::SelectObjectContentEventStream: ...
+
+events = resp.payload
+# =&amp;gt; Aws::S3::Types::SelectObjectContentEventStream: ...
+
+# SelectObjectContentEventStream is an Enumerator containing all events arrived
+# it also has a helper method #event_types, returning an array of all valid event types
+events.event_types
+# =&amp;gt; [:records, :stats, :progress, :cont, :end]
+events.next
+# =&amp;gt; Aws::S3::Types::RecordsEvent payload=StringIO:0x007fc160a590a0, event_type=:records
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;h3&gt;Response stubbing support&lt;/h3&gt; 
+&lt;p&gt;In addition to using the S3 Select API, the AWS SDK for Ruby also provides stubbed event stream responses for Rspec tests that you might want to write. &lt;/p&gt; 
+&lt;p&gt;Let’s say you want to mock an event stream response with events (including errors). You just need to provide an Enumerator of mocking events, as follows.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+stream = [
+   { message_type: ‘event’, event_type: :records, payload: StringIO.new(‘selected content part one’) },
+   { message_type: ‘event’, event_type: :records, payload: StringIO.new(‘selected content part two’) },
+   { message_type: ‘error’, error_code: ‘InternalError’, error_message: &quot;Something went wrong&quot;}
+  ].each
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;And you use &lt;code&gt;:stub_responses&lt;/code&gt;, similarly to other APIs.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;
+client = Aws::S3::Client.new(stub_responses: {select_object_content: {payload: stream}})
+
+# Then you can expect
+resp = client.select_object_content(params)
+# =&amp;gt; Aws::S3::Types::SelectObjectContentOutput payload=Aws::S3::Types::SelectObjectContentEventStream: ...
+
+# Get stubbing eventstream
+stream = resp.payload
+# Aws::S3::Types::SelectObjectContentEventStream: ...
+
+# List all mocked events
+stream.to_a
+# =&amp;gt; [ Aws::S3::Types::RecordsEvent payload=StringIO:0x007fc1c28f7b00, event_type=:records,
+#  Aws::S3::Types::RecordsEvent payload=StringIO:0x007fc1c28e7138, event_type=:records,
+# Aws::Errors::EventError: Aws::Errors::EventError ]
+
+stream.next.payload.read
+# =&amp;gt; &quot;selected content part one&quot;
+
+stream.next.payload.read
+# =&amp;gt; &quot;selected content part two&quot;
+
+stream.next
+# =&amp;gt; Aws::Errors::EventError: Aws::Errors::EventError
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;h2&gt;Final thoughts&lt;/h2&gt; 
+&lt;p&gt;With Amazon S3 Select, you can use SQL statements to filter the contents of Amazon S3 objects and retrieve just the subset of data that you need. You can process selected record events asynchronously with the AWS SDK for Ruby, with multiple usage patterns. You can also use stubbed responses for the S3 Select API and write tests for your code.&lt;/p&gt; 
+&lt;h2&gt;Feedback&lt;/h2&gt; 
+&lt;p&gt;Please share your questions, comments, and issues with us on &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby&quot; title=&quot;undefined&quot; target=&quot;_blank&quot;&gt;GitHub&lt;/a&gt;. You can also catch us in &lt;a href=&quot;https://gitter.im/aws/aws-sdk-ruby&quot; title=&quot;undefined&quot; target=&quot;_blank&quot;&gt;Gitter&lt;/a&gt; Channel.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Introducing Support for Generating Ruby SDKs in Amazon API Gateway</title>
+		<link>https://aws.amazon.com/blogs/developer/introducing-support-for-generating-ruby-sdks-in-amazon-api-gateway/</link>
+				
+				<pubDate>Mon, 20 Nov 2017 19:08:12 +0000</pubDate>
+		<dc:creator><![CDATA[Jingyi Chen]]></dc:creator>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[api-gateway]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[rubygems]]></category>
+
+		<guid isPermaLink="false">9287055897c7925e899d96f58b71f25fe25fe64d</guid>
+				<description>We’re excited to announce support for generating Ruby SDKs from Amazon API Gateway. The Ruby SDKs you generated are compatible with Ruby 1.9 and later. Generated SDKs have first-class support for API keys, custom or AWS Identity and Access Management (IAM) authentication, automatic and configurable retries, exception handling, and all privileges of aws-sdk-core version 3 […]</description>
+								<content:encoded>&lt;p&gt;We’re excited to announce support for generating Ruby SDKs from Amazon API Gateway. The Ruby SDKs you generated are compatible with Ruby 1.9 and later. Generated SDKs have first-class support for API keys, custom or &lt;a title=&quot;undefined&quot; href=&quot;https://aws.amazon.com/iam/&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;AWS Identity and Access Management (IAM)&lt;/a&gt; authentication, automatic and configurable retries, exception handling, and all privileges of &lt;code&gt;aws-sdk-core&lt;/code&gt; &lt;a title=&quot;gem 3.0&quot; href=&quot;https://rubygems.org/gems/aws-sdk-core&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;version 3&lt;/a&gt; has as well. In this blog post, we’ll walk through how to create an example API and generate a Ruby SDK from that API. We also explore various features of the generated SDK. In this post, we assume you have some familiarity with &lt;a title=&quot;undefined&quot; href=&quot;http://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;API Gateway&lt;/a&gt; concepts.&lt;/p&gt; 
+&lt;h2&gt;Creating an example API&lt;/h2&gt; 
+&lt;p&gt;To start, let’s create an sample API by using the API Gateway console.&lt;br&gt; Open the API Gateway console, choose&amp;nbsp;&lt;strong&gt;Create API&lt;/strong&gt;, and then choose &lt;strong&gt;Example API&lt;/strong&gt;. Then choose &lt;strong&gt;Import&lt;/strong&gt;&amp;nbsp;to create the example API.&lt;/p&gt; 
+&lt;p&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/09/ruby_apig_create-1.png&quot;&gt;&lt;img class=&quot;alignnone size-full wp-image-3207&quot; src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/09/ruby_apig_create-1.png&quot; alt=&quot;&quot; width=&quot;1667&quot; height=&quot;822&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt;This simple, example API has four straightforward operations:&lt;/p&gt; 
+&lt;ul type=&quot;disc&quot;&gt; 
+ &lt;li&gt;A GET on the API root resource that returns HTML describing the API&lt;/li&gt; 
+ &lt;li&gt;A GET on the /pets resource that returns a list of Pets&lt;/li&gt; 
+ &lt;li&gt;A POST on the /pets resource that creates a new Pet&lt;/li&gt; 
+ &lt;li&gt;A GET on the /pets/{petId} resource that returns a specific Pet by ID&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;p&gt;You can find more information about this example in the &lt;a title=&quot;undefined&quot; href=&quot;http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-create-api-from-example.html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;API Gateway documentation&lt;/a&gt;.&lt;/p&gt; 
+&lt;h2&gt;Deploying the API&lt;/h2&gt; 
+&lt;p&gt;Next, let’s deploy our API to a stage.&lt;br&gt; From &lt;strong&gt;Actions&lt;/strong&gt; choose &lt;strong&gt;Deploy API&lt;/strong&gt;.&lt;/p&gt; 
+&lt;p&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/09/deploy-1.png&quot;&gt;&lt;img class=&quot;alignnone size-full wp-image-3208&quot; src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/09/deploy-1.png&quot; alt=&quot;&quot; width=&quot;868&quot; height=&quot;568&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt;On the stage deployment page, name the stage &lt;strong&gt;Test&lt;/strong&gt;, and then choose &lt;strong&gt;Deploy&lt;/strong&gt;.&lt;br&gt; &lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/09/stage.png&quot;&gt;&lt;img class=&quot;alignnone size-full wp-image-3210&quot; src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/09/stage.png&quot; alt=&quot;&quot; width=&quot;594&quot; height=&quot;395&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt;After deploying, the&amp;nbsp;&lt;strong&gt;SDK Generation&lt;/strong&gt;&amp;nbsp;tab is available. For &lt;strong&gt;Platform&lt;/strong&gt;, choose&amp;nbsp;&lt;strong&gt;Ruby&lt;/strong&gt;.&lt;br&gt; For &lt;strong&gt;Service Name&lt;/strong&gt;, type &lt;strong&gt;Pet&lt;/strong&gt;.&lt;/p&gt; 
+&lt;p&gt;Choose &lt;strong&gt;Generate SDK&lt;/strong&gt;, and then extract the downloaded SDK package.&lt;/p&gt; 
+&lt;p&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/09/ruby-1.png&quot;&gt;&lt;img class=&quot;alignnone size-full wp-image-3209&quot; src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/09/ruby-1.png&quot; alt=&quot;&quot; width=&quot;1706&quot; height=&quot;592&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt;The following are the configuration options available for the Ruby platform:&lt;/p&gt; 
+&lt;ul type=&quot;disc&quot;&gt; 
+ &lt;li&gt; &lt;strong&gt;Service Name&lt;/strong&gt; – Used to generate the Ruby gem namespace for your APIs.&lt;/li&gt; 
+ &lt;li&gt; &lt;strong&gt;Ruby Gem Name&lt;/strong&gt; – The name of the Ruby gem your generated SDK code will be placed under. If you don’t provide a name, this defaults to the service name in lowercase, with the “sdk” suffix.&lt;/li&gt; 
+ &lt;li&gt; &lt;strong&gt;Ruby Gem Version&lt;/strong&gt; – The version number for the generated Ruby gem. If you don’t provide a version number, this defaults to 1.0.0 if not provided.&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;p&gt;These are basic Ruby gem configuration options. You can customize your Ruby gemspec in the generated SDK gem later.&lt;/p&gt; 
+&lt;h2&gt;Using the generated Ruby SDK gem&lt;/h2&gt; 
+&lt;p&gt;Navigate to the location of your downloaded SDK gem. The directory structure looks like the following.&lt;/p&gt; 
+&lt;p&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/09/struct.png&quot;&gt;&lt;img class=&quot;alignnone size-full wp-image-3200&quot; src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/09/struct.png&quot; alt=&quot;&quot; width=&quot;683&quot; height=&quot;362&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;&lt;br&gt; &lt;code&gt;/features&lt;/code&gt; and &lt;code&gt;/spec&lt;/code&gt; directories are currently left empty for integration and unit tests that you can add to the SDK. The generated SDK is fully documented for operations and shapes in the source code.&lt;/p&gt; 
+&lt;h2&gt;Exploring the SDK&lt;/h2&gt; 
+&lt;p&gt;Let’s explore the SDK by building a Ruby gem from the generated source, as follows.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-bash&quot;&gt;# change to /pet-sdk directory
+cd pet-sdk
+
+# build the generated gem
+gem build pet-sdk.gemspec
+# then you can see pet-sdk-1.0.0.gem is available
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Then, install the gem, as follows.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-bash&quot;&gt;gem install pet-sdk-1.0.0.gem
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Finally, create the client.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;require 'pet-sdk'
+
+client = Pet::Client.new
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;h3&gt;Features in the client&lt;/h3&gt; 
+&lt;p&gt;Now you have your own client that includes multiple features from the official &lt;a title=&quot;undefined&quot; href=&quot;https://github.com/aws/aws-sdk-ruby&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;AWS SDK for Ruby&lt;/a&gt;. These include default exponential backoff retries, HTTP wire logging options, configurable timeouts, and more.&lt;/p&gt; 
+&lt;p&gt;For example:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;require 'pet-sdk'
+client = Pet::Client.new(
+  http_wire_trace: true,
+  retry_limit: 5,
+  http_read_timeout: 50
+ )
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;h3&gt;Making API calls&lt;/h3&gt; 
+&lt;p&gt;Let’s see all the API methods that are available and use your SDK’s built-in parameter validators to make a successful API call:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;client.operation_names
+# =&amp;gt; [:create_pet, :get_api_root, :get_pet, :get_pets]
+
+# get me all my pets
+resp = client.get_pets
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;You should see a response like the following.&lt;br&gt; &lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/10/Screen-Shot-2017-11-09-at-4.29.12-PM.png&quot;&gt;&lt;img class=&quot;alignnone size-full wp-image-3219&quot; src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/10/Screen-Shot-2017-11-09-at-4.29.12-PM.png&quot; alt=&quot;&quot; width=&quot;569&quot; height=&quot;135&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# I want the cat
+client.get_pet
+# ArgumentError: missing required parameter params[:pet_id]
+
+# providing :pet_id
+client.get_pet(pet_id: 2)
+# ArgumentError: expected params[:pet_id] to be a String, got value 2 (class: Fixnum) instead.
+
+# fix the value type
+resp = client.get_pet(pet_id: &quot;2&quot;)
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Now you can see a correct response like the following.&lt;br&gt; &lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/10/Screen-Shot-2017-11-09-at-4.29.22-PM.png&quot;&gt;&lt;img class=&quot;alignnone size-full wp-image-3220&quot; src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2017/11/10/Screen-Shot-2017-11-09-at-4.29.22-PM.png&quot; alt=&quot;&quot; width=&quot;921&quot; height=&quot;46&quot;&gt;&lt;/a&gt;If you have some familiarity with the AWS SDK for Ruby, you should find the experience similar to using an AWS service client.&lt;/p&gt; 
+&lt;h2&gt;Generate a Ruby SDK from an API&lt;/h2&gt; 
+&lt;p&gt;In addition to using the API Gateway console to generate a Ruby SDK, the &lt;code&gt;get_sdk&lt;/code&gt; API is &lt;a title=&quot;undefined&quot; href=&quot;http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/APIGateway/Client.html#get_sdk-instance_method&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;available&lt;/a&gt; in all of the AWS SDKs and tools, including the AWS SDK for Ruby.&lt;/p&gt; 
+&lt;p&gt;For this example, we assume that you have some familiarity with the AWS SDK for Ruby. You can find a quick introduction to the SDK for Ruby &lt;a title=&quot;undefined&quot; href=&quot;https://github.com/aws/aws-sdk-ruby/blob/master/README.md&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;here&lt;/a&gt;.&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;require 'aws-sdk-apigateway'
+
+client = Aws::ApiGateway::Client.new(region: 'us-west-2')
+resp = client.get_sdk({
+  rest_api_id: MY_REST_API_ID, # required
+  stage_name: DEPLOY_STAGE_NAME, # required
+  sdk_type: &quot;ruby&quot;, # required
+  parameters: {
+    &quot;service.name&quot; =&amp;gt; &quot;PetStore&quot;, # required
+    &quot;ruby.gem-name&quot; =&amp;gt; &quot;pet&quot;,
+    &quot;ruby.gem-version&quot; =&amp;gt; &quot;0.0.1&quot;
+  },
+})
+
+&lt;/code&gt;&lt;/pre&gt; 
+&lt;h2&gt;Final thoughts&lt;/h2&gt; 
+&lt;p&gt;This post highlights how to generate a Ruby client SDK for an API in API Gateway, and how to call the API using the generated SDK in an application. For more information about using a generated SDK, see your&amp;nbsp;&lt;code&gt;README.md&lt;/code&gt;&amp;nbsp;file in the uncompressed generated SDK gem folder. Details of example usage of your API are also generated in source file documentation blocks.&lt;/p&gt; 
+&lt;h2&gt;Feedback&lt;/h2&gt; 
+&lt;p&gt;Please share your questions, comments, and issues with us on &lt;a title=&quot;Github&quot; href=&quot;https://github.com/aws/aws-sdk-ruby&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;GitHub&lt;/a&gt;. Feel free to open a support ticket with &lt;a title=&quot;AWS Support&quot; href=&quot;https://console.aws.amazon.com/support/home&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;AWS Support&lt;/a&gt; if you find an issue with your API model. You can also catch us in our &lt;a title=&quot;Gitter&quot; href=&quot;https://gitter.im/aws/aws-sdk-ruby&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;Gitter&lt;/a&gt; channel.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Announcing the Modularized AWS SDK for Ruby (Version 3)</title>
+		<link>https://aws.amazon.com/blogs/developer/announcing-the-modularized-aws-sdk-for-ruby-version-3/</link>
+				
+				<pubDate>Tue, 29 Aug 2017 18:27:06 +0000</pubDate>
+		<dc:creator><![CDATA[Alex Wood]]></dc:creator>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[Modularization]]></category>
+		<category><![CDATA[Release]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[V3]]></category>
+
+		<guid isPermaLink="false">03d879184e25a29e49078a6638cbc10cc3b83bc4</guid>
+				<description>We’re excited to announce today’s stable release of version 3 of the&amp;nbsp;AWS SDK for Ruby. The SDK is now available with over 100 service-specific gems (starting with&amp;nbsp;aws-sdk-*, such as&amp;nbsp;aws-sdk-s3) on&amp;nbsp;RubyGems. You can find a full list of available service gems can be found at our GitHub&amp;nbsp;landing page. Features Version 3 of the AWS SDK for […]</description>
+								<content:encoded>&lt;p&gt;We’re excited to announce today’s stable release of version 3 of the&amp;nbsp;&lt;a title=&quot;AWS SDK for Ruby&quot; href=&quot;https://aws.amazon.com/sdk-for-ruby/&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;AWS SDK for Ruby&lt;/a&gt;. The SDK is now available with over 100 service-specific gems (starting with&amp;nbsp;&lt;code&gt;aws-sdk-*&lt;/code&gt;, such as&amp;nbsp;&lt;code&gt;aws-sdk-s3&lt;/code&gt;) on&amp;nbsp;&lt;a title=&quot;RubyGems aws-sdk&quot; href=&quot;https://rubygems.org/gems/aws-sdk&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;RubyGems&lt;/a&gt;. You can find a full list of available service gems can be found at our &lt;a title=&quot;aws-sdk-ruby on GitHub&quot; href=&quot;https://github.com/aws/aws-sdk-ruby#supported-services&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;GitHub&amp;nbsp;landing page&lt;/a&gt;.&lt;/p&gt; 
+&lt;h2&gt;Features&lt;/h2&gt; 
+&lt;p&gt;Version 3 of the AWS SDK for Ruby modularizes the monolithic SDK into service-specific gems, for example,&amp;nbsp;&lt;code&gt;aws-sdk-s3&lt;/code&gt;&amp;nbsp;and&amp;nbsp;&lt;code&gt;aws-sdk-dynamodb&lt;/code&gt;. Now each service gem uses strict&amp;nbsp;&lt;a title=&quot;Semantic Versioning&quot; href=&quot;http://semver.org/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;semantic versioning&lt;/a&gt;, along with the benefits of continuous delivery of AWS API updates. With modularization, you can pick and choose which service gems your application or library requires, and update service gems independently of each other.&lt;/p&gt; 
+&lt;p&gt;These new service-specific gems use statically generated code, rather than runtime-generated clients and types. This provides human-readable stack traces and code for API clients. Additionally, version 3 eliminates many thread safety issues by removing Ruby&amp;nbsp;&lt;code&gt;autoload&lt;/code&gt;&amp;nbsp;statements. When you require a service gem, such as&amp;nbsp;&lt;code&gt;aws-sdk-ec2&lt;/code&gt;, all of the code is loaded upfront, avoiding sync issues with&amp;nbsp;&lt;code&gt;autoload&lt;/code&gt;.&lt;/p&gt; 
+&lt;p&gt;Furthermore, the SDK provides&amp;nbsp;&lt;a title=&quot;AWS Signature Version 4&quot; href=&quot;http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;AWS Signature Version 4&lt;/a&gt;&amp;nbsp;signing functionality as a separate gem&amp;nbsp;&lt;code&gt;aws-sigv4&lt;/code&gt;. This gem provides flexible signing usage for both AWS requests and customized scenarios.&lt;/p&gt; 
+&lt;h2&gt;Upgrading&lt;/h2&gt; 
+&lt;p&gt;We’ve provided a detailed&amp;nbsp;&lt;a title=&quot;V3 Upgrading Guide&quot; href=&quot;https://github.com/aws/aws-sdk-ruby/blob/master/V3_UPGRADING_GUIDE.md&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;upgrading guide&lt;/a&gt;&amp;nbsp;with this release, which covers different upgrade scenarios. In short, the public-facing APIs are compatible, and so changes you need to make are focused on your&amp;nbsp;&lt;code&gt;Gemfile&lt;/code&gt;&amp;nbsp;and&amp;nbsp;&lt;code&gt;require&lt;/code&gt; statements.&lt;/p&gt; 
+&lt;p&gt;Most users of the SDK have a setup similar to this:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# Gemfile
+gem 'aws-sdk', '~&amp;gt; 2'&lt;/code&gt;&lt;/pre&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# Code Files
+require 'aws-sdk'
+
+s3 = Aws::S3::Client.new
+
+ddb = Aws::DynamoDB::Client.new
+
+# etc.&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;If that’s you, the quickest migration path is to simply change your&amp;nbsp;&lt;code&gt;Gemfile&lt;/code&gt;&amp;nbsp;like so:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# Gemfile
+gem 'aws-sdk', '~&amp;gt; 3'&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;However, this will pull in many new dependencies, as each service client has its own individual gem. As a direct user, you can also change to using only the service gems actually required by your project, which is the recommended path. This would involve a change to both your&amp;nbsp;&lt;code&gt;Gemfile&lt;/code&gt;&amp;nbsp;and to the code files where your&amp;nbsp;&lt;code&gt;require&lt;/code&gt;&amp;nbsp;statements live, like so:&lt;/p&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# Gemfile
+gem 'aws-sdk-s3', '~&amp;gt; 1'
+gem 'aws-sdk-dynamodb', '~&amp;gt; 1'&lt;/code&gt;&lt;/pre&gt; 
+&lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;# Code Files
+require 'aws-sdk-s3'
+require 'aws-sdk-dynamodb'
+
+s3 = Aws::S3::Client.new
+ddb = Aws::DynamoDB::Client.new
+
+# etc.&lt;/code&gt;&lt;/pre&gt; 
+&lt;p&gt;Other upgrade cases are covered in the&amp;nbsp;guide.&lt;/p&gt; 
+&lt;h2&gt;Feedback&lt;/h2&gt; 
+&lt;p&gt;Please share your questions, comments, issues, etc. with us on&amp;nbsp;&lt;a title=&quot;GitHub Page: AWS SDK for Ruby&quot; href=&quot;https://github.com/aws/aws-sdk-ruby&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;GitHub&lt;/a&gt;. You can also catch us in our&amp;nbsp;&lt;a title=&quot;Gitter&quot; href=&quot;https://gitter.im/aws/aws-sdk-ruby&quot; target=&quot;null&quot; rel=&quot;noopener noreferrer&quot;&gt;Gitter&lt;/a&gt; channel.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Upgrading from Version 2 to Version 3 of the AWS SDK for Ruby</title>
+		<link>https://aws.amazon.com/blogs/developer/upgrading-from-version-2-to-version-3-of-the-aws-sdk-for-ruby-2/</link>
+				
+				<pubDate>Fri, 09 Dec 2016 20:31:18 +0000</pubDate>
+		<dc:creator><![CDATA[Trevor Rowe]]></dc:creator>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[ruby]]></category>
+
+		<guid isPermaLink="false">a3ca0231b1ba6afa6ba208b0926acc1d5c0417e6</guid>
+				<description>Recently we announced the modularization of the AWS SDK for Ruby. This blog post will focus on how to upgrade your application to use the new service specific gems. This blog post is divided up into sections based on how you currently depend on the AWS SDK for Ruby today. Find the section below that […]</description>
+								<content:encoded>&lt;p&gt;Recently we announced the &lt;a href=&quot;https://aws.amazon.com/blogs/developer/aws-sdk-for-ruby-modularization-version-3-2/&quot;&gt;modularization of the AWS SDK for Ruby&lt;/a&gt;. This blog post will focus on how to upgrade your application to use the new service specific gems.&lt;/p&gt; 
+&lt;p&gt;This blog post is divided up into sections based on how you currently depend on the AWS SDK for Ruby today. Find the section below that describes how you load the SDK today, and it will guide you in upgrading. &lt;strong&gt;Since version 3 is backwards compatible with version 2, you should not need to make additional changes beyond those described below.&lt;/strong&gt;&lt;/p&gt; 
+&lt;h2 id=&quot;toc_1&quot;&gt;Bunder: gem ‘aws-sdk’, ‘~&amp;gt;2’&lt;/h2&gt; 
+&lt;p&gt;Congratulations! You are following recommended best practices for how to depend on the SDK today. The simplest path to upgrade is to change the version from 2 to 3.&lt;/p&gt; 
+&lt;div&gt; 
+ &lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;#gem 'aws-sdk', '~&amp;gt; 2'
+gem 'aws-sdk', '~&amp;gt; 3'&lt;/code&gt;&lt;/pre&gt; 
+&lt;/div&gt; 
+&lt;p&gt;See the section about using service specific gems below.&lt;/p&gt; 
+&lt;h2&gt;Bundler: gem ‘aws-sdk’ (without version)&lt;/h2&gt; 
+&lt;p&gt;It is not recommended to depend on the SDK without a major version constraint. Fortunately, version 3 is backwards compatible with version 2. Bundle updating your dependencies will work, but consider yourself lucky! You should add the version constraint to protect from future major version changes:&lt;/p&gt; 
+&lt;div&gt; 
+ &lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;#gem 'aws-sdk'
+gem 'aws-sdk', '~&amp;gt; 3'&lt;/code&gt;&lt;/pre&gt; 
+&lt;/div&gt; 
+&lt;p&gt;See the section about using service specific gems below.&lt;/p&gt; 
+&lt;h2 id=&quot;toc_3&quot;&gt;Bundler: gem ‘aws-sdk-core’, ‘~&amp;gt; 2’&lt;/h2&gt; 
+&lt;p&gt;The &lt;tt&gt;aws-sdk-core&lt;/tt&gt; gem changes signification from version 2 to 3. In version 3, the core gem no longer defines any services. It will only contain shared utilities, such as credential providers, serializers, etc. &lt;strong&gt;To upgrade you must make two changes:&lt;/strong&gt;&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;Change your bundler dependency&lt;/li&gt; 
+ &lt;li&gt;Change your ruby require statements&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;p&gt;In bundler, replace &lt;tt&gt;aws-sdk-core&lt;/tt&gt;, with &lt;tt&gt;aws-sdk&lt;/tt&gt;:&lt;/p&gt; 
+&lt;div&gt; 
+ &lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;#gem 'aws-sdk-core', '~&amp;gt; 2'
+gem 'aws-sdk', '~&amp;gt; 3'&lt;/code&gt;&lt;/pre&gt; 
+&lt;/div&gt; 
+&lt;p&gt;In code, replace any require statements on &lt;tt&gt;aws-sdk-core&lt;/tt&gt; with &lt;tt&gt;aws-sdk&lt;/tt&gt;.&lt;/p&gt; 
+&lt;div&gt; 
+ &lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;#require 'aws-sdk-core'
+require 'aws-sdk'&lt;/code&gt;&lt;/pre&gt; 
+&lt;/div&gt; 
+&lt;p&gt;See the section about using service specific gems below.&lt;/p&gt; 
+&lt;h2&gt;Bundler: gem ‘aws-sdk-core’ (without version)&lt;/h2&gt; 
+&lt;p&gt;If you happen to bundle update before changing your Gemfile, your application will be broken. Version 3 of the &lt;tt&gt;aws-sdk-core&lt;/tt&gt; gem no longer defines service modules and clients. It is a shared dependency of the 75+ service gems. &lt;strong&gt;To upgrade you must make two changes:&lt;/strong&gt;&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;Change your bundler dependency&lt;/li&gt; 
+ &lt;li&gt;Change your ruby require statements&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;p&gt;In bundler, replace &lt;tt&gt;aws-sdk-core&lt;/tt&gt;, with &lt;tt&gt;aws-sdk&lt;/tt&gt;:&lt;/p&gt; 
+&lt;div&gt; 
+ &lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;#gem 'aws-sdk-core'
+gem 'aws-sdk', '~&amp;gt; 3'&lt;/code&gt;&lt;/pre&gt; 
+&lt;/div&gt; 
+&lt;p&gt;In code, replace any require statements on &lt;tt&gt;aws-sdk-core&lt;/tt&gt; with &lt;tt&gt;aws-sdk&lt;/tt&gt;.&lt;/p&gt; 
+&lt;div&gt; 
+ &lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;#require 'aws-sdk-core'
+require 'aws-sdk'&lt;/code&gt;&lt;/pre&gt; 
+&lt;/div&gt; 
+&lt;p&gt;See the section about using service specific gems below.&lt;/p&gt; 
+&lt;h2&gt;Bundler: gem ‘aws-sdk-resource’ (with or without version)&lt;/h2&gt; 
+&lt;p&gt;In version 3, the &lt;tt&gt;aws-sdk-resources&lt;/tt&gt; gem has been removed. This gem will not receive any further updates. Each service gem contains both the client interface, and the resource interfaces. &lt;strong&gt;To upgrade you must make two changes:&lt;/strong&gt;&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;Change your bundler dependency&lt;/li&gt; 
+ &lt;li&gt;Change your ruby require statements&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;div&gt; 
+ &lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;#gem 'aws-sdk-resources', '~&amp;gt; 2'
+gem 'aws-sdk', '~&amp;gt; 3'&lt;/code&gt;&lt;/pre&gt; 
+&lt;/div&gt; 
+&lt;p&gt;In code, replace any require statements on &lt;tt&gt;aws-sdk-resources&lt;/tt&gt; with &lt;tt&gt;aws-sdk&lt;/tt&gt;.&lt;/p&gt; 
+&lt;div&gt; 
+ &lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;#require 'aws-sdk-core'
+require 'aws-sdk'&lt;/code&gt;&lt;/pre&gt; 
+&lt;/div&gt; 
+&lt;p&gt;See the section about using service specific gems below.&lt;/p&gt; 
+&lt;h2&gt;Using the Service Specific Gems&lt;/h2&gt; 
+&lt;p&gt;Each of the instructions above suggested using version 3 of the &lt;tt&gt;aws-sdk&lt;/tt&gt; gem. This will work and is the shortest path to upgrading. It will however install 75+ service specific gems. You may choose to replace your dependency on the &lt;tt&gt;aws-sdk&lt;/tt&gt; gem with service specific gems.&lt;/p&gt; 
+&lt;p&gt;If my application depends on Amazon DynamoDB and Amazon S3, I could make the following changes:&lt;/p&gt; 
+&lt;p&gt;In my Gemfile:&lt;/p&gt; 
+&lt;div&gt; 
+ &lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;#gem 'aws-sdk', '~&amp;gt; 3'
+gem 'aws-sdk-dynamodb', '~&amp;gt; 1'
+gem 'aws-sdk-s3', '~&amp;gt; 1'&lt;/code&gt;&lt;/pre&gt; 
+&lt;/div&gt; 
+&lt;p&gt;In my code:&lt;/p&gt; 
+&lt;div&gt; 
+ &lt;pre&gt;&lt;code class=&quot;lang-ruby&quot;&gt;#require 'aws-sdk'
+require 'aws-sdk-s3'
+require 'aws-sdk-dynamodb'&lt;/code&gt;&lt;/pre&gt; 
+&lt;/div&gt; 
+&lt;p&gt;&lt;strong&gt;If you are a library maintainer, and you depend on the AWS SDK for Ruby, you should use service specific gems.&lt;/strong&gt; Do no force your users to install every AWS service gem if you only depend on one.&lt;/p&gt; 
+&lt;h2&gt;Conclusion&lt;/h2&gt; 
+&lt;p&gt;Upgrading should be very simple. If you encounter any backwards incompatible changes, please open a &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby/issues&quot;&gt;GitHub issue&lt;/a&gt;. The modularized SDK will be in preview for a short period to hopefully catch these issues before going GA. You can also catch us in the &lt;a href=&quot;https://gitter.im/aws/aws-sdk-ruby&quot;&gt;gitter channel&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>AWS SDK for Ruby Modularization (Version 3)</title>
+		<link>https://aws.amazon.com/blogs/developer/aws-sdk-for-ruby-modularization-version-3-2/</link>
+				
+				<pubDate>Fri, 09 Dec 2016 20:31:13 +0000</pubDate>
+		<dc:creator><![CDATA[Trevor Rowe]]></dc:creator>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[ruby]]></category>
+
+		<guid isPermaLink="false">e190ae679fdb2ab7e4241b768d7a99d73bfed78e</guid>
+				<description>Version 3 of the AWS SDK for Ruby is available now as a preview release. This version modularizes the monolithic SDK into service specific gems. Aside from gem packaging differences, version 3 interfaces are backwards compatible with version 2. You can install individual gems like so: $ gem install aws-sdk-s3 --version 1.0.0.rc1 You can install […]</description>
+								<content:encoded>&lt;p&gt;Version 3 of the &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby&quot;&gt;AWS SDK for Ruby&lt;/a&gt; is available now as a preview release. This version modularizes the monolithic SDK into service specific gems. Aside from gem packaging differences, version 3 interfaces are backwards compatible with version 2.&lt;/p&gt; 
+&lt;p&gt;You can install individual gems like so:&lt;/p&gt; 
+&lt;pre&gt;$ gem install aws-sdk-s3 --version 1.0.0.rc1&lt;/pre&gt; 
+&lt;p&gt;You can install everything using the &lt;tt&gt;aws-sdk&lt;/tt&gt; gem:&lt;/p&gt; 
+&lt;pre&gt;$ gem install aws-sdk --version 3.0.0.rc1&lt;/pre&gt; 
+&lt;p&gt;To see a complete list of gems, checkout the project README for a list of &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby/tree/code-generation#supported-services&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;supported services and gems&lt;/a&gt;.&lt;/p&gt; 
+&lt;h2&gt;Motivation&lt;/h2&gt; 
+&lt;p&gt;Modularization allows us to make some long requested changes to the SDK. Some of these changes were not reasonable when we shipped a single monolithic gem with 75+ services. Some of the primary motivating factors for breaking up the monolith include:&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;To provide better versioning information. When 75+ services share a single gem, it is difficult to communicate when a change is meaningful to a user. We can now use strict &lt;a href=&quot;http://semver.org/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;semantic versioning&lt;/a&gt; for each gem.&lt;/li&gt; 
+ &lt;li&gt;To improve our ability to deliver AWS API updates continuously. The number of new services and updates has been significantly increasing the frequency with which we update. We want to avoid situations where one update is blocked by an unrelated service. We can now continuously deliver updates per service gem.&lt;/li&gt; 
+ &lt;li&gt;Remove the usage of Ruby `autoload` statements. When you require a service gem, such as aws-sdk-ec2, all of the code is loaded and ready to use. This should eliminate a large number of thread safety issues that users encounter due to the use of &lt;tt&gt;autoload&lt;/tt&gt;.&lt;/li&gt; 
+ &lt;li&gt;A large amount of the dynamic runtime has been replaced with code generation. This allows users to reason better about what code is doing, receive better stack traces, improve performance, etc.&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;h2&gt;What Has Changed?&lt;/h2&gt; 
+&lt;p&gt;Our intent for the modularization is to keep SDK interfaces backwards compatible. &lt;b&gt;You may need to modify your gem dependency on the AWS SDK for Ruby.&lt;/b&gt; The &lt;tt&gt;aws-sdk&lt;/tt&gt; and &lt;tt&gt;aws-sdk-core&lt;/tt&gt; gems have been bumped to version 3.0 to protect users from package level changes.&lt;/p&gt; 
+&lt;p&gt;* Every service has a gem, such as &lt;tt&gt;aws-sdk-s3&lt;/tt&gt;.&lt;br&gt; * The &lt;tt&gt;aws-sdk-core&lt;/tt&gt; gem now only contains shared utilities.&lt;br&gt; * The &lt;tt&gt;aws-sdk-resources&lt;/tt&gt; is obsolete. Service gems contain both client and resource interfaces.&lt;br&gt; * The &lt;tt&gt;aws-sdk&lt;/tt&gt; gem now has a dependency on 75+ service gems.&lt;/p&gt; 
+&lt;p&gt;Here is a diagram showing the dependencies of the &lt;tt&gt;aws-sdk&lt;/tt&gt; gem across its major versions.&lt;/p&gt; 
+&lt;p&gt;&lt;a href=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2016/12/05/gem-diagram.png&quot; rel=&quot;attachment wp-att-1584&quot;&gt;&lt;img class=&quot;alignnone wp-image-1584 size-full&quot; src=&quot;https://d2908q01vomqb2.cloudfront.net/0716d9708d321ffb6a00818614779e779925365c/2016/12/05/gem-diagram.png&quot; alt=&quot;gem-diagram&quot; width=&quot;644&quot; height=&quot;282&quot;&gt;&lt;/a&gt;&lt;/p&gt; 
+&lt;h2&gt;Why Bump to Version 3?&lt;/h2&gt; 
+&lt;p&gt;The version 2 &lt;tt&gt;aws-sdk-core&lt;/tt&gt; gem includes code that defines 75+ service modules and shared utilities. It is important to prevent a service specific gem, such as &lt;tt&gt;aws-sdk-s3&lt;/tt&gt; and the core gem from both defining the same interfaces.&lt;/p&gt; 
+&lt;p&gt;While we have worked hard to ensure full backwards compatibility in the service interfaces, a small number of private internal interfaces have been removed or changed. For users that have relied on these un-documented interfaces, this will prevent unexpected breaks with a gem update. Some of these changes include:&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;Removed the internal runtime methods &lt;tt&gt;Aws.add_service&lt;/tt&gt; and &lt;tt&gt;Aws.service_added&lt;/tt&gt;. These methods were used by the runtime to detect when a service was autoloaded.&lt;/li&gt; 
+ &lt;li&gt;Removed the internal &lt;tt&gt;Aws::Signers&lt;/tt&gt; module and the various signature classes therein. These classes were marked with &lt;tt&gt;@api private&lt;/tt&gt;. They are now available as separate gems: 
+  &lt;ul&gt; 
+   &lt;li&gt;&lt;tt&gt;aws-sigv4&lt;/tt&gt;&lt;/li&gt; 
+   &lt;li&gt;&lt;tt&gt;aws-sigv2&lt;/tt&gt;&lt;/li&gt; 
+  &lt;/ul&gt; &lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;h2&gt;Migrating Code From Version 2 to Version 3&lt;/h2&gt; 
+&lt;p&gt;Migrating should be very simple. &lt;b&gt;If you depend on &lt;tt&gt;aws-sdk&lt;/tt&gt;, then you do not need to change anything.&lt;/b&gt; If you depend on &lt;tt&gt;aws-sdk-resources&lt;/tt&gt; or &lt;tt&gt;aws-sdk-core&lt;/tt&gt;, replace these with a dependency on one of the following:&lt;/p&gt; 
+&lt;p&gt;* &lt;tt&gt;aws-sdk ~&amp;gt; 3.0&lt;/tt&gt;&lt;br&gt; * Service specific gems, such as &lt;tt&gt;aws-sdk-s3 ~&amp;gt; 1.0&lt;/tt&gt;&lt;/p&gt; 
+&lt;p&gt;You will also need to replace your require statements. You should no longer call &lt;tt&gt;require &quot;aws-sdk-resources&quot;&lt;/tt&gt; or &lt;tt&gt;require &quot;aws-sdk-core&quot;&lt;/tt&gt;. A &lt;a href=&quot;https://aws.amazon.com/blogs/developer/announcing-the-modularized-aws-sdk-for-ruby-version-3/&quot;&gt;follow-up blog post&lt;/a&gt; provides detailed instructions on upgrading.&lt;/p&gt; 
+&lt;h2&gt;Questions?&lt;/h2&gt; 
+&lt;p&gt;Join us in our &lt;a href=&quot;https://gitter.im/aws/aws-sdk-ruby&quot;&gt;Gitter channel&lt;/a&gt; with your questions and feedback. The modularized released is currently published as a preview gem (rc1). We would love for you to try things out and to share feedback for these are GA.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>General Availability Release of the aws-record Gem</title>
+		<link>https://aws.amazon.com/blogs/developer/general-availability-release-of-the-aws-record-gem/</link>
+				
+				<pubDate>Mon, 15 Aug 2016 20:02:45 +0000</pubDate>
+		<dc:creator><![CDATA[Alex Wood]]></dc:creator>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[aws-record]]></category>
+		<category><![CDATA[DynamoDB]]></category>
+		<category><![CDATA[ruby]]></category>
+
+		<guid isPermaLink="false">2d31c06e5e3802fcf04c3bc1c656a0da8525b4f1</guid>
+				<description>Today, we’re pleased to announce the GA release of version 1.0.0 of the aws-record gem. What Is aws-record? In version 1 of the AWS SDK for Ruby, the AWS::Record class provided a data mapping abstraction over Amazon DynamoDB operations. Earlier this year, we released the aws-record developer preview as a separately packaged library to provide […]</description>
+								<content:encoded>&lt;p&gt;Today, we’re pleased to announce the GA release of version &lt;code&gt;1.0.0&lt;/code&gt; of the &lt;code&gt;aws-record&lt;/code&gt; gem.&lt;/p&gt; 
+&lt;h2&gt;What Is aws-record?&lt;/h2&gt; 
+&lt;p&gt;In version 1 of the AWS SDK for Ruby, the &lt;code&gt;AWS::Record&lt;/code&gt; class provided a data mapping abstraction over &lt;a href=&quot;https://aws.amazon.com/dynamodb/&quot;&gt;Amazon DynamoDB&lt;/a&gt; operations. Earlier this year, we released the &lt;code&gt;aws-record&lt;/code&gt; developer preview as a separately packaged library to provide a similar data mapping abstraction for DynamoDB, built on top of the AWS SDK for Ruby version 2. After customer feedback and some more development work, we’re pleased to move the library out of developer preview to general availability.&lt;/p&gt; 
+&lt;h2&gt;How to Include the aws-record Gem in Your Project&lt;/h2&gt; 
+&lt;p&gt;The &lt;code&gt;aws-record&lt;/code&gt; gem is available now from RubyGems:&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: bash&quot;&gt;gem install aws-record
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;p&gt;You can also include it in your project’s Gemfile:&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;# Gemfile
+gem 'aws-record', '~&amp;gt; 1.0'
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;p&gt;This automatically includes a dependency on the &lt;code&gt;aws-sdk-resources&lt;/code&gt; gem, major version 2. Be sure to include the &lt;code&gt;aws-sdk&lt;/code&gt; or &lt;code&gt;aws-sdk-resources&lt;/code&gt; gem in your Gemfile if you need to lock to a specific version, like so:&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt; # Gemfile
+gem 'aws-record', '~&amp;gt; 1.0'
+gem 'aws-sdk-resources', '~&amp;gt; 2.5'
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;h2&gt;Working with DynamoDB Tables Using the aws-record Gem&lt;/h2&gt; 
+&lt;h3&gt;Defining an Aws::Record Model&lt;/h3&gt; 
+&lt;p&gt;The &lt;code&gt;aws-record&lt;/code&gt; gem provides the &lt;code&gt;Aws::Record&lt;/code&gt; module, which you can include in a class definition. This decorates your class with a variety of helper methods that can simplify interactions with Amazon DynamoDB. For example, the following model uses a variety of preset attribute definition helper methods and attribute options:&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;require 'aws-record'
+
+class Forum
+  include Aws::Record  
+
+  string_attr     :forum_uuid, hash_key: true
+  integer_attr    :post_id,    range_key: true
+  string_attr     :author_username
+  string_attr     :post_title
+  string_attr     :post_body
+  string_set_attr :tags,       default_value: Set.new 
+  datetime_attr   :created_at, database_attribute_name: &quot;PostCreatedAtTime&quot;
+  boolean_attr    :moderation, default_value: false
+end
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;h4&gt;Using Validation Libraries with an Aws::Record Model&lt;/h4&gt; 
+&lt;p&gt;The &lt;code&gt;aws-record&lt;/code&gt; gem does not come with a built-in validation process. Rather, it is designed to be a persistence layer, and to allow you to bring your own validation library. For example, the following model includes the popular &lt;code&gt;ActiveModel::Validations&lt;/code&gt; module, and has defined a set of validations that will be run when we attempt to save an item:&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;require 'aws-record'
+require 'active_model'
+
+class Forum
+  include Aws::Record
+  include ActiveModel::Validations
+
+  string_attr     :forum_uuid, hash_key: true
+  integer_attr    :post_id,    range_key: true
+  string_attr     :author_username
+  string_attr     :post_title
+  string_attr     :post_body
+  string_set_attr :tags,       default_value: Set.new 
+  datetime_attr   :created_at, database_attribute_name: &quot;PostCreatedAtTime&quot;
+  boolean_attr    :moderation, default_value: false 
+
+
+  validates_presence_of :forum_uuid, :post_id, :author_username
+  validates_length_of :post_title, within: 4..30
+  validates_length_of :post_body,  within: 2..5000
+end
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;h3&gt;Creating a DynamoDB Table for a Model with Aws::Record::TableMigration&lt;/h3&gt; 
+&lt;p&gt;The &lt;code&gt;aws-record&lt;/code&gt; gem provides a helper class for table operations, such as migrations. If we wanted to create a table for our &lt;code&gt;Forum&lt;/code&gt; model in DynamoDB, we would run the following migration:&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;migration = Aws::Record::TableMigration.new(Forum)
+migration.create!(
+  provisioned_throughput: {
+    read_capacity_units: 5,
+    write_capacity_units: 2
+  }
+)
+migration.wait_until_available
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;p&gt;You can write these migrations in your &lt;code&gt;Rakefile&lt;/code&gt; or as standalone helper scripts for your application. Because you don’t need to update your table definition for additions of non-key attributes, you may find that you’re not running migrations as often for your &lt;code&gt;Aws::Record&lt;/code&gt; models.&lt;/p&gt; 
+&lt;h2&gt;Working with DynamoDB Items Using the aws-record Gem&lt;/h2&gt; 
+&lt;h3&gt;Creating and Persisting a New Item&lt;/h3&gt; 
+&lt;p&gt;Using the example model above, once it has been created in the DynamoDB remote end using &lt;code&gt;Aws::Record::TableMigration&lt;/code&gt; (or if it already existed in the remote end), it is simple to create and save a new item:&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;post = Forum.new(
+  forum_uuid: FORUM_UUID,
+  post_id: 1,
+  author_username: &quot;Author One&quot;,
+  post_title: &quot;Hello!&quot;,
+  post_body: &quot;Hello, world!&quot;
+)
+post.created_at = Time.now
+post.save # Performs a put_item call.
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;p&gt;You can set attributes when you initialize a new item and with setter methods that are defined for you automatically.&lt;/p&gt; 
+&lt;h3&gt;Finding and Modifying an Item&lt;/h3&gt; 
+&lt;p&gt;A class-level method &lt;code&gt;#find&lt;/code&gt; is provided to look up items from DynamoDB using your model’s key attributes. After setting a few new attribute values, calling &lt;code&gt;#save&lt;/code&gt; will make an update call to DynamoDB, reflecting only the item changes you’ve made. This is important for users who are fetching items with projections (which may not include all attributes), or using single-table inheritance patterns (who may not have modeled all attributes present in a remote item), to avoid clobbering unmodeled or non-included attribute values.&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;post = Forum.find(forum_uuid: FORUM_UUID, post_id: 1)
+post.post_title = &quot;(Removed)&quot;
+post.post_body = &quot;(Removed)&quot;
+post.moderation = true
+post.save # Performs an update_item call on dirty attributes only.
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;p&gt;There is also a class-level method to directly build and make an update call to DynamoDB, using key attributes to identify the item and non-key attributes to form the update expression:&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;Forum.update(
+  forum_uuid: FORUM_UUID,
+  post_id: 1,
+  post_title: &quot;(Removed)&quot;,
+  post_body: &quot;(Removed)&quot;,
+  moderation: true
+)
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;p&gt;The preceding two code examples are functionally equivalent. You’ll have the same database state after running either snippet.&lt;/p&gt; 
+&lt;h4&gt;A Note on Dirty Tracking&lt;/h4&gt; 
+&lt;p&gt;In our last example, we talked about how item updates only reflect changes to modified attributes. Users of &lt;code&gt;ActiveRecord&lt;/code&gt; or similar libraries will be familiar with the concept of tracking dirty attribute values, but &lt;code&gt;aws-record&lt;/code&gt; is a bit different. That is because DynamoDB supports collection attribute types, and in Ruby, collection types are often modified through object mutation. To properly track changes to an item when objects can be changed through mutable state, &lt;code&gt;Aws::Record&lt;/code&gt; items will, by default, keep deep copies of your attribute values when loading from DynamoDB. Attribute changes through mutation, like this example, will work the way you expect:&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;post = Forum.find(forum_uuid: FORUM_UUID, post_id: 1)
+post.tags.add(&quot;First&quot;)
+post.dirty? # =&amp;gt; true
+post.save # Will call update_item with the new tags collection.
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;p&gt;Tracking deep copies of attribute values has implications for performance and memory. You can turn off mutation tracking at the model level. If you do so, dirty tracking will still work for new object references, but will not work for mutated objects:&lt;/p&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;class NoMTModel
+  include Aws::Record
+  disable_mutation_tracking
+  string_attr :key, hash_key: true
+  string_attr :body
+  map_attr    :map
+end
+
+item = NoMTModel.new(key: &quot;key&quot;, body: &quot;body&quot;, map: {})
+item.save # Will call put_item
+item.map[:key] = &quot;value&quot;
+item.dirty? # =&amp;gt; false, because we won't track mutations to objects
+item.body = &quot;New Body&quot;
+item.dirty? # =&amp;gt; true, because we will still notice reassignment
+# Will call update_item, but only update :body unless we mark map as dirty explicitly.
+item.save
+&lt;/pre&gt; 
+&lt;p&gt;&amp;nbsp;&lt;/p&gt; 
+&lt;h2&gt;Try the aws-record Gem Today!&lt;/h2&gt; 
+&lt;p&gt;We’re excited to hear about what you’re building with &lt;code&gt;aws-record&lt;/code&gt;. Feel free to leave your feedback in the comments, or open an issue in our &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby-record&quot;&gt;GitHub&lt;/a&gt; repo. Read through the &lt;a href=&quot;http://docs.aws.amazon.com/awssdkrubyrecord/api/index.html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;documentation&lt;/a&gt; and get started!&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Introducing the Aws::Record Developer Preview</title>
+		<link>https://aws.amazon.com/blogs/developer/introducing-the-awsrecord-developer-preview/</link>
+				
+				<pubDate>Wed, 02 Mar 2016 17:11:37 +0000</pubDate>
+		<dc:creator><![CDATA[Alex Wood]]></dc:creator>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[aws-record]]></category>
+		<category><![CDATA[DynamoDB]]></category>
+		<category><![CDATA[ruby]]></category>
+
+		<guid isPermaLink="false">354476ef72a6ffd05a7b78fe9649c1a6af9f00ed</guid>
+				<description>We are happy to announce that the aws-record gem is now in Developer Preview and available for you to try. What Is Aws::Record? In version 1 of the AWS SDK for Ruby, the AWS::Record class provided a data mapping abstraction over Amazon DynamoDB operations. As version 2 of the AWS SDK for Ruby was being […]</description>
+								<content:encoded>&lt;p&gt; We are happy to announce that the &lt;code&gt;aws-record&lt;/code&gt; gem is now in Developer Preview and available for you to try.&lt;/p&gt; 
+&lt;h2&gt; What Is Aws::Record?&lt;/h2&gt; 
+&lt;p&gt; In version 1 of the AWS SDK for Ruby, the &lt;code&gt;AWS::Record&lt;/code&gt; class provided a data mapping abstraction over Amazon DynamoDB operations. As version 2 of the AWS SDK for Ruby was being developed, many of you asked for an updated version of the library.&lt;/p&gt; 
+&lt;p&gt; The &lt;code&gt;aws-record&lt;/code&gt; gem provides a data mapping abstraction for DynamoDB built on top of the AWS SDK for Ruby version 2.&lt;/p&gt; 
+&lt;h2&gt; Using Aws::Record&lt;/h2&gt; 
+&lt;p&gt; You can download the &lt;code&gt;aws-record&lt;/code&gt; gem from RubyGems by including the &lt;code&gt;--pre&lt;/code&gt; flag in a gem installation:&lt;/p&gt; 
+&lt;pre class=&quot;brush: bash&quot;&gt;
+gem install 'aws-record' --pre
+&lt;/pre&gt; 
+&lt;p&gt; You can also include it in your Gemfile. Do not include a version lock yet, so that &lt;code&gt;bundler&lt;/code&gt; can find the pre-release version:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+# Gemfile
+gem 'aws-record'
+&lt;/pre&gt; 
+&lt;h3&gt; Defining a Model&lt;/h3&gt; 
+&lt;p&gt; To create an aws-record model, include the &lt;code&gt;Aws::Record&lt;/code&gt; module in your class definition:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+require 'aws-record'
+
+class Forum
+  include Aws::Record
+end
+&lt;/pre&gt; 
+&lt;p&gt; This will decorate your class with helper methods you can use to create a model compatible with DynamoDB’s table schemas. You might define keys for your table:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+require 'aws-record'
+
+class Forum
+  include Aws::Record
+  string_attr  :forum_uuid, hash_key: true
+  integer_attr :post_id,    range_key: true
+end
+&lt;/pre&gt; 
+&lt;p&gt; When you use these helper methods, you do not need to worry about how to define these attributes and types in DynamoDB. The helper methods and marshaler classes are able to define your table and item operations for you. The &lt;code&gt;aws-record&lt;/code&gt; gem comes with predefined attribute types that cover a variety of potential use cases:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+require 'aws-record'
+
+class Forum
+  include Aws::Record
+  string_attr   :forum_uuid, hash_key: true
+  integer_attr  :post_id,    range_key: true
+  string_attr   :author_username
+  string_attr   :post_title
+  string_attr   :post_body
+  datetime_attr :created_at
+  map_attr      :post_metadata
+end
+&lt;/pre&gt; 
+&lt;h3&gt; Creating a DynamoDB Table&lt;/h3&gt; 
+&lt;p&gt; The &lt;code&gt;aws-record&lt;/code&gt; gem provides a helper class for table operations, such as migrations. If we wanted to create a table for our &lt;code&gt;Forum&lt;/code&gt; model in DynamoDB, we would run the following migration:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+require 'forum' # Depending on where you defined the class above.
+
+migration = Aws::Record::TableMigration.new(Forum)
+
+migration.create!(
+  provisioned_throughput: {
+    read_capacity_units: 10,
+    write_capacity_units: 4
+  }
+)
+
+migration.wait_until_available # Blocks until table creation is complete.
+&lt;/pre&gt; 
+&lt;h3&gt; Operations with DynamoDB Items&lt;/h3&gt; 
+&lt;p&gt; With a model and table defined, we can perform operations that relate to items in our table. Let’s create a post:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+require 'forum'
+require 'securerandom'
+
+uuid = SecureRandom.uuid
+
+post = Forum.new
+post.forum_uuid = uuid
+post.post_id = 1
+post.author_username = &quot;User1&quot;
+post.post_title = &quot;Hello!&quot;
+post.post_body = &quot;Hello Aws::Record&quot;
+post.created_at = Time.now
+post.post_metadata = {
+  this_is_a: &quot;Post&quot;,
+  types_supported_include: [&quot;String&quot;, &quot;Integer&quot;, &quot;DateTime&quot;],
+  how_many_times_ive_done_this: 1
+}
+
+post.save # Writes to the database.
+&lt;/pre&gt; 
+&lt;p&gt; This example shows us some of the types that are supported and serialized for you. Using the key we’ve defined, we can also find this object in our table:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+my_post = Forum.find(forum_uuid: uuid, post_id: 1)
+my_post.post_title # =&amp;gt; &quot;Hello!&quot;
+my_post.created_at # =&amp;gt; #&amp;lt;DateTime: 2016-02-09T14:39:07-08:00 ((2457428j,81547s,0n),-28800s,2299161j)&amp;gt;
+&lt;/pre&gt; 
+&lt;p&gt; You can use the same approach to save changes or, as shown here, you can delete the item from the table:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+my_post.delete! # =&amp;gt; true
+&lt;/pre&gt; 
+&lt;p&gt; At this point, we know how to use &lt;code&gt;Aws::Record&lt;/code&gt; to perform key-value store operations powered by DynamoDB and have an introduction to the types available for use in our tables.&lt;/p&gt; 
+&lt;h3&gt; Querying, Scanning, and Collections&lt;/h3&gt; 
+&lt;p&gt; Because it is likely that you’re probably doing Query and Scan operations in addition to key-value operations, &lt;code&gt;aws-record&lt;/code&gt; provides support for integrating them with your model class.&lt;/p&gt; 
+&lt;p&gt; When you include the &lt;code&gt;Aws::Record&lt;/code&gt; module, your model class is decorated with &lt;code&gt;#query&lt;/code&gt; and &lt;code&gt;#scan&lt;/code&gt; methods, which correspond to the AWS SDK for Ruby client operations. The response is wrapped in a collection enumerable for you. Consider the following basic scan operation:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+Forum.scan # =&amp;gt; #&amp;lt;Aws::Record::ItemCollection:0x007ffc293ec790 @search_method=:scan, @search_params={:table_name=&amp;gt;&quot;Forum&quot;}, @model=Forum, @client=#&amp;lt;Aws::DynamoDB::Client&amp;gt;&amp;gt;
+&lt;/pre&gt; 
+&lt;p&gt; No client call has been made yet: &lt;code&gt;ItemCollection&lt;/code&gt; instances are lazy, and only make client calls only when needed. Because they provide an enumerable interface, you can use any of Ruby’s enumerable methods on your collection, and your result page is saved:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+resp = Forum.scan
+resp.take(1) # Makes a call to the underlying client. Returns a 'Forum' object.
+resp.take(1) # Same result, but does not repeat the client call.
+&lt;/pre&gt; 
+&lt;p&gt; Because the &lt;code&gt;Aws::Record::ItemCollection&lt;/code&gt; uses version 2 ofthe AWS SDK for Ruby, pagination support is built-in. So, if your operation requires multiple DynamoDB client calls due to response truncation, &lt;code&gt;ItemCollection&lt;/code&gt; will handle the calls required in your enumeration:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+def author_posts
+  Forum.scan.inject({}) do |acc, post|
+    author = post.author_username
+    if acc[author]
+      acc[author] += 1
+    else
+      acc[author] = 1
+    end
+    acc
+  end
+end
+&lt;/pre&gt; 
+&lt;p&gt; The same applies for queries. Your query result will also be provided as an enumerable &lt;code&gt;ItemCollection&lt;/code&gt;:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+def posts_by_forum(uuid)
+  Forum.query(
+    key_condition_expression: &quot;#A = :a&quot;,
+    expression_attribute_names: {
+      &quot;#A&quot; =&amp;gt; &quot;forum_uuid&quot;
+    },
+    expression_attribute_values: {
+      &quot;:a&quot; =&amp;gt; uuid
+    }
+  )
+end
+&lt;/pre&gt; 
+&lt;p&gt; Given this functionality, you have the flexibility to mix and match Ruby’s enumerable functionality with DynamoDB filter expressions, for example, to curate your results. These two functions return the same set of responses:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+def posts_by_author_in_forum(uuid, author)
+  posts_by_forum(uuid).select do |post|
+    post.author_username == author
+  end
+end
+
+def posts_by_author_in_forum_with_filter(uuid, author)
+  Forum.query(
+    key_condition_expression: &quot;#A = :a&quot;,
+    filter_expression: &quot;#B = :b&quot;,
+    expression_attribute_names: {
+      &quot;#A&quot; =&amp;gt; &quot;forum_uuid&quot;,
+      &quot;#B&quot; =&amp;gt; &quot;author_username&quot;
+    },
+    expression_attribute_values: {
+      &quot;:a&quot; =&amp;gt; uuid,
+      &quot;:b&quot; =&amp;gt; author
+    }
+  )
+end
+&lt;/pre&gt; 
+&lt;h3&gt; Support for Secondary Indexes&lt;/h3&gt; 
+&lt;p&gt; &lt;code&gt;Aws::Record&lt;/code&gt; also supports both local and global secondary indexes. Consider this modified version of our Forum table:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+require 'aws-record'
+
+class IndexedForum
+  include Aws::Record
+
+  string_attr   :forum_uuid, hash_key: true
+  integer_attr  :post_id,    range_key: true
+  string_attr   :author_username
+  string_attr   :post_title
+  string_attr   :post_body
+  datetime_attr :created_at
+  map_attr      :post_metadata
+
+  global_secondary_index(:author,
+    hash_key: :author_username,
+    projection: {
+      projection_type: &quot;INCLUDE&quot;,
+      non_key_attributes: [&quot;post_title&quot;]
+    }
+  )
+
+  local_secondary_index(:by_date,
+    range_key: :created_at,
+    projection: {
+      projection_type: &quot;ALL&quot;
+    }
+  )
+end
+&lt;/pre&gt; 
+&lt;p&gt; You can see the table’s attributes are the same, but we’ve included a couple potentially useful indexes.&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt; &lt;code&gt;:author&lt;/code&gt;: This uses the author name as a partition, which provides a way to search across forums by author user name without having to scan and filter. Take note of the projection, because your global secondary index results will only return the &lt;code&gt;:forum_uuid&lt;/code&gt;, &lt;code&gt;:post_id&lt;/code&gt;, &lt;code&gt;:author_username&lt;/code&gt;, and &lt;code&gt;:post_title&lt;/code&gt;. Other attributes will be missing from this projection, and you would have to hydrate your item by calling &lt;code&gt;#reload!&lt;/code&gt; on the item instance.&lt;/li&gt; 
+ &lt;li&gt; &lt;code&gt;:by_date&lt;/code&gt;: This provides a way to sort and search within a forum by post creation date.&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;p&gt; To create this table with secondary indexes, you create a migration like we did before:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+require 'indexed_forum'
+
+migration = Aws::Record::TableMigration.new(IndexedForum)
+
+migration.create!(
+  provisioned_throughput: {
+    read_capacity_units: 10,
+    write_capacity_units: 4
+  },
+  global_secondary_index_throughput: {
+    author: {
+      read_capacity_units: 5,
+      write_capacity_units: 3
+    }
+  }
+)
+
+migration.wait_until_available
+&lt;/pre&gt; 
+&lt;p&gt; You can use either of these indexes with the query interface:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;
+require 'indexed_forum'
+
+def search_by_author(author)
+  IndexedForum.query(
+    index_name: &quot;author&quot;,
+    key_condition_expression: &quot;#A = :a&quot;,
+    expression_attribute_names: {
+      &quot;#A&quot; =&amp;gt; &quot;author_username&quot;
+    },
+    expression_attribute_values: {
+      &quot;:a&quot; =&amp;gt; author
+    }
+  )
+)
+&lt;/pre&gt; 
+&lt;p&gt; Secondary indexes can be a powerful performance tool, and &lt;code&gt;aws-record&lt;/code&gt; can simplify the process of managing them.&lt;/p&gt; 
+&lt;h2&gt; Get Involved!&lt;/h2&gt; 
+&lt;p&gt; Please download the gem, give it a try, and let us know what you think. This project is a work in progress, so we welcome feature requests, bug reports, and information about the kinds of problems you’d like to solve by using this gem. And, as with other SDKs and tools we produce, we’d also be happy to look at contributions.&lt;/p&gt; 
+&lt;p&gt; You can find the project on GitHub at &lt;a href=&quot;https://github.com/awslabs/aws-sdk-ruby-record&quot;&gt;https://github.com/awslabs/aws-sdk-ruby-record&lt;/a&gt;&lt;/p&gt; 
+&lt;p&gt; Please reach out and let us know what you think!&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>AWS SDK for Ruby Office Hour</title>
+		<link>https://aws.amazon.com/blogs/developer/aws-sdk-for-ruby-office-hour/</link>
+				
+				<pubDate>Wed, 24 Jun 2015 21:07:08 +0000</pubDate>
+		<dc:creator><![CDATA[Trevor Rowe]]></dc:creator>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[ruby]]></category>
+
+		<guid isPermaLink="false">6ef7a6aa8f899d2adca425e0167c03a2cf6adec4</guid>
+				<description>The AWS SDKs and Tools team invites you to the first-ever online office hour hosted by the maintainers of the AWS SDK for Ruby. It will be held via Google Hangouts at&amp;nbsp;11:00am-12:00pm PDT (UTC -7:00) on Tuesday 6/30. If you don’t have one already, you will need to create an account with Google to join […]</description>
+								<content:encoded>&lt;p&gt; The AWS SDKs and Tools team invites you to the first-ever online office hour hosted by the maintainers of the AWS SDK for Ruby. It will be held via Google Hangouts at&amp;nbsp;&lt;b&gt;11:00am-12:00pm PDT (UTC -7:00) on Tuesday 6/30&lt;/b&gt;. If you don’t have one already, you will need to create an account with Google to join the video chat.&lt;/p&gt; 
+&lt;p&gt; This first office hour will be driven by customer questions. We expect to focus on questions about the SDK, but any questions related to Ruby development on AWS are welcome. We’re excited to meet you and help you be successful in developing Ruby applications on AWS!&lt;/p&gt; 
+&lt;p&gt; Please &lt;a href=&quot;https://www.eventbrite.com/e/aws-sdk-for-ruby-office-hour-tickets-17516131220&quot;&gt;&lt;span class=&quot;s1&quot;&gt;register for the event&lt;/span&gt;&lt;/a&gt;, add it to your calendar, and join the office hour next Monday.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+		<item>
+		<title>Uploading Files to Amazon S3</title>
+		<link>https://aws.amazon.com/blogs/developer/uploading-files-to-amazon-s3/</link>
+				
+				<pubDate>Tue, 14 Apr 2015 18:04:13 +0000</pubDate>
+		<dc:creator><![CDATA[Trevor Rowe]]></dc:creator>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[S3]]></category>
+
+		<guid isPermaLink="false">8b1d54b4fdaba5dc660ac60991f545999f9a6c73</guid>
+				<description>I blogged previously about downloading objects from Amazon S3 using the version 2 AWS SDK for Ruby. It was requested that I write about uploading objects as well. Managed File Uploads The simplest and most common task is upload a file from disk to a bucket in Amazon S3. This is very straightforward when using […]</description>
+								<content:encoded>&lt;p&gt;I blogged previously about &lt;a href=&quot;http://ruby.awsblog.com/post/Tx354Y6VTZ421PJ/-Downloading-Objects-from-Amazon-span-class-matches-S3-span-using-the-AWS-SDK-fo&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;downloading objects from Amazon S3&lt;/a&gt; using the version 2 AWS SDK for Ruby. It was requested that I write about uploading objects as well.&lt;/p&gt; 
+&lt;h2&gt;Managed File Uploads&lt;/h2&gt; 
+&lt;p&gt;The simplest and most common task is upload a file from disk to a bucket in Amazon S3. This is very straightforward when using the resource interface for Amazon S3:&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;s3 = Aws::S3::Resource.new
+
+s3.bucket('bucket-name').object('key').upload_file('/source/file/path')&lt;/pre&gt; 
+&lt;p&gt;You can pass additional options to the &lt;code&gt;Resource&lt;/code&gt; constructor and to &lt;code&gt;#upload_file&lt;/code&gt;. This expanded example demonstrates configuring the resource client, uploading a public object and then generating a URL that can be used to download the object from a browser.&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;s3 = Aws::S3::Resource.new(
+  credentials: Aws::Credentials.new('akid', 'secret'),
+  region: 'us-west-1'
+)
+
+obj = s3.bucket('bucket-name').object('key')
+obj.upload_file('/source/file/path', acl:'public-read')
+obj.public_url
+#=&amp;gt; &quot;https://bucket-name.s3-us-west-1.amazonaws.com/key&quot;&lt;/pre&gt; 
+&lt;p&gt;This is the recommended method of using the SDK to upload files to a bucket. Using this approach has the following benefits:&lt;/p&gt; 
+&lt;ul&gt; 
+ &lt;li&gt;Manages multipart uploads for objects larger than 15MB.&lt;/li&gt; 
+ &lt;li&gt;Correctly opens files in binary mode to avoid encoding issues.&lt;/li&gt; 
+ &lt;li&gt;Uses multiple threads for uploading parts of large objects in parallel.&lt;/li&gt; 
+&lt;/ul&gt; 
+&lt;h2&gt;Other Methods&lt;/h2&gt; 
+&lt;p&gt;In addition to &lt;code&gt;Aws::S3::Object#upload_file&lt;/code&gt;, you can upload an object using &lt;code&gt;#put&lt;/code&gt; or using the multipart upload APIs.&lt;/p&gt; 
+&lt;h3&gt;PUT Object&lt;/h3&gt; 
+&lt;p&gt;For smaller objects, you may choose to use &lt;code&gt;#put&lt;/code&gt; instead. The &lt;code&gt;#put&lt;/code&gt; method accepts an optional body, which can be a string or any IO object.&lt;/p&gt; 
+&lt;pre class=&quot;brush: ruby&quot;&gt;obj = s3.bucket('bucket-name').object('key')
+
+# from a string
+obj.put(body:'Hello World!')
+
+# from an IO object
+File.open('/source/file', 'rb') do |file|
+  obj.put(body:file)
+end&lt;/pre&gt; 
+&lt;h3&gt;Multipart APIs&lt;/h3&gt; 
+&lt;p&gt;I recommend you use &lt;code&gt;#upload_file&lt;/code&gt; whenever possible. If you need to manage large object copies, then you will need to use the multipart interfaces. There are restrictions on the minimum file, and part sizes you should be aware of. Typically these are reserved for advanced use cases.&lt;/p&gt; 
+&lt;h2&gt;Feedback&lt;/h2&gt; 
+&lt;p&gt;I’d love to hear feedback. If you find the AWS SDK for Ruby lacks a utility for working with Amazon S3, I’d love to hear about it. Please feel free to open a &lt;a href=&quot;https://github.com/aws/aws-sdk-ruby/issues&quot;&gt;GitHub issue&lt;/a&gt; or drop into our &lt;a&gt;Gitter channel&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+							
+		
+							</item>
+	</channel>
+</rss>

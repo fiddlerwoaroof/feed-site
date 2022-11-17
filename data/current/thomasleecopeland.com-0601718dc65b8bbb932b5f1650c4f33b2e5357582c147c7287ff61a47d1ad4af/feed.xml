@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+  <channel>
+    <title>Junior Developer</title>
+    <link>https://thomasleecopeland.com</link>
+    <description>Tom Copeland's blog</description>
+    <pubDate>Sun, 12 Aug 2018 00:00:00 -0400</pubDate>
+    <item>
+      <title>Invalid or incomplete POST parameters</title>
+      <link>https://thomasleecopeland.com/2018/08/12/invalid-or-incomplete-post-parameters.html</link>
+      <description><![CDATA[It took me [insert large number here] years of Rails and Ruby but I finally saw this in my logs:
+
+]]></description>
+      <pubDate>Sun, 12 Aug 2018 00:00:00 -0400</pubDate>
+      <guid>https://thomasleecopeland.com/2018/08/12/invalid-or-incomplete-post-parameters.html</guid>
+      <content:encoded><![CDATA[<p>It took me [insert large number here] years of Rails and Ruby but I finally saw this in my logs:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>Invalid or incomplete POST parameters</code></pre></figure>
+
+<p>But the parameters were fine!  It was just an innocuous XML document coming in through the API!  After some flailing - basically bisecting a request payload - I reproduced it with:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ curl -si -X POST -d <span class="s1">&#39;%&#39;</span> http://localhost/ <span class="p">|</span> head -1
+HTTP/1.1 <span class="m">400</span> Bad Request</code></pre></figure>
+
+<p>To cut to the chase, adding a content type header solves it.  With <code>text/xml</code>, we get a garden-variety 404 error since there's no route for a <code>POST</code> to <code>/</code>:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ curl -si -H <span class="s1">&#39;content-type: text/xml&#39;</span> -X POST -d <span class="s1">&#39;%&#39;</span> http://localhost/ <span class="p">|</span> head -1
+HTTP/1.1 <span class="m">404</span> Not Found</code></pre></figure>
+
+<p>So the root cause is that if there's no explicit content type on a request, Rack attempts to parse it as if it were <code>application/x-www-form-urlencoded</code> and <code>%</code> is invalid input in that case.</p>
+
+<p>There are a couple of interesting elements to this one.  As far as the exception is concerned, most blog posts and Stack Overflow questions around this error involve users mistyping URLs and putting in consecutive percent signs or something.  So those are <code>GET</code> requests, not <code>POST</code>s, and thus not immediately relevant.  Also, the exception comes from Rack.  So the logs won't have a stracktrace and the usual error reporting tools won't get a chance to show a good post-mortem for this.</p>
+
+<p>Poking around in Rack gets us moving though.  Here's a comment from <code>lib/rack/request.rb</code>:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="c1"># This method support both application/x-www-form-urlencoded and</span>
+<span class="c1"># multipart/form-data.</span></code></pre></figure>
+
+<p>So there's a reference to <a href="https://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.1">x-www-form-urlencoded</a>, which refers to <a href="http://www.ietf.org/rfc/rfc1738.txt">RFC 1738</a> for encoding, which explains why a percent sign, or a string like <code>15% of net</code> would be invalid input.</p>
+
+<p>Supposing you can't add a content-type header to the code that's making the requests?  Perhaps the <code>POST</code> is coming from a third party.  In that case, Rack middleware to the rescue.  Nothing fancy, just:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="k">class</span> <span class="nc">Rack</span><span class="o">::</span><span class="no">AddTheHeader</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="vi">@app</span> <span class="o">=</span> <span class="n">app</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">env</span><span class="o">[</span><span class="s1">&#39;PATH_INFO&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;/some/path&quot;</span>
+      <span class="n">env</span><span class="o">[</span><span class="s1">&#39;CONTENT_TYPE&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;text/xml&#39;</span>
+      <span class="no">Rack</span><span class="o">::</span><span class="no">Request</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">env</span><span class="p">)</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">rewind</span>
+    <span class="k">end</span>
+    <span class="vi">@app</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>This scopes the header addition to a specific URL space, which seems prudent.  That's about it, hope this saves someone a few minutes!</p>
+]]></content:encoded>
+      <dc:date>2018-08-12T00:00:00-04:00</dc:date>
+    </item>
+    <item>
+      <title>Safer JSON munging</title>
+      <link>https://thomasleecopeland.com/2018/08/09/safer-json-munging.html</link>
+      <description><![CDATA[At work we have an ETL process where we get a CSV from a partner and put it in a database as JSON.  Sometimes the column names are a little off and we have to rename things.  Also, sometimes we need to derive new values from the data we've imported, and sometimes we delete some of the unnecessary key/value pairs.  So basically there's a good bit of munging going on there.
+
+]]></description>
+      <pubDate>Thu, 09 Aug 2018 00:00:00 -0400</pubDate>
+      <guid>https://thomasleecopeland.com/2018/08/09/safer-json-munging.html</guid>
+      <content:encoded><![CDATA[<p>At <a href="https://www.motorefi.com/">work</a> we have an ETL process where we get a CSV from a partner and put it in a database as JSON.  Sometimes the column names are a little off and we have to rename things.  Also, sometimes we need to derive new values from the data we've imported, and sometimes we delete some of the unnecessary key/value pairs.  So basically there's a good bit of munging going on there.</p>
+
+<p>Initially I was writing little one-off scripts to do this stuff.  For each record, grab it, munge the JSON, save it.  But that was kind of stressful since I was always one typo away from messing up the data and having to re-import or restore from the audit records.  Unit tests help, of course, but having to write a new script each time was tedious too.</p>
+
+<p>Thinking more about the problem, it felt less like an imperative "if key x is present then do y" and more like a series of instructions, or transformations, that we were running on the data.  This felt nicer, more functional; send in a hash, get back another hash with a slight modification.  Also, why spend 15 minutes writing a script when you can automate it in a day?  This line of thinking resulted in a little flurry of classes like this:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span>  <span class="c1"># h = {a: 2, b: 3}</span>
+  <span class="c1"># CopyInst.new(:a, :z).call(h)</span>
+  <span class="c1"># {:a =&gt; 2, :b=&gt;3, :z=&gt;2} # new h</span>
+  <span class="k">class</span> <span class="nc">CopyInst</span>
+    <span class="kp">attr_reader</span> <span class="ss">:from</span><span class="p">,</span> <span class="ss">:to</span>
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">from</span><span class="p">,</span> <span class="n">to</span><span class="p">)</span>
+      <span class="vi">@from</span> <span class="o">=</span> <span class="n">from</span>
+      <span class="vi">@to</span> <span class="o">=</span> <span class="n">to</span>
+    <span class="k">end</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+      <span class="nb">hash</span><span class="o">[</span><span class="n">to</span><span class="o">]</span> <span class="o">=</span> <span class="nb">hash</span><span class="o">[</span><span class="n">from</span><span class="o">]</span>
+    <span class="k">end</span>
+  <span class="k">end</span></code></pre></figure>
+
+<p>It's not quite functional because it modifies the hash argument rather than <code>dup</code>'ing.  But each little instruction (<code>CopyInst</code>, <code>RenameInst</code>, and a couple of other business-specific ones) was easy to understand and test.  And after instantiating a series of instructions you just iterate over them and call each one in turn:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="k">def</span> <span class="nf">munge</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+  <span class="n">instructions</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">inst</span><span class="o">|</span>
+    <span class="n">inst</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="nb">hash</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>And out the other side comes a cleaned up hash suitable for <code>to_json</code>-ing.</p>
+
+<p>Expressing these transformations as a series of instructions - a 'program' - suggests some interesting possibilities for the thing that is executing them - the 'virtual machine'.  We could validate those instructions so that each one verifies it can be run on the target hash; check for missing keys for <code>RenameInst</code>, checks for already existing keys for the <code>CopyInst</code>, and so on.  We could coalesce instructions to reduce the number of method calls.  We could detect no-op sequences (copy 'a' to 'b' followed by copy 'b' to 'a') or common subexpressions.  If there were non-technical users you could imagine defining a little user interface to let end users express whatever changes they wanted in terms of these instructions, and then save off that 'program' and run it.  And there's probably an undo stack in there somewhere as well. All kinds of nifty compiler-ish things!</p>
+
+<p>This experiment turned what was drudgery into an interesting and fun exercise.  Always a win!</p>
+
+
+
+]]></content:encoded>
+      <dc:date>2018-08-09T00:00:00-04:00</dc:date>
+    </item>
+    <item>
+      <title>Building ruby with jemalloc</title>
+      <link>https://thomasleecopeland.com/2018/05/02/building-ruby-jemalloc.html</link>
+      <description><![CDATA[There's been a lot of discussion recently about running Ruby with jemalloc.  Sounds like some good memory savings to be had basically for free.  I ran into an issue initially when compiling Ruby with the --with-jemalloc option.  On Mac OSX Sierra, compiling Ruby 2.4.2 from source and using jemalloc 5.0.1, I got this linker error:
+
+]]></description>
+      <pubDate>Wed, 02 May 2018 00:00:00 -0400</pubDate>
+      <guid>https://thomasleecopeland.com/2018/05/02/building-ruby-jemalloc.html</guid>
+      <content:encoded><![CDATA[<p>There's been a lot of discussion recently about <a href="https://bugs.ruby-lang.org/issues/14718">running Ruby with jemalloc</a>.  Sounds like some good memory savings to be had basically for free.  I ran into an issue initially when compiling Ruby with the <code>--with-jemalloc</code> option.  On Mac OSX Sierra, compiling Ruby 2.4.2 from source and using jemalloc 5.0.1, I got this linker error:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>... lots of build process output ....
+linking miniruby
+Undefined symbols for architecture x86_64:
+  &quot;_je_calloc&quot;, referenced from:
+      _rb_objspace_alloc in gc.o
+... and much more ....</code></pre></figure>
+
+<p>One fix is a small change to the autoconf script, <code>configure.in</code>.  Ruby 2.4.1's <code>configure.in</code> script had this but 2.4.2 didn't:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>4211a4212,4214
+&gt; AS_CASE([&quot;$with_jemalloc: $LIBS &quot;], [no:* | *&#39; -ljemalloc &#39;*], [],
+&gt; 	[LIBS=&quot;-ljemalloc $LIBS&quot;])
+&gt;</code></pre></figure>
+
+<p>This kind of makes sense.  Per <a href="https://www.gnu.org/software/autoconf/manual/autoconf-2.69/html_node/Common-Shell-Constructs.html">the docs</a>,  <code>AS_CASE</code> is a macro that generates a <code>case</code> statement and adding <code>-ljemalloc</code> to a list of libraries seems like what's needed here.  It results in this change to the generated <code>Makefile</code>, which also seems reasonable:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>\79c79
+&lt; LIBS = -lpthread -ldl -lobjc $(EXTLIBS)
+---
+&gt; LIBS = -ljemalloc -lpthread -ldl -lobjc $(EXTLIBS)</code></pre></figure>
+
+<p>And then you can verify jemalloc is linked with:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ ruby -e &quot;p RbConfig::CONFIG[&#39;LIBS&#39;]&quot;
+&quot;-ljemalloc -lpthread -ldl -lobjc&quot;</code></pre></figure>
+
+<p>Another way to verify it is to run a script under dtruss and the process will attempt to read a jemalloc config file:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ sudo dtruss -t readlink ruby -e &quot;42&quot;
+... some output ...
+readlink(&quot;/etc/je_malloc.conf\0&quot;, 0x7FFF58DAFB80, 0x400)		 = -1 Err#2
+... more output ...</code></pre></figure>
+
+<p>If jemalloc isn't linked in, that <code>readlink</code> system call won't happen.</p>
+
+<p>Side note - at first I attempted to verify that jemalloc was included using FFI.  I figured I'd just call a function that was declared in <code>jemalloc.c</code>.  So I did:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="nb">require</span> <span class="s1">&#39;ffi&#39;</span>
+<span class="k">module</span> <span class="nn">Foo</span>
+  <span class="kp">extend</span> <span class="no">FFI</span><span class="o">::</span><span class="no">Library</span>
+  <span class="n">ffi_lib</span> <span class="s1">&#39;libjemalloc.dylib&#39;</span>
+  <span class="n">attach_function</span> <span class="ss">:je_malloc_usable_size</span><span class="p">,</span> <span class="o">[</span> <span class="o">]</span><span class="p">,</span> <span class="ss">:int</span>
+<span class="k">end</span>
+<span class="nb">puts</span> <span class="s2">&quot;Usable size: </span><span class="si">#{</span><span class="no">Foo</span><span class="o">.</span><span class="n">je_malloc_usable_size</span><span class="si">}</span><span class="s2">&quot;</span></code></pre></figure>
+
+<p>But then I realized that doesn't make sense.  <code>ffi_lib</code> will load up the specified library regardless of whether it's linked into the Ruby process, so that would never fail.</p>
+
+<p>Finally, if you're using Ruby 2.5.1, it's the same change except since <a href="https://github.com/ruby/ruby/commit/3133a5c971f">this commit</a> the build process uses <code>configure.ac</code> rather than <code>configure.in</code>.  But just paste in that same snippet on line 4045, bam done.</p>
+
+]]></content:encoded>
+      <dc:date>2018-05-02T00:00:00-04:00</dc:date>
+    </item>
+    <item>
+      <title>db:migrate:down and Bash completion</title>
+      <link>https://thomasleecopeland.com/2018/04/05/migration-completion.html</link>
+      <description><![CDATA[As a busy Rails developer, you are probably inconvenienced at least twice a year when you have to run a migration that's not the last one in the db/migrate directory.  You have to ls -lrt the contents of that directory, copy the version number, and then paste it into your terminal so you can do that down migration:
+
+]]></description>
+      <pubDate>Thu, 05 Apr 2018 00:00:00 -0400</pubDate>
+      <guid>https://thomasleecopeland.com/2018/04/05/migration-completion.html</guid>
+      <content:encoded><![CDATA[<p>As a busy Rails developer, you are probably inconvenienced at least twice a year when you have to run a migration that's not the last one in the <code>db/migrate</code> directory.  You have to <code>ls -lrt</code> the contents of that directory, copy the version number, and then paste it into your terminal so you can do that down migration:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>ber db:migrate:down <span class="nv">VERSION</span><span class="o">=</span><span class="m">20180319191352</span></code></pre></figure>
+
+<p>I mean!  Those are precious seconds wasted.  Well, no more.  Just put this snippet in your <code>.bash_profile</code>:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>_rake_migrate<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">COMPREPLY</span><span class="o">=()</span>
+  <span class="k">if</span> <span class="o">[</span> <span class="nv">$3</span> !<span class="o">=</span> <span class="s2">&quot;db:migrate:down&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="k">return</span> <span class="m">0</span>
+  <span class="k">fi</span>
+  <span class="nb">local</span> <span class="nv">cur</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">COMP_WORDS</span><span class="p">[COMP_CWORD]</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="nv">IFS</span><span class="o">=</span><span class="s1">&#39;=&#39;</span> <span class="nb">read</span> -r -a array <span class="o">&lt;&lt;&lt;</span> <span class="s2">&quot;</span><span class="nv">$cur</span><span class="s2">&quot;</span>
+  <span class="nb">local</span> <span class="nv">version_number_part</span><span class="o">=</span><span class="si">${</span><span class="nv">array</span><span class="p">[1]</span><span class="si">}</span>
+  <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$COMP_CWORD</span><span class="s2">&quot;</span> -eq <span class="m">2</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">local</span> <span class="nv">res</span><span class="o">=</span><span class="k">$(</span>find db/migrate/ -type f -exec basename <span class="o">{}</span> <span class="se">\;</span> <span class="p">|</span> grep <span class="si">${</span><span class="nv">version_number_part</span><span class="si">}</span><span class="k">)</span>
+    <span class="nv">COMPREPLY</span><span class="o">=(</span><span class="k">$(</span><span class="nb">compgen</span> -W <span class="s2">&quot;</span><span class="nv">$res</span><span class="s2">&quot;</span> <span class="k">)</span><span class="o">)</span>
+  <span class="k">fi</span>
+<span class="o">}</span>
+
+<span class="nb">complete</span> -F _rake_migrate rake</code></pre></figure>
+
+<p>Now when you type <code>rake db:migrate:down VERSION=2018</code> and hit the tab key Bash will list out all the migration version files from 2018.  And when you select one, even though we're placing the entire filename to the right of the <code>VERSION=</code> it still works.  That's because the <code>db:migrate:down</code> Rake task uses <code>String#to_i</code> to process the <code>VERSION</code> environment variable, and that handles it.  Per the documentation, <code>String#to_i</code> "Returns the result of interpreting leading characters in str as an integer base base (between 2 and 36). Extraneous characters past the end of a valid number are ignored."</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="o">&gt;&gt;</span> <span class="s2">&quot;42_asdf&quot;</span><span class="o">.</span><span class="n">to_i</span>
+<span class="o">=&gt;</span> <span class="mi">42</span></code></pre></figure>
+
+<p>Hats off to <a href="https://twitter.com/englishm_">Mike English</a> for his <a href="https://spin.atomicobject.com/2016/02/14/bash-programmable-completion/">very helpful Bash completion article</a>!</p>
+
+
+
+]]></content:encoded>
+      <dc:date>2018-04-05T00:00:00-04:00</dc:date>
+    </item>
+    <item>
+      <title>Active Record associations without foreign keys</title>
+      <link>https://thomasleecopeland.com/2018/02/28/associations-without-foreign-keys.html</link>
+      <description><![CDATA[Suppose you've got a legacy database, or some other non-Railsy schema situation, and you want to define an association but the tables don't have the standard Active Record foreign key columns.  You can accomplish this, to a certain extent, with an association scope that defines a new where relation.  But there are some hitches.
+
+]]></description>
+      <pubDate>Wed, 28 Feb 2018 00:00:00 -0500</pubDate>
+      <guid>https://thomasleecopeland.com/2018/02/28/associations-without-foreign-keys.html</guid>
+      <content:encoded><![CDATA[<p>Suppose you've got a legacy database, or some other non-Railsy schema situation, and you want to define an association but the tables don't have the standard Active Record foreign key columns.  You can accomplish this, to a certain extent, with an association scope that defines a new <code>where</code> relation.  But there are some hitches.</p>
+
+<p>For example, you might have an Order that <code>has_one</code> CustomLogo, but rather than a foreign key it relies on matching values for several other fields: <code>origin</code> and <code>client_id</code>.  Here's how you could manage that:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="k">class</span> <span class="nc">Order</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_one</span> <span class="ss">:custom_logo</span><span class="p">,</span>
+    <span class="o">-&gt;</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">unscope</span><span class="p">(</span><span class="ss">:where</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="ss">origin_value</span><span class="p">:</span> <span class="n">order</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span>
+        <span class="ss">client_id</span><span class="p">:</span>    <span class="n">order</span><span class="o">.</span><span class="n">client_id</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>I wish I had thought of this technique, but credit goes to <a href="https://stackoverflow.com/questions/24642005/rails-association-with-multiple-foreign-keys/41978449#41978449">Dwight on Stack Overflow</a>.  It's a neat way to handle this situation, but it does have a few pitfalls.  One issue is that since the scope uses attributes from a specific object instance, we can't eagerly load all the logos for a collection of orders:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="o">&gt;&gt;</span> <span class="no">Order</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">eager_load</span><span class="p">(</span><span class="ss">:custom_logo</span><span class="p">)</span>
+<span class="no">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+<span class="no">ArgumentError</span> <span class="p">(</span><span class="no">The</span> <span class="n">association</span> <span class="n">scope</span> <span class="s1">&#39;custom_logo&#39;</span> <span class="n">is</span> <span class="n">instance</span> <span class="n">dependent</span> <span class="p">(</span><span class="n">the</span> <span class="n">scope</span> <span class="n">block</span> <span class="n">takes</span> <span class="n">an</span> <span class="n">argument</span><span class="p">)</span><span class="o">.</span> <span class="no">Preloading</span> <span class="n">instance</span> <span class="n">dependent</span> <span class="n">scopes</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">supported</span><span class="o">.</span><span class="p">)</span></code></pre></figure>
+
+<p>The same thing happens with an <code>includes</code> relation.  Active Record will raise this exception regardless of whether the association scope actually uses the argument.  That's a pretty reasonable design choice since the alternative is to attempt to do a data flow analysis inside the scope's <code>Proc</code>.</p>
+
+<p>You'll also run into problems when using some of the methods generated by a <code>has_one</code> declaration.  If you attempt to assign a record via the association accessor you'll get an exception around the missing foreign key:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>&gt;&gt; Order.first.custom_logo = CustomLogo.last
+Traceback (most recent call last):
+        1: from (irb):4
+ActiveModel::MissingAttributeError (can&#39;t write unknown attribute `order_id`)</code></pre></figure>
+
+<p>Incidentally, to me the <code>unscope</code> call looks like a complicated part of this scope.  But all it does is replace any existing <code>where</code> clause objects in the relation with nil.  And it returns the relation, so we can then define a new <code>where</code> clause like we do in this example.  Notice that this is different than <code>ActiveRecord::Relation#rewhere</code>, which lets you redefine the <code>where</code> clause for a particular attribute.</p>
+
+<p>Even more incidentally, how does the association scope only return one record even though the <code>where</code> clause doesn't constrain the resulting relation?  This is a more general <code>has_one</code> question, and the answer is in <code>ActiveRecord::Associations::SingularAssociation#find_target</code>:
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="k">def</span> <span class="nf">find_target</span>
+  <span class="c1"># ... some code that&#39;s interesting but not relevant ...</span>
+  <span class="n">sc</span> <span class="o">=</span> <span class="n">reflection</span><span class="o">.</span><span class="n">association_scope_cache</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span> <span class="k">do</span>
+    <span class="no">StatementCache</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">params</span><span class="o">|</span>
+      <span class="n">as</span> <span class="o">=</span> <span class="no">AssociationScope</span><span class="o">.</span><span class="n">create</span> <span class="p">{</span> <span class="n">params</span><span class="o">.</span><span class="n">bind</span> <span class="p">}</span>
+      <span class="n">target_scope</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">as</span><span class="o">.</span><span class="n">scope</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">))</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>So <code>limit(1)</code> explains that.</p>
+
+<p>Finally, there's some interesting behavior around creation helper methods.  Using the association helper with no arguments to create a record results in only one <code>CustomLogo</code> record being created, no matter how many invocations:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ be rails runner &quot;CustomLogo.destroy_all ; \
+Order.first.create_custom_logo ; \
+Order.first.create_custom_logo ; \
+Order.first.create_custom_logo rescue nil ; \
+puts CustomLogo.count&quot;
+1</code></pre></figure>
+
+<p>This makes sense because Active Record is using the equality Arel nodes in the association scope to create the record.  So if the first <code>Order</code> has an <code>origin_value</code> of "facebook" and a <code>client_id</code> of 42, so will the one associated <code>CustomLogo</code>.  The <code>rescue nil</code> is there because when we call <code>create_custom_logo</code> after the first record is in place, <code>ActiveRecord::Associations::HasOneAssociation#replace</code> calls <code>ActiveRecord::Associations::Association#set_owner_attributes</code> with an <code>order_id</code> value in an attempt to set a foreign key.  That raises the same <code>MissingAttributeError</code> exception that we saw earlier, so I'm rescuing that to prevent the script from exiting early.</p>
+
+<p>The interesting thing is what happens if you pass arguments to the creation helper; calling that repeatedly will create a bunch of records:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ be rails runner &quot;CustomLogo.destroy_all ; \
+Order.first.create_custom_logo(origin_value: &#39;twitter&#39;, client_id: 42) rescue nil; \
+Order.first.create_custom_logo(origin_value: &#39;twitter&#39;, client_id: 42) rescue nil; \
+Order.first.create_custom_logo(origin_value: &#39;twitter&#39;, client_id: 42) rescue nil; \
+puts CustomLogo.count&quot;
+3</code></pre></figure>
+
+<p>This goes through a different code path.  All record creations, even the first one, call <code>set_owner_attributes</code> and thus we need to rescue the <code>MissingAttributeError</code> every time.</p>
+
+<p>Pulling back a little on this, if <code>origin_value</code> and <code>client_id</code> form effectively a composite unique key, a good way to prevent odd data would be to add a partial uniqueness constraint on those two columns.</p>
+
+<p>To sum up, you can define associations without foreign keys - but don't be surprised when some things don't work the way they normally do.</p>
+
+]]></content:encoded>
+      <dc:date>2018-02-28T00:00:00-05:00</dc:date>
+    </item>
+    <dc:date>2018-08-12T00:00:00-04:00</dc:date>
+  </channel>
+</rss>

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Building & Sharing with Unathi]]></title><description><![CDATA[Sharing ideas, works, problems, and solutions.
+Full Stack Ruby on Rails Engineer]]></description><link>https://blog.unathichonco.com</link><generator>RSS for Node</generator><lastBuildDate>Thu, 17 Nov 2022 12:35:04 GMT</lastBuildDate><atom:link href="https://blog.unathichonco.com/rss.xml" rel="self" type="application/rss+xml"/><language><![CDATA[en]]></language><ttl>60</ttl><atom:link rel="next" href="https://blog.unathichonco.com/rss.xml?page=1"/><item><title><![CDATA[ActiveRecord Optimistic Locking]]></title><description><![CDATA[<h1 id="activerecord-optimistic-locking-and-counter-caching">ActiveRecord Optimistic Locking and Counter Caching</h1>
+<p>In this post, we will discuss optimistic locking and how it can help us when building applications. This guide is targeted at Ruby on Rails developers, but similar strategies can be applied in other frameworks.</p>
+<h1 id="what-is-optimistic-locking">What is Optimistic Locking</h1>
+<p>Optimistic locking is a strategy used to verify that a database record has not been changed since the last time you read/fetched it. Locking gives you some certainty that any updates you are making are based on the most recent version. </p>
+<p>So how do we use this, and how could it help ?</p>
+<h2 id="tldr-a-quick-practical-guide">TL;DR: A Quick Practical Guide</h2>
+<ul>
+<li>Documentation: <a target="_blank" href="https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html">https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html</a></li>
+<li>Add <code>lock_version</code> column to your model</li>
+<li>Include <code>lock_version</code> as hidden input in form</li>
+<li>Handle <code>ActiveRecord::StaleObjectError</code> for when an update is attempted on an old version</li>
+<li>Short example: <a target="_blank" href="https://gist.github.com/choncou/ed77efabdea92e38833839c974b35eee">https://gist.github.com/choncou/ed77efabdea92e38833839c974b35eee</a></li>
+</ul>
+<h2 id="the-longer-guide">The Longer Guide</h2>
+<p>Let's introduce our scenario. </p>
+<p>We have a simple e-commerce application, with an assortment of products that are managed by different teams throughout the company. A common workflow in the company looks like this:</p>
+<ol>
+<li>The Inventory team adds new a product to the system as soon as they've received the stock. While they quickly import a lot of products, they prefer to only fill in the name and description.</li>
+<li>The Marketing team is notified of new products and starts working on better product descriptions, and setting the prices</li>
+<li>The Inventory team goes through all the new stock theyve added, and update the packaged weight of each product.</li>
+</ol>
+<h3 id="problem">Problem</h3>
+<p>The marketing team has started reporting that sometimes their updates to products are lost a while after saving and confirming the new information. How could this happen?</p>
+<p>After some digging, we find out that when the inventory team adds a new product, they keep a tab open with the edit page for each product. When they press save on those old tabs, it will replace any other information for the product with what is on their form. Heres how it that looks in the application:</p>
+<div class="embed-wrapper"><div class="embed-loading"><div class="loadingRow"></div><div class="loadingRow"></div></div><a class="embed-card" href="https://youtu.be/cRJA2sqDSNk">https://youtu.be/cRJA2sqDSNk</a></div>
+<p>Our real problem is that we have no way of knowing if the information that somebody is submitting in the form contains outdated values which we don't actually want to override the existing data about a product.</p>
+<h3 id="the-solution">The Solution</h3>
+<p>Optimistic locking was created to handle this kind of problem: allowing multiple users to access the same record for edits while assuming minimum conflict with the data.</p>
+<p>Optimistic Locking achieves this by tracking a version number for a record. Every time that record is updated, the version number increases. If we try to update a record with a version number that doesn't match the current version in the database, Rails will throw an <code>ActiveRecord::StaleObjectError</code> exception.</p>
+<p>To add this to our existing application we need to:</p>
+<p><strong>1) Add a <code>lock_version</code> integer column to our products table</strong></p>
+<p>By default, rails will use optimistic locking on your model when it finds the <code>lock_version</code> column. It is also possible to specify a custom locking column name for a specific model by setting <code>self.locking_column = :my_custom_column</code> (<a target="_blank" href="https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html">see documentation</a>).</p>
+<p>Our database schema now looks like this:</p>
+<pre><code class="lang-ruby">create_table <span class="hljs-string">"products"</span>, <span class="hljs-symbol">force:</span> <span class="hljs-symbol">:cascade</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|t|</span>
+  t.string <span class="hljs-string">"name"</span>
+  t.string <span class="hljs-string">"description"</span>
+  t.integer <span class="hljs-string">"weight_grams"</span>
+  t.integer <span class="hljs-string">"price_cents"</span>
+  t.datetime <span class="hljs-string">"created_at"</span>, <span class="hljs-symbol">null:</span> <span class="hljs-literal">false</span>
+  t.datetime <span class="hljs-string">"updated_at"</span>, <span class="hljs-symbol">null:</span> <span class="hljs-literal">false</span>
+  t.integer <span class="hljs-string">"lock_version"</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p><strong>2) Include <code>lock_version</code> in our form submission</strong></p>
+<p>In the view where we render the form, we want to include a hidden form field with the version</p>
+<pre><code class="lang-ruby">&lt;%= form.hidden_field <span class="hljs-symbol">:lock_version</span> %&gt;
+</code></pre>
+<p>In our controller, we need to permit the version column so that it is included in the params used to update the product.</p>
+<pre><code class="lang-ruby"><span class="hljs-comment"># Only allow a list of trusted parameters through.</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">product_params</span></span>
+  params.<span class="hljs-keyword">require</span>(<span class="hljs-symbol">:product</span>).permit(<span class="hljs-symbol">:name</span>, <span class="hljs-symbol">:description</span>, <span class="hljs-symbol">:weight_grams</span>, <span class="hljs-symbol">:price_cents</span>, <span class="hljs-symbol">:lock_version</span>)
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p></p>
+<p>This is all we need to prevent the updates from happening. Now we get an exception when we try to make an update with the outdated form.</p>
+<div class="embed-wrapper"><div class="embed-loading"><div class="loadingRow"></div><div class="loadingRow"></div></div><a class="embed-card" href="https://youtu.be/hO0wICZrq9Y">https://youtu.be/hO0wICZrq9Y</a></div>
+<h3 id="handling-activerecordstaleobjecterror">Handling ActiveRecord::StaleObjectError</h3>
+<p>The application crashing because the form is outdated isn't a great user experience, so the least we can do is let the user know what went wrong.</p>
+<p>This isn't a post about error handling, so we'll go with the simplest solution of catching this error in the controller right where we are making the update. Right now, this is what our controllers <code>#update</code> action looks like:</p>
+<pre><code class="lang-ruby"><span class="hljs-comment"># PATCH/PUT /products/1 or /products/1.json</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">update</span></span>
+  respond_to <span class="hljs-keyword">do</span> <span class="hljs-params">|format|</span>
+    <span class="hljs-keyword">if</span> @product.update(product_params)
+      format.html { redirect_to @product, <span class="hljs-symbol">notice:</span> <span class="hljs-string">"Product was successfully updated."</span> }
+      format.json { render <span class="hljs-symbol">:show</span>, <span class="hljs-symbol">status:</span> <span class="hljs-symbol">:ok</span>, <span class="hljs-symbol">location:</span> @product }
+    <span class="hljs-keyword">else</span>
+      format.html { render <span class="hljs-symbol">:edit</span>, <span class="hljs-symbol">status:</span> <span class="hljs-symbol">:unprocessable_entity</span> }
+      format.json { render <span class="hljs-symbol">json:</span> @product.errors, <span class="hljs-symbol">status:</span> <span class="hljs-symbol">:unprocessable_entity</span> }
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>We can add an error message to the product and display it in the view. Our controller would then include a <code>rescue</code> block to add the error to the product and display the edit page again.</p>
+<pre><code class="lang-ruby"><span class="hljs-comment"># PATCH/PUT /products/1 or /products/1.json</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">update</span></span>
+  respond_to <span class="hljs-keyword">do</span> <span class="hljs-params">|format|</span>
+    <span class="hljs-keyword">if</span> @product.update(product_params)
+      format.html { redirect_to @product, <span class="hljs-symbol">notice:</span> <span class="hljs-string">"Product was successfully updated."</span> }
+      format.json { render <span class="hljs-symbol">:show</span>, <span class="hljs-symbol">status:</span> <span class="hljs-symbol">:ok</span>, <span class="hljs-symbol">location:</span> @product }
+    <span class="hljs-keyword">else</span>
+      format.html { render <span class="hljs-symbol">:edit</span>, <span class="hljs-symbol">status:</span> <span class="hljs-symbol">:unprocessable_entity</span> }
+      format.json { render <span class="hljs-symbol">json:</span> @product.errors, <span class="hljs-symbol">status:</span> <span class="hljs-symbol">:unprocessable_entity</span> }
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">rescue</span> ActiveRecord::StaleObjectError =&gt; _error
+    @product.errors.add(<span class="hljs-symbol">:base</span>, <span class="hljs-string">"Oops. Looks like the product has changed since you last opened it. Please refresh the page"</span>)
+    format.html { render <span class="hljs-symbol">:edit</span>, <span class="hljs-symbol">status:</span> <span class="hljs-symbol">:unprocessable_entity</span> }
+    format.json { render <span class="hljs-symbol">json:</span> @product.errors, <span class="hljs-symbol">status:</span> <span class="hljs-symbol">:unprocessable_entity</span> }
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Now when we submit an outdated form, we are shown a regular error message. In your application, you could provide more context on the page, by showing the user both the new and old information.</p>
+<p><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1623264054440/5tNFHU-Uu.png" alt="Error Message Displayed on form.png" /></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Using optimistic locking in rails can give us a lot of value out of the box, but it is important to note that this doesn't solve all cases that could look the same. Optimistic locking should be used when there isn't a high chance of conflicts and race conditions. If you really need to prevent other users from editing a record until the first user is done, you should consider <a target="_blank" href="https://api.rubyonrails.org/classes/ActiveRecord/Locking/Pessimistic.html">pessimistic locking</a> or implementing something similar in your application.</p>
+<p>Find the example application and implementation from this post <a target="_blank" href="https://github.com/choncou/blog-post-optimistic-locking/pull/1">here on GitHub</a>:</p>
+<div class="embed-wrapper"><div class="embed-loading"><div class="loadingRow"></div><div class="loadingRow"></div></div><a class="embed-card" href="https://github.com/choncou/blog-post-optimistic-locking/pull/1">https://github.com/choncou/blog-post-optimistic-locking/pull/1</a></div>
+<p>I hope this has given you some insight and inspiration into how you could use locking in your code.</p>
+<p>🚀</p>
+]]></description><link>https://blog.unathichonco.com/activerecord-optimistic-locking</link><guid isPermaLink="true">https://blog.unathichonco.com/activerecord-optimistic-locking</guid><dc:creator><![CDATA[Unathi Chonco]]></dc:creator><pubDate>Wed, 09 Jun 2021 18:53:24 GMT</pubDate></item><item><title><![CDATA[Verifying JWTs with JWKS in Ruby]]></title><description><![CDATA[<p>In this post, we will discuss a few issues, and their solutions, when working with asymmetrically signed <a target="_blank" href="https://jwt.io/">JWTs (JSON Web Tokens)</a>.</p>
+<p>The post assumes you have a basic working knowledge of JWTs.</p>
+<h2 id="the-lowdown-intro">The Lowdown (Intro)</h2>
+<p>When working with <a target="_blank" href="https://jwt.io/">JWTs (JSON Web Tokens)</a>, it is common to sign them using asymmetric encryption. Asymmetric encryption involves using a public/private key pair, where:</p>
+<ul>
+<li>the issuer signs the JWT with the private key</li>
+<li>the receiver verifies the JWT's origin &amp; contents with the public key</li>
+</ul>
+<p>This ability for a receiver to verify the JWT means that the receiver can trust the contents of the JWT, without the need to make an additional API call for that information.</p>
+<p>A <a target="_blank" href="https://tools.ietf.org/html/rfc7517">JWKS (JSON Web Key Set)</a> is a representation of the cryptographic key pairs mentioned above. The JWKS contains the public keys that can be used to verify a JWT. The JWT would contain a claim(<code>kid</code>) that specifies which key was used to sign it. The issuer of the JWT provides the JWKS.</p>
+<p>Working with a JWKS can introduce a few problems if not dealt with correctly. To discuss these problems, let us introduce an example use case as a starting point.</p>
+<h2 id="use-case">Use Case</h2>
+<p><a target="_blank" href="https://auth0.com/">Auth0</a> is a service that provides an authentication and authorization platform. We want to use Auth0 for our application's user authentication needs. Similar to a regular <a target="_blank" href="https://oauth.net/2/">OAuth2</a> flow, we get the user to authenticate themselves off of our application (on Auth0), and once they return and we complete the flow, we receive an access token for the user. The access token is a JWT which we can use for making authenticated API calls to our application's backend.</p>
+<h3 id="verification-how-our-backend-authenticates-a-user">Verification: How our backend authenticates a user</h3>
+<p>When the backend receives an API call it will:</p>
+<ol>
+<li>confirm that a JWT is present</li>
+<li>verify the JWT signature using the relevant public key</li>
+<li>verify other claims in the JWT (expiry, scopes, etc)</li>
+<li>use the contents of the JWT to identify the user and process the rest of the request</li>
+</ol>
+<p>Auth0 provides a <a target="_blank" href="https://auth0.com/docs/tokens/json-web-tokens/json-web-key-sets">JWKS endpoint</a>, at <code>https://TENANT_DOMAIN/.well-known/jwks.json</code>, which we will use in step #2 to fetch the public keys to verify the received.</p>
+<p>In a Ruby application, steps 2 &amp; 3 could look like this:</p>
+<pre><code class="lang-ruby"><span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">Auth</span></span>
+  <span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">VerifyJwt</span></span>
+    extend <span class="hljs-keyword">self</span>
+
+    JWKS_URL = <span class="hljs-string">"https://<span class="hljs-subst">#{Rails.configuration.auth<span class="hljs-number">0</span>[<span class="hljs-symbol">:auth_domain</span>]}</span>/.well-known/jwks.json"</span>.freeze
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">call</span><span class="hljs-params">(token, <span class="hljs-symbol">audience:</span> <span class="hljs-symbol">:web</span>)</span></span>
+      JWT.decode(
+        token,
+        <span class="hljs-literal">nil</span>,
+        <span class="hljs-literal">true</span>, <span class="hljs-comment"># Verify the signature of this token</span>
+        <span class="hljs-symbol">algorithms:</span> [<span class="hljs-string">"RS256"</span>],
+        <span class="hljs-symbol">iss:</span> <span class="hljs-string">"https://<span class="hljs-subst">#{Rails.configuration.auth<span class="hljs-number">0</span>[<span class="hljs-symbol">:auth_domain</span>]}</span>/"</span>,
+        <span class="hljs-symbol">verify_iss:</span> <span class="hljs-literal">true</span>,
+        <span class="hljs-symbol">aud:</span> Rails.configuration.auth<span class="hljs-number">0</span>[<span class="hljs-symbol">:web_audience</span>],
+        <span class="hljs-symbol">verify_aud:</span> <span class="hljs-literal">true</span>,
+        <span class="hljs-symbol">jwks:</span> fetch_jwks,
+      )
+    <span class="hljs-keyword">end</span>
+
+    private
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">fetch_jwks</span></span>
+      response = HTTP.get(JWKS_URL)
+      <span class="hljs-keyword">if</span> response.code == <span class="hljs-number">200</span>
+        JSON.parse(response.body.to_s)
+      <span class="hljs-keyword">end</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>With the above, we have a working solution. But we have also introduced a few potentials problems that are worth resolving before deploying the application to production.</p>
+<h2 id="the-problems">The Problems</h2>
+<h3 id="problem-1-external-api-call-on-every-request">Problem 1: External API call on every request</h3>
+<p>For every authenticated request that comes into our application, we will also be making an API call to the <code>/jwks.json</code> endpoint. This introduces a few concerns:</p>
+<ul>
+<li>there is additional overhead on every request, increasing the response time</li>
+<li>a spike in traffic, or an attack, can result in rate limits being crossed and all our authentication processes being unavailable for a period of time</li>
+</ul>
+<p><strong>Solution: Caching</strong></p>
+<p>External calls like the <code>/jwks.json</code> endpoint are a perfect opportunity for caching. The key pair used for signing our JWTs won't change unless they are <a target="_blank" href="https://auth0.com/docs/tokens/rotate-signing-keys">rotated</a>.</p>
+<p>In code, we would:</p>
+<ul>
+<li>cache the response of the API call</li>
+<li>return the cached value, if it exists, for future calls</li>
+</ul>
+<pre><code class="lang-ruby"><span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">Auth</span></span>
+  <span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">VerifyJwt</span></span>
+    extend <span class="hljs-keyword">self</span>
+    JWKS_CACHE_KEY = <span class="hljs-string">"auth/jwks-json"</span>.freeze
+    ...
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">call</span><span class="hljs-params">(token)</span></span>
+      JWT.decode(
+        ...
+        <span class="hljs-symbol">jwks:</span> jwks,
+      )
+    <span class="hljs-keyword">end</span>
+
+    private
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">fetch_jwks</span></span>
+      ...
+    <span class="hljs-keyword">end</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">jwks</span></span>
+      Rails.cache.fetch(JWKS_CACHE_KEY) <span class="hljs-keyword">do</span>
+        fetch_jwks
+      <span class="hljs-keyword">end</span>.deep_symbolize_keys
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h3 id="problem-2-delayed-cache-invalidation-for-rotated-keys">Problem 2: Delayed Cache invalidation for rotated keys</h3>
+<p>The solution to Problem 1 introduces a new issue.</p>
+<p>What happens when our key pairs are rotated? Leaked private keys, routine security processes, or other circumstances, are possible reasons for key rotation. Rotating key pairs means that all new JWTs will be signed by those new keys.</p>
+<p>After a key rotation, our application will always fail to verify new JWTS because our cache would still be returning the previous JWKS.</p>
+<p><strong>Solution: Cache Invalidation</strong></p>
+<p>We can solve this issue by fetching from the <code>/jwks.json</code> endpoint again if we recognise a JWT that was signed by a different key than those we know about. We can identify this by:</p>
+<ul>
+<li>extracting the <code>kid</code> from the JWT header</li>
+<li>looking for a key, in the <code>keys</code> of the JWKS, with the matching <code>kid</code></li>
+<li>fetching the JWKS again (not from cache), if no key is found</li>
+</ul>
+<p>Fortunately, the ruby <a target="_blank" href="https://github.com/jwt/ruby-jwt">JWT gem</a> has done the heavy lifting. When we pass through a function, instead of the raw JWKS, the library will call that function with options if it expects us to try to return a new set of JWKS. (<a target="_blank" href="https://github.com/jwt/ruby-jwt/blob/master/lib/jwt/jwk/key_finder.rb">gem implementation</a>)</p>
+<pre><code class="lang-ruby"><span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">Auth</span></span>
+  <span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">VerifyJwt</span></span>
+    extend <span class="hljs-keyword">self</span>
+        ...
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">call</span><span class="hljs-params">(token)</span></span>
+      JWT.decode(
+        ...
+        <span class="hljs-symbol">jwks:</span> jwk_loader,
+      )
+    <span class="hljs-keyword">end</span>
+
+    private
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">jwk_loader</span></span>
+      -&gt;(options) <span class="hljs-keyword">do</span>
+        <span class="hljs-comment"># options[:invalidate] will be `true` if a matching `kid` was not found</span>
+        <span class="hljs-comment"># https://github.com/jwt/ruby-jwt/blob/master/lib/jwt/jwk/key_finder.rb#L31</span>
+        jwks(<span class="hljs-symbol">force:</span> options[<span class="hljs-symbol">:invalidate</span>])
+      <span class="hljs-keyword">end</span>
+    <span class="hljs-keyword">end</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">fetch_jwks</span></span>
+      ...
+    <span class="hljs-keyword">end</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">jwks</span><span class="hljs-params">(<span class="hljs-symbol">force:</span> <span class="hljs-literal">false</span>)</span></span>
+      Rails.cache.fetch(JWKS_CACHE_KEY, <span class="hljs-symbol">force:</span> force) <span class="hljs-keyword">do</span>
+        fetch_jwks
+      <span class="hljs-keyword">end</span>.deep_symbolize_keys
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h3 id="problem-3-attacker-triggered-cache-invalidation">Problem 3: Attacker-triggered cache invalidation</h3>
+<p>The current solution to Problem 2 reintroduces Problem 1. An attacker could flood our API with calls using a random invalid JWT that will always fail verification.</p>
+<p>Because the invalid JWT would have a different <code>kid</code>, we would invalidate our cache every time, forcing us to do an API call. </p>
+<p>In theory, this could be acceptable because we are fetching the latest JWKS. But if the call to the <code>.../jwks.json</code> endpoint fails, maybe due to rate-limiting, we won't have a value to cache and could be caching <code>nil</code>. This will mean that verifying any JWTs will not be possible until our application can get a successful response from the <code>.../jwks.json</code> endpoint again.</p>
+<p><strong>Solution: Ignore nil for cache invalidation</strong></p>
+<p>Our <code>#fetch_jwks</code> method only returns the JSON response if the request was successful, and <code>nil</code> otherwise. Meaning we can cater for any failed response by leaving the current value in the cache, so we always have the latest successful response we've received.</p>
+<p>The Rails cache store already provides a simple helper for this use case. We need to add <code>skip_nil: true</code> to our fetch</p>
+<pre><code class="lang-ruby"><span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">Auth</span></span>
+  <span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">VerifyJwt</span></span>
+    extend <span class="hljs-keyword">self</span>
+        ...
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">jwk_loader</span></span>
+      -&gt;(options) <span class="hljs-keyword">do</span>
+        jwks(<span class="hljs-symbol">force:</span> options[<span class="hljs-symbol">:invalidate</span>]) <span class="hljs-params">||</span> {}
+      <span class="hljs-keyword">end</span>
+    <span class="hljs-keyword">end</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">jwks</span><span class="hljs-params">(<span class="hljs-symbol">force:</span> <span class="hljs-literal">false</span>)</span></span>
+      Rails.cache.fetch(JWKS_CACHE_KEY, <span class="hljs-symbol">force:</span> force, <span class="hljs-symbol">skip_nil:</span> <span class="hljs-literal">true</span>) <span class="hljs-keyword">do</span>
+        fetch_jwks
+      <span class="hljs-keyword">end</span>&amp;.deep_symbolize_keys
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>We also handle the possibility of receiving <code>nil</code> by defaulting to an empty hash (<code>{}</code>), because the JWT gem expects a hash and not nil.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Looking back, we now know how to protect our application from basic performance and security concerns. We have:</p>
+<ul>
+<li>implemented caching of the JWKS required for verifying JWTs</li>
+<li>accounted for the possibility of keys being rotated</li>
+<li>protected our application from an attacker disrupting functionality for all users</li>
+</ul>
+<p>This is final code for our JWT verification implementation <a target="_blank" href="https://gist.github.com/choncou/18161b215fcc8ad2a44e256079f22ef3">here</a>: </p>
+<div class="gist-block embed-wrapper" data-gist-show-loading="false" data-id="18161b215fcc8ad2a44e256079f22ef3"><div class="embed-loading"><div class="loadingRow"></div><div class="loadingRow"></div></div><a href="https://gist.github.com/choncou/18161b215fcc8ad2a44e256079f22ef3" class="embed-card">https://gist.github.com/choncou/18161b215fcc8ad2a44e256079f22ef3</a></div><p>This is not an exhaustive reference to all security-related concerns that you could encounter when working with JWTs, but I hope you find it helpful as a good starting point to get up and running.</p>
+<p>🚀</p>
+]]></description><link>https://blog.unathichonco.com/verifying-jwts-with-jwks-in-ruby</link><guid isPermaLink="true">https://blog.unathichonco.com/verifying-jwts-with-jwks-in-ruby</guid><dc:creator><![CDATA[Unathi Chonco]]></dc:creator><pubDate>Sun, 28 Mar 2021 06:11:14 GMT</pubDate><cover_image>https://cdn.hashnode.com/res/hashnode/image/upload/v1616911786147/Dha-8yeQT.png</cover_image></item></channel></rss>

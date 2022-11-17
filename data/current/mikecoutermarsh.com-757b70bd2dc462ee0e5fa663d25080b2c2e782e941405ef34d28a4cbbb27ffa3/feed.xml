@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="https://jekyllrb.com/" version="3.9.1">Jekyll</generator><link href="https://mikecoutermarsh.com/feed.xml" rel="self" type="application/atom+xml"><link href="https://mikecoutermarsh.com/" rel="alternate" type="text/html"><updated>2022-07-10T20:55:43+00:00</updated><id>https://mikecoutermarsh.com/feed.xml</id><title type="html">Mike Coutermarsh</title><subtitle>This is where I write about code and building software. :v:
+</subtitle><entry><title type="html">Deploy requests now alert on potential unwanted changes</title><link href="https://mikecoutermarsh.com/deploy-requests/" rel="alternate" type="text/html" title="Deploy requests now alert on potential unwanted changes"><published>2022-07-06T23:47:00+00:00</published><updated>2022-07-06T23:47:00+00:00</updated><id>https://mikecoutermarsh.com/deploy-requests</id><content type="html" xml:base="https://mikecoutermarsh.com/deploy-requests/"><![CDATA[<!-- link[https://planetscale.com/blog/deploy-requests-now-alert-on-potential-unwanted-changes] -->
+
+<p>View this post on <a href="https://planetscale.com/blog/deploy-requests-now-alert-on-potential-unwanted-changes">PlanetScale</a>.</p>]]></content><author><name/></author><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Identifying slow Rails queries with sqlcommenter</title><link href="https://mikecoutermarsh.com/identifying-slow-rails-queries-with-sqlcommenter/" rel="alternate" type="text/html" title="Identifying slow Rails queries with sqlcommenter"><published>2022-06-29T23:47:00+00:00</published><updated>2022-06-29T23:47:00+00:00</updated><id>https://mikecoutermarsh.com/identifying-slow-rails-queries-with-sqlcommenter</id><content type="html" xml:base="https://mikecoutermarsh.com/identifying-slow-rails-queries-with-sqlcommenter/"><![CDATA[<!-- link[https://planetscale.com/blog/identifying-slow-rails-queries-with-sqlcommenter] -->
+
+<p>View this post on <a href="https://planetscale.com/blog/identifying-slow-rails-queries-with-sqlcommenter">PlanetScale</a>.</p>]]></content><author><name/></author><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">The anxiety of tech debt</title><link href="https://mikecoutermarsh.com/the-anxiety-of-tech-debt/" rel="alternate" type="text/html" title="The anxiety of tech debt"><published>2022-03-19T19:59:00+00:00</published><updated>2022-03-19T19:59:00+00:00</updated><id>https://mikecoutermarsh.com/the-anxiety-of-tech-debt</id><content type="html" xml:base="https://mikecoutermarsh.com/the-anxiety-of-tech-debt/"><![CDATA[<p>No perfect code or system exists. Ask any engineer and they’ll have a list of improvements for most any file they’ve ever touched.</p>
+
+<p>This list of negatives can weigh on people. “We need to fix it eventually” or bad things will happen.</p>
+
+<p>Like any source of anxiety, the easiest way to disarm it is by asking why?</p>
+
+<blockquote>
+  <p>What would really happen if it’s never addressed?</p>
+</blockquote>
+
+<p>I find this to be clarifying.</p>
+
+<p>The worst case for any system would be a total rewrite or refactor. It can help to ask yourself how long it would take to completely fix a piece of code. Is it a week? 6 months? What kind of customer impact would the rewrite have?</p>
+
+<p><strong>Safe to ignore</strong></p>
+
+<p>When I find that a piece of tech debt could theoretically be fixed in a week, with little or no customer impact. Why care about it at all? The worst case scenario isn’t worth the anxiety.</p>
+
+<p><strong>A real problem</strong></p>
+
+<p>On the other hand, if we go through these questions and realize it could take months of effort and put a core part of our business at risk, then we should pay attention to it and make a plan.</p>
+
+<p>More often than not, I find our worries around tech debt fall in the first category and we can let it go.</p>]]></content><author><name/></author><summary type="html"><![CDATA[No perfect code or system exists. Ask any engineer and they’ll have a list of improvements for most any file they’ve ever touched.]]></summary></entry><entry><title type="html">How we made PlanetScale’s background jobs self-healing</title><link href="https://mikecoutermarsh.com/how-we-made-planetscales-background-jobs-self-healing/" rel="alternate" type="text/html" title="How we made PlanetScale’s background jobs self-healing"><published>2022-02-17T23:47:00+00:00</published><updated>2022-02-17T23:47:00+00:00</updated><id>https://mikecoutermarsh.com/how-we-made-planetscales-background-jobs-self-healing</id><content type="html" xml:base="https://mikecoutermarsh.com/how-we-made-planetscales-background-jobs-self-healing/"><![CDATA[<!-- link[https://planetscale.com/blog/how-we-made-planetscale-background-jobs-self-healing-with-sidekiq] -->
+
+<p>View this post on <a href="https://planetscale.com/blog/how-we-made-planetscale-background-jobs-self-healing-with-sidekiq">PlanetScale</a>.</p>]]></content><author><name/></author><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Using GitHub Package Registry with Netlify</title><link href="https://mikecoutermarsh.com/using-github-package-registry-with-netlify/" rel="alternate" type="text/html" title="Using GitHub Package Registry with Netlify"><published>2022-02-01T21:52:00+00:00</published><updated>2022-02-01T21:52:00+00:00</updated><id>https://mikecoutermarsh.com/using-github-package-registry-with-netlify</id><content type="html" xml:base="https://mikecoutermarsh.com/using-github-package-registry-with-netlify/"><![CDATA[<p>Here’s the best way I’ve found to get GitHub Packages working with a Netlify build.</p>
+
+<ol>
+  <li>Add this file to your repo. I put it at <code class="language-plaintext highlighter-rouge">.npmrc-netlify</code> in the root of the project.</li>
+</ol>
+
+<p>This keeps it from interfering with any <code class="language-plaintext highlighter-rouge">.npmrc</code> you might already have and need for local development.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@planetscale:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_KEY}
+legacy-peer-deps=true
+</code></pre></div></div>
+
+<ol>
+  <li>Next, in your <code class="language-plaintext highlighter-rouge">netlify.toml</code>, add this:</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[build.environment]
+  NPM_CONFIG_USERCONFIG = ".npmrc-netlify"
+</code></pre></div></div>
+
+<ol>
+  <li>Then last step is setting the <code class="language-plaintext highlighter-rouge">GITHUB_PACKAGES_KEY</code> in your projects environment variables.</li>
+</ol>]]></content><author><name/></author><summary type="html"><![CDATA[Here’s the best way I’ve found to get GitHub Packages working with a Netlify build.]]></summary></entry><entry><title type="html">You should be using a clipboard manager</title><link href="https://mikecoutermarsh.com/you-should-be-using-a-clipboard-manager/" rel="alternate" type="text/html" title="You should be using a clipboard manager"><published>2022-01-27T16:03:00+00:00</published><updated>2022-01-27T16:03:00+00:00</updated><id>https://mikecoutermarsh.com/you-should-be-using-a-clipboard-manager</id><content type="html" xml:base="https://mikecoutermarsh.com/you-should-be-using-a-clipboard-manager/"><![CDATA[<p>If you don’t have one already, install one and start using it.</p>
+
+<ul>
+  <li>Set a LONG history (mine is 3 months).</li>
+  <li>Now every code snippet you ever copy is in an easily searchable database so you can pull it back up whenever you need it.</li>
+</ul>
+
+<p>I personally use <a href="https://pasteapp.io/">Paste</a> and it’s the best I’ve found. Whatever you use, make sure it has the ability to search quickly and keep months of data.</p>]]></content><author><name/></author><summary type="html"><![CDATA[If you don’t have one already, install one and start using it.]]></summary></entry><entry><title type="html">Using entropy for user-friendly strong passwords</title><link href="https://mikecoutermarsh.com/using-entropy-for-user-friendly-strong-passwords/" rel="alternate" type="text/html" title="Using entropy for user-friendly strong passwords"><published>2022-01-25T00:26:00+00:00</published><updated>2022-01-25T00:26:00+00:00</updated><id>https://mikecoutermarsh.com/using-entropy-for-user-friendly-strong-passwords</id><content type="html" xml:base="https://mikecoutermarsh.com/using-entropy-for-user-friendly-strong-passwords/"><![CDATA[<!-- link[https://planetscale.com/blog/using-entropy-for-user-friendly-strong-passwords] -->
+
+<p>View this post on <a href="https://planetscale.com/blog/using-entropy-for-user-friendly-strong-passwords">PlanetScale</a>.</p>]]></content><author><name/></author><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">I still use vim</title><link href="https://mikecoutermarsh.com/i-still-use-vim/" rel="alternate" type="text/html" title="I still use vim"><published>2022-01-23T23:30:00+00:00</published><updated>2022-01-23T23:30:00+00:00</updated><id>https://mikecoutermarsh.com/i-still-use-vim</id><content type="html" xml:base="https://mikecoutermarsh.com/i-still-use-vim/"><![CDATA[<iframe width="560" height="315" src="//www.youtube.com/embed/_NUO4JEtkDw?rel=0" frameborder="0" allowfullscreen=""></iframe>
+
+<p>You probably saw <a href="https://www.youtube.com/watch?v=_NUO4JEtkDw">this video</a> and are wondering: “After all this time, do you still use vim?”.</p>
+
+<p>Yes, I do. And I still love it.</p>
+
+<p>My setup also hasn’t changed that much. I still use Vim + iTerm2 for almost all of my work. My <a href="https://github.com/mscoutermarsh/dotfiles">dotfiles are still public</a> if you’d like to steal them.</p>
+
+<h4 id="what-about-vscode">What about vscode?</h4>
+
+<p>I think vscode is great too. It has a <a href="https://marketplace.visualstudio.com/items?itemName=vscodevim.vim">vim plugin</a> that you can enable. Then you get the benefits of keyboard navigation/editing while also keeping all the plugins you like about vscode.
+I occasionally use it when writing Go because I find the go plugins helpful.</p>]]></content><author><name/></author><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">How our Rails test suite runs in 1 minute on Buildkite</title><link href="https://mikecoutermarsh.com/how-our-rails-test-suite-runs-in-1-minute-on-buildkite/" rel="alternate" type="text/html" title="How our Rails test suite runs in 1 minute on Buildkite"><published>2022-01-18T23:47:00+00:00</published><updated>2022-01-18T23:47:00+00:00</updated><id>https://mikecoutermarsh.com/how-our-rails-test-suite-runs-in-1-minute-on-buildkite</id><content type="html" xml:base="https://mikecoutermarsh.com/how-our-rails-test-suite-runs-in-1-minute-on-buildkite/"><![CDATA[<!-- link[https://planetscale.com/blog/how-our-rails-test-suite-runs-in-1-minute-on-buildkite] -->
+
+<p>View this post on <a href="https://planetscale.com/blog/how-our-rails-test-suite-runs-in-1-minute-on-buildkite">PlanetScale</a>.</p>]]></content><author><name/></author><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Why infrastructure engineers prefer MySQL</title><link href="https://mikecoutermarsh.com/why-infrastructure-engineers-prefer-mysql/" rel="alternate" type="text/html" title="Why infrastructure engineers prefer MySQL"><published>2022-01-16T19:34:00+00:00</published><updated>2022-01-16T19:34:00+00:00</updated><id>https://mikecoutermarsh.com/why-infrastructure-engineers-prefer-mysql</id><content type="html" xml:base="https://mikecoutermarsh.com/why-infrastructure-engineers-prefer-mysql/"><![CDATA[<p>For years I’ve been noticing this pattern of infrastructure engineers I really respect preferring MySQL and product engineers preferring Postgres.</p>
+
+<p>It took quite a while for me to understand it. Especially coming from my background as a product engineer.</p>
+
+<h3 id="different-types-of-engineers-value-different-things">Different types of engineers value different things</h3>
+<p>Infrastructure engineers generally care most about reliability, failure scenarios, upgrades and never, ever, losing data. Product engineers care about that too, but they focus more on tools that make building user functionality easier.</p>
+
+<p>When an infrastructure engineer tells you they prefer MySQL. It’s probably because for them it’s simpler/easier to operate it. Backups, replication, failover, upgrades. <strong>Accomplishing what is most important to them.</strong></p>
+
+<p>When product engineers prefer postgres, it’s usually because of something like postgis, jsonb/hstore. Some feature they can use in the app to build something faster.</p>
+
+<p>I hope this helps in explaining why you often see the infra orgs of many large/high scale companies choose mysql.</p>]]></content><author><name/></author><summary type="html"><![CDATA[For years I’ve been noticing this pattern of infrastructure engineers I really respect preferring MySQL and product engineers preferring Postgres.]]></summary></entry></feed>

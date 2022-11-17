@@ -1,0 +1,882 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>DEV Community 👩‍💻👨‍💻: Masataka Pocke Kuwabara</title>
+    <description>The latest articles on DEV Community 👩‍💻👨‍💻 by Masataka Pocke Kuwabara (@pocke).</description>
+    <link>https://dev.to/pocke</link>
+    <image>
+      <url>https://res.cloudinary.com/practicaldev/image/fetch/s--ZFRzqzbD--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/624551/09ebcc78-61c0-4543-8591-90dd4f56926d.png</url>
+      <title>DEV Community 👩‍💻👨‍💻: Masataka Pocke Kuwabara</title>
+      <link>https://dev.to/pocke</link>
+    </image>
+    <atom:link rel="self" type="application/rss+xml" href="https://dev.to/feed/pocke"/>
+    <language>en</language>
+    <item>
+      <title>RBS introduced manifest.yaml</title>
+      <dc:creator>Masataka Pocke Kuwabara</dc:creator>
+      <pubDate>Sun, 26 Dec 2021 05:03:26 +0000</pubDate>
+      <link>https://dev.to/pocke/rbs-introduced-manifestyaml-2idc</link>
+      <guid>https://dev.to/pocke/rbs-introduced-manifestyaml-2idc</guid>
+      <description>&lt;p&gt;RBS introduced manifest.yaml&lt;br&gt;
+RBS v2.0.0, for Ruby 3.1, has been released!&lt;br&gt;
+RBS v2 contains many my patches. I recently work for &lt;a href=&quot;https://dev.to/pocke/rbs-collection-was-released-4nmm&quot;&gt;&lt;code&gt;rbs collection&lt;/code&gt; feature&lt;/a&gt; especially. In short, &lt;code&gt;rbs collection&lt;/code&gt; is &quot;Bundler&quot; for RBS. It installs, updates and loads gems' RBSs for &lt;code&gt;rbs&lt;/code&gt;, &lt;code&gt;steep&lt;/code&gt; and &lt;code&gt;typeprof&lt;/code&gt; commands.&lt;/p&gt;
+
+&lt;p&gt;In this article, I describe a feature of &lt;code&gt;rbs collection&lt;/code&gt;, it is &lt;code&gt;manifest.yaml&lt;/code&gt;.&lt;br&gt;
+&lt;code&gt;manifest.yaml&lt;/code&gt; is a file to describe standard libraries dependencies for RBS.&lt;/p&gt;
+&lt;h2&gt;
+  
+  
+  Motivation
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;rbs collection&lt;/code&gt; detects the dependencies from &lt;code&gt;Gemfile.lock&lt;/code&gt;.&lt;br&gt;
+For example, if your &lt;code&gt;Gemfile&lt;/code&gt; has an entry, &lt;code&gt;gem 'rails'&lt;/code&gt;, &lt;code&gt;rbs collection&lt;/code&gt; finds dependencies gems, such as &lt;code&gt;activesupport&lt;/code&gt;, &lt;code&gt;railties&lt;/code&gt;, &lt;code&gt;nokogiri&lt;/code&gt; and so on, from &lt;code&gt;Gemfile.lock&lt;/code&gt;. Then it installs RBSs from &lt;a href=&quot;https://github.com/ruby/gem_rbs_collection&quot;&gt;ruby/gem_rbs_collection&lt;/a&gt; repository.&lt;/p&gt;
+
+&lt;p&gt;It almost works well, but it has a problem. &lt;code&gt;Gemfile.lock&lt;/code&gt; doesn't have standard libraries entries often.&lt;br&gt;
+For example, &lt;code&gt;rails&lt;/code&gt; gem depends on &lt;code&gt;pathname&lt;/code&gt; stdlib, but the dependency doesn't appear in &lt;code&gt;Gemfile.lock&lt;/code&gt;. So &lt;code&gt;rbs collection&lt;/code&gt; couldn't find pathname dependency from &lt;code&gt;Gemfile.lock&lt;/code&gt;, then the user sees &lt;code&gt;Could not find Pathname (RBS::NoTypeFoundError)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;manifest.yaml&lt;/code&gt; solves this problem.&lt;/p&gt;
+&lt;h2&gt;
+  
+  
+  What is &lt;code&gt;manifest.yaml&lt;/code&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;manifest.yaml&lt;/code&gt; is a file to describe standard libraries dependencies for RBS.&lt;/p&gt;
+
+&lt;p&gt;The following is the &lt;code&gt;manifest.yaml&lt;/code&gt; of activesupport gem.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight yaml&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;dependencies&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;monitor&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;date&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;singleton&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;logger&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mutex_m&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;time&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;pathname&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/ruby/gem_rbs_collection/blob/ce6664cec7387b4f5b52d01b80d26e9a9f9ad79c/gems/activesupport/6.0/manifest.yaml&quot;&gt;https://github.com/ruby/gem_rbs_collection/blob/ce6664cec7387b4f5b52d01b80d26e9a9f9ad79c/gems/activesupport/6.0/manifest.yaml&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;It's simple. If &lt;code&gt;Gemfile.lock&lt;/code&gt; has &lt;code&gt;activesupport&lt;/code&gt; entry, &lt;code&gt;rbs collection&lt;/code&gt; finds the stdlib dependencies from the &lt;code&gt;manifest.yaml&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3&gt;
+  
+  
+  Who writes &lt;code&gt;manifest.yaml&lt;/code&gt;
+&lt;/h3&gt;
+
+&lt;p&gt;If you are an application developer, you don't need to write &lt;code&gt;manifest.yaml&lt;/code&gt;. You can add a dependency entry to &lt;code&gt;rbs_collection.yaml&lt;/code&gt; if your application depends on standard library.&lt;/p&gt;
+
+&lt;p&gt;If you are a gem author and the gem contains RBS in &lt;code&gt;sig/&lt;/code&gt; directory, you can put &lt;code&gt;sig/manifest.yaml&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you'd like to contribute ruby/gem_rbs_collection, you can put &lt;code&gt;gems/GEM_NAME/VERSION/manifest.yaml&lt;/code&gt;. Follow the activesupport example.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Future work
+&lt;/h2&gt;
+
+&lt;p&gt;Currently &lt;code&gt;rbs collection&lt;/code&gt; resolves stdlib dependencies, but &lt;code&gt;rbs -r LIB&lt;/code&gt; option doesn't resolve them unfortunately.&lt;br&gt;
+For instance, &lt;a href=&quot;https://github.com/ruby/rbs/blob/ad94f262cd1fb61af72e38d1e08afcb9c5a9d9e1/stdlib/logger/0/manifest.yaml&quot;&gt;logger depends on monitor&lt;/a&gt;, but &lt;code&gt;rbs -r logger&lt;/code&gt; doesn't load monitor.&lt;/p&gt;
+
+&lt;p&gt;I'll work to fix this problem soon.&lt;/p&gt;
+
+
+
+
+&lt;p&gt;By the way, I'll change my job next year to focus on developing RBS. I'll work for both Rails apps and RBS as my job to make RBS production-ready for real Rails applications!&lt;/p&gt;
+
+</description>
+      <category>ruby</category>
+    </item>
+    <item>
+      <title>The future of rbs collection</title>
+      <dc:creator>Masataka Pocke Kuwabara</dc:creator>
+      <pubDate>Tue, 28 Sep 2021 15:48:21 +0000</pubDate>
+      <link>https://dev.to/pocke/the-future-of-rbs-collection-fgi</link>
+      <guid>https://dev.to/pocke/the-future-of-rbs-collection-fgi</guid>
+      <description>&lt;p&gt;Recently I discussed the future of rbs collection in &lt;a href=&quot;https://ruby-jp.github.io/&quot;&gt;ruby-jp&lt;/a&gt;, the Japanese online Ruby community. The discussion was exciting, so I'd like to share it.&lt;/p&gt;
+
+&lt;p&gt;By the way, if you don't know rbs collection, see &lt;a href=&quot;https://dev.to/pocke/rbs-collection-was-released-4nmm&quot;&gt;https://dev.to/pocke/rbs-collection-was-released-4nmm&lt;/a&gt; . This article introduces rbs collection with a motivating example.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  TL;DR
+&lt;/h2&gt;
+
+&lt;p&gt;I'm planning the following idea to scale rbs collection to grown ruby/gem_rbs_collection.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;rbs collection will migrate to use RubyGems' scoped packages in a few years, like &lt;code&gt;@types/*&lt;/code&gt;of TypeScript.&lt;/li&gt;
+&lt;li&gt;But RubyGems doesn't have the feature, so we need to develop it.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;
+  
+  
+  Background
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/ybiquitous&quot;&gt;@ybiquitous&lt;/a&gt; asked me did I consider providing ruby/gem_rbs_collection's RBS as a gem, like &lt;code&gt;@types/**&lt;/code&gt; of TypeScript. I had the idea but I didn't adopt it for the first release of &lt;code&gt;rbs collection&lt;/code&gt;. And I realized I didn't describe the reason publicly. I summarized the answer to the question in this article.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Current Implementation
+&lt;/h2&gt;
+
+&lt;p&gt;Currently, &lt;code&gt;rbs collection&lt;/code&gt; downloads RBSs with &lt;code&gt;git clone&lt;/code&gt; from &lt;a href=&quot;https://github.com/ruby/gem_rbs_collection/&quot;&gt;ruby/gem_rbs_collection&lt;/a&gt; GitHub repository.&lt;/p&gt;
+
+&lt;p&gt;It works well for now, but probably it will introduce many problems in a few years because the repository will grow as &lt;a href=&quot;https://github.com/DefinitelyTyped/DefinitelyTyped&quot;&gt;DefinitelyTyped&lt;/a&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It will be slow!
+
+&lt;ul&gt;
+&lt;li&gt;As you know, cloning a large repository is slow.&lt;/li&gt;
+&lt;li&gt;The repository will have many gem's RBSs.&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;It will be expensive for GitHub's server.
+
+&lt;ul&gt;
+&lt;li&gt;CocoaPods used (or still uses?) shallow clone, and it was too expensive.
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&quot;https://github.com/CocoaPods/CocoaPods/issues/5016&quot;&gt;https://github.com/CocoaPods/CocoaPods/issues/5016&lt;/a&gt; &lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&quot;https://github.com/CocoaPods/CocoaPods/issues/4989#issuecomment-193772935&quot;&gt;https://github.com/CocoaPods/CocoaPods/issues/4989#issuecomment-193772935&lt;/a&gt; &lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/ruby/rbs/pull/805&quot;&gt;Partial clone&lt;/a&gt; reduces the impact, but it just procrastinates the problems.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Why I chose &lt;code&gt;git clone&lt;/code&gt;?
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;git clone&lt;/code&gt; is slow, but it is the simplest way.&lt;/p&gt;
+
+&lt;p&gt;At first I created &lt;a href=&quot;https://github.com/pocke/gem_rbs_cli/&quot;&gt;a PoC&lt;/a&gt; with GitHub API v4 (GraphQL) because it could keep less API calls. However it was not a good idea. GitHub API requires an API token, so the user needs to prepare a Personal Access Token to use it for the local environment and CI.&lt;br&gt;
+GitHub API v4 has another problem; It truncates large file contents. Therefore I needed combining GitHub API v4 and &lt;a href=&quot;https://github.com/pocke/gem_rbs_cli/blob/8608c9411ffc623bf3f8104da11675eb9f607d4f/lib/gem_rbs_cli/github_client.rb#L77-L82&quot;&gt;another API&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I think &lt;code&gt;git clone&lt;/code&gt; is a good compromise for now. It is the same phase of &lt;a href=&quot;https://github.com/DefinitelyTyped/tsd&quot;&gt;tsd&lt;/a&gt; or &lt;a href=&quot;https://github.com/typings/typings&quot;&gt;typings&lt;/a&gt; of TypeScript. We needed a simple RBS manager now as you can see from the previous article.&lt;/p&gt;
+
+&lt;p&gt;However &lt;code&gt;git clone&lt;/code&gt; will introduce performance issues. I'll describe a solution idea in the next section.&lt;/p&gt;
+&lt;h2&gt;
+  
+  
+  Solution Idea
+&lt;/h2&gt;
+
+&lt;p&gt;The solution idea is using RubyGems' scoped packages. It is the same way of &lt;code&gt;@types/*&lt;/code&gt; of TypeScript.&lt;/p&gt;
+
+&lt;p&gt;For example, imagine a Gemfile:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Gemfile&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://rubygems.org&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# I use the following gems&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rails&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;sidekiq&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;parallel&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# So, I need the following RBSs!&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;@types/rails&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;@types/sidekiq&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;@types/parallel&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Put the &lt;code&gt;Gemfile&lt;/code&gt;, then execute &lt;code&gt;bundle install&lt;/code&gt;. That's all! Steep and so on load RBSs from &lt;code&gt;@types/*&lt;/code&gt; gems.&lt;/p&gt;
+
+&lt;p&gt;It looks useful, but I need to solve many things to realize the idea.&lt;/p&gt;
+
+&lt;p&gt;First of all, we need to implement the scoped packages feature to RubyGems! Unfortunately RubyGems doesn't have the feature😭 &lt;a href=&quot;https://github.com/hsbt&quot;&gt;@hsbt&lt;/a&gt; told &lt;a href=&quot;https://github.com/rubygems/rubygems.org/issues/2258&quot;&gt;a related issue&lt;/a&gt; to me.&lt;/p&gt;
+
+&lt;p&gt;Just off the top of my head I can imagine we need many tasks to implement it, adding organization, adding UI of rubygems.org, the authentication and authorization, updating gemspec/Gemfile.lock/installed package's path, and so on.&lt;/p&gt;
+
+&lt;p&gt;We still have another issue; It needs automatically published &lt;code&gt;@types/*&lt;/code&gt; packages.&lt;br&gt;
+It is easier than implementing scoped packages, of cause. I guess we just need to set-up a workflow of GItHub Actions.&lt;/p&gt;
+
+&lt;p&gt;Nothing has been decided yet, but I think it is the best way. I'll investigate it.&lt;/p&gt;
+&lt;h2&gt;
+  
+  
+  Another idea
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/znz&quot;&gt;@znz&lt;/a&gt; told another idea; Using RubyGems' &lt;code&gt;source&lt;/code&gt; instead of scoped packages. For example:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Gemfile&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://rubygems.org&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# It is the same&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rails&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;sidekiq&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;parallel&quot;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://rbs.rubygems.org&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rbs-rails&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rbs-sidekiq&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rbs-parallel&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Realizing the solution is easier than the scoped packages solution. It doesn't need to modify RubyGems, we can realize it with existing assets!&lt;/p&gt;
+
+&lt;p&gt;However this solution has problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We need a server to host &lt;code&gt;rbs.rubygems.org&lt;/code&gt;.
+
+&lt;ul&gt;
+&lt;li&gt;I don't want to maintain the server.&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;The package name can conflict with a gem from &lt;code&gt;rubygems.org&lt;/code&gt;.
+
+&lt;ul&gt;
+&lt;li&gt;If both &lt;code&gt;rubygems.org&lt;/code&gt; and &lt;code&gt;rbs.rubygems.org&lt;/code&gt; have &lt;code&gt;rbs-rails&lt;/code&gt; gem, user cannot use both gems together.&lt;/li&gt;
+&lt;li&gt;We can solve the problem with more unique prefix like &lt;code&gt;rbs-types-*&lt;/code&gt;, but I think it is not smart.&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I think &lt;code&gt;source&lt;/code&gt; is not the best way, but maybe we can use the solution as a temporary solution.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Conclusion
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;git clone&lt;/code&gt; will be slow with grown ruby/gem_rbs_collection. Therefore I'm planning to migrate rbs collection to use RubyGems' scoped package, but it has difficulty.&lt;/p&gt;
+
+&lt;p&gt;I think scoped package is the best solution to manage third party RBSs in the long term. I work on improving RBS management. 🚀💎&lt;/p&gt;
+
+</description>
+      <category>ruby</category>
+    </item>
+    <item>
+      <title>rbs collection was released!</title>
+      <dc:creator>Masataka Pocke Kuwabara</dc:creator>
+      <pubDate>Fri, 17 Sep 2021 17:49:03 +0000</pubDate>
+      <link>https://dev.to/pocke/rbs-collection-was-released-4nmm</link>
+      <guid>https://dev.to/pocke/rbs-collection-was-released-4nmm</guid>
+      <description>&lt;p&gt;Recently we released RBS v1.6 with &lt;code&gt;rbs collection&lt;/code&gt; feature which is &quot;Bundler&quot; for RBS! The feature is experimental now, and it will be GA in RBS v2 for Ruby 3.1. Now you can use it with &lt;code&gt;gem install rbs&lt;/code&gt; if you use Ruby 2.6+!&lt;/p&gt;
+
+&lt;p&gt;I'm an RBS maintainer and I designed and implemented the feature, so I'll describe &lt;code&gt;rbs collection&lt;/code&gt; feature in this article.&lt;/p&gt;
+
+&lt;p&gt;By the way, I made a presentation on Sep. 10 at RubyKaigi Takeout 2021 and explained &lt;code&gt;rbs collection&lt;/code&gt; in the talk. This article is based on the talk. See &lt;a href=&quot;https://github.com/pocke/rubykaigi-2021&quot;&gt;https://github.com/pocke/rubykaigi-2021&lt;/a&gt;  for more details (unfortunately I spoke in Japanese but it has English slides and subtitles).&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  What is RBS
+&lt;/h2&gt;
+
+&lt;p&gt;First of all, I introduce RBS.&lt;/p&gt;
+
+&lt;p&gt;RBS is a language to describe Ruby types. It is similar to &lt;code&gt;.d.ts&lt;/code&gt; of TypeScript or header files of C-language.&lt;br&gt;
+The syntax is similar to Ruby.&lt;/p&gt;
+
+&lt;p&gt;The following code is a simple RBS example:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;class Blog
+  attr_reader name: String
+
+  def initialize: (String name) -&amp;gt; void
+
+  def each_article: () { (Article) -&amp;gt; void } -&amp;gt; self # For blog.each_article { |article| ... }
+                  | () -&amp;gt; Enumerator[Article, self]  # For blog.each_article.map { |article| ... }
+end
+
+class Article
+  attr_reader title: String
+  attr_reader content: String
+
+  def initialize: (String title, String, content) -&amp;gt; void
+
+  def published_at: () -&amp;gt; Time
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h2&gt;
+  
+  
+  ruby/gem_rbs_collection
+&lt;/h2&gt;
+
+&lt;p&gt;I need to describe another topic before describing &lt;code&gt;rbs collection&lt;/code&gt;. It is &lt;a href=&quot;https://github.com/ruby/gem_rbs_collection&quot;&gt;ruby/gem_rbs_collection&lt;/a&gt; GitHub repository.&lt;/p&gt;
+
+&lt;p&gt;The repository stores third-party gems' RBSs, like &lt;a href=&quot;https://github.com/DefinitelyTyped/DefinitelyTyped&quot;&gt;DefinitelyTyped&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;rbs collection&lt;/code&gt; feature integrates this repository and tools use RBS, such as &lt;code&gt;rbs&lt;/code&gt; command, &lt;a href=&quot;https://github.com/soutaro/steep&quot;&gt;Steep&lt;/a&gt;, and &lt;a href=&quot;https://github.com/ruby/typeprof&quot;&gt;TypeProf&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  rbs collection
+&lt;/h2&gt;
+
+&lt;p&gt;It's the main topic of this article💪&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;rbs collection&lt;/code&gt; manages third-party RBSs, for example, installing, updating, and loading.&lt;/p&gt;
+
+&lt;p&gt;The first section describes a motivating example of &lt;code&gt;rbs collection&lt;/code&gt;.&lt;br&gt;
+Before &lt;code&gt;rbs collection&lt;/code&gt;, managing third-party RBSs is not efficient.&lt;/p&gt;
+
+&lt;p&gt;The second section describes how &lt;code&gt;rbs collection&lt;/code&gt; solves the problem.&lt;/p&gt;
+
+&lt;p&gt;The last section describes known issues of &lt;code&gt;rbs collection&lt;/code&gt;.&lt;br&gt;
+The feature still has some known issues for now, and I'll solve the issues until RBS v2.&lt;/p&gt;
+&lt;h3&gt;
+  
+  
+  Motivating example
+&lt;/h3&gt;
+
+&lt;p&gt;In this section, I describe how to set up third-party RBSs for a Rails app without &lt;code&gt;rbs collection&lt;/code&gt; as the motivating example.&lt;/p&gt;
+&lt;h4&gt;
+  
+  
+  How to set up
+&lt;/h4&gt;
+
+&lt;p&gt;First, download ruby/gem_rbs_collection repository as a git submodule.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git submodule add https://github.com/ruby/gem_rbs_collection.git gem_rbs_collection
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Then &lt;code&gt;rbs&lt;/code&gt; command is available but it needs many options. For example, the following command is necessary to validate RBSs.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# too many options ¯\_(ツ)_/¯&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rbs &lt;span class=&quot;nt&quot;&gt;-rlogger&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rpathname&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rmutex_m&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rdate&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rmonitor&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;-rsingleton&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rtsort&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rtime&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rrack&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;-ractivesupport&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ractionpack&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ractivejob&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;-ractivemodel&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ractionview&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ractiverecord&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;-rrailties&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;--repo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;gem_rbs_collection validate
+
+&lt;span class=&quot;c&quot;&gt;# TypeProf also needs the same options.&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;typeprof &lt;span class=&quot;nt&quot;&gt;-rlogger&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rpathname&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rmutex_m&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rdate&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rmonitor&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           &lt;span class=&quot;nt&quot;&gt;-rsingleton&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rtsort&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rtime&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rrack&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           &lt;span class=&quot;nt&quot;&gt;-ractivesupport&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ractionpack&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ractivejob&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           &lt;span class=&quot;nt&quot;&gt;-ractivemodel&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ractionview&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ractiverecord&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           &lt;span class=&quot;nt&quot;&gt;-rrailties&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           &lt;span class=&quot;nt&quot;&gt;--repo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;gem_rbs_collection validate
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;&lt;code&gt;-r&lt;/code&gt; options specify library names you want to load, and &lt;code&gt;--repo&lt;/code&gt; option specifies the repository path which is the git submodule.&lt;/p&gt;
+
+&lt;p&gt;And Steep needs a different configuration to load the same RBSs.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Steepfile&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:app&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# Specify a directory that contains target Ruby files to type check.&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;check&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'app'&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# Specify the git submoduled directory&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;repo_path&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;gem_rbs_collection&quot;&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# Specify the all library names to load.&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;library&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'pathname'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'logger'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;'mutex_m'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;s1&quot;&gt;'monitor'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'singleton'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'tsort'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'time'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'rack'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;s1&quot;&gt;'activesupport'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'actionpack'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'activejob'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;s1&quot;&gt;'activemodel'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'actionview'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'activerecord'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;s1&quot;&gt;'railties'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Many options are required because rbs, TypeProf, and Steep don't know which libraries are required.&lt;/p&gt;
+
+&lt;h4&gt;
+  
+  
+  Motivations
+&lt;/h4&gt;
+
+&lt;p&gt;As you can see, managing third-party RBSs has problems. I explain three problems.&lt;/p&gt;
+
+&lt;p&gt;First, we need to resolve dependencies by hand. In the above examples, human resolved &quot;my app depends on Active Support, then Active Support depends on Logger, and ...&quot;. It is too hard for humans 😂&lt;/p&gt;
+
+&lt;p&gt;Second, we need &lt;code&gt;git submodule&lt;/code&gt; or copying RBSs to download third-party RBSs. It's too primitive. If you want to use different revisions RBSs, you can't use submodule but copying RBSs looks a hell.&lt;br&gt;
+For example, you want to use gem X RBS with revision R, but want to use gem Y RBS with revision R', &lt;code&gt;git submodule&lt;/code&gt; doesn't work.&lt;/p&gt;
+
+&lt;p&gt;Third, we need to use different ways between RBS, Steep, and TypeProf to load RBSs. &lt;code&gt;rbs&lt;/code&gt; command and TypeProf need to specify library names as command-line options, but Steep needs to specify them in &lt;code&gt;Steepfile&lt;/code&gt;. It is not a single source so it is hard to maintain.&lt;/p&gt;
+&lt;h3&gt;
+  
+  
+  How &lt;code&gt;rbs collection&lt;/code&gt; solves the problem
+&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;rbs collection&lt;/code&gt; automatically resolves dependencies, downloads RBSs, and loads RBSs from the single source. It means &lt;code&gt;rbs collection&lt;/code&gt; sovles these problems!&lt;/p&gt;
+
+&lt;p&gt;To use &lt;code&gt;rbs collection&lt;/code&gt;, you need to install &lt;code&gt;rbs&lt;/code&gt; gem v1.6+. Then initialize the configuration file with &lt;code&gt;rbs collection init&lt;/code&gt; command.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Install rbs gem v1.6+&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gem &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;rbs
+
+&lt;span class=&quot;c&quot;&gt;# Initialize the config file&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rbs collection init
+warning: rbs collection is experimental, and the behavior may change &lt;span class=&quot;k&quot;&gt;until &lt;/span&gt;RBS v2.0
+created: rbs_collection.yaml
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;After that, edit the generated configuration file, &lt;code&gt;rbs_collection.yaml&lt;/code&gt;. The full content is the following:&lt;br&gt;
+Note that I'll describe why you need to edit it in the &quot;Known Issues&quot; section.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight yaml&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Download sources&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;sources&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/gem_rbs_collection&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;remote&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://github.com/ruby/gem_rbs_collection.git&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;revision&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;main&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;repo_dir&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gems&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# A directory to install the downloaded RBSs&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.gem_rbs_collection&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;gems&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# Skip loading rbs gem's RBS.&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# It's unnecessary if you don't use rbs as a library.&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbs&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;ignore&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# 👮👮👮 Add the following lines&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;pathname&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;logger&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mutex_m&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;date&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;monitor&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;singleton&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;tsort&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;time&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;set&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Then, execute &lt;code&gt;rbs collection install&lt;/code&gt; command.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# rbs collection uses Gemfile.lock to resolve dependency,&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# so execute `bundle install` before that to generate Gemfile.lock.&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bundle &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Install RBSs from ruby/gem_rbs_collection repo&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rbs collection &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Finally, the CLI tools are available!&lt;/p&gt;
+
+&lt;p&gt;You can use rbs and TypeProf commands without options.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rbs validate
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;typeprof target.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;You can use Steep with a few configurations.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Steepfile&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:app&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# Specify a directory that contains target Ruby files to type check.&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;check&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'app'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;Note that the &lt;code&gt;rbs collection&lt;/code&gt; integrations with Steep and TypeProf have not been released yet now (2021-09-18). You need to install them from GitHub if you want to try them for now.&lt;br&gt;
+Steep integration was implemented in &lt;a href=&quot;https://github.com/soutaro/steep/pull/420&quot;&gt;https://github.com/soutaro/steep/pull/420&lt;/a&gt;  but not yet released.&lt;br&gt;
+TypeProf integration was implemented in &lt;a href=&quot;https://github.com/ruby/typeprof/pull/53&quot;&gt;https://github.com/ruby/typeprof/pull/53&lt;/a&gt;  but not yet merged.&lt;/p&gt;
+&lt;h4&gt;
+  
+  
+  The mechanism of &lt;code&gt;rbs collection install&lt;/code&gt;
+&lt;/h4&gt;
+
+&lt;p&gt;&lt;code&gt;rbs collection install&lt;/code&gt; command works with the following steps.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Generating &lt;code&gt;rbs_collection.lock.yaml&lt;/code&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Resolve the dependencies with Gemfile.lock.&lt;/li&gt;
+&lt;li&gt;Write the gems to the lockfile, &lt;code&gt;rbs_collection.lock.yaml&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Installing RBSs
+
+&lt;ol&gt;
+&lt;li&gt;Copy RBSs from ruby/gem_rbs_collection with the lockfile.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Then, &lt;code&gt;rbs&lt;/code&gt;, &lt;code&gt;steep&lt;/code&gt; and &lt;code&gt;typeprof&lt;/code&gt; commands load the installed RBSs.&lt;/p&gt;
+&lt;h3&gt;
+  
+  
+  Known Issues
+&lt;/h3&gt;
+
+&lt;p&gt;Unfortunately &lt;code&gt;rbs collection&lt;/code&gt; has known issues.&lt;/p&gt;
+&lt;h4&gt;
+  
+  
+  Resolving Standard Libraries' Dependencies
+&lt;/h4&gt;
+
+&lt;p&gt;&lt;code&gt;rbs collection&lt;/code&gt; doesn't resolve dependencies of most standard libraries. For example, &lt;code&gt;logger&lt;/code&gt;, &lt;code&gt;pathname&lt;/code&gt;, etc.&lt;/p&gt;
+
+&lt;p&gt;In many cases, standard libraries do not appear in &lt;code&gt;Gemfile.lock&lt;/code&gt; so &lt;code&gt;rbs collection&lt;/code&gt; can't find them from &lt;code&gt;Gemfile.lock&lt;/code&gt;.&lt;br&gt;
+We can do &lt;code&gt;require&lt;/code&gt; stdlibs even if the stdlib is not included in gemspec or Gemfile. So most gems don't have explicit dependencies to stdlibs. For example, &lt;code&gt;rails&lt;/code&gt; gem depends on many stdlibs such as &lt;code&gt;pathname&lt;/code&gt;, but the gemspec doesn't include &lt;code&gt;pathname&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I'll fix the problem by introducing a configuration file for RBS, such as one called &lt;code&gt;manifest.yaml&lt;/code&gt;. The file will contain all stdlib dependency names.&lt;br&gt;
+For example, if &lt;code&gt;foo&lt;/code&gt; gem depends on &lt;code&gt;pathname&lt;/code&gt; and &lt;code&gt;logger&lt;/code&gt;, the &lt;code&gt;manifest.yaml&lt;/code&gt; will be the following.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight yaml&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# ruby/gem_rbs_collection/gems/foo/1.0/manifest.yaml&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;depends_on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;pathname&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;logger&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h4&gt;
+  
+  
+  Other issues
+&lt;/h4&gt;
+
+&lt;p&gt;&lt;code&gt;rbs collection&lt;/code&gt; has other known issues. See &lt;a href=&quot;https://github.com/ruby/rbs/pull/589&quot;&gt;https://github.com/ruby/rbs/pull/589&lt;/a&gt;  and &lt;a href=&quot;https://github.com/ruby/rbs/issues/794&quot;&gt;https://github.com/ruby/rbs/issues/794&lt;/a&gt;  for more information.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  Conclusion
+&lt;/h2&gt;
+
+&lt;p&gt;I introduced &lt;code&gt;rbs collection&lt;/code&gt;, which is the &quot;Bundler&quot; for RBS.&lt;br&gt;
+You can easily manage third party RBSs with the command.&lt;/p&gt;
+
+&lt;p&gt;I hope you will give it a try. Feel free to open issues if you have any problems!&lt;br&gt;
+Thank you for reading &amp;lt;3&lt;/p&gt;
+
+</description>
+      <category>ruby</category>
+    </item>
+    <item>
+      <title>Rails 7 will introduce invert_where method, but it's dangerous</title>
+      <dc:creator>Masataka Pocke Kuwabara</dc:creator>
+      <pubDate>Mon, 03 May 2021 03:26:25 +0000</pubDate>
+      <link>https://dev.to/pocke/rails-7-will-introduce-invertwhere-method-but-it-s-dangerous-50m5</link>
+      <guid>https://dev.to/pocke/rails-7-will-introduce-invertwhere-method-but-it-s-dangerous-50m5</guid>
+      <description>&lt;p&gt;NOTE: This article based on &lt;a href=&quot;https://github.com/rails/rails/commit/11a3348c2d58f448b8f1dea4f4dbb8cd5bb95a0e&quot;&gt;today's latest commit of the main branch&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1&gt;
+  
+  
+  TL;DR
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;code&gt;invert_where&lt;/code&gt; inverts all &lt;code&gt;where&lt;/code&gt; conditions.&lt;/li&gt;
+&lt;li&gt;It may invert unexpected conditions, so it's dangerous.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;
+  
+  
+  What is &lt;code&gt;invert_where&lt;/code&gt;?
+&lt;/h1&gt;
+
+&lt;p&gt;&lt;code&gt;ActiveRecord::QueryMethods::WhereChain#invert_where&lt;/code&gt; will be introduced since Rails 7. It inverts &lt;code&gt;where&lt;/code&gt; conditions.&lt;/p&gt;
+
+&lt;p&gt;For example: (From the &lt;a href=&quot;https://github.com/rails/rails/pull/40249/files#diff-353f4f101b1bb04938d761b6e29c88e0f147084e9e276854a77ae5d9a9a3b2a8&quot;&gt;CHANGELOG&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:active&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;accepted: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;locked: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;active&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# ... WHERE `accepted` = 1 AND `locked` = 0&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;active&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;invert_where&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# ... WHERE NOT (`accepted` = 1 AND `locked` = 0)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/blockquote&gt;
+
+&lt;p&gt;It is implemented in &lt;a href=&quot;https://github.com/rails/rails/pull/40249&quot;&gt;#40249&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1&gt;
+  
+  
+  Why &lt;code&gt;invert_where&lt;/code&gt; is dangerous
+&lt;/h1&gt;
+
+&lt;p&gt;The risk becomes clear with several &lt;code&gt;where&lt;/code&gt;. For example:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;a: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;b: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'b'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;invert_where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_sql&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;In this case, &lt;code&gt;invert_where&lt;/code&gt; inverts both of the &lt;code&gt;where&lt;/code&gt; conditions. So it prints the following results.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;SELECT &quot;posts&quot;.* FROM &quot;posts&quot; WHERE NOT (&quot;posts&quot;.&quot;a&quot; = 'a' AND &quot;posts&quot;.&quot;b&quot; = 'b')
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;As you can see, the whole of the conditions is inverted with &lt;code&gt;NOT&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This behavior will be bugs with the following three examples.&lt;/p&gt;
+
+&lt;p&gt;The examples work with the following set-up code.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bundler/inline&quot;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;gemfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://rubygems.org&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;git_source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://github.com/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.git&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;activerecord&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;github: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'rails/rails'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;ref: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'11a3348c2d58f448b8f1dea4f4dbb8cd5bb95a0e'&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;activemodel&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;github: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'rails/rails'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;ref: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'11a3348c2d58f448b8f1dea4f4dbb8cd5bb95a0e'&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;activesupport&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;github: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'rails/rails'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;ref: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'11a3348c2d58f448b8f1dea4f4dbb8cd5bb95a0e'&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;sqlite3&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;active_record&quot;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;establish_connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;adapter: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;sqlite3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;database: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;:memory:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;force: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:role&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;datetime&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:disabled_at&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;h2&gt;
+  
+  
+  1. Using &lt;code&gt;invert_where&lt;/code&gt; in a scope definition
+&lt;/h2&gt;
+
+&lt;p&gt;If a scope definition includes &lt;code&gt;invert_where&lt;/code&gt;, the &lt;code&gt;invert_where&lt;/code&gt; affects outside of the scope.&lt;br&gt;
+For example:&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:alive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;disabled_at: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:disabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;invert_where&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:admin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;role: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'admin'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;admin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;disabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_sql&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &quot;users&quot;.* FROM &quot;users&quot; WHERE NOT (&quot;users&quot;.&quot;role&quot; = 'admin' AND &quot;users&quot;.&quot;disabled_at&quot; IS NULL)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;In this case, &lt;code&gt;User.admin.disabled.to_sql&lt;/code&gt; expects returning disabled admin users. But actually, it returns not-admin users and disabled users. It means &lt;code&gt;.admin&lt;/code&gt; scope is inverted unexpectedly.&lt;/p&gt;
+
+&lt;h2&gt;
+  
+  
+  2. When the relation starts in a different place with &lt;code&gt;invert_where&lt;/code&gt; call
+&lt;/h2&gt;
+
+&lt;p&gt;It is similar to the first problem. In this case, &lt;code&gt;invert_whre&lt;/code&gt; is not hidden in a scope definition, but the relation and &lt;code&gt;invert_where&lt;/code&gt; are in different places.&lt;br&gt;
+This problem is well described in &lt;a href=&quot;https://github.com/rails/rails/pull/40249#issuecomment-826881180&quot;&gt;a comment&lt;/a&gt; in the pull request, which implements &lt;code&gt;invert_where&lt;/code&gt;, so I quote the comment.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Imagine, somewhere within the request flow, perhaps automatically scoped by Pundit,&lt;/p&gt;
+
+
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;current_user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;posts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;author: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+
+&lt;p&gt;And then later on in a controller…&lt;/p&gt;
+
+
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;published_posts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;published: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;draft_posts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;published_posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;invert_where&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+
+&lt;p&gt;The draft_posts variable is now all draft posts NOT by the current user. Putting the above logic in published and unpublished scopes, respectively, would be make this issue even more confusing to debug if it did occur.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;
+  
+  
+  3. With &lt;code&gt;default_scope&lt;/code&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Combination of &lt;code&gt;invert_where&lt;/code&gt; and &lt;code&gt;default_scope&lt;/code&gt; is surprising.&lt;br&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;highlight js-code-highlight&quot;&gt;
+&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;default_scope&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;disabled_at: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:admin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;role: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'admin'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;admin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;invert_where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_sql&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &quot;users&quot;.* FROM &quot;users&quot; WHERE NOT (&quot;users&quot;.&quot;disabled_at&quot; IS NULL AND &quot;users&quot;.&quot;role&quot; = 'admin')&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+
+
+
+&lt;p&gt;In this case, &lt;code&gt;default_scope&lt;/code&gt; is used to ignore disabled users always. And &lt;code&gt;User.admin.invert_where&lt;/code&gt; expects returning &quot;available non-admin users&quot;.&lt;/p&gt;
+
+&lt;p&gt;But actually it displays an unexpected SQL. The query means &quot;disabled, or not-admin users&quot;. Because &lt;code&gt;invert_where&lt;/code&gt; also inverts &lt;code&gt;default_scope&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I think &lt;code&gt;default_scope&lt;/code&gt; is a bad practice. The combination with &lt;code&gt;invert_where&lt;/code&gt; makes it worse.&lt;/p&gt;
+
+&lt;h1&gt;
+  
+  
+  Conclusion
+&lt;/h1&gt;
+
+&lt;p&gt;&lt;code&gt;invert_where&lt;/code&gt; is dangerous, so you need to be careful if you want to use it.&lt;/p&gt;
+
+&lt;p&gt;If you pay close attention to the method, you can avoid the problems. But human makes mistakes, and it is not easy for beginners.&lt;br&gt;
+So I proposed a RuboCop rule for &lt;code&gt;invert_where&lt;/code&gt; to rubocop-rails project.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rubocop/rubocop-rails/issues/470&quot;&gt;https://github.com/rubocop/rubocop-rails/issues/470&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;But I think it still a dangerous method even if the cop is implemented. So I'm wondering if it should be reverted until releasing Rails 7.&lt;/p&gt;
+
+
+
+
+&lt;p&gt;This article is self-translated from &lt;a href=&quot;https://pocke.hatenablog.com/entry/2021/04/28/233930&quot;&gt;a Japanese article&lt;/a&gt;&lt;/p&gt;
+
+</description>
+      <category>ruby</category>
+      <category>rails</category>
+    </item>
+  </channel>
+</rss>

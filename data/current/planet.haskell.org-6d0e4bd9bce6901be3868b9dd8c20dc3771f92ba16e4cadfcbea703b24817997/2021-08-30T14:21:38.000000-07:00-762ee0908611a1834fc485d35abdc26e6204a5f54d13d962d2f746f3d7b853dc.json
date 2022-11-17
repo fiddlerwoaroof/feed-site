@@ -1,8 +1,0 @@
-{
-  "title":"A Candid explainer: Safe higher-order upgrades",
-  "date":"2021-08-30T14:21:38.000000-07:00",
-  "author":"Joachim Breitner",
-  "id":"http://www.joachim-breitner.de/blog/783-A_Candid_explainer__Safe_higher-order_upgrades",
-  "link":"http://www.joachim-breitner.de/blog/783-A_Candid_explainer__Safe_higher-order_upgrades",
-  "content":"This is the second post in a series about the inteface description language Candid.\nSafe upgrades\nA central idea behind Candid is that services evolve over time, and so also their interfaces evolve. As they do, it is desirable to keep the interface usable by clients who have not been updated. In particular on a blockchainy platform like the Internet Computer, where some programs are immutable and cannot be changed to accommodate changes in the interface of the services they use, this is of importance.\nTherefore, Candid defines which changes to an interface are guaranteed to be backward compatible. Of course it’s compatible to add new methods to a service, but some changes to a method signature can also be ok. For example, changing\nservice A1 : {\n  get_value : (variant { current; previous : nat })\n    -&gt; (record { value : int; last_change : nat })\n}\nto\nservice A2 : {\n  get_value : (variant { current; previous : nat; default })\n    -&gt; (record { value : int; last_change : nat; committed : bool })\n}\nis fine: It doesn’t matter that clients that still use the old interface don’t know about the new constructor of the argument variant. And the extra field in the result record will silently be ignored by old clients.\nIn the Candid spec, this relation is written as A2 "
-}

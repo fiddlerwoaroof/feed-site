@@ -1,0 +1,931 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[BilalBudhani]]></title><description><![CDATA[I enjoy solving problems by building softwares using Ruby On Rails & Javascript. I'm a full-time consultant & I also work on my products or side-projects from time to time]]></description><link>https://bilalbudhani.com/</link><image><url>https://bilalbudhani.com/favicon.png</url><title>BilalBudhani</title><link>https://bilalbudhani.com/</link></image><generator>Ghost 5.1</generator><lastBuildDate>Thu, 17 Nov 2022 10:05:47 GMT</lastBuildDate><atom:link href="https://bilalbudhani.com/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Using Chokidar with Esbuild To Rebuild On Change]]></title><description><![CDATA[<p>This month I was migrating from Webpacker to <a href="https://esbuild.github.io/">ESBuild</a> using <a href="https://github.com/rails/jsbundling-rails">JSBundling</a> in a client&apos;s Ruby on Rails project, since, they were using Stimulus &amp; a couple of Javascript dependencies in the project, the migration went smoothly. </p><p>However, I realised that ESBuild doesn&apos;t watch for changes in</p>]]></description><link>https://bilalbudhani.com/chokidar-esbuild/</link><guid isPermaLink="false">61e13b77c98b4e6f8f62298e</guid><category><![CDATA[ruby on rails]]></category><category><![CDATA[javascript]]></category><category><![CDATA[esbuild]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Sun, 16 Jan 2022 08:49:53 GMT</pubDate><content:encoded><![CDATA[<p>This month I was migrating from Webpacker to <a href="https://esbuild.github.io/">ESBuild</a> using <a href="https://github.com/rails/jsbundling-rails">JSBundling</a> in a client&apos;s Ruby on Rails project, since, they were using Stimulus &amp; a couple of Javascript dependencies in the project, the migration went smoothly. </p><p>However, I realised that ESBuild doesn&apos;t watch for changes in the root project instead it only listens to the files mentioned in `entryPoints` config. This doesn&apos;t make it an ideal DX (developer experience), so I decided to dig deeper on how to get this experience right. </p><p>I found <a href="https://github.com/evanw/esbuild/issues/21">an issue</a> on ESBuild repo a lot of folks have shared their approach to solve it. I picked the one that felt right for our use case, tweaked it a little bit to get what I want &amp; kept is as simple as I could. Here is what I ended up with &#xA0;</p><pre><code class="language-javascript">const path = require(&apos;path&apos;)
+const chokidar = require(&apos;chokidar&apos;)
+const esbuild = require(&quot;esbuild&quot;)
+
+const watchDirectories = [
+  &quot;./app/javascript/**/*.js&quot;,
+  &quot;./app/views/**/*.html.erb&quot;,
+]
+
+const config = {
+  entryPoints: [&quot;application.js&quot;, &quot;admin.js&quot;],
+  bundle: true,
+  outdir: path.join(process.cwd(), &quot;app/assets/builds&quot;),
+  absWorkingDir: path.join(process.cwd(), &quot;app/javascript&quot;),
+  watch: process.argv.includes(&quot;--watch&quot;),
+  sourcemap: process.argv.includes(&quot;--watch&quot;),
+  incremental: process.argv.includes(&quot;--watch&quot;),
+  plugins: [],
+}
+
+
+if (process.argv.includes(&quot;--watch&quot;)) {
+
+  (async () =&gt; {
+    const result = await esbuild.build(config);
+    chokidar.watch(watchDirectories).on(&apos;all&apos;, (event, path) =&gt; {
+      console.log(`rebuilding ${path}`)
+      result.rebuild()
+    })
+  })();
+
+} else {
+  esbuild.build(config).catch(() =&gt; process.exit(1))
+}
+</code></pre><p>Basically, this uses <a href="https://github.com/paulmillr/chokidar">Chokidar</a> which is a Nodejs package to watch changes on specified files. So I used a combination of Chokidar and ESBuild package to rebuild files whenever there are changes in the project, and because ESbuild is fast there isn&apos;t much waiting &amp; overhead. &#xA0;</p>]]></content:encoded></item><item><title><![CDATA[Generating PDFs In Rails Application Using DocRaptor]]></title><description><![CDATA[<blockquote>This post is sponsored by <a href="https://docraptor.com">DocRaptor.com </a></blockquote><p>One of the most common &amp; requested feature I come across when building applications is supporting export data in popular formats like pdf and excel. In the past, I have used multiple libraries to generate these format but the no. of dependencies required</p>]]></description><link>https://bilalbudhani.com/generating-pdfs-in-rails-application-using-docraptor/</link><guid isPermaLink="false">5fa7b7d118370d7e334cb8bf</guid><category><![CDATA[ruby on rails]]></category><category><![CDATA[ruby]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Thu, 19 Nov 2020 13:10:00 GMT</pubDate><media:content url="https://images.unsplash.com/photo-1484417894907-623942c8ee29?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=2000&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ" medium="image"/><content:encoded><![CDATA[<blockquote>This post is sponsored by <a href="https://docraptor.com">DocRaptor.com </a></blockquote><img src="https://images.unsplash.com/photo-1484417894907-623942c8ee29?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=2000&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ" alt="Generating PDFs In Rails Application Using DocRaptor"><p>One of the most common &amp; requested feature I come across when building applications is supporting export data in popular formats like pdf and excel. In the past, I have used multiple libraries to generate these format but the no. of dependencies required to make it all work goes it usually goes out of hand pretty quickly. I have spent countless no. of hours getting the formatting right, debugging why the library is not picking up right styling or worse compiling/maintaining dependencies for these libraries. Moreover, making it all work on hosting providers like Heroku is a task in itself. </p><p>DocRaptor.com is a nice service to which I can delegate all the heavy lifting of generating documents by using their simple API. Using their service I can be pretty confident in providing exporting functionality to my users without worrying about eating up all the RAM of my server. </p><p>Let me show you how to integrate DocRaptor in your Rails application in a few simple steps</p><h2 id="generate-a-pdf-for-an-invoice-using-docraptor">Generate a pdf for an invoice using DocRaptor</h2><p>Let&apos;s first add their gem </p><pre><code class="language-ruby">gem &quot;docraptor&quot;</code></pre><p>For demo purpose add a route </p><pre><code class="language-ruby">root &quot;invoices#show&quot;</code></pre><p>then we will generate a config file &amp; mention our API key</p><pre><code class="language-ruby">DocRaptor.configure do |config|
+  config.username = &quot;YOUR_API_KEY_HERE&quot;
+end</code></pre><p>Now we will generate our controller </p><pre><code class="language-ruby">rails g controller Invoice show</code></pre><p>Before we start designing our invoice view. We will drop <a href="https://tailwindcss.com">TailwindCSS</a> CDN code in our &quot;<strong>app/views/layouts/application.html.erb</strong>&quot;. We can now move to designing our view inside &quot;<strong>app/views/invoices/show.html.erb</strong>&quot;</p><pre><code class="language-html">&lt;main class=&quot;w-full mt-20 flex flex-col bg-white rounded p-8 text-lg&quot;&gt;
+  &lt;section class=&quot;flex w-full justify-center py-4&quot;&gt;
+    &lt;img src=&quot;https://res.cloudinary.com/bilalbudhani/image/upload/v1577093397/muzica_rryfmx.png&quot; class=&quot;w-1/3&quot;&gt;
+  &lt;/section&gt;
+  &lt;section class=&quot;flex justify-between w-full&quot;&gt;
+    &lt;div class=&quot;flex flex-col&quot;&gt;
+      &lt;strong&gt;Invoice #001&lt;/strong&gt;
+      &lt;span class=&quot;text-gray-600 mt-4&quot;&gt;BILL TO&lt;/span&gt;
+      &lt;span&gt;Docraptor Demo LLC&lt;/span&gt;
+      &lt;span&gt;California, USA&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;flex flex-col&quot;&gt;
+      &lt;strong&gt;Invoice Date: 2020-09-10&lt;/strong&gt;
+      &lt;strong class=&quot;mt-8&quot;&gt;Status: &lt;span class=&quot;text-green-800&quot;&gt;PAID&lt;/span&gt;&lt;/strong&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+  &lt;section class=&quot;mt-8 w-full&quot;&gt;
+    &lt;table class=&quot;w-full&quot;&gt;
+      &lt;thead&gt;
+        &lt;tr class=&quot;border-b border-b-2&quot;&gt;
+          &lt;th class=&quot;text-left py-2&quot;&gt;Item&lt;/th&gt;
+          &lt;th class=&quot;text-left py-2&quot;&gt;Unit Cost&lt;/th&gt;
+          &lt;th class=&quot;text-left py-2&quot;&gt;Quantity&lt;/th&gt;
+          &lt;th class=&quot;text-left py-2&quot;&gt;Amount&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr class=&quot;border-b&quot;&gt;
+          &lt;td class=&quot;py-4&quot;&gt;
+            Lite Plan Subscription
+          &lt;/td&gt;
+          &lt;td class=&quot;py-4&quot;&gt;
+            $19.00
+          &lt;/td&gt;
+          &lt;td class=&quot;py-4&quot;&gt;
+            1
+          &lt;/td&gt;
+          &lt;td class=&quot;py-4&quot;&gt;
+            $19.00
+          &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr class=&quot;border-b&quot;&gt;
+          &lt;td colspan=&quot;2&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;py-4&quot;&gt;
+            Subtotal
+          &lt;/td&gt;
+          &lt;td class=&quot;py-4&quot;&gt;
+            $19.00
+          &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr class=&quot;border-b&quot;&gt;
+          &lt;td colspan=&quot;2&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;py-4&quot;&gt;
+            Tax Rate
+          &lt;/td&gt;
+          &lt;td class=&quot;py-4&quot;&gt;
+            0%
+          &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr class=&quot;border-b&quot;&gt;
+          &lt;td colspan=&quot;2&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;py-4&quot;&gt;
+            Amount due
+          &lt;/td&gt;
+          &lt;td class=&quot;py-4&quot;&gt;
+            $19.00
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+      &lt;tfoot&gt;
+        &lt;tr&gt;
+          &lt;td colspan=&quot;4&quot; class=&quot;py-4&quot;&gt;
+            &lt;p&gt;Please write us at &lt;a href=&quot;mailto:hey@bilal.dev&quot;&gt;hey@bilal.dev&lt;/a&gt; in case of any questions&lt;/p&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tfoot&gt;
+    &lt;/table&gt;
+  &lt;/section&gt;
+&lt;/main&gt;</code></pre><p>This view should look like </p><figure class="kg-card kg-image-card kg-width-wide kg-card-hascaption"><img src="https://bilalbudhani.com/content/images/2020/11/Screenshot-2020-11-09-at-2.26.46-PM.png" class="kg-image" alt="Generating PDFs In Rails Application Using DocRaptor" loading="lazy"><figcaption>invoice show preview</figcaption></figure><p>We can tweak our view as per need. Once we&apos;re done with designing our view. We can move to calling DocRaptor API to generate PDF. </p><p>To get the output of the final view contents we will use Rails&apos; &quot;<strong>render_to_string&quot;</strong> method and pass it to DocRaptor API</p><pre><code class="language-ruby">class InvoicesController &lt; ApplicationController
+
+  def show
+    docraptor = DocRaptor::DocApi.new
+    resp = docraptor.create_doc(
+      test: true,
+      document_content: render_to_string,
+      name: &quot;invoice-001.pdf&quot;,
+      document_type: &quot;pdf&quot;,
+      prince_options: {
+        media: &quot;screen&quot;
+      }
+    )
+    send_data resp, filename: &quot;invoice-001.pdf&quot;, type: &quot;application/pdf&quot;
+  end
+end</code></pre><p>Rerunning the above code should generate pdf and start downloading in our browser. </p><h3 id="hosted-document-feature">Hosted Document Feature</h3><p>Another great feature of DocRaptor.com is we can ask it to generate &amp; host the document as well for us. This allows us to skip another major step of uploading document to a third party service &amp; save us effort of maintaining uploading code. To use this feature we will use <strong>create_hosted_doc </strong>method and redirect user to download url </p><pre><code class="language-ruby">docraptor = DocRaptor::DocApi.new
+resp = docraptor.create_hosted_doc(
+  test: true,
+  document_content: render_to_string,
+  name: &quot;invoice-001.pdf&quot;,
+  document_type: &quot;pdf&quot;,
+  prince_options: {
+    media: &quot;screen&quot;
+  }
+ )
+ 
+ # We can save the download URL to a model
+ 
+ redirect_to resp.download_url</code></pre><p>Voila! It is just as easy. All the above code is available on Github <a href="https://github.com/BilalBudhani/docraptor-rails-demo">https://github.com/BilalBudhani/docraptor-rails-demo</a></p><h3 id="closing-thoughts">Closing thoughts</h3><p>When James from DocRaptor.com reached out to me to review their service, I jumped on to it as I have experienced the problems of generating documents on my own first hand. I&apos;m quite impressed with this service &amp; its response time, I will plan to start migrating export functionality inside my projects to use this service. &#xA0;</p>]]></content:encoded></item><item><title><![CDATA[Using ActionCable with ActiveJob In Rails 6]]></title><description><![CDATA[<p>Finally I got around recording a screencast to demonstrate how we can use ActionCable with ActiveJob. </p><p>In this video I built Commander - A visual command runner which executes operating system commands in the background and streams its results to the browser. <br></p><figure class="kg-card kg-embed-card"><iframe width="612" height="344" src="https://www.youtube.com/embed/0aG4bzcAT0E?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></figure><p><em>You can follow me at <a href="https://twitter.com/bilalbudhani">@bilalbudhani</a> or subscribe</em></p>]]></description><link>https://bilalbudhani.com/using-actioncable-with-activejob-in-rails-6/</link><guid isPermaLink="false">5f8da4ec18370d7e334cb883</guid><category><![CDATA[actioncable]]></category><category><![CDATA[activejob]]></category><category><![CDATA[ruby on rails]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Tue, 03 Nov 2020 10:25:00 GMT</pubDate><media:content url="https://images.unsplash.com/photo-1525547867522-cf8070ed441c?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=2000&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ" medium="image"/><content:encoded><![CDATA[<img src="https://images.unsplash.com/photo-1525547867522-cf8070ed441c?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=2000&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ" alt="Using ActionCable with ActiveJob In Rails 6"><p>Finally I got around recording a screencast to demonstrate how we can use ActionCable with ActiveJob. </p><p>In this video I built Commander - A visual command runner which executes operating system commands in the background and streams its results to the browser. <br></p><figure class="kg-card kg-embed-card"><iframe width="612" height="344" src="https://www.youtube.com/embed/0aG4bzcAT0E?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></figure><p><em>You can follow me at <a href="https://twitter.com/bilalbudhani">@bilalbudhani</a> or subscribe to my channel for more such content</em></p>]]></content:encoded></item><item><title><![CDATA[Why you should learn Ruby regardless of what they say]]></title><description><![CDATA[<blockquote>Learn a language which actually loves you back &#x2013; Siddharth Sharma</blockquote><p>Over the years I have learned multiple programming languages. At the start of my career I learned FoxPro, then PHP, then old school way of writing Javascript, then some point of time I got introduced to Ruby and even</p>]]></description><link>https://bilalbudhani.com/why-you-should-learn-ruby-regardless-of-what-they-say/</link><guid isPermaLink="false">5d850e16778b1506dfee3b9b</guid><category><![CDATA[ruby on rails]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Fri, 20 Sep 2019 17:47:30 GMT</pubDate><media:content url="https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ" medium="image"/><content:encoded><![CDATA[<blockquote>Learn a language which actually loves you back &#x2013; Siddharth Sharma</blockquote><img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ" alt="Why you should learn Ruby regardless of what they say"><p>Over the years I have learned multiple programming languages. At the start of my career I learned FoxPro, then PHP, then old school way of writing Javascript, then some point of time I got introduced to Ruby and even after that I went ahead to learn Swift, then back to PHP (this time it was 7.x). I have even experienced every end of the Javascript spectrum from Nodejs, jQuery, Backbone, Coffeescript to React, Vue, Webpack. And yet, I still come back to Ruby for its expressiveness, ecosystem, community, ability to do things which otherwise would have taken 10x time in other languages.<br>This post is not for defaming other languages but to highlight the underlying power of Ruby &amp; why you should embrace it. </p><h2 id="simplicity">Simplicity</h2><p>Ruby is designed keeping simplicity at its core fundamental value. You will realize this as soon as you start learning it. You will experience everything about the language is well thought-out and meticulously designed to help you progress towards your goal instead of absorbing you in the quirks. </p><h2 id="expressiveness">Expressiveness</h2><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://paper-attachments.dropbox.com/s_D5EF17B24692EF8EF569806DB1C97580C5D5AAFC1D3810789D8F66D1ABB810D0_1568988301961_flowboard+2019-09-20+19-34-45.png" class="kg-image" alt="Why you should learn Ruby regardless of what they say" loading="lazy"><figcaption>A real code snippet from Flowboardpro.com</figcaption></figure><p><br>Just reading the code snippet above I bet one can understand what the code is trying to achieve. Now imagine, Teaching this syntax to someone coming from a different background than computer science. Picking up syntax like this is so easy &amp; intuitive. Rather than introducing these folks who want to learn code to a language whose syntax looks gibberish, it would be a great relief to them they try to learn something which makes sense from day 1. <br>Besides, even as a veteran programmer I want to work with a language which talks to me &amp; my team instead of using my brain as a parser when I read code. </p><h2 id="ecosystem">Ecosystem</h2><p>I&#x2019;m part of multiple language ecosystem at the moment. I can wholeheartedly say &#x2013; Ruby ecosystem is one the most mature &amp; powerful of them. You will find an amazing set of plugins, insightful blog posts, explainer videos etc. helping you on every step of the way. Someone already had a problem which you&#x2019;re facing right now and they were generous enough in documenting the solution or guide for others. The entire ecosystem is a reassure of you not being alone in this journey. </p><h2 id="perfect-candidate-for-introductory-programming-language">Perfect Candidate For Introductory Programming Language</h2><p><br>If you or someone you know who wants to learn to code, please do everyone a favour and let it be Ruby. I&#x2019;m a self-taught &amp; I have taught Ruby to multiple folks. Ruby by nature is a very simple language to learn. It provides the right building blocks for anyone who desires to acquire programming mindset. </p><h2 id="what-about-languages-like-rust-golang-etc-">What about languages like Rust, Golang etc.?</h2><p>With my experience, I can say Ruby is fit to solve most of the use cases. However, It would be unfair to say it is a good fit for every use case. Golang, Rust, Elixir are beautiful languages themselves &amp; they serve a purpose. If you&#x2019;re <a href="https://www.youtube.com/watch?v=HgtRAbE1nBM" rel="noreferrer nofollow noopener">building an operating system</a>, <a href="https://github.com/caddyserver/caddy/wiki/QUIC" rel="noreferrer nofollow noopener">a high-performance web server</a> or a <a href="https://blog.discordapp.com/using-rust-to-scale-elixir-for-11-million-concurrent-users-c6f19fc029d3" rel="noreferrer nofollow noopener">real-time communication platform</a> then, by all means, go ahead. Moreover, if you have unusual requirements, or, you simply want to master a particular language for different career prospects then be my guest. &#xA0;<br>Having said that, the majority of us want to write software to solve general level problems, improve productivity, empower businesses, automate tasks etc. </p><h2 id="success-stories">Success Stories</h2><p><br>There are significant success stories of companies of all sizes who placed their bet on the language which paid off well. Here are some names for context</p><p><strong>&#x1F984;Unicorns </strong></p><ul><li><a href="https://shopify.com">Shopify</a> </li><li><a href="https://github.com">Github</a></li><li><a href="https://airbnb.com">Airbnb</a></li><li><a href="https://netflix.com">Netflix</a></li></ul><p><strong>&#x1F4B5;Bootstrapped</strong></p><ul><li><a href="https://basecamp.com">Basecamp</a></li><li><a href="https://gumroad.com">Gumroad</a></li><li><a href="https://discourse.org">Discourse</a> </li><li><a href="https://convertkit.com">ConvertKit</a></li><li><a href="https://fomo.com">Fomo</a></li></ul><!--kg-card-begin: html--><blockquote class="twitter-tweet"><p lang="en" dir="ltr">That&apos;s why languages like <a href="https://twitter.com/hashtag/Ruby?src=hash&amp;ref_src=twsrc%5Etfw">#Ruby</a> are going to be so popular in the future as it reads very similar to English.</p>&#x2014; Chris Oliver (@excid3) <a href="https://twitter.com/excid3/status/1175757610114584576?ref_src=twsrc%5Etfw">September 22, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script><!--kg-card-end: html--><blockquote>if you would like me to share some resources with you on how to get started with Ruby then reach out to me on Twitter/Email.</blockquote>]]></content:encoded></item><item><title><![CDATA[Currency Input Masking with Cleave.js and Money gem in Ruby On Rails]]></title><description><![CDATA[<p>Relying on the user&apos;s input is a crucial part of building a robust application. That&apos;s why I try to apply strong validations on the incoming data on forms or otherwise. One of the important input which needs to be captured very precisely is &#x2013;&#x2013; Amount.</p>]]></description><link>https://bilalbudhani.com/currency-input-masking-with-cleave-js-and-money-gem-in-ruby-on-rails/</link><guid isPermaLink="false">5ce43617fb209d06558e6d1d</guid><category><![CDATA[ruby on rails]]></category><category><![CDATA[money]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Tue, 21 May 2019 18:41:12 GMT</pubDate><media:content url="https://images.unsplash.com/photo-1495245495572-e43e6db5a478?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ" medium="image"/><content:encoded><![CDATA[<img src="https://images.unsplash.com/photo-1495245495572-e43e6db5a478?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ" alt="Currency Input Masking with Cleave.js and Money gem in Ruby On Rails"><p>Relying on the user&apos;s input is a crucial part of building a robust application. That&apos;s why I try to apply strong validations on the incoming data on forms or otherwise. One of the important input which needs to be captured very precisely is &#x2013;&#x2013; Amount. Thou Rails ecosystem has an amazing gem called <a href="https://github.com/RubyMoney/money-rails">Money</a> to work with the amount. However, I wanted an equally elegant experience while dealing with amount related inputs for my users on the front-end. </p><p>After playing around with a couple of Javascript libraries &#x2013;&#x2013;&#xA0;I ended up picking <a href="https://nosir.github.io/cleave.js/">Cleave.js</a>. I configured it to work in conjunction with Money gem. Here is the end result</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://bilalbudhani.com/content/images/2019/05/currency-input-mask.gif" class="kg-image" alt="Currency Input Masking with Cleave.js and Money gem in Ruby On Rails" loading="lazy"><figcaption>Input masking with Cleave.js &amp; Money gem</figcaption></figure><h3 id="here-s-how-to-achieve-this-experience">Here&apos;s how to achieve this experience</h3><p>First, let&apos;s get our dependencies added in our project</p><!--kg-card-begin: markdown--><pre><code class="language-ruby">gem &apos;money-rails&apos;
+</code></pre>
+<pre><code class="language-bash">yarn add cleave.js
+
+rails g money_rails:initializer
+</code></pre>
+<!--kg-card-end: markdown--><!--kg-card-begin: markdown--><p>Then once we configure <code>config/initializers/money.rb</code> based on our requirements, we will move to set up the Javascript part.</p>
+<p>In our <code>app/views/layouts/application.html.slim</code> we will define a global object in respect to Cleave.js configuration in the <code>head</code> tag. It should look something like this</p>
+<pre><code class="language-javascript">/ Global config for input masking in Cleave library
+javascript:
+    window.__AMOUNT_INPUT_MASK__ = {
+    prefix: &quot;#{raw Money.default_currency.symbol} &quot;,
+    numeral: true,
+    numeralThousandsGroupStyle: &apos;lakh&apos;,
+    rawValueTrimPrefix: true
+};
+</code></pre>
+<p><em>tweak <code>numeralThousandsGroupStyle</code> config based on your requirement</em></p>
+<!--kg-card-end: markdown--><!--kg-card-begin: markdown--><p>In our <code>app/assets/javascripts/application.js</code> we will write a small piece of JS snippet which will attach input masking as per our defined Money config to any input which has a class <code>currency-input-mask</code></p>
+<pre><code class="language-javascript">document.addEventListener(&quot;DOMContentLoaded&quot;, function(event) {
+    // Input Mask
+    document.querySelectorAll(&quot;input.currency-input-mask&quot;).forEach(function(el) {
+        new Cleave(el, window.__AMOUNT_INPUT_MASK__);
+    });
+});
+</code></pre>
+<p>Now, any input field with above mentioned class will allow our users to enter values in a much more controlled fashion &#x2013;&#x2013; reducing the chance of human errors with more refined data.</p>
+<!--kg-card-end: markdown--><p></p><!--kg-card-begin: markdown--><p>There is just one last step which needs to be taken care before we move on. Because our input value now holds other data like currency &amp; commas, which is what we are going to receive in parameters in our controller when the user submits the form.</p>
+<p>To address this part, we will need to clean up the value before we can pass it on to our Model. Let&apos;s create a helper file in <code>app/helpers</code> called <code>input_helper.rb</code> and define a method to shave off wanted characters from the value</p>
+<pre><code class="language-ruby">module InputHelper 
+    def strip_inputmask(amount)
+      amount.is_a?(String) ? amount.gsub(/#{Money.default_currency.symbol}|,/, &apos;&apos;).strip.to_i : amount
+    end
+end
+</code></pre>
+<p>Lastly, In our controller, we will include this helper and use the method we just defined</p>
+<pre><code class="language-ruby">class ApplicationController 
+ include InputHelper
+
+
+ ...
+ model.amount = strip_amount(params[:model][:amount])
+ ...
+end
+</code></pre>
+<!--kg-card-end: markdown--><p>I believe this little care to our application has a drastic impact overall to the entire project and brings peace amongst all the stakeholders. </p><blockquote><em>? Do let me know your thoughts or feedback if this was valuable in any way </em></blockquote>]]></content:encoded></item><item><title><![CDATA[Codebase Tells A Lot About Team]]></title><description><![CDATA[<p>I was in Bangalore this week for a client work and just, as usual, I decided to ask friends to meet up for lunch. Since Siddharth was back in town after his rather <a href="https://twitter.com/siddharthkp/status/1047409930179936256">tiring trip</a> we decided to catch up &amp; exchange thoughts. We share a lot of common interests</p>]]></description><link>https://bilalbudhani.com/codebase-tells-a-lot-about-team/</link><guid isPermaLink="false">5bc99614e0a63223d7140813</guid><category><![CDATA[teams]]></category><category><![CDATA[productivity]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Fri, 19 Oct 2018 11:09:16 GMT</pubDate><media:content url="https://images.unsplash.com/photo-1516880711640-ef7db81be3e1?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ&amp;s=939dbc710c9e37117e60635adc3aec7a" medium="image"/><content:encoded><![CDATA[<img src="https://images.unsplash.com/photo-1516880711640-ef7db81be3e1?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjExNzczfQ&amp;s=939dbc710c9e37117e60635adc3aec7a" alt="Codebase Tells A Lot About Team"><p>I was in Bangalore this week for a client work and just, as usual, I decided to ask friends to meet up for lunch. Since Siddharth was back in town after his rather <a href="https://twitter.com/siddharthkp/status/1047409930179936256">tiring trip</a> we decided to catch up &amp; exchange thoughts. We share a lot of common interests ranging from deep love of technology to make things which can create value for people, hence we often end up having deep conversations. I draw a huge amount of value out of these conversations, get my thoughts validated or at least boost my intellect. To pain a big picture, I try to surround myself with friends with whom I can have such conversations &amp; they push me to be a better version of myself &#x2013; I try to reciprocate the same for them.</p><p>Coming back to the subject of this blog post and why I&apos;m so compelled to write about this topic.</p><p>While having a conversation we reached a point where we were discussing the importance of well structure codebases, to which Sid added: &quot;Codebase tells a lot about a team&quot;. &#xA0;This statement of his resonated with my experience on so many levels. The more I thought about it the more it made sense. My restless brain started applying this theory to all the encounters I had with codebases I&apos;ve worked with in my professional journey starting 2007 circa and almost in all the instances I could connect back to the level of teamwork we had was apparent by just look at the codebase.</p><p>Looking back I can tell now &#x2013; projects which had well-defined codebases were immensely productive, teammates had healthy work-life balance, business was growing positively because of fewer bugs which also meant happy customers. On the other hand, projects, where codebases were not mindfully crafted, was a chaos to work with. One could sense a constant pressure among the team members about what will break next, pulling in late nighters to keep everything in check, neglecting sleep or more important taking a toll on mental health and eventually impacting the overall business growth.</p><p>In software engineering, teams often obsess over scaling the code horizontally/vertically, they regularly invest a ton of time &amp; effort reducing the no. of resources required to keep the code running, but, they almost never invest in scaling their own productivity. &#xA0;Teams don&apos;t have answers to:</p><ul><li>How much time does it take to set up a codebase for a new member?</li><li>Average commit to production time?</li><li>How trivial is it to introduce a change in the codebase?</li><li>Is the feedback cycle strong enough to help team members grow professionally or there is a culture of shaming team member for a making unintentional mistake? </li></ul><p>I believe most of the team members do have an uncalculated answer to the above questions except they are never addressed mainly because oftentimes teams have a hard time correlating productivity to codebases, some of the teams have accepted this as a part of the trade &amp; has blinded themselves to the suffering. On a side note, A team where <em>ninja </em>members are worshiped &amp; learners are <em>neglected </em>should be called a cult. </p><p>One of the paragraphs above I briefly touched on downsides of badly designed codebases. Here are a few more impacts:</p><ul><li>High churn in the team members working on the codebase.</li><li>Loss of respect amongst teammates resulting in a toxic work environment.</li><li>Common miscommunication between teams around expectation &amp; delivery.</li><li>Lack of motivation to show up at work every day.</li><li>Fear of changing existing implemented functionality because nobody wants come as incapable.</li></ul><p>etc...</p><p>Okay, I&apos;m sure teams never intend to have badly structured codebase so...</p><h2 id="how-to-fix-the-codebase">How to fix the codebase</h2><p>Fortunately, It is not difficult to improve the codebase. A big plus is most of the teams are so familiar with the drawbacks of their codebase &#x2013; they will be able to quickly come up with a comprehensive list of fixes required. On top of that here are the few things I would suggest to aim for:</p><ul><li>Reduce/Automate the no. of steps required to set up or get a project up &amp; running to one single command.</li><li>Standardize development tools to a possible extent to keep team members code quality on the same level.</li><li>Regularly extract common part of the codebase in the form of libraries, packages, design system etc. regardless of a monolith/micro-service architecture.</li><li>Prioritise simplicity over complexity.</li><li>Documentation is a myth; code should be optimized for readability &amp; expressiveness.</li><li>Learn from big open source projects about codebase structuring; they are usually nicely designed.</li><li>Make sure they are easily deployable.</li><li>Stick to industry-wide best practices rather than inventing own as they almost certainly lead to clashes.</li><li>At least shoot for having test coverage around critical part of the codebase (Remember: <a href="http://paulgraham.com/ds.html">Do things that don&apos;t scale</a>).</li></ul><p>Overall, aiming for a healthy codebase is worth it; The payoff is huge in the long run which a team has to internalize sooner than later. </p><p>Do you agree with my opinions? I&apos;d be glad to hear from you on this topic with an open mind. </p>]]></content:encoded></item><item><title><![CDATA[One Year Of Self-Employment]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>Last year in March I quit my full-time job at <a href="https://www.bigbinary.com">BigBinary</a> without zeroing down what I&apos;ll do next.</p>
+<p>I had a bunch of not so concrete ideas in my mind which I thought would be worth exploring and with full-time, on my hand, I would be able to</p>]]></description><link>https://bilalbudhani.com/one-year-of-self-employment/</link><guid isPermaLink="false">5b7fe6640ccd411c70715207</guid><category><![CDATA[entrepreneurship]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Mon, 09 Apr 2018 09:56:44 GMT</pubDate><media:content url="https://bilalbudhani.com/content/images/2018/04/joshua-earle-157231-unsplash.jpg" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><img src="https://bilalbudhani.com/content/images/2018/04/joshua-earle-157231-unsplash.jpg" alt="One Year Of Self-Employment"><p>Last year in March I quit my full-time job at <a href="https://www.bigbinary.com">BigBinary</a> without zeroing down what I&apos;ll do next.</p>
+<p>I had a bunch of not so concrete ideas in my mind which I thought would be worth exploring and with full-time, on my hand, I would be able to give a fair attempt to them. Overall, The idea behind quitting my job was to figure out what I want to spend my next 5 years working on.</p>
+<p>To begin with, it was not easy to quit, BigBinary is the best employer I ever had a pleasure to work with. Open source culture, brilliant team, remote first, full autonomy and complete transparency across the company. To be honest, these are hard to find attributes in a company where I come from. Throughout the time I was working with the company I was never felt underwhelmed.</p>
+<p>Almost immediately after I quit, I decided to join my old tech friends as a solo consultant as they were gearing up to help <a href="https://www.shaadi.com">India&apos;s prime matrimony site</a> to migrate to React from legacy PHP. This turned out to be an immense learning experience on a humongous codebase and rewarding at the same time.</p>
+<p>Since then I have been helping numerous startups &amp; companies with their technology stack &amp; product development.</p>
+<p>Fortunately, while consulting with a company here in Mumbai I realised a problem we&apos;re solving for them would be big enough to be solved for the whole industry. Hence, I decided to run this through the client for whom we&apos;ve been solving the problem and surprisingly, he shared the same beliefs. After few meetings, We decided to double down &amp; convert this into SaaS product. And, you know what else? The client is now an investor! (Achievement unlock?) Life works in weird ways.</p>
+<p>Also, Sometime later last year, I decided to give it a proper name and hence, <a href="https://neev.io">Neev Labs</a> was initialised. I&apos;m aiming to bootstrap a company where we can work with interesting clients and build impactful SaaS products with a healthy work environment.</p>
+<p>Finally, I would like to conclude this post on a note</p>
+<blockquote>
+<p>A lot has happened last year, and a lot is about to happen. Stay tuned!</p>
+</blockquote>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Using Next.js With Styled Components]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>I have been fiddling around with <a href="https://github.com/zeit/next.js/">Next.js</a> library for the past couple of months and it has been really fun so far.</p>
+<p><a href="https://github.com/styled-components/styled-components">Styled-Components</a> is another great library I&apos;ve started using in my production applications which has improved my development cycle.</p>
+<p>Let&apos;s talk business now, Next.</p>]]></description><link>https://bilalbudhani.com/using-next-js-with-styled-components/</link><guid isPermaLink="false">5b7fe6640ccd411c7071520b</guid><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Mon, 22 Jan 2018 11:52:50 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>I have been fiddling around with <a href="https://github.com/zeit/next.js/">Next.js</a> library for the past couple of months and it has been really fun so far.</p>
+<p><a href="https://github.com/styled-components/styled-components">Styled-Components</a> is another great library I&apos;ve started using in my production applications which has improved my development cycle.</p>
+<p>Let&apos;s talk business now, Next.js is server-rendered library we will need to utilize Styled-Components <a href="https://www.styled-components.com/docs/advanced#server-side-rendering">server side rendering</a> functions to get them working together.</p>
+<p>Add styled-components package in your Next.js project:</p>
+<pre><code class="language-bash">yarn add styled-components
+</code></pre>
+<p>Now in the <code>pages</code> folder create a new file called <code>_document.js</code> and paste the following code snippet in it.</p>
+<pre><code class="language-javascript">import Document, { Head, Main, NextScript } from &apos;next/document&apos;
+import { ServerStyleSheet } from &apos;styled-components&apos;
+
+export default class MyCustomDocument extends Document {
+  static getInitialProps ({ renderPage }) {
+    const sheet = new ServerStyleSheet()
+    const page = renderPage(App =&gt; props =&gt; sheet.collectStyles(&lt;App {...props} /&gt;))
+    const styleTags = sheet.getStyleElement()
+    return { ...page, styleTags } // return styles collected
+  }
+
+  render () {
+    return (
+      &lt;html&gt;
+        &lt;Head&gt;
+          &lt;title&gt;My Page Title&lt;/title&gt;
+          {this.props.styleTags}
+        &lt;/Head&gt;
+        &lt;body&gt;
+          &lt;Main /&gt;
+          &lt;NextScript /&gt;
+        &lt;/body&gt;
+      &lt;/html&gt;
+    )
+  }
+}
+</code></pre>
+<p>Above code collects all the styles defined using styled-components in the application and return them to be populated as <code>props</code> before the page is rendered. Now inside <code>render</code> function the <code>{this.props.styleTags}</code> injects those collected styles in the <code>head</code> part of the page. Makes sense?</p>
+<p>Moreover, If there is a need to apply global styles then import another function called <code>injectGlobal</code> and provide your styles before defining your custom document component.</p>
+<pre><code class="language-javascript">import { ServerStyleSheet, injectGlobal } from &quot;styled-components&quot;;
+
+injectGlobal`
+  html {
+    font-size: 10px;
+  }
+  body {
+    font-family: &quot;Merriweather&quot;, serif;
+    font-size: 1.6em;
+    line-height: 1.6;
+  }
+`;
+
+export default class MyCustomDocument extends Document {
+//....
+</code></pre>
+<p>Next step is enabling Styled Components babel plugin</p>
+<pre><code class="language-bash">yarn add -D babel-plugin-styled-components
+</code></pre>
+<p>Then we will change our <code>.babelrc</code> to</p>
+<pre><code class="language-javascript">{
+  &quot;presets&quot;: [
+    &quot;next/babel&quot;
+  ],
+  &quot;plugins&quot;: [
+    [
+      &quot;styled-components&quot;,
+      {
+        &quot;ssr&quot;: true,
+        &quot;displayName&quot;: true,
+        &quot;preprocess&quot;: false
+      }
+    ]
+  ]
+}
+</code></pre>
+<p>That&apos;s it! I&apos;m finding Next.js + Styled Component combination very productive and flexible. You can let me know your thoughts on this combo on twitter.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[2017 In Review]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>This is the last day of the year 2017. I&apos;m sitting right now at my favourite Starbucks cafe and spending the evening writing this post.</p>
+<p>Looking back to what all happened in 2017 &#x2013; It seems like this year would eat all the previous years of my life</p>]]></description><link>https://bilalbudhani.com/2017/</link><guid isPermaLink="false">5b7fe6640ccd411c7071520a</guid><category><![CDATA[2017]]></category><category><![CDATA[review]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Sun, 31 Dec 2017 15:03:46 GMT</pubDate><media:content url="https://bilalbudhani.com/content/images/2017/12/IMG_2720.JPG" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><img src="https://bilalbudhani.com/content/images/2017/12/IMG_2720.JPG" alt="2017 In Review"><p>This is the last day of the year 2017. I&apos;m sitting right now at my favourite Starbucks cafe and spending the evening writing this post.</p>
+<p>Looking back to what all happened in 2017 &#x2013; It seems like this year would eat all the previous years of my life for breakfast when it comes to challenges I faced. I&apos;m nothing but, astounded when I recall how this year unfolded itself in my life. Not only my professional life went through a major change but also my personal life took a big turn. Majority part of this year went in realigning myself to these changes (or challenges I would say) life threw at me. The segue between these life changes were the hardest part to cope. I wish there were something (or someone) which could play of role of a compass (parents perhaps?) and help me navigate the transitions I was going through. Nevertheless, I believe with every change I grew stronger as a person and unravelled things myself which made me the confident man which I&apos;m today.</p>
+<p>Anyways, I want to compile all the highlights of this year starting with....</p>
+<p><strong>Marraige</strong><br>
+This year I got married to the best person I could possibly ask for; Sadiya &#x2013;&#xA0;she is the best thing happened to me till date. I&apos;m glad I found a partner who is understanding, caring, loving &amp; most importantly a reasonable person. She has managed to bring out the best of me in every aspect and she constantly keeps doing that. It gives me deep satisfaction to have her in my life.</p>
+<p><strong>Europe</strong><br>
+I have been planning since a long to take some time off and visit Europe, unfortunately, I never managed to do that until I got married. I had an opportunity window, my wedding leaves, which I took a full advantage of and planned a Europe trip. Surprisingly, It took me a long time to decide what all countries I want to visit &#x2013; as it was January which is not a recommended time to visit Europe &apos;cause of low temperature but I did not let that convince me otherwise. Ultimately, We picked France &amp; Switzerland.</p>
+<blockquote>
+<p>Taking The Trip Was The Best. Decision. Ever.</p>
+</blockquote>
+<p><strong>Quitting Full Time Job</strong><br>
+I&apos;m an experiment freak, this is one thing I&apos;m really certain in my life. Since I&apos;ve started working I&apos;ve been doing experiments with my professional life. It has been a decade since I&apos;ve been working professionally and I&apos;ve done dozens of experiments, almost all of them worked out pretty well. Quitting my job at <a href="https://www.bigbinary.com">BigBinary</a> was part of that ritual.</p>
+<p>BigBinary, played a major part in bringing back professional decipline in my life. I learned a ton of things about consulting, professionalism, programming etc. from them. I, Thank them in having faith in me &amp; my work I was doing for them from bottom of my heart, especially, <a href="https://www.bigbinary.com/team/neeraj">Neeraj Singh</a>.</p>
+<p><strong>Consulting</strong><br>
+I&apos;d a very little clue of what I was gonna do next, so I kept an open mind to the things came along my way. Fortunately, I started getting inquries to consult on projects almost immediately. I got to work on some great projects this year and help my clients to get efficient at what they do.</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">One my of client gifted me this today as a token of appreciation.  <br><br>The system I helped them build is saving them ton of time and made their internal processes efficient. <br><br>To a consultant (like me) gesture like this from a client means a lot. <a href="https://t.co/PJ5J9XeFdC">pic.twitter.com/PJ5J9XeFdC</a></p>&#x2014; Bilal Budhani ?&#x200D;? (@BilalBudhani) <a href="https://twitter.com/BilalBudhani/status/941026179179356160?ref_src=twsrc%5Etfw">December 13, 2017</a></blockquote>
+<p><strong>Side Projects</strong><br>
+I, somehow, managed to launch a small side project called <a href="https://stickmatic.in">Stickmatic</a> - Get your photos printed as magnets. After doing some basic social media marketing I managed to get some traction on the project. However, I struggle to devote any time on the project to make it grow. I guess I&apos;ll need to figure out someway next year to revamp this project.</p>
+<p><strong>Open Source</strong><br>
+It makes me really happy to write this section &apos;cause I was able to allocate small amount of time this year to work on open source stuff. As far as I remember this was a longest pending goal on my to-do list. I&apos;m glad that I was able to put out open source projects.</p>
+<ul>
+<li><a href="https://github.com/BilalBudhani/react-multiple-datepicker">React Multiple Datepicker</a></li>
+<li><a href="https://github.com/BilalBudhani/activeadmin_sidekiq_stats">Active Admin Sidekiq Stats</a></li>
+<li><a href="https://github.com/CompuIves/codesandbox-client/commits?author=BilalBudhani">Contributions to Codesandbox</a></li>
+</ul>
+<p><strong>Blogging</strong><br>
+Another thing I wanted to get a hold of was blogging. I did bunch of experiments with blogging over the last few years but failed to keep consistency. So this time I took things seriously and invested significant time to try out multiple blogging frameworks &amp; platforms. Finally, I settled on <a href="https://ghost.org/">Ghost</a> - It is minimal, modern, less bloated. I&apos;m running this on self managed <a href="https://m.do.co/c/33e40efaed09">DigitalOcean droplet</a>. After that, I started focusing on content and improving my writing style. Good thing was I got featured to Javascript weekly, Ruby weekly and few other newsletters couple of times. I have plans for next year to take writing more seriously.</p>
+<p><strong>Family &amp; Friends</strong><br>
+Lastly, Transition from a single to a married guy was not easy but I&apos;m glad it happened. I learned a lot about being a family guy and buildng relationships. One thing I can say for a fact is, <em>Relationships are the most fragile</em> thing in the world and they probably has the <em>highest</em> level of impact on your mind. Your productivity is directly related to the health of your relationships with your dear ones. I wish they could see the relationships same way as I do.</p>
+<p>Anyways, I&apos;m happy with the progress I made this year now its time to wrap it up. I&apos;m very excited to enter 2018 and execute all the plans I made for it. I hope 2018 would open a lot of opportunities, take me to new heights and help me explore my uncharted potentials.</p>
+<p>Happy new year :)</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Running Sidekiq On Heroku Free Dyno With Puma]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>In my opinion, <a href="https://www.heroku.com">Heroku</a> is the nearly perfect place to deploy a project. It provides support for a lot of technologies out of the box with minimal or no configuration.</p>
+<p>Similarly, <a href="https://sidekiq.org">Sidekiq</a> is what I strongly prefer whenever there is a need for background job processing. It ships with all</p>]]></description><link>https://bilalbudhani.com/running-sidekiq-on-heroku-free-dyno/</link><guid isPermaLink="false">5b7fe6640ccd411c70715208</guid><category><![CDATA[heroku]]></category><category><![CDATA[sidekiq]]></category><category><![CDATA[puma]]></category><category><![CDATA[ruby on rails]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Mon, 27 Nov 2017 17:41:13 GMT</pubDate><media:content url="https://bilalbudhani.com/content/images/2017/11/1.-bundle-exec-sidekiq--fsevent_watch--2017-11-27-23-07-30.png" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><img src="https://bilalbudhani.com/content/images/2017/11/1.-bundle-exec-sidekiq--fsevent_watch--2017-11-27-23-07-30.png" alt="Running Sidekiq On Heroku Free Dyno With Puma"><p>In my opinion, <a href="https://www.heroku.com">Heroku</a> is the nearly perfect place to deploy a project. It provides support for a lot of technologies out of the box with minimal or no configuration.</p>
+<p>Similarly, <a href="https://sidekiq.org">Sidekiq</a> is what I strongly prefer whenever there is a need for background job processing. It ships with all the right set of APIs to deal with background processing and more importantly a great monitoring dashboard.</p>
+<p>So, Last weekend I decide to hack on a side-project which has been on my mind forever (I will write about this project in another blog post). I rolled up a new rails project, added Sidekiq with Redis and pieced together a basic functional prototype. When I moved to deployment process I realised - I have to run another dyno to keep the Sidekiq process running.</p>
+<p>Now let me be honest with you here, I have an itch for creating side-projects. Once I get hit by a problem I take some time out to hack on it &amp; later I struggle to find time to work on the project again. That&apos;s why I don&apos;t go with any paid plan in project&apos;s infant days.</p>
+<p>Coming back to our problem at hand, Heroku already provides a free tier of <a href="https://elements.heroku.com/addons/heroku-redis">Redis as an addon</a> &#x2013;&#xA0;which does</p>
+<pre><code>heroku addons:create heroku-redis:hobby-dev
+</code></pre>
+<p>The other half is to figure out how to spawn a Sidekiq process within the same dyno. After some digging I found a great blog post <a href="http://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a> describing how to achieve the same in Unicorn. From here is just a matter of figuring out how to replicate this behaviour in Puma.</p>
+<p>...some experiments later...</p>
+<p>I got the <code>puma.rb</code> inside <code>config</code> to mimic the same behaviour for me &#x2013; keeping Heroku Redis&apos; client connection limit in check. Here is the config:</p>
+<pre><code class="language-ruby">threads_count = ENV.fetch(&quot;RAILS_MAX_THREADS&quot;) { 5 }
+
+threads threads_count, threads_count
+
+port        ENV.fetch(&quot;PORT&quot;) { 3000 }
+
+environment ENV.fetch(&quot;RAILS_ENV&quot;) { &quot;development&quot; }
+
+workers ENV.fetch(&quot;WEB_CONCURRENCY&quot;) { 2 }
+
+preload_app!
+
+// Update by (Stefan)
+before_fork do 
+    @sidekiq_pid ||= spawn(&apos;bundle exec sidekiq -t 25&apos;)
+end
+
+on_worker_boot do
+  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+end
+
+on_restart do
+  Sidekiq.redis.shutdown { |conn| conn.close }
+end
+
+plugin :tmp_restart
+</code></pre>
+<p>Copy this to your Puma config and deploy this with your Heroku app.</p>
+<pre><code>git push heroku master
+</code></pre>
+<p>Be sure to point <code>Procfile</code> to right puma config</p>
+<pre><code>bundle exec puma -C config/puma.rb
+</code></pre>
+<p>P.S: I would not recommend this setup at all for your <strong>production</strong> application. This is strickly for experimental purpose.</p>
+<p>UPDATE:<br>
+Mike Perham (creator of Sidekiq) make some points on <a href="https://www.reddit.com/r/ruby/comments/7fwxpa/running_sidekiq_on_heroku_free_dyno_with_puma/dqf0nwp/">Reddit thread</a> which you must checkout before moving ahead with this approach.</p>
+<p>I have also updated the code snippet above based the findings (mentioned in the comments below) of <a href="https://stefanwrobel.com/">Stefan Wrobel</a>.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Building Algolia Powered Search In React Native]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>Github Instant Search App</p>
+<p>Algolia provides in a nutshell, Search As A Service, which if you think is a<br>
+pretty cool service. It takes away all the heavy lifting of building &amp;<br>
+maintaining a search infrastructure, gives you a nice API to work with and a<br>
+robust monitoring to keep</p>]]></description><link>https://bilalbudhani.com/building-algolia-powered-search-in-react-native/</link><guid isPermaLink="false">5b7fe6640ccd411c70715205</guid><category><![CDATA[javascript]]></category><category><![CDATA[react]]></category><category><![CDATA[algolia]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Mon, 02 Oct 2017 10:52:00 GMT</pubDate><media:content url="https://bilalbudhani.com/content/images/2017/11/algolia.png" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><img src="https://bilalbudhani.com/content/images/2017/11/algolia.png" alt="Building Algolia Powered Search In React Native"><p>Github Instant Search App</p>
+<p>Algolia provides in a nutshell, Search As A Service, which if you think is a<br>
+pretty cool service. It takes away all the heavy lifting of building &amp;<br>
+maintaining a search infrastructure, gives you a nice API to work with and a<br>
+robust monitoring to keep everything in check.</p>
+<p>The team at Algolia has open sourced API client for most of the programming<br>
+languages &amp; also built libraries for a bunch of popular platforms out there.<br>
+<a href="https://github.com/algolia/react-instantsearch">React-InstantSearch</a> is one of such library which we will be using in this example.</p>
+<p>Here is the demo of what we&#x2019;re going to build in this blog post</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/YR6Rf7NB-2g" frameborder="0" allowfullscreen></iframe>
+<p>Add the library we&#x2019;re going to use to build this</p>
+<pre><code>yarn add react-instantsearch
+</code></pre>
+<p>Let&#x2019;s open <code>App.js</code> in our editor and initialise InstantSearch</p>
+<pre><code class="language-javascript">&lt;InstantSearch
+  appId=&quot;TLCDTR8BIO&quot;
+  apiKey=&quot;686cce2f5dd3c38130b303e1c842c3e3&quot;
+  indexName=&quot;repositories&quot;
+&gt;
+  &lt;View style={styles.searchBoxContainer}&gt;
+    &lt;SearchBox /&gt;
+  &lt;/View&gt;
+
+  &lt;Results /&gt;
+&lt;/InstantSearch&gt;
+</code></pre>
+<p>InstantSearch component above will empower our search &#x2013;&#x2013; think of it as a<br>
+pipeline which takes appId, apiKey &amp; indexName as a prop and connects us to<br>
+Algolia service. This component also takes child components which will provide us with a search box &amp; results provided.</p>
+<p>Let&#x2019;s code SearchBox component to be able to perform search against the data</p>
+<pre><code class="language-javascript">import { connectSearchBox } from &quot;react-instantsearch/connectors&quot;;
+//...
+const SearchBox = connectSearchBox(({ refine, currentRefinement }) =&gt; {
+return (
+        &lt;TextInput
+           style={styles.textBox}
+           onChangeText={text =&gt; refine(text)}
+           value={currentRefinement}
+           placeholder=&quot;Search Something&quot;
+           clearButtonMode=&quot;always&quot;
+           spellCheck={false}
+           autoCorrect={false}
+           autoCapitalize=&quot;none&quot;
+         /&gt;
+       );
+});
+</code></pre>
+<p>InstantSearch library ships with connectors which provides ready to use<br>
+functions which can be hooked to the components to be able to perform defined<br>
+actions &#x2013;&#x2013; saving us all the effort of writing those logics.</p>
+<p>In this case <code>connectSearchBox</code> enables us to connect our <code>TextInput</code> and<br>
+perform search directly on our dataset (Pretty Cool? Huh).</p>
+<p>Let&#x2019;s now add <code>Results</code> component to handle result sets provided by Algolia<br>
+service.</p>
+<pre><code class="language-javascript">import { connectInfiniteHits } from &quot;react-instantsearch/connectors&quot;;
+//...
+const Results = connectInfiniteHits(({ hits, hasMore, refine }) =&gt; {
+const onEndReached = () =&gt; {
+  if (hasMore) {
+    refine();
+  }
+};
+return (
+    &lt;FlatList
+      data={hits}
+      onEndReached={onEndReached}
+      keyExtractor={repo =&gt; repo.objectID}
+      renderItem={({ item }) =&gt; &lt;Repository repo={item} /&gt;}
+    /&gt;
+   );
+});
+</code></pre>
+<p>Similarly <code>connectInfiniteHits</code> function provides us with the data that can be used to display the result sets.</p>
+<p>Let us now write the component which will be responsible to display search item and highlight searched term</p>
+<pre><code class="language-javascript">const Repository = ({ repo }) =&gt; (
+  &lt;View style={styles.repoContainer}&gt;
+    &lt;FontAwesome name=&quot;github&quot; style={styles.repoIcon} /&gt;
+    &lt;View style={{ flex: 1 }}&gt;
+      &lt;Text style={styles.repoTitle}&gt;
+
+  &lt;Highlight attributeName=&quot;name&quot; hit={repo} style={styles.repoTitle} /&gt;
+      &lt;/Text&gt;
+      &lt;Text
+        ellipsizeMode=&quot;tail&quot;
+        numberOfLines={2}
+        style={styles.repoDescription}
+      &gt;
+       {repo.description}
+     &lt;/Text&gt;
+   &lt;/View&gt;
+   &lt;View style={styles.metaContainer}&gt;
+     &lt;FontAwesome name=&quot;star&quot; style={styles.starIcon} /&gt;
+     &lt;Text&gt;{repo.stars}&lt;/Text&gt;
+   &lt;/View&gt;
+  &lt;/View&gt;
+);
+</code></pre>
+<p>If you&#x2019;re familiar with React Native than you should be fairly comfortable with the above code except <code>Highlight</code> component (Don&#x2019;t worry I&#x2019;ve explain that below).</p>
+<p>Everything is now in place except one thing. Now, Let us write the last piece of the puzzle. I&#x2019;m going to break down the component into small chunks to make it easier for understanding.</p>
+<p>As we would expect there&#x2019;s a connector ships with the library to help us figure out the part as well</p>
+<pre><code class="language-javascript">import { connectHighlight } from &quot;react-instantsearch/connectors&quot;;
+
+//...
+const Highlight = connectHighlight(
+({ highlight, attributeName, hit }) =&gt; {
+const parsedHit = highlight({
+    attributeName,
+    hit,
+});
+</code></pre>
+<p>If you remember the <code>Repository</code> component code we&#x2019;ve used <code>Highlight</code> component and passed some props (go refer that above). We will accept those props with one more extra prop which is provided by <code>connectHighlight</code> called <code>highlight</code>.</p>
+<p>We will compose <code>parsedHit</code> function using <code>highlight</code> &amp; other props. This<br>
+function will return us an array of the objects with a property called<br>
+<code>isHighlighted</code> &#x2013;&#x2013; which can be used to build highlight functionality in our<br>
+app. Let&#x2019;s complete the above component code</p>
+<pre><code class="language-javascript">const highlightedHit = parsedHit.map((part, idx) =&gt; {
+if (part.isHighlighted) {
+   return (
+     &lt;Text key={idx} style={{ backgroundColor: &quot;#ffff00&quot; }}&gt;
+        {part.value}
+     &lt;/Text&gt;
+   );
+}
+ return part.value;
+});
+</code></pre>
+<p><em>If</em> the part of the content is highlighted then wrap it with <code>Text</code> component with a background color yellow <em>else</em> do nothing just return the content.</p>
+<p>That&#x2019;s it! You should now have a fully working search with a <em>searched</em> term<br>
+highlight functionality. You can be more creative and add <em>animations</em> or any<br>
+other fancy functionality as per your design requirements.</p>
+<p>I&#x2019;ve kept the code snippets to minimal for brevity purpose &#x2013;&#x2013; whole code of the<br>
+example application shown in the video above is hosted on Github</p>
+<p>Source Code: <a href="https://github.com/BilalBudhani/react-native-github-algolia-search">https://github.com/BilalBudhani/react-native-github-algolia-search</a></p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Upload Multiple Files To Cloudinary Using React Dropzone & Axios]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>We had a requirement in one of our recent client&#x2019;s project to provide a lot of file uploading. Being a developer we are quite used to the whole uploading process &amp; the time it takes on the internet. However,&#xA0;file upload can be a daunting experience for</p>]]></description><link>https://bilalbudhani.com/upload-multiple-files-to-cloudinary-using-react-dropzone-axios/</link><guid isPermaLink="false">5b7fe6640ccd411c70715204</guid><category><![CDATA[react]]></category><category><![CDATA[cloudinary]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Wed, 26 Jul 2017 10:50:00 GMT</pubDate><media:content url="https://bilalbudhani.com/content/images/2017/11/cloudinary.jpeg" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><img src="https://bilalbudhani.com/content/images/2017/11/cloudinary.jpeg" alt="Upload Multiple Files To Cloudinary Using React Dropzone &amp; Axios"><p>We had a requirement in one of our recent client&#x2019;s project to provide a lot of file uploading. Being a developer we are quite used to the whole uploading process &amp; the time it takes on the internet. However,&#xA0;file upload can be a daunting experience for a massive amount of users on the internet so, be mindful when you&#x2019;re working on one.</p>
+<p>We&#x2019;ve good experience in building file uploading &#x2014; By leveraging all those experience our aim was to build a delightful user experience around it.&#xA0;I&#x2019;ve described below the service &amp; libraries we used to build that experience.</p>
+<p><a href="http://cloudinary.com/invites/lpov9zyyucivvxsnalc5/ihvoxdl9tuoaxpbdrre8">Cloudinary</a> &#x2014; This service has become my&#xA0;<em>de facto</em>&#xA0;place to host assets for a long time now, the reason being they not just provide great image processing features on the fly but also provide super simple file uploading process directly from the browser without involving any backend.</p>
+<p><a href="https://react-dropzone.js.org/">React Dropzone</a> &#x2014; We&#x2019;re big fan of React&#x2019;s declarative approach towards building UI. Similarly, drop zone provides an intuitive declarative API for enabling file upload across browsers.</p>
+<p><a href="https://github.com/mzabriskie/axios">Axios</a> &#x2014; A sleek promise based HTTP robust client library which helps us to talk to third party services &amp; backend without breaking a sweat.</p>
+<h3 id="howto">How To&#xA0;??&#x200D;?</h3>
+<p>Firstly register on&#xA0;<a href="http://cloudinary.com/invites/lpov9zyyucivvxsnalc5/ihvoxdl9tuoaxpbdrre8">Cloudinary</a>, (if you don&#x2019;t have an account already) and obtain your&#xA0;<strong>API KEY</strong>&#xA0;&amp;&#xA0;<strong>Image upload URL</strong></p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*pFHq5wQaIYcqWzrd_AXnhg.png" alt="Upload Multiple Files To Cloudinary Using React Dropzone &amp; Axios" loading="lazy"></p>
+<p>Secondly, We will need to enable unsigned upload in our&#xA0;<a href="https://cloudinary.com/console/settings/upload">account settings</a></p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*ixSreGuN55V2XlD0OU_dqA.png" alt="Upload Multiple Files To Cloudinary Using React Dropzone &amp; Axios" loading="lazy"></p>
+<p>Once we&#x2019;ve enabled unsigned uploading, we should see something like this</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*jSe3M4EfjFN1Iwc3pvx60Q.png" alt="Upload Multiple Files To Cloudinary Using React Dropzone &amp; Axios" loading="lazy"></p>
+<p>Note down the preset name we will need it later in the code.</p>
+<p>Now, Head over to your project &#x2014; add&#xA0;<a href="https://react-dropzone.js.org/">React Dropzone</a>&#xA0;&amp;&#xA0;<a href="https://github.com/mzabriskie/axios">Axios</a></p>
+<pre><code>npm install --save react-dropzone axios
+</code></pre>
+<p>Let&#x2019;s import these newly added dependencies to the React component where we want to provide uploading feature</p>
+<pre><code class="language-javascript">import Dropzone from &apos;react-dropzone&apos;
+import axios from &apos;axios&apos;
+</code></pre>
+<p>We&#x2019;ll now add the code for uploading</p>
+<pre><code class="language-javascript">&lt;Dropzone 
+    onDrop={this.handleDrop} 
+    multiple 
+    accept=&quot;image/*&quot; 
+    style={styles.dropzone}
+&gt;
+    &lt;p&gt;Drop your files or click here to upload&lt;/p&gt;
+&lt;/Dropzone&gt;
+</code></pre>
+<p>Dropzone will trigger function<code>handleDrop</code> with the first parameter as an array of&#xA0;<a href="https://developer.mozilla.org/en-US/docs/Web/API/File/File">File</a>&#xA0;when our user is done choosing the files to upload.</p>
+<p>Now let&#x2019;s add code which will upload those files to our&#xA0;<a href="http://cloudinary.com/invites/lpov9zyyucivvxsnalc5/ihvoxdl9tuoaxpbdrre8">Cloudinary</a>&#xA0;Account</p>
+<pre><code class="language-javascript">handleDrop = files =&gt; {
+  // Push all the axios request promise into a single array
+  const uploaders = files.map(file =&gt; {
+    // Initial FormData
+    const formData = new FormData();
+    formData.append(&quot;file&quot;, file);
+    formData.append(&quot;tags&quot;, `codeinfuse, medium, gist`);
+    formData.append(&quot;upload_preset&quot;, &quot;pvhilzh7&quot;); // Replace the preset name with your own
+    formData.append(&quot;api_key&quot;, &quot;1234567&quot;); // Replace API key with your own Cloudinary key
+    formData.append(&quot;timestamp&quot;, (Date.now() / 1000) | 0);
+    
+    // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+    return axios.post(&quot;https://api.cloudinary.com/v1_1/codeinfuse/image/upload&quot;, formData, {
+      headers: { &quot;X-Requested-With&quot;: &quot;XMLHttpRequest&quot; },
+    }).then(response =&gt; {
+      const data = response.data;
+      const fileURL = data.secure_url // You should store this URL for future references in your app
+      console.log(data);
+    })
+  });
+
+  // Once all the files are uploaded 
+  axios.all(uploaders).then(() =&gt; {
+    // ... perform after upload is successful operation
+  });
+}
+</code></pre>
+<p><em>Gist</em>: <a href="https://gist.github.com/BilalBudhani/97c36307bfb184d32f4125bcedc0fd55">https://gist.github.com/BilalBudhani/97c36307bfb184d32f4125bcedc0fd55</a></p>
+<p><em>(Replace the Cloudinary image upload URL, upload preset, API key with your own)</em></p>
+<p>Voila! We just got ourselves a completely functional file upload mechanism without any involvement of backend code.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Getting started with PreactJS — A Step By Step Guide]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>PreactJS is a fast 3kB alternative to React with the same ES6 API</p>
+<h3 id="firstsomebackground">First, some background&#x2026;</h3>
+<p><a href="https://preactjs.com/">PreactJS</a> is developed by <a href="https://medium.com/@developit">Jason Miller</a> &#x2014; one of my programming heroes. The<br>
+framework was developed with a goal of providing high performance, memory<br>
+efficiency and close compatibility with React API with an</p>]]></description><link>https://bilalbudhani.com/getting-started-with-preactjs-a-step-by-step-guide/</link><guid isPermaLink="false">5b7fe6640ccd411c70715203</guid><category><![CDATA[preact]]></category><category><![CDATA[javascript]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Tue, 20 Jun 2017 10:42:00 GMT</pubDate><media:content url="https://bilalbudhani.com/content/images/2017/11/preact.png" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><img src="https://bilalbudhani.com/content/images/2017/11/preact.png" alt="Getting started with PreactJS&#x200A;&#x2014;&#x200A;A Step By Step Guide"><p>PreactJS is a fast 3kB alternative to React with the same ES6 API</p>
+<h3 id="firstsomebackground">First, some background&#x2026;</h3>
+<p><a href="https://preactjs.com/">PreactJS</a> is developed by <a href="https://medium.com/@developit">Jason Miller</a> &#x2014; one of my programming heroes. The<br>
+framework was developed with a goal of providing high performance, memory<br>
+efficiency and close compatibility with React API with an aim to keep the<br>
+footprint as small as possible <em>i.e</em> <strong>3kb</strong>. Preact is increasingly getting<br>
+adopted in the community with a bunch of high load websites already using it<br>
+successfully in production.</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Housing Go is now powered by preact. ? ?<br><br>Thanks to <a href="https://twitter.com/_developit">@_developit</a> and <a href="https://twitter.com/brian_d_vaughn">@brian_d_vaughn</a> for their help. <a href="https://t.co/HtPcfSDTVx">pic.twitter.com/HtPcfSDTVx</a></p>&#x2014; Housing Engineering (@HousingEngg) <a href="https://twitter.com/HousingEngg/status/821407581650358272">January 17, 2017</a></blockquote>
+<p>Last week <a href="https://medium.com/@developit">Jason Miller</a> released <a href="https://github.com/developit/preact-cli">Preact-CLI</a> &#x2014; A command line based<br>
+tool similar to <a href="https://github.com/facebookincubator/create-react-app">Create React App</a> which makes it<br>
+incredibly easy to get started. In this guide, we&#x2019;ll be using that to ramp up<br>
+ourselves to the framework.</p>
+<h3 id="localsetup">Local Setup ?</h3>
+<p>Assuming you already have Node &amp; NPM installed on your dev machine, We&#x2019;ll<br>
+install Preact&#x2019;s command line utility</p>
+<pre><code class="language-bash">npm i -g preact-cli@latest
+</code></pre>
+<p>Once installation is successfully complete, we&#x2019;ll create our first app</p>
+<pre><code>preact create my-first-preact-app
+</code></pre>
+<p>running above mentioned command should create a new directory with all the<br>
+required files and configuration.</p>
+<p>&#x2B50;&#xFE0F; The up side of using Preact&#x2019;s command line utility is &#x2014; it provides a<br>
+preconfigured setup with all the industry standards tools out of the box. For instance, CSS modules, LESS / SASS, Hot Module Reload (HMR), Progressive Web App (PWA), Service Worker for offline caching, Preact Router and many more. Trust me; this will save you a ton of time. You can read complete list of features in the project&#x2019;s <a href="https://github.com/developit/preact-cli#features">README</a>.</p>
+<p>Now, let&#x2019;s get the project running</p>
+<pre><code>cd my-first-preact-app
+
+# start a live-reload/HMR dev server:
+npm start
+
+# Or 
+preact watch
+</code></pre>
+<p>When preact-cli is done <em>building</em> files, we can point our favorite browser to <a href="http://0.0.0.0:8080/">http://0.0.0.0:8080</a>. And, We should see a ready Preact app waiting to serve its creator! ?</p>
+<iframe src="https://giphy.com/embed/3ohzdQhUeo2FNQtL7q" width="480" height="129" frameborder="0" class="giphy-embed" allowfullscreen></iframe><p><a href="https://giphy.com/gifs/preact-cli-preactjs-3ohzdQhUeo2FNQtL7q">via GIPHY</a></p>
+<h3 id="slightapidifferences">(Slight) API Differences ?&#x200D;?</h3>
+<p>There are very small (and negligible) API difference between <em>React</em> and Preact when writing UI. Having said that, If you like to stay attached to <em>React&#x2019;s</em> API &#x2014; Preact has a package called &#x201C;<a href="http://npm.im/preact-compat">preact-compat</a>&#x201D; which works as a compatibility layer and maps the API between both the frameworks (Amazing right? I know, I know).</p>
+<p>Let&#x2019;s see some Preact code to understand this.</p>
+<pre><code class="language-javascript">  import { h, render, Component } from &apos;preact&apos;
+</code></pre>
+<p><strong>h</strong> &#x2014; this function that turns your JSX into Virtual DOM elements. You just<br>
+need to import it similar to how we import *React *in each file.</p>
+<p><strong>render</strong> &#x2014; function creates DOM tree from that Virtual DOM.</p>
+<pre><code class="language-javascript">    render((     
+    &lt;div id=&quot;foo&quot;&gt;         
+       &lt;span&gt;Hello, world!&lt;/span&gt;         
+       &lt;button onClick={ e =&gt; alert(&quot;hi!&quot;) }&gt;Click Me&lt;/button&gt;     &lt;/div&gt; 
+    ), document.body);
+</code></pre>
+<p><strong>Component</strong> &#x2014; Extendable class to build encapsulated, self-updating pieces of<br>
+a User Interface with lifecycle methods support; much like React.Component.</p>
+<p>? Notice how  receives two extra parameters  and  when used inside Component<br>
+unlike <em>React</em>. Know more <a href="https://preactjs.com/guide/getting-started">here</a>.</p>
+<p>That&#x2019;s it! Seriously, that&#x2019;s it. From top level these are difference in terms of API, there are some low level under the hood differences as well &#x2014; You can find them in <a href="https://preactjs.com/guide/differences-to-react">Preact guide</a>.</p>
+<h3 id="letslookatcode">Let&#x2019;s Look At Code ??&#x200D;?</h3>
+<p>Until this point we have a working Preact app where we can make changes, grasp on API differences &amp; a sense of ease.</p>
+<p>Open in your favorite code editor &#x2014; it should look something like</p>
+<pre><code class="language-javascript">    import &apos;./style&apos;;
+
+    import { h } from &apos;preact&apos;;
+    import { Router } from &apos;preact-router&apos;;
+
+    import Header from &apos;./components/header&apos;;
+    import Home from &apos;./routes/home&apos;;
+    import Profile from &apos;./routes/profile&apos;;
+
+    export default () =&gt; (
+     &lt;div id=&quot;app&quot;&gt;
+      &lt;Header /&gt;
+      &lt;Rou
+    /profile/&quot; user=&quot;me&quot; /&gt;
+       &lt;Profile path=&quot;/profile/:user&quot; /&gt;
+      &lt;/Router&gt;
+     &lt;/div&gt;
+    );
+</code></pre>
+<p>If you&#x2019;re coming from React world &#x2014; this should feel like home. Nothing fancy<br>
+going on here, importing <em>components</em> and setting up <em>routes</em>.</p>
+<p>Now, let&#x2019;s open  component inside  and change line <strong>34</strong></p>
+<pre><code class="language-javascript">    // From 
+    &lt;h1&gt;Profile: {user}&lt;/h1&gt;
+
+    // To
+    &lt;h1&gt;Hola {user}!&lt;/h1&gt;
+</code></pre>
+<p>Save. And, visit <a href="http://0.0.0.0:8080/profile/john">http://0.0.0.0:8080/profile/john</a> to see your change. (No need to refresh, HMR takes care of that.)</p>
+<p>Cool! Let&#x2019;s now add a new <em>Component</em> in our app to get a better understanding about the framework.</p>
+<p>Create a folder called  inside  ; then create a file  inside  folder. We are<br>
+going to write a component which will fetch followers of a given user from<br>
+Github&#x2019;s API.</p>
+<pre><code class="language-javascript">    import { h, Component } from &apos;preact&apos;;
+    import style from &apos;./style&apos;
+
+    export default class Github extends Component {
+
+      state = {
+          username: &apos;&apos;,
+          followers: null,
+        };
+
+      fetchUser = () =&gt; {
+          fetch(`
+    )
+          .then(response =&gt; response.json())
+          .then(user =&gt; this.setState({followers: user.followers }));
+      }
+
+      setUsername = e =&gt; {
+          this.setState({ username: e.target.value });
+      }
+
+      render({}, { username, followers }) {
+          return (
+            &lt;div class={style.container}&gt;
+              &lt;h1&gt;Enter a Github username&lt;/h1&gt;
+              &lt;input 
+                type=&quot;text&quot; 
+                value={username} 
+                onChange={this.setUsername} 
+               /&gt;
+              &lt;button 
+                onClick={this.fetchUser}&gt;
+               Submit
+              &lt;/button&gt;
+              {
+              followers &amp;&amp; 
+              &lt;h3&gt;{username} has {followers} followers on Github.&lt;/h3&gt;
+               }
+            &lt;/div&gt;
+          );
+       }
+    }
+</code></pre>
+<p>Let&#x2019;s add some basic style as well; Inside the same folder create</p>
+<pre><code class="language-css">    .container {
+      padding: 56px 20px;
+      min-height: 100%;
+      width: 100%;
+      background: #EEE;
+    }
+</code></pre>
+<p>Great! We&#x2019;ve the component ready now. Let&#x2019;s hook it up with routes and add a<br>
+link in header to be able to navigate. Open  which we can find in the root of<br>
+the project and import the Github component which we just created.</p>
+<pre><code class="language-javascript">    import &apos;./style&apos;;
+
+    import { h } from &apos;preact&apos;;
+    import { Router } from &apos;preact-router&apos;;
+
+    import Header from &apos;./components/header&apos;;
+    import Home from &apos;./routes/home&apos;;
+    import Profile from &apos;./routes/profile&apos;;
+    import Github from &apos;./routes/github&apos;; // &lt;--- Add this line
+
+    export default () =&gt; (
+     &lt;div id=&quot;app&quot;&gt;
+      &lt;Header /&gt;
+      &lt;Router&gt;
+       &lt;Home path=&quot;/&quot; /&gt;
+       &lt;Profile path=&quot;/profile/&quot; user=&quot;me&quot; /&gt;
+       &lt;Profile path=&quot;/profile/:user&quot; /&gt;
+       &lt;Github path=&quot;/github&quot; /&gt; // &lt;-- Attach the component with path
+      &lt;/Router&gt;
+     &lt;/div&gt;
+    );
+</code></pre>
+<p>Then &#x2014; open  and add new  tag.</p>
+<pre><code class="language-jsx">    &lt;Link activeClassName=&quot;active&quot; href=&quot;/github&quot;&gt;Github&lt;/Link&gt;
+</code></pre>
+<p>Bingo! Now, let&#x2019;s visit our newly created component <a href="http://0.0.0.0:8080/github">http://0.0.0.0:8080/github</a>. Your page should look something like this.</p>
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*jVJZjnmpuenDKcqgTi1vcw.png" alt="Getting started with PreactJS&#x200A;&#x2014;&#x200A;A Step By Step Guide" loading="lazy"></p>
+<p>Go ahead; Type a <em>username</em> from Github (Hint: Mine is <a href="https://github.com/BilalBudhani">BilalBudhani</a>). After entering a correct <em>username</em> &#x2014; Our freshly minted component should show the number of followers of the specified username.</p>
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*5AWDKGuylc_1JTt2ggdjxg.png" alt="Getting started with PreactJS&#x200A;&#x2014;&#x200A;A Step By Step Guide" loading="lazy"></p>
+<p>Boom! We&#x2019;ve got ourselves a functional component written in Preact. <em>Easy Peasy! right?</em> But we&#x2019;re not done yet &#x2014; There&#x2019;s a final step which we need to go through in order to form a full circle.</p>
+<h3 id="shipit">Ship it! ?</h3>
+<p>Time for showdown! Let&#x2019;s tap into deployment part and see how we can bundle<br>
+everything together. Before we do that, I would <em>urge</em> you to open Browser&#x2019;s,<br>
+navigate to  tab, find  and notice the size of the asset. Here&#x2019;s what mine looks like.</p>
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*ufnXCmZwW_EBPNTuxmkvNw.png" alt="Getting started with PreactJS&#x200A;&#x2014;&#x200A;A Step By Step Guide" loading="lazy"></p>
+<p>in development is around ~279Kb &#x2014; Keep this in mind we&#x2019;ll compare it with<br>
+generated after build process.</p>
+<p>Now goto the root of your project and run in command line. You will see an<br>
+output <em>similar</em> to this</p>
+<iframe src="https://giphy.com/embed/l0IyoFOQ06nFbHICA" width="480" height="74" frameborder="0" class="giphy-embed" allowfullscreen></iframe><p><a href="https://giphy.com/gifs/l0IyoFOQ06nFbHICA">via GIPHY</a></p>
+<p>above command will generate files which can be found inside  folder &#x2014; these<br>
+files are production ready and can be deployed directly on your favorite server.</p>
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*och4HpgPTjDMKqqeGT8n-w.png" alt="Getting started with PreactJS&#x200A;&#x2014;&#x200A;A Step By Step Guide" loading="lazy"></p>
+<p>We will now see how the app will function in a <em>production like</em> environment.<br>
+Preact-CLI ships with a command called  &#x2014; this will essentially serve files from folder. After running this command and let us point our browser to <a href="https://localhost:8080/">https://localhost:8080/</a>. If all went fine &#x2014; we should see our application functional &#x2014; as it was in development mode. Go ahead and play around with the application, also don&#x2019;t forget to try out our Github component. Everything should work like a charm!</p>
+<p>But&#x2026; Wait &#x270B;! Remember the  size we noted earlier in the article? It&#x2019;s now time<br>
+look what&#x2019;s inside ?&#xFE0F;</p>
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*zPr8JDMMzOwMaCFiHr4zhQ.png" alt="Getting started with PreactJS&#x200A;&#x2014;&#x200A;A Step By Step Guide" loading="lazy"></p>
+<p>Damn! Straight down to ~26kb &#x2014; that&#x2019;s a reduction of ~71%. The wait was worth<br>
+it. Imagine, how many metrics it can impact in your production application &#x2014;<br>
+which might be used by hundreds if not thousands of users.</p>
+<p><strong>Edit 1:</strong> <a href="https://medium.com/@developit">Jason Miller</a> has reported that it should be even lesser, apparently there&#x2019;s a bug in Chrome DevTools Http2 which is why the size is not accurate. I&#x2019;ll update the copy as soon as I get any evidence.</p>
+<p><strong>Edit 2:</strong> <a href="https://medium.com/@developit">Jason Miller</a> got back to me with an update and provided with a screenshot which shows that bundle size goes to<br>
+around 7.2 kb.</p>
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*PPUd4aY_E9TzQZBFDtz4XA.jpeg" alt="Getting started with PreactJS&#x200A;&#x2014;&#x200A;A Step By Step Guide" loading="lazy"></p>
+<h3 id="finalnote">Final note ?</h3>
+<p><strong>Firstly, Congratulations ??! We just wrote our first Preact app.</strong></p>
+<p>Preact is an incredibly powerful tool with an amazing community (growing),<br>
+<a href="https://preactjs.com/about/libraries-addons">plugin ecosystem</a>, evolving <a href="https://preactjs.com/about/we-are-using">production use cases</a> and a bliss to work with. Also, Contributors are highly receptive (proof: I <a href="https://twitter.com/_developit/status/870001449866072066">discovered a bug &amp; Jason fixed it</a> while<br>
+I was writing this post. ?). Checkout examples <a href="https://preactjs.com/about/demos-examples">https://preactjs.com/about/demos-examples</a>.<br>
+I hope this post lured you enough to consider the Preact framework. You can find code which is mentioned in this post at <a href="https://github.com/BilalBudhani/demo-preact-app">github</a>.</p>
+<p>What&#x2019;s next? You can follow the video course &#x201C;<a href="https://egghead.io/courses/up-and-running-with-preact">Up and Running with Preact</a>&#x201D; at <a href="http://egghead.io/">egghead.io</a></p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[9 Libraries To Consider For Your Next React Native Project]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>React Native</p>
+<p>React Native has made mobile application development process bliss for<br>
+developers, there&#x2019;s no doubt in that. I&#x2019;ve been working on it full time since<br>
+last 5 months and I couldn&#x2019;t be more happier then how I&#x2019;m right now.</p>
+<p>After working</p>]]></description><link>https://bilalbudhani.com/9-libraries-to-consider-for-your-next-react-native-project/</link><guid isPermaLink="false">5b7fe6640ccd411c70715202</guid><category><![CDATA[react native]]></category><category><![CDATA[javascript]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Mon, 20 Jun 2016 10:38:00 GMT</pubDate><media:content url="https://bilalbudhani.com/content/images/2017/11/react-native.png" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><img src="https://bilalbudhani.com/content/images/2017/11/react-native.png" alt="9 Libraries To Consider For Your Next React Native Project"><p>React Native</p>
+<p>React Native has made mobile application development process bliss for<br>
+developers, there&#x2019;s no doubt in that. I&#x2019;ve been working on it full time since<br>
+last 5 months and I couldn&#x2019;t be more happier then how I&#x2019;m right now.</p>
+<p>After working on bunch of React Native projects, I was retrospecting the<br>
+libraries I was using and turns out there are quite few of them which are<br>
+essentially shaping up my projects very well. Hence, I thought I could compile a<br>
+list and share it with the community.</p>
+<hr>
+<p>Here we go:</p>
+<ol>
+<li><a href="https://github.com/FuYaoDe/react-native-app-intro">React Native App Intro</a></li>
+</ol>
+<p>Most of the users who download our application are usually not aware with the<br>
+complete offering of it. Icon of an application doesn&#x2019;t give any idea about the<br>
+offering either. That is the reason, ramping up users or educating them about an<br>
+application with few pointers could help in long run.</p>
+<p>App intro library provides an easy way to quickly wire up some basic or even<br>
+high end introduction screens in to an application, which can then result in<br>
+informative onboarding.</p>
+<ol start="2">
+<li><a href="https://github.com/oblador/react-native-vector-icons">React Native Vector Icons</a></li>
+</ol>
+<p>Icons adds a significant user experience improvement in any application. They<br>
+have a soothing effect on users eye and mind if used effectively. Using<br>
+appropriate icons can directly impact how the user perceives an application.</p>
+<p>This library supports multiple well crafted icons by popular publishers with an<br>
+elegantly designed API to integrate them smoothly in a React Native<br>
+applications.</p>
+<ol start="3">
+<li><a href="https://github.com/FaridSafi/react-native-gifted-form">React Native Gifted Form</a></li>
+</ol>
+<p>Getting users to enter some sort of data in a multiple form fields could be a<br>
+complex user experience to build; Whole form experience has to play nicely with<br>
+the users&#x2019; keyboard, fields has to respond to action buttons, date/time picker<br>
+etc. there are too many variables to take care of.</p>
+<p>To be honest, there&#x2019;s no one-size-fit-all library available to solve this<br>
+problem. Having said that, Gifted Form comes bundled with most of the common<br>
+solutions in form filling. It could be useful if you don&#x2019;t want to roll your own<br>
+solution and tackle all those problem by yourself.</p>
+<p>p.s: react-native-gifted-form could be difficult to customize incase you are<br>
+looking for something other than what it offers.</p>
+<ol start="4">
+<li><a href="https://github.com/zo0r/react-native-push-notification">React Native Push Notification</a></li>
+</ol>
+<p>I believe, I don&#x2019;t need to write do any explaining about the important of &#x201C;Push<br>
+Notification&#x201D; in mobile application ecosystem. So I&#x2019;ll just get to the point,<br>
+You should use this library for any push notification related functionality even<br>
+if your application is currently focused on iOS (your future self will thank<br>
+you).</p>
+<p>React Native comes with its own <a href="https://facebook.github.io/react-native/docs/pushnotificationios.html#content">push notification</a><br>
+for iOS module but, this library makes the job easier when you want to support<br>
+both the platform.</p>
+<ol start="5">
+<li><a href="https://github.com/EstebanFuentealba/react-native-share">React Native Share</a></li>
+</ol>
+<p>Sharing any type of data should be a blissful experience for your users. It is<br>
+the most important channel of growth for your application.</p>
+<p>I recommend this library because of its cross platform native support for<br>
+sharing content. It uses iOS share sheet and Android share intent. (Also, it<br>
+supports Windows platform as well :D)</p>
+<ol start="6">
+<li><a href="https://github.com/oblador/react-native-image-progress">React Native Image Progress</a></li>
+</ol>
+<p>An image speaks thousand words; what if it takes time to load? Your application<br>
+might look funny while the image is loading and it may give a wrong impression<br>
+to the end user.</p>
+<p>Using an image progress bar always keep users glued to the screen and gives them<br>
+predictability. WIN-WIN.</p>
+<ol start="7">
+<li><a href="https://github.com/idehub/react-native-google-analytics-bridge">React Native Google Analytics Bridge</a></li>
+</ol>
+<p>Okay, this library is in the list not to tell you why to use Google Analytics<br>
+but to tell you which library to use and why.</p>
+<p>There are multiple libraries available to integrate GA in your application but,<br>
+most of them simply utilizes GA&#x2019;s API and not it&#x2019;s official SDK resulting in<br>
+incomplete tracking. This library however, adds a React Native wrapper around<br>
+GA&#x2019;s official SDK giving you full grip on your analytics dashboard.</p>
+<ol start="8">
+<li><a href="https://github.com/corymsmith/react-native-fabric">React Native Fabric</a></li>
+</ol>
+<p><a href="https://fabric.io/">Fabric.io</a> by Twitter has evolved recently with a lot of<br>
+great tools for mobile application developers to help them with pre-launch /<br>
+post-launch related problems.</p>
+<p>Nonetheless, I&#x2019;m particularly interested in Crashlytics. It helps gain enough<br>
+insights about crashes in my applications by pin-pointing the cause of the<br>
+issue. Highly recommended.</p>
+<ol start="9">
+<li><a href="https://github.com/Microsoft/react-native-code-push">React Native CodePush</a></li>
+</ol>
+<p>Concluding the list with one of my personal favorite and could be labeled as a<br>
+life saver for developers library.</p>
+<p>Using CodePush one can ship changes to an existing production mobile application<br>
+without going through the review process of App Store (Apple approves of this)<br>
+or waiting for the users to update their apps. It enables you to fix bugs on the<br>
+fly or release features with a lot of flexibility.</p>
+<p>It of course has some limitation to what extend you can make changes in a<br>
+codebase despite that, it succeeds. It&#x2019;s a must have.</p>
+<p><em>you can watch my screencast on <em><a href="https://youtu.be/uN0FRWk-YW8">how to use code-push with<br>
+react-native</a></em>.</em></p>
+<p><strong>Bonus:</strong> <a href="https://github.com/BilalBudhani/react-native-sleek-loading-indicator">React Native Sleek Loading Indicator</a></p>
+<p>A drop in sleek loading indicator library for your application to show more then<br>
+just a spinner.</p>
+<p><em>Disclaimer: I&#x2019;m the author of this library.</em></p>
+<blockquote>
+<p>Huge thanks to all the maintainers of above libraries for their enormous efforts behind them.</p>
+</blockquote>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[5 React Native Open Source Projects To Learn From]]></title><description><![CDATA[<!--kg-card-begin: markdown--><blockquote>
+<p>Best way to learn writing software is to read open source code &#x2014; Every Senior Programmer.</p>
+</blockquote>
+<p>Reading open source code is the best and effective way to tech yourself to write<br>
+better code, especially if the tool is fairly new or the standards around that<br>
+tool is still evolving. <a href="http://facebook.github.io/react-native/">ReactNative</a></p>]]></description><link>https://bilalbudhani.com/5-react-native-open-source-projects-to-learn-from/</link><guid isPermaLink="false">5b7fe6640ccd411c70715201</guid><category><![CDATA[react native]]></category><category><![CDATA[javascript]]></category><dc:creator><![CDATA[BilalBudhani]]></dc:creator><pubDate>Tue, 26 Apr 2016 10:35:00 GMT</pubDate><media:content url="https://bilalbudhani.com/content/images/2017/11/react-native-1.png" medium="image"/><content:encoded><![CDATA[<!--kg-card-begin: markdown--><blockquote>
+<img src="https://bilalbudhani.com/content/images/2017/11/react-native-1.png" alt="5 React Native Open Source Projects To Learn From"><p>Best way to learn writing software is to read open source code &#x2014; Every Senior Programmer.</p>
+</blockquote>
+<p>Reading open source code is the best and effective way to tech yourself to write<br>
+better code, especially if the tool is fairly new or the standards around that<br>
+tool is still evolving. <a href="http://facebook.github.io/react-native/">ReactNative</a><br>
+is a perfect candidate for such a tool. It is under constant iteration cycle<br>
+with APIs evolving with every release, Massive pool of libraries to chose from<br>
+and very limited list of resources on how to move beyond <em>getting started</em><br>
+guides. Even otherwise, It is always a best practice to read open source code<br>
+every now and than.</p>
+<p>Here is my handpicked list of 5 open source projects which I personally follow:</p>
+<ol>
+<li><a href="https://github.com/iSimar/HackerNews-React-Native">HackerNews-React-Native</a></li>
+</ol>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*HU3iGzPu3UEPeGHHQ-oUXA.gif" alt="5 React Native Open Source Projects To Learn From" loading="lazy"></p>
+<p>This project demonstrate a lightweight implementation of HackerNews app in<br>
+ReactNative. It ramps you up on how to interact and build a full fledge app<br>
+using components provided by the framework without getting into complex<br>
+architectural know-how.</p>
+<p><strong>2.</strong> <a href="https://github.com/bartonhammond/snowflake">Snowflake</a></p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*0AV_cZQKscDtcrE3tN8HMA.gif" alt="5 React Native Open Source Projects To Learn From" loading="lazy"></p>
+<p>Snowflake rather than an app; It is a step-by-step guide to onboard you on react<br>
+native mindset. It has a detailed explanation and video screencast on each step<br>
+to make sure don&#x2019;t lose a bit. <em>I personally recommend going through this<br>
+project if you&#x2019;re looking for deep dive into ReactNative.</em></p>
+<p><strong>3.</strong> <a href="https://github.com/benoitvallon/react-native-nw-react-calculator">React-Native-NW-React-Calculator</a></p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*PXpaH0t9ISaAUiQEYX02Ug.png" alt="5 React Native Open Source Projects To Learn From" loading="lazy"></p>
+<p>A Calculator which works across platforms (Web / Mac App / Mobile) with single<br>
+codebase. No, I ain&#x2019;t joking. This projects showcases true power of ReactJS when<br>
+blended with ReactNative. It also teaches you how to architect your codebase to<br>
+reach its potential. <em>This is one of my personal favorite.</em></p>
+<p><strong>4.</strong> <a href="https://github.com/wwayne/react-native-nba-app">React-Native-NBA-App</a></p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*xa5R6siTJZ2jawD97XHASA.gif" alt="5 React Native Open Source Projects To Learn From" loading="lazy"></p>
+<p>From this ReactNative app you could possibly learn *tons *of things. Mainly, UI<br>
+components implementation. This is one of the closest ReactNative implementation<br>
+in contrast with native. Also, It follows a very good code structuring pattern<br>
+which is worth looking at.</p>
+<p><strong>5.</strong> <a href="https://github.com/7kfpun/FinanceReactNative">FinanceReactNative</a></p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*PS6T24s4-J2aCIwVJHCY7A.gif" alt="5 React Native Open Source Projects To Learn From" loading="lazy"></p>
+<p>Finance App is a good resource to learn how to deal with third party apis,<br>
+displaying around numbers, Charts and other crucial data. Majority of the apps<br>
+deals with above mentioned aspects in them. Which makes this project a part of<br>
+this list.</p>
+<p><strong>Bonus:</strong> <a href="https://github.com/fbsamples/f8app">Facebook&#x2019;s F8 Conference App</a></p>
+<p>UPDATE: Facebook open sourced their F8 conference ReactNative app just after I<br>
+wrote this blog post. This app is by the creators of ReactNative itself, that<br>
+makes it worth mentioning in the blog post.</p>
+<p>**P.S: <a href="https://github.com/jondot/awesome-react-native">Awesome ReactNative</a><br>
+is a curated list of all other cool open source things. :)</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item></channel></rss>

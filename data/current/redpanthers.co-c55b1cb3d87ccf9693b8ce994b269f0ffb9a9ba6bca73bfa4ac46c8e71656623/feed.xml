@@ -1,0 +1,1060 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+
+<channel>
+	<title>redpanthers.co</title>
+	<atom:link href="/feed/" rel="self" type="application/rss+xml"/>
+	<link>/</link>
+	<description>Red Panthers - Experts in Ruby on Rails, System Design and Vue.js</description>
+	<lastBuildDate>Sun, 06 Sep 2020 07:00:39 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.2.7</generator>
+	<item>
+		<title>CLAWING OUR WAY TO THE TOP OF CLUTCH’S DIRECTORY OF RUBY ON RAILS DEVELOPERS IN INDIA</title>
+		<link>/clawing-our-way-to-the-top-of-clutchs-directory-of-ruby-on-rails-developers-in-india/</link>
+				<pubDate>Sun, 06 Sep 2020 07:00:37 +0000</pubDate>
+		<dc:creator><![CDATA[beta]]></dc:creator>
+				<category><![CDATA[Uncategorized]]></category>
+
+		<guid isPermaLink="false">/?p=16545</guid>
+				<description><![CDATA[Ruby is a programming language with a set of incredibly&#160;versatile strengths and applications, with the Ruby on Rails framework helping businesses in countless industries develop powerful and interactive web solutions. While Ruby on Rails provides a world of endless possibilities for quality development, most businesses lack the in house talent to tap into this source [&#8230;]]]></description>
+								<content:encoded><![CDATA[
+<p>Ruby is a programming language with a set of incredibly&nbsp;<a href="https://medium.com/kkempin/swot-analysis-of-ruby-on-rails-c421a6c83c09">versatile strengths and applications</a>, with the Ruby on Rails framework helping businesses in countless industries develop powerful and interactive web solutions. While Ruby on Rails provides a world of endless possibilities for quality development, most businesses lack the in house talent to tap into this source of innovation. We proudly fill in the skills-gap for firms looking to leverage this powerful framework to develop innovative solutions to a number of challenges.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://redpanthers.co/wp-content/uploads/2019/05/Developers_India_2019-278x300.png" alt="" class="wp-image-16442"/></figure>
+
+
+
+<p>Through our work developing quality web solutions, we have started to garner some industry recognition. We are excited to share that we have been included on Clutch’s directory of the top&nbsp;<a href="https://clutch.co/in/developers/ruby-rails">Ruby developers</a>&nbsp;in India, thanks to a recent research effort on a wide variety of service industries in India. We outranked more than 100 of our competitors as we started our climb to become a top firm in our field.</p>
+
+
+
+<p>The research effort we were the subject of included factors such as marketing presence, previous work, and most importantly, client reviews. We have a rating of 4.8 out of 5 stars thanks to what our clients have shared with us, mostly reviews like this,</p>
+
+
+
+<p>“<em>Red Panthers is a team of highly skilled and passionate engineers who strive to solve problems in eloquent ways. They were eager to learn and train their team on how to improve. They knew how to solve some problems, and when tougher problems arose, we all worked together to find solutions that worked well for everyone</em>.” –&nbsp;<strong>Founder, Devato Inc</strong></p>
+
+
+
+<p>Reviews like this help us identify our strengths, weaknesses, and how we are performing for our clients. We eagerly await whatever else our clients will share with us.</p>
+
+
+
+<p>In addition to our presence on Clutch, we are included on their sister-site, The Manifest, as one of the top&nbsp;<a href="https://themanifest.com/in/web-development/companies">web developers in India</a>. The Manifest helps firms of all shapes and sizes address a wide array of industry challenges by providing curated insights and advice. Our inclusion on their platform as a top firm is due to a number of factors, namely the quality of our work and our affordability. We are grateful to be listed as a top development team on two different industry resources, and we decided to go for a third. We have joined other expert firms in creating a profile on Visual Objects, a portfolio sharing platform for&nbsp;<a href="https://visualobjects.com/in/software-development/top-custom-software-developers">developers</a>, designers, and other innovators alike.</p>
+
+
+
+<p>We are hopeful that our status as a trusted development team will only grow from here, and we are grateful for all of the recognition we have received. Thank you to everyone who played a part in our success, we could not have done this alone, and we cannot wait to see what new challenges you have for us.</p>
+]]></content:encoded>
+										</item>
+		<item>
+		<title>Configuring a GitLab CI pipeline for Rails, MongoDB, and Rspec</title>
+		<link>/configuring-a-gitlab-ci-pipeline-for-rails-mongodb-and-rspec/</link>
+				<pubDate>Mon, 29 Apr 2019 11:28:12 +0000</pubDate>
+		<dc:creator><![CDATA[tony]]></dc:creator>
+				<category><![CDATA[DevOps]]></category>
+		<category><![CDATA[git]]></category>
+		<category><![CDATA[Rails]]></category>
+		<category><![CDATA[Ruby]]></category>
+
+		<guid isPermaLink="false">http://redpanthers.co/?p=16200</guid>
+				<description><![CDATA[
+				<![CDATA[]]>		]]&gt;</description>
+								<content:encoded><![CDATA[<p>				<![CDATA[<a href="https://about.gitlab.com/">Gitlab</a> has a free private git repository service and an integrated CI service that can be configured to suit our needs. To know more about setting up Gitlab CI, check out our [blog post](link here)
+
+
+<h3>Including MongoDB in CI build system</h3>
+
+
+Instead of installing and starting MongoDB manually, we can use the Gitlab mongo service. A Gitlab service is just another Docker image that runs during your job and is linked to the main image. The first step is to include the latest MongoDB image to the build system. Add this to your <code>.gitlab-ci.yml</code>
+
+
+<pre class="lang:yaml decode:true ">services:
+- mongo:latest</pre>
+
+
+
+
+<h3>Add the MONGODB_URI variable</h3>
+
+
+Add a <code>variables</code> section within <code>.gitlab-ci.yml</code> to set the <code>MONGODB_URI</code> variable.
+
+
+<pre class="lang:yaml decode:true">variables:
+MONGODB_URI: mongodb://mongo:27017/test_db</pre>
+
+
+
+
+<h3>Add config/mongoid.yml ile</h3>
+
+
+Add a file <code>config/mongoid.yml.gitlab</code> with the following contents
+
+
+<pre class="lang:yaml decode:true">test:
+  clients:
+    default:
+      uri: &lt;%= ENV['MONGODB_URI'] %&gt;
+</pre>
+
+
+
+
+<h3>Override config/mongoid.yml with config/mongoid.yml.gitlab</h3>
+
+
+We need to override the local test configuration with the above settings specific to CI. Add the following to the <code>before_script</code> section of <code>.gitlab-ci.yml</code>
+
+
+<pre class="lang:yaml decode:true">before_script:
+  - cp config/database.yml.gitlab config/database.yml</pre>
+
+
+That&#8217;s it fellas, you are all set
+
+
+<h3>Summary</h3>
+
+
+The complete <code>.gitlab-ci.yml</code>
+
+
+<pre class="lang:yaml decode:true">image: starefossen/ruby-node:latest
+services:
+  - mongo:latest
+variables:
+  MONGODB_URI: mongodb://mongo:27017/test_db
+before_script:
+  - RAILS_ENV=test bundle install --jobs $(nproc) "${FLAGS[@]}"
+  - cp config/mongoid.yml.gitlab config/mongoid.yml
+  - RAILS_ENV=test bundle exec rake db:create db:migrate
+test:
+  script:
+    - bundle exec rspec</pre>
+
+
+the contents of <code>config/mongoid.yml</code>
+
+
+<pre class="lang:default decode:true ">development:
+  clients:
+    default:
+      database: dev_db
+      hosts:
+        - localhost:27017
+      options:
+        read:
+          mode: :primary
+        max_pool_size: 10
+production:
+  clients:
+    default:
+      uri: &lt;%= ENV['MONGODB_URI'] %&gt;
+      pool_size: &lt;%= ENV['DB_POOL_SIZE'] %&gt;
+test:
+  clients:
+    default:
+      database: test_db
+      hosts:
+        - localhost:27017
+      options:
+        read:
+          mode: :primary
+        max_pool_size: 1</pre>
+
+
+and <code>config/mongoid.yml.gitlab</code>
+
+
+<pre class="lang:yaml decode:true ">test:
+  clients:
+    default:
+      uri: &lt;%= ENV['MONGODB_URI'] %&gt;</pre>
+
+
+May you have a green build! :-)]]&gt;		</p>
+]]></content:encoded>
+										</item>
+		<item>
+		<title>Rails 5.2.0</title>
+		<link>/rails-5-2-0/</link>
+				<pubDate>Mon, 29 Apr 2019 11:28:12 +0000</pubDate>
+		<dc:creator><![CDATA[levi]]></dc:creator>
+				<category><![CDATA[Rails]]></category>
+		<category><![CDATA[Rails 5]]></category>
+
+		<guid isPermaLink="false">http://redpanthers.co/?p=16152</guid>
+				<description><![CDATA[
+				<![CDATA[]]>		]]&gt;</description>
+								<content:encoded><![CDATA[<p>				<![CDATA[
+
+<p class="western" align="justify"><span style="font-size: large">Cheers everyone, the new Rails 5.2.0 has released. Let’s have a look at the new features and upgrades in it.</span></p>
+
+
+
+
+<p class="western" align="justify"><span style="font-size: large">It’s been too hard to deal with file uploads in Rails. T</span><span style="font-size: large">here’s been a lot of fine plugins available, but it was overdue that we incorporated something right into the framework. Finally, we have one, in the form of <a href="https://github.com/rails/rails/blob/d3893ec38ec61282c2598b01a298124356d6b35a/activestorage/README.md">Active Storage</a></span><span style="font-size: large">. This release includes Active Storage, a new framework provided by Rails to make it easier to upload and process files. With this new framework, we’ve solved for the modern approach of uploading files straight to the cloud. Out of the box, there’s support for Amazon’s S3, Google’s Cloud Storage, and Microsoft Azure Cloud File Storage. If you’re dealing with images, you can create variants on the fly. If you’re dealing with videos or PDFs, you can create previews on the fly. And regardless of the type, you can analyze uploads for metadata extraction asynchronously. This framework is not only used in production, but it is born for production.</span></p>
+
+
+
+
+<p class="western" align="justify"><span style="font-size: large">There’s a sparkling new <a href="https://github.com/rails/rails/pull/31134">Redis Cache Storage</a> that incorporates general partial, fragment, and other Rails caching jobs into a cohesive unit that anyone can use.</span></p>
+
+
+<span style="font-size: large">This new Redis Cache Store supports Redis::Distributed, for Memcached-like sharding across Redises. It’s fault tolerant, so will treat failures like misses, rather than kill the request with an exception. It even supports distributed MGETs for that full partial collection caching goodness.</span>
+
+
+<h3 class="western" align="justify"></h3>
+
+
+
+
+<p class="western" align="justify"><span style="font-size: large">Rails 5.2.0 has Added support for PostgreSQL operator classes to </span><code class="western"><span style="font-size: large">add_index.
+</span></code><span style="font-size: large">The operator classes identify database operators to be used by the index for the columns. You can assign the same operator to all columns, or not. It currently only supports PostgreSQL.</span>
+
+
+<p class="western" align="justify"><span style="font-size: large">Added ability to create PostgreSQL foreign keys without validation. Normally, PostgreSQL verifies that all rows in a table satisfy its foreign keys constraints. With this option, you can create these constraints without the overhead of checking if they are valid.</span></p>
+
+
+
+
+<p class="western" align="justify"><span style="font-size: large">Rails 5.2.0 also has embraced the cherry of HTTP/2 with early hints. This means we can automatically instruct the web server to send required style sheet and JavaScript assets early. This means a faster page delivery.</span></p>
+
+
+
+
+<p class="western" align="justify"><span style="font-size: large">On the topic of performance, Rails now ships with <a href="https://github.com/Shopify/bootsnap">Bootsnap</a> in the default </span><code class="western"><span style="font-size: large">Gemfile</span></code><span style="font-size: large">. This generally reduces application boot times by over 50%.</span></p>
+
+
+
+
+<p class="western" align="justify"><span style="font-size: large"> CSRF and XSS have enhanced that further in Rails 5.2 with the addition of a new DSL that allows you to configure a <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy">Content Security Policy</a> for your application. We can configure a global default policy and then override it on a per-resource basis and even use lambdas to inject per-request values into the header such as account subdomains in a multi-tenant application.</span></p>
+
+
+
+
+<p class="western" align="justify"><span style="font-size: large">In Rails 5.2, we’ve rectified the mess by deprecating the two different kinds of secrets and introduced a new shared concept called <a href="https://github.com/rails/rails/pull/30067">Credentials</a>. Credentials, like AWS access keys and other forms of logins and passwords, were the dominant use case for secrets. </span><span style="font-size: large">Credentials are always encrypted. This means they’re safe to check into revision control, as long as you keep the key out of it. This means atomic deploys and there is no need to mess with environment variables.</span></p>
+
+
+
+
+<p class="western" align="justify"><span style="font-size: large">Since Rails 5.1, we’ve also made great strides with <a href="https://github.com/rails/webpacker">Webpacker</a>. So Rails 5.2 is meant to pair beautifully with the new Webpacker 3.0 release. Rails have fully embraced modern JavaScript with a pre-configured build pipeline run by Webpack. We keep strengthening that relationship.</span></p>
+
+
+
+
+<p class="western" align="justify"><span style="font-size: large">Thanks again to everyone who continue to pour their love and support into Ruby on Rails! Happy Coding.</span></p>
+
+]]&gt;		</p>
+]]></content:encoded>
+										</item>
+		<item>
+		<title>How to test pdf files</title>
+		<link>/how-to-test-pdf-files/</link>
+				<pubDate>Mon, 29 Apr 2019 11:28:12 +0000</pubDate>
+		<dc:creator><![CDATA[dileep]]></dc:creator>
+				<category><![CDATA[Uncategorized]]></category>
+
+		<guid isPermaLink="false">https://redpanthers.co/?p=4276</guid>
+				<description><![CDATA[
+				<![CDATA[]]>		]]&gt;</description>
+								<content:encoded><![CDATA[<p>				<![CDATA[There are many ways of generating PDF in ruby. Here we will show how to test the content of the pdf generated using Prawn pdf with pdf-reader.
+Let we have a pdf generator class EmployeeWriter which export employee data into pdf
+
+
+<pre class="lang:default decode:true">class EmployeeWriter
+  attr_accessor :employee, :output_file
+  def initialize(employee, output_file)
+    @employee = employee
+    @output_file = output_file
+  end
+  def export_to_pdf
+    Prawn::Document.generate(output_file) do
+      bounding_box([0, cursor], width: 200) do
+        text &#8220;Name: #{employee.name}&#8221;
+        text &#8220;Employee id: #{employee.employee_id}&#8221;
+        text &#8220;Occupation: #{employee.occupation}&#8221;
+        stroke_bounds
+      end
+  end
+</pre>
+
+
+And we have Employee class
+
+
+<pre class="lang:default decode:true ">  class Employee
+    attr_accessor :name, :employee_id, :occupation
+    def initialize(name, employee_id, occupation)
+      @name = name
+      @employee_id = employee_id
+      @occupation = occupation
+    end
+  end
+</pre>
+
+
+Now
+
+
+<pre class="lang:default decode:true">EmployeeWriter.new(
+    Employee.new("name", "employee_id", "occupation")
+    'filename.pdf'
+  ).export_to_pdf</pre>
+
+
+will give us the following pdf
+<img class="alignnone wp-image-4278" src="https://redpanthers.co/wp-content/uploads/pdf-1-300x83.png" alt="" width="249" height="69" />
+Now let us write test which ensure pdf has right contents. We read the data using Pdfreader
+First get the pdf-reader
+
+
+<pre class="lang:default decode:true">gem install pdf-reader -v 1.4.0</pre>
+
+
+
+
+<pre class="lang:default decode:true">RSpec.describe EmployeeWriter do
+  it "should have correct content" do
+    employee = Employee.new("employee_name", "employee_id", "developer")
+    EmployeeWriter.new(employee, 'employee.pdf').export_to_pdf
+    reader = PDF::Reader.new('employee.pdf')
+    pdf_content = reader.pages[0].to_s
+    expect(pdf_content).to include('Name: employee_name')
+    expect(pdf_content).to include('Employee id: employee_id')
+    expect(pdf_content).to include('Occupation: developer')
+  end
+end</pre>
+
+
+&nbsp;]]&gt;		</p>
+]]></content:encoded>
+										</item>
+		<item>
+		<title>Red Panthers community report card, 2017</title>
+		<link>/red-panthers-community-report-card-2017/</link>
+				<pubDate>Mon, 29 Apr 2019 11:28:12 +0000</pubDate>
+		<dc:creator><![CDATA[coderhs]]></dc:creator>
+				<category><![CDATA[Uncategorized]]></category>
+
+		<guid isPermaLink="false">https://redpanthers.co/?p=4266</guid>
+				<description><![CDATA[
+				<![CDATA[]]>		]]&gt;</description>
+								<content:encoded><![CDATA[<p>				<![CDATA[2017 has been a wonderful year for us. We have been able to further contribute]]&gt;		</p>
+]]></content:encoded>
+										</item>
+		<item>
+		<title>Building a Multitenant application with Apartment gem</title>
+		<link>/building-a-multitenant-application-with-apartment-gem/</link>
+				<pubDate>Mon, 29 Apr 2019 11:28:12 +0000</pubDate>
+		<dc:creator><![CDATA[nimmy]]></dc:creator>
+				<category><![CDATA[Rails]]></category>
+
+		<guid isPermaLink="false">https://redpanthers.co/?p=4025</guid>
+				<description><![CDATA[
+				<![CDATA[]]>		]]&gt;</description>
+								<content:encoded><![CDATA[<p>				<![CDATA[If you are a Rails developer, then there may be very chance that you build a multitenant app which serves multiple instances with the same set of code that is available. It has an architecture such that a single instance of a software application serves multiple customers. One user does not see other users' activities nor has access to their data. To better understand, consider a blog application. A user can edit his own articles but has no access to other user's articles. In this article, we will implement the multitenant concept in Rails from scratch. Before that, let's look at the differences between single tenancy and multitenancy in order to understand the concept deeply.
+
+
+<h2>Single tenancy</h2>
+
+
+Every customer is having their own software instance and DB and it serves for only one customer. Here, the software can be customized to meet the specific customer requirements as it is independent.
+
+
+<h2>Multi-tenancy</h2>
+
+
+Multitenancy implements a shared architecture where a single instance of the software application serves multiple customers. We call each customer as a tenant. Multitenancy ensures data isolation for each client. A multitenant app is easier to maintain and is economical.
+The core principle in multitenancy architecture approach is often misunderstood with multi-instance architectures. In multitenancy architecture, it is the single instance of the application which is being shared between multiple tenants. Hence, multi-instance architectures aren’t the same as multi-tenant architectures.
+
+
+<h2>Advantages</h2>
+
+
+
+
+<ul>
+ 	
+
+<li>Shared infrastructure lead to lower costs by sharing same power resources and software across its clients.</li>
+
+
+ 	
+
+<li>In single-tenant applications, you have to manage different sets for each client while in multitenant applications you have to monitor and provide administration for a single platform only.</li>
+
+
+ 	
+
+<li>Entire system becomes more scalable</li>
+
+
+ 	
+
+<li>Upgrading the software version and installation becomes easier for multitenant applications.</li>
+
+
+ 	
+
+<li>Easier to add new clients.</li>
+
+
+ 	
+
+<li>Configuration can be changed without touching codebase.</li>
+
+
+ 	
+
+<li>Easy maintenance</li>
+
+
+</ul>
+
+
+
+
+<h2 id="multitenancyonthedatabaselayer">Multi-tenancy on the database layer or model layer</h2>
+
+
+Multitenancy can be done on the database layer or model layer. Both solutions have pros and cons.
+The concept of <strong>multitenancy on database layer</strong> is creating for each user a new database or schema which is the best method to avoid data leaking to another tenant. But some applications have architecture constraints where only one database can exist in the application.
+The concept of <strong>multi-tenancy on the model layer</strong> is faster and easier to implement based on ActiveRecord default scopes, but also riskier. In one database, each customer is connected with his own tenanted models by the foreign key. A bug in the application can cause irreversible data leaks from one tenant to another.
+The two most popular Ruby Gems which allow for creating multi-tenancy in Rails are:
+
+
+<ul>
+ 	
+
+<li>apartment tenancy on database layer: <a href="https://github.com/influitive/apartment">https://github.com/influitive/apartment</a>.</li>
+
+
+ 	
+
+<li>acts<em>as</em>tenant tenancy on model layer: <a href="https://github.com/ErwinM/acts_as_tenant">https://github.com/ErwinM/acts<em>as</em>tenant</a>.</li>
+
+
+</ul>
+
+
+It&#8217;s impossible to conclude a universally best solution for multi-tenancy, but Apartment gem seems most reasonable to use when we use Postgres schemas.
+In this blog post, we are gonna use Apartment gem to implement multitenancy in Rails application.
+
+
+<h2>Using Apartment gem</h2>
+
+
+Apartment gem provides tools to handle multiple tenants in our Rails application. It has a simple installation process and it basically creates tenants and to each tenant, the gem will automatically assign a new isolated schema and the creation of isolated database instances is also possible with Apartment.
+
+
+<p id="72b6" class="graf graf--h3 graf-after--p">Let&#8217;s create a new Rails app</p>
+
+
+
+
+<pre class="lang:default decode:true">rails new blog-post -d postgresql
+</pre>
+
+
+
+
+<pre class="lang:default decode:true">cd blog-post
+</pre>
+
+
+
+
+<pre class="lang:default decode:true">bundle exec rake db:create
+</pre>
+
+
+
+
+<h3>Adding the Apartment gem to your Gemfile</h3>
+
+
+
+
+<p id="0f9a" class="graf graf--p graf-after--h3">Now open up the <strong class="markup--strong markup--p-strong">Gemfile</strong> in your rails app and add,</p>
+
+
+
+
+<pre name="7b61" id="7b61" class="graf graf--pre graf-after--p"><code class="markup--code markup--pre-code">gem 'apartment'</code></pre>
+
+
+
+
+<p id="0d41" class="graf graf--p graf-after--pre">Now generate the <strong class="markup--strong markup--p-strong">apartment</strong> config file,</p>
+
+
+
+
+<pre name="9d96" id="9d96" class="graf graf--pre graf-after--p"><code class="markup--code markup--pre-code">bundle exec rails g apartment:install</code></pre>
+
+
+
+
+<p id="8812" class="graf graf--p graf-after--pre">This will create a <strong class="markup--strong markup--p-strong">config/initializers/apartment.rb</strong> file as the configuration file for us. There is a bunch of configuration stuff to use.</p>
+
+
+
+
+<h3 id="82fb" class="graf graf--h3 graf-after--p">Create the model</h3>
+
+
+
+
+<p id="884c" class="graf graf--p graf-after--h3">For example usage, we will be creating models author and post.</p>
+
+
+
+
+<pre class="lang:default decode:true">bundle exec rails g model user name
+</pre>
+
+
+
+
+<pre class="lang:default decode:true">bundle exec rails g model article content
+</pre>
+
+
+Here users play the role of tenants and articles will be tenanted data. Each user must have a separate schema in Postgres database. We assume that user&#8217;s name is a valid Postgres schema name. We have to add a unique constraint to it.
+In the users table migration file,
+
+
+<pre class="lang:default decode:true">class CreateUsers &lt; ActiveRecord::Migration[5.1]
+  def change
+    create_table :users do |t|
+      t.string :name, null: false
+    end
+    add_index :users, :name, unique: true
+  end
+end</pre>
+
+
+Also, add validation in <code>app/models/user.rb</code>:
+
+
+<pre class="lang:default decode:true">validates :name, presence: true, uniqueness: true</pre>
+
+
+Then run migration:
+
+
+<pre class="lang:default decode:true">bundle exec rails db:migrate</pre>
+
+
+In Apartment gem, each tenant should be created and deleted when the new author is created and removed.
+Adding Apartment methods calls in <code>app/models/user.rb</code> :
+
+
+<pre class="lang:default decode:true">class User &lt; ApplicationRecord
+  validates :name, presence: true, uniqueness: true
+  after_create do |user|
+    Apartment::Tenant.create(user.name)
+  end
+  after_destroy do |user|
+    Apartment::Tenant.drop(user.name)
+  end
+end</pre>
+
+
+This will automatically create a <strong class="markup--strong markup--p-strong">tenant</strong> whenever a <strong class="markup--strong markup--p-strong">user </strong>is created by taking the value of <b>name</b> field in the <code>User</code> model (create a Postgres schema for new the user) and remove from the database it when the user is deleted.
+
+
+<h3>Specify common models</h3>
+
+
+In any multitenant application, some models will be common for all the tenants and some will be tenant-specific models. In our example, <code>Article</code> model will belong to a tenant and the <code>User</code> model will be excluded from it and remain in the global (public) namespace. So we need to specify it in <code>config/initializers/apartment.rb</code>:
+
+
+<pre class="lang:default decode:true">--------------------------
+Apartment.configure do |config|
+# Add any models that you do not want to be multi-tenanted, but remain in the global (public) namespace.
+# A typical example would be a Customer or Tenant model that stores each Tenant's information.
+config.excluded_models = %w{ User }
+--------------------------
+</pre>
+
+
+Now, we have the <code>User</code> model as the common model.
+
+
+<h3>Specify tenant names</h3>
+
+
+Apartment gem needs to specify tenant names and assign them accordingly to run migrations for them and create proper tables in Postgresql schemas. In our case, we have to modify only one uncommented option below the <strong class="markup--strong markup--p-strong">excluded models</strong> line that we have added in the previous section in <code>config/initializers/apartment.rb</code> to:
+
+
+<pre class="lang:default decode:true">config.tenant_names = lambda { User.pluck(:name) }</pre>
+
+
+
+
+<h3>Specify a middleware</h3>
+
+
+To tell the application to work with <strong class="markup--strong markup--p-strong">subdomains,</strong>  ensure that the following line at the end of the <strong class="markup--strong markup--p-strong">apartment.rb</strong> file is left uncommented.
+
+
+<pre class="lang:default decode:true">Rails.application.config.middleware.use Apartment::Elevators::Subdomain</pre>
+
+
+
+
+<h2>See it works</h2>
+
+
+Finally, see how multi-tenancy in the Apartment gem works by creating two users in Rails console.
+
+
+<pre class="lang:default decode:true">User.create (name: 'Angel')
+User.create (name: 'Sam')</pre>
+
+
+This will create users and also two schemas with articles table for both of them.
+By default, we are in the public schema. In order to switch to a different schema we use a special Apartment method:
+
+
+<pre class="lang:default decode:true">Apartment::Tenant.switch!('Angel')</pre>
+
+
+This will set current apartment to user named Angel.
+Creating some posts for this user in this tenant:
+
+
+<pre class="lang:default decode:true">Article.create(content: "Angel’s article")
+Article.all
+=&gt; #&lt;ActiveRecord::Relation [#&lt;Article id: 1, content: "Angel’s article",
+created_at: "2018-01-09 09:30:15", updated_at: "2018-01-09 09:30:15"&gt;]&gt;</pre>
+
+
+Now switch to the second user and show all articles:
+
+
+<pre class="lang:default decode:true">Apartment::Tenant.switch!('Sam')
+Article.all
+=&gt; #&lt;ActiveRecord::Relation []&gt;</pre>
+
+
+We get an empty result, see multitenancy working:)
+By the way, showing all users:
+
+
+<pre class="lang:default decode:true">User.all
+=&gt; #&lt;ActiveRecord::Relation [#&lt;User id: 1, name: "Angel"&gt;, #&lt;User id: 2, name: "Sam"&gt;]&gt;</pre>
+
+
+As the <code>User</code> model is excluded from multi-tenancy it can be seen globally. The public schema has its own articles table, so user&#8217;s posts will not be visible in this schema.
+More information can be found on <a href="https://github.com/influitive/apartment">Github gem page</a>, like the built-in ability of Apartment gem to switch tenants per HTTP request.
+
+
+<h2>References</h2>
+
+
+
+
+<ul>
+ 	
+
+<li><a href="https://github.com/influitive/apartment">https://github.com/influitive/apartment</a></li>
+
+
+</ul>
+
+]]&gt;		</p>
+]]></content:encoded>
+										</item>
+		<item>
+		<title>What is Test Driven Development?</title>
+		<link>/what-is-test-driven-development/</link>
+				<pubDate>Mon, 29 Apr 2019 11:28:11 +0000</pubDate>
+		<dc:creator><![CDATA[levi]]></dc:creator>
+				<category><![CDATA[Marketing]]></category>
+
+		<guid isPermaLink="false">http://redpanthers.co/?p=16375</guid>
+				<description><![CDATA[
+				<![CDATA[]]>		]]&gt;</description>
+								<content:encoded><![CDATA[<p>				<![CDATA[<strong>Test Driven Development (TDD)</strong> is a software development process that weighs on a short development cycle. The developer first writes an automated test defining the new feature or update, which fails at first, then write minimal code for the tests to pass, then refactor the code according to the needed standards.<strong> TDD</strong> is helpful in keeping the code neater, simple and bug-free
+&nbsp;
+<strong>TDD</strong> starts with designing and developing tests for every small functionality of an application. The test is developed which will specify and validate what the code will do. n the normal Testing process, we first generate the code and then test. Tests might fail since tests are developed even before the development. In order to pass the test, the development team has to develop and refactors the code, which means changing the code without affecting its actual behaviour.
+&nbsp;
+We usually follow the following sequences in <strong>TDD</strong>.
+
+
+<ul>
+ 	
+
+<li>Add a test</li>
+
+
+ 	
+
+<li>Run all tests and see if the new one fails</li>
+
+
+ 	
+
+<li>Write some code</li>
+
+
+ 	
+
+<li>Run tests</li>
+
+
+ 	
+
+<li>Refactor code</li>
+
+
+ 	
+
+<li>Repeat</li>
+
+
+</ul>
+
+
+<img class="alignnone size-full wp-image-16376" src="http://redpanthers.co/wp-content/uploads/2018/09/download.png" alt="" width="196" height="257" />
+&nbsp;
+The simple concept of TDD is to write and correct the failed tests before writing new code. This helps to avoid duplication of code as we write a small amount of code at a time in order to pass tests. Test-Driven development is a process of developing and running automated test before actual development of the application. Hence, TDD sometimes also called as <strong>Test First Development.</strong>
+&nbsp;
+In short, <strong>TDD</strong> is
+
+
+<ol>
+ 	
+
+<li>Write a test</li>
+
+
+ 	
+
+<li>Make it run.</li>
+
+
+ 	
+
+<li>Change the code to make it right i.e. Refactor.</li>
+
+
+ 	
+
+<li>Repeat process.</li>
+
+
+</ol>
+
+
+&nbsp;
+
+
+<h1>Why use Test Driven Development</h1>
+
+
+
+
+<ul>
+ 	
+
+<li><strong>Early bug notification.</strong>Developers test their code but in the database world, this often consists of manual tests or one-off scripts. Using TDD you build up, over time, a suite of automated tests that you and any other developer can rerun at will.</li>
+
+
+ 	
+
+<li><strong>Better Designed, cleaner and more extensible code.</strong>
+
+
+<ul>
+ 	
+
+<li>It helps to understand how the code will be used and how it interacts with other modules.</li>
+
+
+ 	
+
+<li>It results in better design decision and more maintainable code.</li>
+
+
+ 	
+
+<li>TDD allows writing smaller code having single responsibility rather than monolithic procedures with multiple responsibilities. This makes the code simpler to understand.</li>
+
+
+ 	
+
+<li>TDD also forces to write only production code to pass tests based on user requirements.</li>
+
+
+</ul>
+
+
+</li>
+
+
+ 	
+
+<li><strong>Confidence to Refactor</strong>
+
+
+<ul>
+ 	
+
+<li>If you refactor code, there can be possibilities of breaks in the code. So having a set of automated tests you can fix those breaks before release. Proper warning will be given if breaks found when automated tests are used.</li>
+
+
+ 	
+
+<li>Using TDD, should results in faster, more extensible code with fewer bugs that can be updated with minimal risks.</li>
+
+
+</ul>
+
+
+</li>
+
+
+ 	
+
+<li><strong>Good for teamwork</strong>In the absence of any team member, other team members can easily pick up and work on the code. It also aids knowledge sharing, thereby making the team more effective overall.</li>
+
+
+ 	
+
+<li><strong>Good for Developers</strong>Though developers have to spend more time in writing TDD test cases, it takes a lot less time for debugging and developing new features. You will write cleaner, less complicated code.</li>
+
+
+</ul>
+
+
+&nbsp;
+<strong>Test Driven Development</strong> is a very effective method to follow to keep our code, neat and bug-free.
+&nbsp;]]&gt;		</p>
+]]></content:encoded>
+										</item>
+		<item>
+		<title>Git – Resolving Conflicts</title>
+		<link>/git-resolving-conflicts/</link>
+				<pubDate>Mon, 29 Apr 2019 11:28:11 +0000</pubDate>
+		<dc:creator><![CDATA[levi]]></dc:creator>
+				<category><![CDATA[Marketing]]></category>
+
+		<guid isPermaLink="false">http://redpanthers.co/?p=16372</guid>
+				<description><![CDATA[
+				<![CDATA[]]>		]]&gt;</description>
+								<content:encoded><![CDATA[<p>				<![CDATA[Git, a version control software, is primarily used for source code management and tracking any changes any set of files. Git is very effective in coordinating the work of multiple people working on a project. Being a distributed revision control system, Git aims at speed, data integrity and support for distributed, non-linear workflows.
+&nbsp;
+Merge conflicts happen when you merge branches that have competing commits. That is when competing changes are made on the same line of a file, or when a person edits the file while one deletes it. Now, <strong>git</strong> needs your help in deciding which change needs to be incorporated in the final merge of the branch.
+&nbsp;
+Git can often resolve the difference between branches and merges the branches automatically. Usually, the changes are on different lines or even different files. This makes it easy for the computer to understand. However, there are few changes that <strong>git</strong> cannot resolve without the user&#8217;s help. This happens usually when different people make changes to the same line in a file or a person edits the file while another deletes it. This causes a conflict of changes while merging the branch.
+&nbsp;
+We need to resolve all the conflicts before we merge a pull request to the git server. If we have a merge conflict between the compare branch and the base branch, we can see the files and the changes that caused the conflict above the <strong>merge pull request</strong> button. The <strong>merge pull request</strong> button is deactivated until the conflict is resolved.
+&nbsp;
+To resolve the merge conflict, we need to manually edit the conflict inflicted changes. We must edit and specify the final changes that are to be merged. We can either resolve the changes in the local computer and then push to the repository or we can directly edit the changes in the conflict editor of the git server like <strong>github </strong>or <strong>gitlab</strong>. If we have any conflicts in the command line, we cannot push the local changes to the server until we resolve the merge conflicts. If we try to merge the branches with a conflict from the command line, we will be getting an error message. A sample error message is given below.
+
+
+<pre class="lang:default decode:true">git merge BRANCH-NAME
+Auto-merging example.md
+CONFLICT (content): Merge conflict in example.md
+Automatic merge failed; fix conflicts and then commit the result</pre>
+
+
+&nbsp;
+Once the conflicts are resolved and the changes are pushed, be happy. You can now merge the branch with no worries.]]&gt;		</p>
+]]></content:encoded>
+										</item>
+		<item>
+		<title>Setting up your own private GIT server</title>
+		<link>/setting-up-your-own-private-git-server/</link>
+				<pubDate>Mon, 29 Apr 2019 11:28:11 +0000</pubDate>
+		<dc:creator><![CDATA[levi]]></dc:creator>
+				<category><![CDATA[Marketing]]></category>
+
+		<guid isPermaLink="false">http://redpanthers.co/?p=16369</guid>
+				<description><![CDATA[
+				<![CDATA[]]>		]]&gt;</description>
+								<content:encoded><![CDATA[<p>				<![CDATA[Git, a version control software, is primarily used for source code management and tracking any changes any set of files. Git is very effective in coordinating the work of multiple people working on a project. Being a distributed revision control system, Git aims at speed, data integrity and support for distributed, non-linear workflows.
+&nbsp;
+Companies like Github and Gitlab provides code hosting services based on Git. There are over 10 million people who are hosting their codes on these services. There are few limitations while using these services. One of them is restrictions of using private repositories while using the free services. One of the way to overcome this is we hosting git on our own server. By means of this, we also get more control over the server.
+&nbsp;
+To get started, first add a <strong>git</strong> user and a <strong>.ssh</strong> directory for the user. Follow the commands given below.
+
+
+<pre class="lang:default decode:true ">$ sudo adduser git
+$ su git
+$ cd
+$ mkdir .ssh &amp;&amp; chmod 700 .ssh
+$ touch .ssh/authorized_keys &amp;&amp; chmod 600 .ssh/authorized_keys</pre>
+
+
+&nbsp;
+Let&#8217;s add some <strong>SSH</strong> keys to the <strong>authorized_keys </strong>file for the <strong>git </strong>user. They should be like
+
+
+<pre class="lang:default decode:true ">$ cat /tmp/id_rsa.john.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCB007n/ww+ouN4gSLKssMxXnBOvf9LGt4L
+ojG6rs6hPB09j9R/T17/x4lhJA0F3FR1rP6kYBRsWj2aThGw6HXLm9/5zytK6Ztg3RPKK+4k
+Yjh6541NYsnEAZuXz0jTTyAUfrtU3Z5E003C4oxOj6H0rfIF1kKI9MAQLMdpGW1GYEIgS9Ez
+Sdfd8AcCIicTDWbqLAcU4UpkaX8KyGlLwsNuuGztobF8m72ALC/nLF6JLtPofwFBlgc+myiv
+O7TCUSBdLQlgMVOFq1I2uPWQOkOWQAHukEOmfjy2jctxSDBQ220ymjaNsHT4kgtZg2AYYgPq
+dAv8JggJICUvax2T9va5 gsg-keypair
+</pre>
+
+
+&nbsp;
+We now append them to the <strong>git</strong> user’s <strong>authorized_keys</strong><code></code>file in its <strong>.ssh</strong> directory.
+
+
+<pre class="lang:default decode:true ">$ cat /tmp/id_rsa.john.pub &gt;&gt; ~/.ssh/authorized_keys
+$ cat /tmp/id_rsa.josie.pub &gt;&gt; ~/.ssh/authorized_keys
+$ cat /tmp/id_rsa.jessica.pub &gt;&gt; ~/.ssh/authorized_keys</pre>
+
+
+&nbsp;
+We can now set up an empty repository by running <strong>git init</strong> with the <strong>&#8211;bare</strong> option, which initializes a repository without a working directory.
+
+
+<pre class="lang:default decode:true ">$ cd /srv/git
+$ mkdir project.git
+$ cd project.git
+$ git init --bare
+Initialized empty Git repository in /srv/git/project.git/</pre>
+
+
+&nbsp;
+Now one can push their first version of their project into that repository by adding it as a remote and pushing up a branch. We can now use a hostname of the server in which we have set up <strong>git</strong> user and repository.
+
+
+<pre class="lang:default decode:true ">$ cd myproject
+$ git init
+$ git add .
+$ git commit -m 'initial commit'
+$ git remote add origin git@gitserver:/srv/git/project.git
+$ git push origin master</pre>
+
+
+&nbsp;
+Now, others can clone the directory and push back the changes.
+
+
+<pre class="lang:default decode:true ">$ git clone git@gitserver:/srv/git/project.git
+$ cd project
+$ vim README
+$ git commit -am 'fix for the README file'
+$ git push origin master</pre>
+
+
+&nbsp;
+We can restrict a user to have only <strong>git </strong>related activitis using a shell tool called <strong>git-shell</strong>. If we set the shell to a user&#8217;s login shell, he cannot have normal usage. To use, specify the <strong>git-shell</strong> instead of bash or csh for your user’s login shell.First add <strong>git-shell </strong>to <strong>/etc/shells</strong> if it does not exist.
+
+
+<pre class="lang:default decode:true">$ cat /etc/shells   # see if `git-shell` is already in there.  If not...
+$ which git-shell   # make sure git-shell is installed on your system.
+$ sudo vim /etc/shells  # and add the path to git-shell from last command</pre>
+
+
+&nbsp;
+
+
+<div class="paragraph">
+Now you can edit the shell for a user using <code>chsh &lt;username&gt; -s &lt;shell&gt;</code>:
+</div>
+
+
+
+
+<div class="listingblock">
+
+
+<div class="content">
+
+
+<pre class="highlight"><code class="language-console" data-lang="console">$ sudo chsh git -s $(which git-shell)</code></pre>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="paragraph">
+Now, the <code>git</code> user can only use the SSH connection to push and pull Git repositories and can’t shell onto the machine. If you try, you’ll see a login rejection like this.
+</div>
+
+
+
+
+<pre class="lang:default decode:true ">$ ssh git@gitserver
+fatal: Interactive git shell is not enabled.
+hint: ~/git-shell-commands should exist and have read and execute access.
+Connection to gitserver closed.</pre>
+
+
+&nbsp;
+If you are in need of higher control over your git repositories, setup your own private git server.]]&gt;		</p>
+]]></content:encoded>
+										</item>
+		<item>
+		<title>Gitk</title>
+		<link>/gitk/</link>
+				<pubDate>Mon, 29 Apr 2019 11:28:11 +0000</pubDate>
+		<dc:creator><![CDATA[levi]]></dc:creator>
+				<category><![CDATA[Marketing]]></category>
+
+		<guid isPermaLink="false">http://redpanthers.co/?p=16366</guid>
+				<description><![CDATA[
+				<![CDATA[]]>		]]&gt;</description>
+								<content:encoded><![CDATA[<p>				<![CDATA[Git, a version control software, is primarily used for source code management and tracking any changes any set of files. Git is very effective in coordinating the work of multiple people working on a project. Being a distributed revision control system, Git aims at speed, data integrity and support for distributed, non-linear workflows.
+&nbsp;
+A newcomer moving to git could be difficult. For a newcomer, understanding the concept of commit, checkout, branches, rebase etc could be really hard. <strong>gitk</strong> is a command that is used for visualizing the commit graph and displaying all the history of the commits made and the information of files in the trees of each revision made. <strong>gitk</strong> is a very powerful GUI tool which is very handy to the command line ignorant.
+&nbsp;
+To get started with <strong>gitk</strong>, we need to install it first.
+For Ubuntu users, follow the commands given below.
+
+
+<pre class="lang:default decode:true ">sudo apt-get update
+sudo apt-get install gitk</pre>
+
+
+To get installed in Mac, follow these commands.
+
+
+<pre class="lang:default decode:true ">/usr/local/bin/git
+brew doctor
+brew update
+brew install git
+which git</pre>
+
+
+&nbsp;
+To bring up the <strong>gitk</strong> interface, run the command.
+
+
+<pre class="lang:default decode:true ">gitk</pre>
+
+
+Here is a sample <strong>gitk</strong> interface.
+<img class="alignnone size-medium wp-image-16367" src="http://redpanthers.co/wp-content/uploads/2018/09/gitk-300x217.png" alt="" width="300" height="217" />
+&nbsp;
+The entire history of commits is shown in the GUI interface. The current head, the local branches, the commit message and who committed the messages are displayed. We can see the date and who committed the changes. Also, the files changed can be viewed.
+&nbsp;
+<strong>gitk</strong> is very helpful for beginners who are not used to command line interface.]]&gt;		</p>
+]]></content:encoded>
+										</item>
+	</channel>
+</rss>

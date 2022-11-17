@@ -1,0 +1,3167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="html">Posts</title>
+  <subtitle type="html">Life Happens, Programs Don't - Musings About Programming and Software Engineering</subtitle>
+  <author>
+    <name>Thomas Leitner</name>
+    <uri>https://gettalong.org</uri>
+  </author>
+
+  <link href="https://gettalong.org/" rel="alternate">
+  <link href="https://gettalong.org/posts.atom" rel="self">
+  <generator uri="http://webgen.gettalong.org/" version="1.7.2">
+    webgen - Webgen::PathHandler::Feed
+  </generator>
+  <updated>2021-12-26T16:12:13+01:00</updated>
+  <id>https://gettalong.org/</id>
+
+  
+  <entry>
+    <title type="html">Benchmarking Ruby 2.5 to 3.1</title>
+    
+    <link href="https://gettalong.org/blog/2021/benchmarking-rubies.html" rel="alternate">
+    <id>https://gettalong.org/blog/2021/benchmarking-rubies.html</id>
+    <updated>2021-12-26T16:11:52+01:00</updated>
+    
+    <published>2021-12-26T15:55:00+01:00</published>
+    
+    <content type="html">
+&lt;p&gt;This is another Ruby comparison benchmark, in the tradition of &lt;a href=&quot;../2016/ruby24-performance-looking-good.html&quot;&gt;2016&lt;/a&gt;, &lt;a href=&quot;../2017/benchmarking-ruby-2-5.html&quot;&gt;2017&lt;/a&gt; and &lt;a href=&quot;../2020/benchmarking-rubies.html&quot;&gt;2020&lt;/a&gt;. This
+christmas &lt;a href=&quot;https://www.ruby-lang.org/en/news/2021/12/25/ruby-3-1-0-released/&quot;&gt;Ruby 3.1.0&lt;/a&gt; was released, featuring the brand-new YJIT just in time compiler.
+&lt;a href=&quot;https://twitter.com/_gettalong/status/1442964424130768896&quot;&gt;Pre-liminary benchmarks&lt;/a&gt; showed noticeable performance benefits for &lt;a href=&quot;https://hexapdf.gettalong.org&quot;&gt;HexaPDF&lt;/a&gt;, so let’s see
+what the final version brings.&lt;/p&gt;
+
+
+&lt;h2 id=&quot;the-benchmark-setup&quot;&gt;The Benchmark Setup&lt;/h2&gt;
+
+&lt;p&gt;I will be using the same applications/libraries as &lt;a href=&quot;../2020/benchmarking-rubies.html#three-real-world-benchmarks&quot;&gt;last time&lt;/a&gt; (look there if you need more
+details): &lt;a href=&quot;https://hexapdf.gettalong.org&quot;&gt;HexaPDF&lt;/a&gt;, &lt;a href=&quot;https://kramdown.gettalong.org&quot;&gt;kramdown&lt;/a&gt; and &lt;a href=&quot;https://github.com/gettalong/geom2d&quot;&gt;geom2d&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The adapted benchmarking scripts are as follows:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;HexaPDF&lt;/p&gt;
+
+    &lt;p&gt;The following commands were excecuted in the &lt;code&gt;benchmark/&lt;/code&gt; directory:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;./rubies.sh &quot;2.5.7 2.6.9 2.7.5 3.0.3 3.1.0 3.1.0m 3.1.0y&quot; optimization -b hexapdf
+./rubies.sh &quot;2.5.7 2.6.9 2.7.5 3.0.3 3.1.0 3.1.0m 3.1.0y&quot; raw_text -b hexapdf
+./rubies.sh &quot;2.5.7 2.6.9 2.7.5 3.0.3 3.1.0 3.1.0m 3.1.0y&quot; line_wrapping -b hexapdf
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;A Ruby version with an appended “m” tells the script to activate MJIT, one with “y” to activate
+YJIT.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;kramdown&lt;/p&gt;
+
+    &lt;p&gt;The following command was excecuted in the kramdown repository directory:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;./benchmark/benchmark-rubies.sh &quot;2.5.7 2.6.9 2.7.5 3.0.3 3.1.0 3.1.0m 3.1.0y&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;A Ruby version with an appended “m” tells the script to activate MJIT, one with “y” to activate
+YJIT.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;geom2d&lt;/p&gt;
+
+    &lt;p&gt;This benchmark is done using the superb &lt;a href=&quot;https://github.com/benchmark-driver/benchmark-driver&quot;&gt;benchmark-driver&lt;/a&gt; gem.&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;benchmark-driver benchmark.yaml --rbenv &quot;2.5.7;2.6.9;2.7.5;3.0.3;3.1.0;3.1.0 --mjit;3.1.0 --yjit&quot; -o record
+benchmark-driver benchmark_driver.record.yml -o gruff
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;results&quot;&gt;Results&lt;/h2&gt;
+
+&lt;h3 id=&quot;hexapdf&quot;&gt;HexaPDF&lt;/h3&gt;
+
+&lt;p&gt;The images are SVG files, click on them to open them in a new window to view details. The raw data
+is already the post-processed data ready for gnuplot-ingestion, with the time in milliseconds and
+the memory in kilobytes.&lt;/p&gt;
+
+&lt;h4 id=&quot;optimization-benchmark&quot;&gt;Optimization Benchmark&lt;/h4&gt;
+
+&lt;p&gt;Note: There are six groups (different files &lt;code&gt;a.pdf&lt;/code&gt; to &lt;code&gt;f.pdf&lt;/code&gt;) of four benchmarks (different
+hexapdf invocations; except for &lt;code&gt;f.pdf&lt;/code&gt; which only has three because the CSP mode would take
+&lt;em&gt;really&lt;/em&gt; long) with each benchmark having seven columns (different Ruby versions).&lt;/p&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;a href=&quot;assets/hexapdf-optimization.svg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;assets/hexapdf-optimization.svg&quot; alt=&quot;HexaPDF optimization benchmark&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Time &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.9&quot; &quot;hexapdf 2.7.5&quot; &quot;hexapdf 3.0.3&quot; &quot;hexapdf 3.1.0&quot; &quot;hexapdf 3.1.0-mjit&quot; &quot;hexapdf 3.1.0-yjit&quot;
+&quot;a.pdf&quot; 222 193 298 226 183 471 325
+&quot;C a.pdf&quot; 166 153 141 159 163 394 318
+&quot;CS a.pdf&quot; 163 154 147 162 178 402 344
+&quot;CSP a.pdf&quot; 156 162 158 172 180 387 359
+&quot;b.pdf&quot; 652 627 629 665 684 1058 737
+&quot;C b.pdf&quot; 605 634 667 669 703 1037 754
+&quot;CS b.pdf&quot; 727 741 745 802 798 1059 850
+&quot;CSP b.pdf&quot; 4141 4767 5072 4864 4998 0 4099
+&quot;c.pdf&quot; 1163 1178 1204 1274 1246 1492 1178
+&quot;C c.pdf&quot; 1156 1260 1344 1358 1365 1750 1192
+&quot;CS c.pdf&quot; 1300 1385 1477 1461 1535 0 1344
+&quot;CSP c.pdf&quot; 4533 4883 5234 5208 5397 0 4268
+&quot;d.pdf&quot; 2819 2845 2793 3025 2941 3831 2540
+&quot;C d.pdf&quot; 2714 2780 2811 3000 3009 4075 2532
+&quot;CS d.pdf&quot; 3023 3076 3162 3324 3447 4398 2783
+&quot;CSP d.pdf&quot; 2874 3074 2976 3111 3095 4822 2630
+&quot;e.pdf&quot; 575 581 531 572 578 710 673
+&quot;C e.pdf&quot; 608 640 660 686 697 904 790
+&quot;CS e.pdf&quot; 636 678 680 726 721 902 825
+&quot;CSP e.pdf&quot; 16825 18422 19527 20789 20505 23846 17253
+&quot;f.pdf&quot; 33949 34068 33737 35586 36043 41606 27994
+&quot;C f.pdf&quot; 37793 38077 37730 39154 40388 46554 29839
+&quot;CS f.pdf&quot; 44430 44506 45118 45257 48361 0 35573
+&quot;CSP f.pdf&quot; 0 0 0 0 0 0 0
+
+
+Memory &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.9&quot; &quot;hexapdf 2.7.5&quot; &quot;hexapdf 3.0.3&quot; &quot;hexapdf 3.1.0&quot; &quot;hexapdf 3.1.0-mjit&quot; &quot;hexapdf 3.1.0-yjit&quot;
+&quot;a.pdf&quot; 15540 28152 28296 27380 28132 44620 293860
+&quot;C a.pdf&quot; 15792 28252 28332 27536 28172 44952 294052
+&quot;CS a.pdf&quot; 16264 28772 28472 27752 28648 44936 294300
+&quot;CSP a.pdf&quot; 16632 29336 29292 28520 29228 45052 295064
+&quot;b.pdf&quot; 35016 42784 46352 46016 46572 59792 312352
+&quot;C b.pdf&quot; 33884 44772 46616 46184 47516 59688 313140
+&quot;CS b.pdf&quot; 38200 47676 47468 49020 50344 59896 316500
+&quot;CSP b.pdf&quot; 49040 55124 58024 57848 60796 0 327324
+&quot;c.pdf&quot; 34224 52548 51652 48920 49300 59940 314104
+&quot;C c.pdf&quot; 37744 47796 50580 49984 49912 60072 315448
+&quot;CS c.pdf&quot; 40120 51608 52548 52732 52596 0 317996
+&quot;CSP c.pdf&quot; 59140 69204 66496 68760 70772 0 336448
+&quot;d.pdf&quot; 65220 77980 76660 76364 72688 73116 338472
+&quot;C d.pdf&quot; 57904 74148 73436 75120 76108 77096 341764
+&quot;CS d.pdf&quot; 58220 75648 77044 75496 75932 76432 341316
+&quot;CSP d.pdf&quot; 78812 85504 84528 86348 89068 90924 353380
+&quot;e.pdf&quot; 52316 57112 54956 49764 51660 51900 317468
+&quot;C e.pdf&quot; 63492 86952 91124 88324 92276 92588 359600
+&quot;CS e.pdf&quot; 89928 83532 97708 83388 104044 104044 369756
+&quot;CSP e.pdf&quot; 160284 143684 158604 157276 156308 165656 418132
+&quot;f.pdf&quot; 490684 510832 483032 485868 511396 514828 763428
+&quot;C f.pdf&quot; 517716 488540 527900 535080 572200 576408 813928
+&quot;CS f.pdf&quot; 616200 578648 604328 617584 616688 0 879312
+&quot;CSP f.pdf&quot; 0 0 0 0 0 0 0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;raw-text-benchmark&quot;&gt;Raw Text Benchmark&lt;/h4&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;a href=&quot;assets/hexapdf-raw_text.svg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;assets/hexapdf-raw_text.svg&quot; alt=&quot;HexaPDF raw text benchmark&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Time &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.9&quot; &quot;hexapdf 2.7.5&quot; &quot;hexapdf 3.0.3&quot; &quot;hexapdf 3.1.0&quot; &quot;hexapdf 3.1.0-mjit&quot; &quot;hexapdf 3.1.0-yjit&quot;
+&quot;1x&quot; 466 508 514 533 547 663 627
+&quot;5x&quot; 1755 1908 1917 2118 2076 0 1842
+&quot;10x&quot; 3356 3838 3792 3975 3821 0 3340
+&quot;1x ttf&quot; 498 565 558 597 578 903 671
+&quot;5x ttf&quot; 2053 2205 2278 2257 2283 0 2103
+&quot;10x ttf&quot; 4036 4269 4228 4353 4678 0 3879
+
+
+Memory &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.9&quot; &quot;hexapdf 2.7.5&quot; &quot;hexapdf 3.0.3&quot; &quot;hexapdf 3.1.0&quot; &quot;hexapdf 3.1.0-mjit&quot; &quot;hexapdf 3.1.0-yjit&quot;
+&quot;1x&quot; 24564 36420 35748 34852 33780 47896 298680
+&quot;5x&quot; 37312 47088 45824 45668 48368 0 312764
+&quot;10x&quot; 48732 58440 57240 57924 61528 0 325368
+&quot;1x ttf&quot; 23544 33580 34232 33672 33672 49184 298680
+&quot;5x ttf&quot; 36120 48876 44820 43888 46436 0 310888
+&quot;10x ttf&quot; 58572 62688 62604 64524 63100 0 325932
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;line-wrapping-benchmark&quot;&gt;Line Wrapping Benchmark&lt;/h4&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;a href=&quot;assets/hexapdf-line_wrapping.svg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;assets/hexapdf-line_wrapping.svg&quot; alt=&quot;HexaPDF line wrapping benchmark&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Time &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.9&quot; &quot;hexapdf 2.7.5&quot; &quot;hexapdf 3.0.3&quot; &quot;hexapdf 3.1.0&quot; &quot;hexapdf 3.1.0-mjit&quot; &quot;hexapdf 3.1.0-yjit&quot;
+&quot;L 400&quot; 1217 1283 1333 1290 1363 1679 1322
+&quot;C 400&quot; 1513 1664 1775 1516 1579 1729 1482
+&quot;L 200&quot; 1334 1400 1503 1503 1534 1733 1434
+&quot;C 200&quot; 1679 1875 2000 1726 1722 2157 1564
+&quot;L 100&quot; 1545 1636 1790 1709 1727 2147 1552
+&quot;C 100&quot; 2073 2130 2329 1967 2086 2434 1835
+&quot;L 50&quot; 2555 2750 2872 2757 2684 3072 2259
+&quot;C 50&quot; 3300 3578 3668 3278 3296 3924 2724
+&quot;L 400 ttf&quot; 1254 1365 1395 1394 1448 0 1355
+&quot;C 400 ttf&quot; 1613 1738 1810 1577 1569 1890 1539
+&quot;L 200 ttf&quot; 1518 1514 1622 1528 1577 0 1389
+&quot;C 200 ttf&quot; 1867 1965 1975 1787 1783 0 1667
+&quot;L 100 ttf&quot; 1881 1763 1854 1847 1928 0 1616
+&quot;C 100 ttf&quot; 2322 2356 2549 2229 2273 0 1895
+&quot;L 50 ttf&quot; 4430 4708 4804 4559 4531 0 3960
+&quot;C 50 ttf&quot; 5466 5996 5732 5565 5489 6522 4710
+
+
+Memory &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.9&quot; &quot;hexapdf 2.7.5&quot; &quot;hexapdf 3.0.3&quot; &quot;hexapdf 3.1.0&quot; &quot;hexapdf 3.1.0-mjit&quot; &quot;hexapdf 3.1.0-yjit&quot;
+&quot;L 400&quot; 79868 106940 91156 95348 101444 101896 367380
+&quot;C 400&quot; 85836 97632 91032 102984 94980 95248 362252
+&quot;L 200&quot; 84244 100584 104232 89136 97136 97868 363504
+&quot;C 200&quot; 78540 92620 87440 95608 95192 95832 362624
+&quot;L 100&quot; 81896 97384 98992 87036 93264 93848 359116
+&quot;C 100&quot; 82184 91844 99844 91052 91324 91940 358584
+&quot;L 50&quot; 183380 177796 217552 232260 234476 231672 497100
+&quot;C 50&quot; 181212 174596 199768 217608 232100 204324 488116
+&quot;L 400 ttf&quot; 77720 103380 104088 103356 97220 0 363836
+&quot;C 400 ttf&quot; 82780 108436 108464 99456 105296 105764 372432
+&quot;L 200 ttf&quot; 84904 101268 93068 94876 100204 0 366180
+&quot;C 200 ttf&quot; 83992 102280 102124 100048 98804 0 365992
+&quot;L 100 ttf&quot; 87404 100348 92292 91812 95940 0 361592
+&quot;C 100 ttf&quot; 85068 100708 100148 96804 96468 0 363424
+&quot;L 50 ttf&quot; 267952 247984 278100 275644 273772 0 545924
+&quot;C 50 ttf&quot; 300152 264944 275396 267236 293740 277408 546472
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;comments&quot;&gt;Comments&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Run time generally gets a bit worse each time for each newer version of Ruby, with 2.5.7 most
+often being the fastest except for Ruby 3.1.0+YJIT.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Ruby 3.1.0+MJIT is the slowest one, often being much slower than 3.1.0.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Ruby 3.1.0+YJIT&lt;/strong&gt; performs on par with Ruby 2.5.7 for most benchmarks but is much faster when
+the benchmark takes longer. E.g. the optimization benchmark on &lt;code&gt;f.pdf&lt;/code&gt; takes around 34 seconds for
+2.5.7, but only around 28 seconds for 3.1.0+YJIT.&lt;/p&gt;
+
+    &lt;p&gt;While the raw text benchmark generates many small (string) objects and doesn’t benefit much from
+YJIT, the line wrapping benchmark needs to do much more computations and sees a big performance
+improvement for the longer running benchmarks.&lt;/p&gt;
+
+    &lt;p&gt;The drawback of using YJIT is its high memory usage, consuming an additional 256MB of RAM by
+default. See below for how to change the memory used by YJIT and how that affects its performance.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Ruby 3.1.0+MJIT has bug with respect to Zlib which affects HexaPDF because Zlib is used for
+deflate streams. This is the reason why there is often no data for that column.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;kramdown&quot;&gt;kramdown&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;assets/kramdown.png&quot; alt=&quot;kramdown benchmark&quot; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#	ruby-2.5.7p206 ||	ruby-2.6.9p207 ||	ruby-2.7.5p203 ||	ruby-3.0.3p157 ||	ruby-3.1.0p0 ||	ruby-3.1.0p0-mjit ||	ruby-3.1.0p0-yjit ||
+256	0.70620	0.69444	0.65407	0.73346	0.71877	0.74956	0.65734
+512	1.65357	1.60639	1.39829	1.54884	1.56712	1.57714	1.43944
+1024	3.37941	3.48940	3.16486	3.33241	3.30570	3.33736	3.05656
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;While all Ruby versions perform very similar, Ruby+YJIT clearly takes the lead in this benchmark.&lt;/p&gt;
+
+&lt;h3 id=&quot;geom2d&quot;&gt;geom2d&lt;/h3&gt;
+
+&lt;p&gt;The bars represent instructions per seconds, so larger bars are better.&lt;/p&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;img src=&quot;assets/geom2d.png&quot; alt=&quot;geom2d small benchmark&quot; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Comparison:
+                            small
+        3.1.0 --yjit:      7538.8 i/s
+               2.6.9:      4760.6 i/s - 1.58x  slower
+               3.0.3:      4519.3 i/s - 1.67x  slower
+               2.5.7:      4513.3 i/s - 1.67x  slower
+               3.1.0:      4358.0 i/s - 1.73x  slower
+               2.7.5:      4134.1 i/s - 1.82x  slower
+        3.1.0 --mjit:      4000.9 i/s - 1.88x  slower
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Like last time Ruby+MJIT performed worst but, as expected, Ruby+YJIT performs best in this largely
+CPU-bound benchmark.&lt;/p&gt;
+
+&lt;h2 id=&quot;rubyyjit-memory-tuning&quot;&gt;Ruby+YJIT Memory Tuning&lt;/h2&gt;
+
+&lt;p&gt;The drawback to using YJIT is its memory usage. YJIT uses 256MB of RAM for its purposes by default
+but that can be tuned using the &lt;code&gt;--yjit-exec-mem-size&lt;/code&gt; option.&lt;/p&gt;
+
+&lt;p&gt;To see the effects of different executable memory sizes, I tested again with HexaPDF and geom2d:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;|--------------------------------------------------------------------|
+| Optimization                 ||    Time |     Memory |   File size |
+|--------------------------------------------------------------------|
+| 3.1.0 no YJIT | CSP e.pdf    | 20.784ms | 163.532KiB |  21.186.414 |
+| YJIT 256MB    | CSP e.pdf    | 16.242ms | 427.072KiB |  21.186.414 |
+| YJIT 128MB    | CSP e.pdf    | 16.150ms | 297.616KiB |  21.186.416 |
+| YJIT  64MB    | CSP e.pdf    | 16.414ms | 232.044KiB |  21.186.415 |
+| YJIT  32MB    | CSP e.pdf    | 16.312ms | 196.820KiB |  21.186.414 |
+| YJIT  16MB    | CSP e.pdf    | 16.267ms | 182.744KiB |  21.186.414 |
+|--------------------------------------------------------------------|
+| Line wrapping                ||    Time |     Memory |   File size |
+|--------------------------------------------------------------------|
+| 3.1.0 no YJIT | L 50         |  2.717ms | 219.740KiB |     569.798 |
+| YJIT 256MB    | L 50         |  2.234ms | 474.148KiB |     569.797 |
+| YJIT 128MB    | L 50         |  2.171ms | 360.116KiB |     569.797 |
+| YJIT  64MB    | L 50         |  2.158ms | 283.852KiB |     569.798 |
+| YJIT  32MB    | L 50         |  2.129ms | 258.600KiB |     569.797 |
+| YJIT  16MB    | L 50         |  2.125ms | 232.604KiB |     569.797 |
+|--------------------------------------------------------------------|
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;img src=&quot;assets/geom2d-yjit-mem.png&quot; alt=&quot;geom2d small benchmark&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In all three cases YJIT performs at a similar level regardless of whether it has 16MB or up to 256MB
+of memory for its purpose; and it is faster than Ruby 3.1.0 without YJIT. &lt;strong&gt;I will gladly forteit
+16MB of memory in exchange for 20% (HexaPDF) to 50% (geom2d) better performance!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that in both benchmarks the code size that can be optimized is not that large, less than 10,000
+lines in HexaPDF’s case. So this might be different for e.g. big Rails applications.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Ruby 3.1.0 brings with YJIT another JIT to the runtime and &lt;strong&gt;this one brings benefits for all kinds
+of programs, not just for very CPU intensive ones&lt;/strong&gt;. The peformance benefit is sometimes very large,
+as can be seen in the geom2d benchmark.&lt;/p&gt;
+
+&lt;p&gt;One should also check whether the default of 256BM of RAM for YJIT is necessary and tune that value.
+Giving YJIT as low as 16MB of RAM turned out to be as good as 256MB for the benchmarked
+applications/libraries&lt;/p&gt;
+
+&lt;p&gt;After finding last year that MJIT doesn’t perform so well with regular applications, I’m &lt;em&gt;very&lt;/em&gt;
+excited that YJIT works so well and I will be following it’s development closely!&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">An Unusual Performance Optimization</title>
+    
+    <link href="https://gettalong.org/blog/2021/an-unusual-performance-optimization.html" rel="alternate">
+    <id>https://gettalong.org/blog/2021/an-unusual-performance-optimization.html</id>
+    <updated>2021-01-18T23:44:57+01:00</updated>
+    
+    <published>2021-01-14T20:24:00+01:00</published>
+    
+    <content type="html">
+&lt;p&gt;I regularly run the &lt;a href=&quot;https://hexapdf.gettalong.org/documentation/benchmarks/&quot;&gt;HexaPDF benchmarks&lt;/a&gt; to make sure that HexaPDF gets faster and not
+slower. One of the benchmarks, the “raw_text” benchmark, always had me wondering why using TrueType
+fonts was visibly slower. So I decided to investigate.&lt;/p&gt;
+
+
+&lt;h2 id=&quot;the-odd-benchmark-result&quot;&gt;The Odd Benchmark Result&lt;/h2&gt;
+
+&lt;p&gt;The “raw_text” benchmarks tests the performance of close-to-metal text output. This is important
+because it is the limiting factor when creating PDF files, especially big PDF files, with much text
+content.&lt;/p&gt;
+
+&lt;p&gt;What the benchmark does is&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;reading a file line by line,&lt;/li&gt;
+  &lt;li&gt;putting each line on a page, without line wrapping and with manual cursor positioning,&lt;/li&gt;
+  &lt;li&gt;and creating new pages as necessary.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Here is the main part of the HexaPDF script:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;File.foreach(ARGV[0], mode: 'r') do |line|
+  if y &amp;lt; bottom_margin
+    # Remove the canvas object out of scope for garbage collection
+    if canvas
+      doc.clear_cache(canvas.context.data)
+      canvas.context.contents = canvas.context.contents
+    end
+    canvas = doc.pages.add.canvas
+    canvas.font(font, size: 12)
+    canvas.leading = 14
+    canvas.move_text_cursor(offset: [72, top_margin])
+    y = top_margin
+  end
+
+  canvas.show_glyphs_only(font.decode_utf8(line.rstrip!))
+  canvas.move_text_cursor
+  y -= 14
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The bottleneck is at the bottom where each line gets decoded into glyph objects (&lt;code&gt;font.decode_utf8&lt;/code&gt;)
+and the characters’ glyphs are shown (&lt;code&gt;canvas.show_glyphs_only&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;There is nothing specific here regarding TrueType fonts. The &lt;code&gt;font&lt;/code&gt; object either represents one of
+the built-in PDF fonts like ‘Times Roman’ or a supplied TrueType font. The methods in either version
+are very similar.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;canvas.show_glyphs_only&lt;/code&gt; method of the canvas is also font-agnostic, calling &lt;code&gt;font.encode&lt;/code&gt; to
+encode a certain glyph into the needed PDF content stream operator representation.&lt;/p&gt;
+
+&lt;p&gt;What’s more is that the two font methods are using cached values as much as possible. I.e. once a
+glyph is created for a certain UTF-8 character, it is re-used. And once a glyph is encoded, it
+doesn’t need to be encoded again.&lt;/p&gt;
+
+&lt;p&gt;So from the first look at it there shouldn’t have been much difference, performance-wise, when using
+a TrueType font instead of built-in font. But there was, as the benchmark results showed:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;|--------------------------------------------------------------------|
+|                              ||    Time |     Memory |   File size |
+|--------------------------------------------------------------------|
+| hexapdf     | 1x             |    557ms |  34.160KiB |     452.598 |
+|--------------------------------------------------------------------|
+| hexapdf     | 5x             |  1.891ms |  45.244KiB |   2.258.904 |
+|--------------------------------------------------------------------|
+| hexapdf     | 10x            |  3.754ms |  57.364KiB |   4.517.825 |
+|--------------------------------------------------------------------|
+| hexapdf     | 1x ttf         |    634ms |  33.044KiB |     549.522 |
+|--------------------------------------------------------------------|
+| hexapdf     | 5x ttf         |  2.335ms |  48.908KiB |   2.687.124 |
+|--------------------------------------------------------------------|
+| hexapdf     | 10x ttf        |  4.693ms |  63.568KiB |   5.360.947 |
+|--------------------------------------------------------------------|
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The text file used by the benchmark is the Project Gutenberg text of Homer’s Odyssey (contains about
+12.000 lines and about 700.000 characters). The “1x”, “5x” and “10x” indicators show the number of
+times the text was output.&lt;/p&gt;
+
+&lt;p&gt;For the “10x” version the TrueType benchmark ran about 25% slower than the one with the built-in
+PDF font. Some of the difference can be attributed to the need of subsetting the TrueType font and
+embedding it in the PDF. Also, when looking at the file sizes there is a difference of about 820KiB.
+This is because each glyph is encoded using two bytes in the TrueType version and only one byte in
+the built-in PDF font version. So the serializer also has more work to do.&lt;/p&gt;
+
+&lt;p&gt;But still, it felt a bit off…&lt;/p&gt;
+
+&lt;h2 id=&quot;investigating-the-cause&quot;&gt;Investigating the Cause&lt;/h2&gt;
+
+&lt;p&gt;As I have &lt;a href=&quot;https://gettalong.org/blog/2017/memory-conscious-programming-in-ruby.html&quot;&gt;written before&lt;/a&gt; development of HexaPDF is done in a memory and performance conscious way.
+So most parts of HexaPDF are already heavily optimized with respect to those regards. The next
+step was to find out the cause - it was time to unpack the trusty profilers!&lt;/p&gt;
+
+&lt;h3 id=&quot;try-1---run-time-profiling&quot;&gt;Try 1 - Run-time Profiling&lt;/h3&gt;
+
+&lt;p&gt;Since the TrueType version was markedly slower my first thought was that there was some performance
+problem. This is where &lt;a href=&quot;https://ruby-prof.github.io/&quot;&gt;ruby-prof&lt;/a&gt; shines! It helps us to find out which methods are called how many
+times and how long processing took in each method.&lt;/p&gt;
+
+&lt;p&gt;I have the following simple script that can just be required and it automatically runs ruby-prof:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;BEGIN {
+  require 'ruby-prof'
+  $profile = RubyProf::Profile.new(measure_mode: RubyProf::WALL_TIME)
+  $profile.start
+}
+
+END {
+  result = $profile.stop
+  RubyProf::GraphHtmlPrinter.new(result).print(File.open('ruby-prof.graph.html', 'w+'), min_percent: 1)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The script creates an output file &lt;code&gt;ruby-prof.graph.html&lt;/code&gt; which contains all the information we need
+to pin-point performance-hungry method.&lt;/p&gt;
+
+&lt;p&gt;I ran the benchmark together with this script, once using a built-in font and once using a TrueType
+font. The results, alas, were disappointing. The time spent in the top methods as well as the number
+of calls was nearly identical. So there wasn’t really a clue there.&lt;/p&gt;
+
+&lt;p&gt;If a run-time profiler doesn’t show much difference, maybe a look at the memory consumption and the
+number of created objects helps.&lt;/p&gt;
+
+&lt;h3 id=&quot;try-2---memory-profiling&quot;&gt;Try 2 - Memory Profiling&lt;/h3&gt;
+
+&lt;p&gt;There are &lt;a href=&quot;https://github.com/SamSaffron/memory_profiler&quot;&gt;several&lt;/a&gt; &lt;a href=&quot;https://github.com/tmm1/stackprof&quot;&gt;great&lt;/a&gt; memory profilers available. Most often, however, I
+use the &lt;a href=&quot;https://github.com/ko1/allocation_tracer&quot;&gt;AllocationTracer&lt;/a&gt; gem for this task.&lt;/p&gt;
+
+&lt;p&gt;As with ruby-prof I have a small script that can just be required:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;BEGIN {
+require 'set'
+require 'forwardable'
+require 'allocation_tracer'
+
+ObjectSpace::AllocationTracer.setup(%i{path line type})
+ObjectSpace::AllocationTracer.trace
+}
+
+
+END {
+begin
+  results = ObjectSpace::AllocationTracer.stop
+  results.reject {|k, v| v[0] &amp;lt; 10}.sort_by{|k, v| [v[0], k[0]]}.each do |k, v|
+    $stderr.puts &quot;#{k[0]}:#{k[1]} - #{k[2]} - #{v[0]}&quot;
+  end
+  $stderr.puts &quot;Sum: &quot; + results.inject(0) {|sum, (k,v)| sum + v[0]}.to_s
+  pp ObjectSpace::AllocationTracer.allocated_count_table
+  pp :total =&amp;gt; ObjectSpace::AllocationTracer.allocated_count_table.values.inject(:+)
+rescue
+end
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The script outputs the location, type and count of created objects, as well as a summary at the end.&lt;/p&gt;
+
+&lt;p&gt;I ran the benchmark again, together with this script and for both versions. And… &lt;em&gt;eureka&lt;/em&gt;! The
+non-TrueType version allocated around 1.679 million objects whereas the TrueType version allocated
+around 2.390 million objects. And the detailed output of the TrueType result also showed us where
+this happened:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/home/thomas/hexapdf/lib/hexapdf/serializer.rb:272 - T_MATCH - 202480
+/home/thomas/hexapdf/lib/hexapdf/serializer.rb:270 - T_STRING - 208762
+/home/thomas/hexapdf/lib/hexapdf/serializer.rb:272 - T_STRING - 567231
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The non-TrueType version only had the second line (as last line, so with the most allocations) and
+the other two added up to a bit more than the difference in allocated objects.&lt;/p&gt;
+
+&lt;p&gt;Now I knew where to look! Following is the code for the method in question, with one irrelevant
+statement removed:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;def serialize_string(obj)
+  obj.gsub!(/[()\\\r]/n, STRING_ESCAPE_MAP)
+  &quot;(#{obj})&quot;
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This method serializes a string into the format used by the PDF spec. The first line was the culprit
+allocating the many String and Match objects. It replaces all special characters with
+backslash-escaped versions using the &lt;code&gt;STRING_ESCAPE_MAP&lt;/code&gt; hash.&lt;/p&gt;
+
+&lt;p&gt;This meant that, somehow, the TrueType version generated many strings for which &lt;code&gt;String#gsub!&lt;/code&gt;
+needed to do something, i.e. ones that included a special character.&lt;/p&gt;
+
+&lt;h2 id=&quot;finding-the-root-cause&quot;&gt;Finding the Root Cause&lt;/h2&gt;
+
+&lt;p&gt;The next obvious step was to look for font related code that generates many strings for the
+benchmark. This happens during text output in the &lt;code&gt;canvas.show_glyphs_only&lt;/code&gt; method. As mentioned
+before this method delegates to &lt;code&gt;font.encode&lt;/code&gt; for retrieving the character codes that get put into a
+PDF content stream.&lt;/p&gt;
+
+&lt;p&gt;Here is the relevant method:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;def encode(glyph)
+  (@encoded_glyphs[glyph.id] ||=
+    begin
+      if glyph.kind_of?(InvalidGlyph)
+        raise HexaPDF::Error, &quot;Glyph for #{glyph.str.inspect} missing&quot;
+      end
+      if @subsetter
+        [[@subsetter.use_glyph(glyph.id)].pack('n'), glyph]
+      else
+        [[glyph.id].pack('n'), glyph]
+      end
+    end)[0]
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This method takes a glyph object and returns the character code that is needed for the respective
+PDF text showing operators. As the HexaPDF default is to subset TrueType fonts,
+&lt;code&gt;@subsetter.use_glyph(glyph.id)&lt;/code&gt; is invoked and returns the mapped glyph index for the given glyph.
+The returned glyph index is just packed into two bytes and returned.&lt;/p&gt;
+
+&lt;p&gt;As there was not further clue here I went further down the rabbit hole and inspected the
+&lt;code&gt;#use_glyph&lt;/code&gt; method of the subsetter class:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;def use_glyph(glyph_id)
+  return @glyph_map[glyph_id] if @glyph_map.key?(glyph_id)
+  @last_id += 1
+  @glyph_map[glyph_id] = @last_id
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The method returns an already mapped glyph index or, if not already mapped, increases the counter
+for the last used glyph index, stores it for the given glyph index and returns it. Not shown is that
+the initial &lt;code&gt;@last_id&lt;/code&gt; value is 0.&lt;/p&gt;
+
+&lt;p&gt;And here I found the root cause: The counter was increased for every newly encountered glyph. One of
+those glyphs would be mapped to 13 (if at least thirteen different glyphs were used which is the
+usual case) and this is the decimal value for &lt;code&gt;\r&lt;/code&gt; and one of the special characters that needs to
+be escaped! The other special characters have the decimal values 40, 41 and 92. So we can assume
+that in most cases three glyphs are mapped to strings that need to be escaped when serialized.&lt;/p&gt;
+
+&lt;h2 id=&quot;implementing-a-solution&quot;&gt;Implementing a Solution&lt;/h2&gt;
+
+&lt;p&gt;Now that I knew the &lt;em&gt;why&lt;/em&gt; I needed to find a solution.&lt;/p&gt;
+
+&lt;p&gt;My first instinct was to set the initial &lt;code&gt;@last_id&lt;/code&gt; value to 93. Then the problematic values would
+never be encountered. However, it turned out that making the necessary adjustments for this to
+create a valid PDF font object was not that easy.&lt;/p&gt;
+
+&lt;p&gt;Skipping the problematic values was also not an option as that would again mean adjustments in other
+places. But what if we made sure that the problematic values were just never used?&lt;/p&gt;
+
+&lt;p&gt;The solution I came up with is to use invalid keys for the &lt;code&gt;@glyph_map&lt;/code&gt; hash whenever a problematic
+value is reached:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;if @last_id == 13 || @last_id == 40 || @last_id == 41 || @last_id == 92
+  @glyph_map[:&quot;s#{@last_id}&quot;] = @last_id
+  @last_id += 1
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;These invalid keys are then always specially handled in the same manner as the glyph index 0 which
+represents an undefined glyph. See &lt;a href=&quot;https://github.com/gettalong/hexapdf/commit/cdb87239e95f638d4eca19f503674670c55b3586&quot;&gt;the commit&lt;/a&gt; for all details of the change.&lt;/p&gt;
+
+&lt;h2 id=&quot;benchmark-results&quot;&gt;Benchmark Results&lt;/h2&gt;
+
+&lt;p&gt;After implementing the changes I ran the memory profiler again and the number of allocated objects
+went down to about 1.680 million. That looked promising from a memory point of view. However, memory
+savings not always translate into time savings.&lt;/p&gt;
+
+&lt;p&gt;So I also ran the benchmarks again:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;|--------------------------------------------------------------------|
+|                              ||    Time |     Memory |   File size |
+|--------------------------------------------------------------------|
+| hexapdf     | 1x             |    572ms |  34.680KiB |     452.598 |
+|--------------------------------------------------------------------|
+| hexapdf     | 5x             |  1.840ms |  45.352KiB |   2.258.904 |
+|--------------------------------------------------------------------|
+| hexapdf     | 10x            |  3.504ms |  57.464KiB |   4.517.827 |
+|--------------------------------------------------------------------|
+| hexapdf     | 1x ttf         |    542ms |  33.540KiB |     546.390 |
+|--------------------------------------------------------------------|
+| hexapdf     | 5x ttf         |  2.099ms |  43.600KiB |   2.670.953 |
+|--------------------------------------------------------------------|
+| hexapdf     | 10x ttf        |  4.016ms |  63.584KiB |   5.328.382 |
+|--------------------------------------------------------------------|
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That also looked better! The TrueType benchmark of the “10x” version was now only about 14% slower
+than the one with the built-in PDF font.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Most optimizations I already did for HexaPDF involved things like in-place modifications of strings,
+i.e. using better tools that Ruby provides.&lt;/p&gt;
+
+&lt;p&gt;In this case, however, the solution to the performance problem was a bit unusual in that we actually
+had to use deeper TrueType font and PDF format knowledge to modify how strings were created in the
+first place.&lt;/p&gt;
+
+&lt;p&gt;If such a modification was done in a general purpose font handling library, it would probably not be
+merged. However, HexaPDF includes its own font handling library because of such reasons.&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">Benchmarking Ruby 2.4 to 3.0</title>
+    
+    <link href="https://gettalong.org/blog/2020/benchmarking-rubies.html" rel="alternate">
+    <id>https://gettalong.org/blog/2020/benchmarking-rubies.html</id>
+    <updated>2020-12-28T10:37:15+01:00</updated>
+    
+    <published>2020-12-28T10:24:00+01:00</published>
+    
+    <content type="html">
+&lt;p&gt;I ran some benchmarks using &lt;a href=&quot;https://hexapdf.gettalong.org&quot;&gt;HexaPDF&lt;/a&gt; after Ruby 2.4 was released in &lt;a href=&quot;../2016/ruby24-performance-looking-good.html&quot;&gt;2016&lt;/a&gt; and again after Ruby 2.5
+was releasd in &lt;a href=&quot;../2017/benchmarking-ruby-2-5.html&quot;&gt;2017&lt;/a&gt;. Since &lt;a href=&quot;https://www.ruby-lang.org/en/news/2020/12/25/ruby-3-0-0-released/&quot;&gt;Ruby 3.0.0&lt;/a&gt; was released this Christmas, I think this warrants another
+round of benchmarks. And this time three different real-world benchmarks are used to evaluate
+relative Ruby performance.&lt;/p&gt;
+
+
+&lt;h2 id=&quot;three-real-world-benchmarks&quot;&gt;Three Real-world Benchmarks&lt;/h2&gt;
+
+&lt;p&gt;The last two times I just used HexaPDF to evaluate the relative performance of Ruby releases. This
+time I will use three different Rubygems for this task:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;HexaPDF Benchmarks&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;What once started as simple gists is now part of the &lt;a href=&quot;https://github.com/gettalong/hexapdf/tree/master/benchmark&quot;&gt;HexaPDF repository&lt;/a&gt;. The benchmark
+descriptions are available on the &lt;a href=&quot;https://hexapdf.gettalong.org/documentation/benchmarks/&quot;&gt;HexaPDF website&lt;/a&gt;. I recommend looking at the
+descriptions there to understand what the benchmarks do as I will not replicate the descriptions
+here.&lt;/p&gt;
+
+    &lt;p&gt;The following commands were excecuted in the &lt;code&gt;benchmark/&lt;/code&gt; directory:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;./rubies.sh &quot;2.4.9 2.5.7 2.6.5 2.7.1 3.0.0 3.0.0j&quot; optimization -b hexapdf
+./rubies.sh &quot;2.4.9 2.5.7 2.6.5 2.7.1 3.0.0 3.0.0j&quot; raw_text -b hexapdf
+./rubies.sh &quot;2.4.9 2.5.7 2.6.5 2.7.1 3.0.0 3.0.0j&quot; line_wrapping -b hexapdf
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;A Ruby version with an appended “j” tells the script to activate the JIT.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;kramdown Benchmark&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;a href=&quot;https://kramdown.gettalong.org&quot;&gt;kramdown&lt;/a&gt; also includes a simple benchmarking script which is normally used for evaluating the
+performance of different kramdown versions. I added another script to facilitate testing of a
+single kramdown version on different Ruby versions.&lt;/p&gt;
+
+    &lt;p&gt;The benchmark just parses and converts a sample Markdown input document. The size of the input
+document is increased for each run (i.e. the original input document is just concatenated &lt;em&gt;X&lt;/em&gt;
+times).&lt;/p&gt;
+
+    &lt;p&gt;You can run the benchmark yourself in the kramdown repository using the
+&lt;code&gt;benchmark/benchmark-rubies.sh&lt;/code&gt; script which needs rbenv and gnuplot installed as well as the
+kramdown gem in the &lt;code&gt;rbenv shell --unset&lt;/code&gt; environment.&lt;/p&gt;
+
+    &lt;p&gt;The following command was used:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;/benchmark/benchmark-rubies.sh &quot;2.4.9 2.5.7 2.6.5 2.7.1 2.7.1j 3.0.0 3.0.0j&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;A Ruby version with an appended “j” tells the script to activate the JIT.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;geom2d Benchmark&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;a href=&quot;https://github.com/gettalong/geom2d&quot;&gt;geom2d&lt;/a&gt; is a small library for 2D geometry. It includes an algorithm for boolean operations
+(think union, intersection, …) on arbitrary polygons. The benchmark intersects polygons – one
+set has just a few vertices, the other many – which is a compute-intensive operation. So I would
+expect a speed-up when using the JIT here.&lt;/p&gt;
+
+    &lt;p&gt;This benchmark is done using the superb &lt;a href=&quot;https://github.com/benchmark-driver/benchmark-driver&quot;&gt;benchmark-driver&lt;/a&gt; gem.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;results-and-comments&quot;&gt;Results and Comments&lt;/h2&gt;
+
+&lt;p&gt;All benchmarks were done on Ubuntu 20.04 with an i7-8550U processor.&lt;/p&gt;
+
+&lt;h3 id=&quot;hexapdf&quot;&gt;HexaPDF&lt;/h3&gt;
+
+&lt;p&gt;The images are SVG files, click on them to open them in a new window to view details. The raw data
+is already the post-processed data ready for gnuplot-ingestion, with the time in milliseconds and
+the memory in kilobytes.&lt;/p&gt;
+
+&lt;h4 id=&quot;optimization-benchmark&quot;&gt;Optimization Benchmark&lt;/h4&gt;
+
+&lt;p&gt;Note: There are six groups (different files &lt;code&gt;a.pdf&lt;/code&gt; to &lt;code&gt;f.pdf&lt;/code&gt;) of four benchmarks (different
+hexapdf invocations; except for &lt;code&gt;f.pdf&lt;/code&gt; which only has three because the CSP mode would take
+&lt;em&gt;really&lt;/em&gt; long) with each benchmark having six columns (different Ruby versions).&lt;/p&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;a href=&quot;assets/hexapdf-optimization.svg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;assets/hexapdf-optimization.svg&quot; alt=&quot;HexaPDF optimization benchmark&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Time &quot;hexapdf 2.4.9&quot; &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.5&quot; &quot;hexapdf 2.7.1&quot; &quot;hexapdf 3.0.0&quot; &quot;hexapdf 3.0.0-jit&quot;
+&quot;a.pdf&quot; 148 189 200 227 177 512
+&quot;C a.pdf&quot; 141 154 152 155 157 456
+&quot;CS a.pdf&quot; 138 143 159 157 162 441
+&quot;CSP a.pdf&quot; 159 155 188 183 177 452
+&quot;b.pdf&quot; 710 627 653 660 688 1069
+&quot;C b.pdf&quot; 701 641 672 733 714 1058
+&quot;CS b.pdf&quot; 797 723 762 788 806 1063
+&quot;CSP b.pdf&quot; 4430 4385 4582 4573 4823 5205
+&quot;c.pdf&quot; 1227 1224 1233 1206 1303 1571
+&quot;C c.pdf&quot; 1308 1257 1307 1358 1407 1689
+&quot;CS c.pdf&quot; 1461 1408 1402 1446 1515 1746
+&quot;CSP c.pdf&quot; 4674 4823 5010 5138 5308 5993
+&quot;d.pdf&quot; 3439 2973 2984 2873 3296 3672
+&quot;C d.pdf&quot; 3372 2875 2957 2862 3029 3725
+&quot;CS d.pdf&quot; 3789 3234 3277 3109 3510 4213
+&quot;CSP d.pdf&quot; 3801 3370 3484 3150 3557 4254
+&quot;e.pdf&quot; 687 611 641 571 601 785
+&quot;C e.pdf&quot; 737 694 699 696 759 1016
+&quot;CS e.pdf&quot; 770 723 738 755 757 1065
+&quot;CSP e.pdf&quot; 17650 18082 18140 18897 19324 0
+&quot;f.pdf&quot; 44039 0 36400 35459 33779 37168 39065
+&quot;C f.pdf&quot; 48286 39558 39627 40512 42744 42474
+&quot;CS f.pdf&quot; 54120 47982 45595 46055 48131 49231
+
+
+Memory &quot;hexapdf 2.4.9&quot; &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.5&quot; &quot;hexapdf 2.7.1&quot; &quot;hexapdf 3.0.0&quot; &quot;hexapdf 3.0.0-jit&quot;
+&quot;a.pdf&quot; 15480 15292 19404 28540 27284 43896
+&quot;C a.pdf&quot; 15624 15240 19428 28332 27552 44408
+&quot;CS a.pdf&quot; 15924 15720 19744 28708 27636 44344
+&quot;CSP a.pdf&quot; 16172 16312 20824 29244 27968 44420
+&quot;b.pdf&quot; 35308 34452 35944 46072 45180 57484
+&quot;C b.pdf&quot; 35184 34480 35304 46236 45648 57384
+&quot;CS b.pdf&quot; 35256 37456 36020 48068 48264 57448
+&quot;CSP b.pdf&quot; 55608 48204 47156 57172 58824 59900
+&quot;c.pdf&quot; 40568 34652 43412 51816 47856 57480
+&quot;C c.pdf&quot; 42560 37588 38348 50116 49644 57328
+&quot;CS c.pdf&quot; 44892 39936 41328 52052 51756 57508
+&quot;CSP c.pdf&quot; 70560 59576 54672 66208 65900 67680
+&quot;d.pdf&quot; 62144 65920 70084 76028 76336 76980
+&quot;C d.pdf&quot; 61860 57788 64076 77260 73856 74396
+&quot;CS d.pdf&quot; 63356 57284 64276 79816 74436 74344
+&quot;CSP d.pdf&quot; 87832 75504 82328 99620 88016 89080
+&quot;e.pdf&quot; 45868 51308 48000 54892 55444 55656
+&quot;C e.pdf&quot; 100856 69980 75440 98592 102932 94516
+&quot;CS e.pdf&quot; 100260 69748 74024 95260 100696 101788
+&quot;CSP e.pdf&quot; 197016 176820 128996 151168 152404 0
+&quot;f.pdf&quot; 489868 0 490452 498336 471948 472380 472804
+&quot;C f.pdf&quot; 506684 504776 486748 528316 529732 537968
+&quot;CS f.pdf&quot; 608280 596416 567020 595480 609728 601932
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;raw-text-benchmark&quot;&gt;Raw Text Benchmark&lt;/h4&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;a href=&quot;assets/hexapdf-raw_text.svg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;assets/hexapdf-raw_text.svg&quot; alt=&quot;HexaPDF raw text benchmark&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Time &quot;hexapdf 2.4.9&quot; &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.5&quot; &quot;hexapdf 2.7.1&quot; &quot;hexapdf 3.0.0&quot; &quot;hexapdf 3.0.0-jit&quot;
+&quot;1x&quot; 479 465 496 511 566 784
+&quot;5x&quot; 1809 1830 1868 1913 2021 2278
+&quot;10x&quot; 3531 3434 3600 3765 4002 5255
+&quot;1x ttf&quot; 544 613 599 594 629 942
+&quot;5x ttf&quot; 2222 2389 2268 2290 2482 2981
+&quot;10x ttf&quot; 4479 4552 4563 4638 4851 5501
+
+
+Memory &quot;hexapdf 2.4.9&quot; &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.5&quot; &quot;hexapdf 2.7.1&quot;  &quot;hexapdf 3.0.0&quot; &quot;hexapdf 3.0.0-jit&quot;
+&quot;1x&quot; 30152 24316 26232 35520 34056 46840
+&quot;5x&quot; 57544 36876 38608 45864 45368 55020
+&quot;10x&quot; 77372 49840 49668 58012 57112 68320
+&quot;1x ttf&quot; 26932 23880 24872 33752 33232 46868
+&quot;5x ttf&quot; 59996 42572 40920 48856 48820 49588
+&quot;10x ttf&quot; 80584 60372 55132 62728 63688 68268
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;line-wrapping-benchmark&quot;&gt;Line Wrapping Benchmark&lt;/h4&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;a href=&quot;assets/hexapdf-line_wrapping.svg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;assets/hexapdf-line_wrapping.svg&quot; alt=&quot;HexaPDF line wrapping benchmark&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Time &quot;hexapdf 2.4.9&quot; &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.5&quot; &quot;hexapdf 2.7.1&quot; &quot;hexapdf 3.0.0&quot; &quot;hexapdf 3.0.0-jit&quot;
+&quot;L 400&quot; 1210 1219 1265 1331 1330 1703
+&quot;C 400&quot; 1519 1581 1577 1693 1506 1848
+&quot;L 200&quot; 1357 1344 1411 1480 1494 1744
+&quot;C 200&quot; 1772 1869 1851 1877 1658 1948
+&quot;L 100&quot; 1628 1617 1560 1758 1676 1856
+&quot;C 100&quot; 2098 2077 2058 2217 2001 2310
+&quot;L 50&quot; 2901 2787 2762 2806 2733 3172
+&quot;C 50&quot; 3561 3461 3483 3616 3387 3903
+&quot;L 400 ttf&quot; 1300 1376 1411 1436 1426 1933
+&quot;C 400 ttf&quot; 1628 1700 1759 1729 1733 1898
+&quot;L 200 ttf&quot; 1588 1525 1552 1589 1783 1923
+&quot;C 200 ttf&quot; 1864 1892 1971 1979 1816 2178
+&quot;L 100 ttf&quot; 1888 1833 1872 1859 1897 2288
+&quot;C 100 ttf&quot; 2423 2420 2507 2404 2235 2805
+&quot;L 50 ttf&quot; 5100 4845 5015 4947 4937 5574
+&quot;C 50 ttf&quot; 6104 5946 6272 5904 5571 6493
+
+
+Memory &quot;hexapdf 2.4.9&quot; &quot;hexapdf 2.5.7&quot; &quot;hexapdf 2.6.5&quot; &quot;hexapdf 2.7.1&quot; &quot;hexapdf 3.0.0&quot; &quot;hexapdf 3.0.0-jit&quot;
+&quot;L 400&quot; 84676 77912 83476 91672 100696 101928
+&quot;C 400&quot; 85112 80204 83344 96848 108756 109564
+&quot;L 200&quot; 86144 74900 93812 104136 92736 93284
+&quot;C 200&quot; 83552 80696 81436 91616 100940 101508
+&quot;L 100&quot; 83048 74040 91552 98792 89744 90268
+&quot;C 100&quot; 83568 76772 80712 90464 96956 97828
+&quot;L 50&quot; 200188 179200 155004 193996 189788 207156
+&quot;C 50&quot; 199416 174324 161544 186052 231444 221180
+&quot;L 400 ttf&quot; 81296 79572 96844 100784 91120 92108
+&quot;C 400 ttf&quot; 78544 82332 92356 103460 108152 108688
+&quot;L 200 ttf&quot; 88684 85288 90144 92304 85732 86112
+&quot;C 200 ttf&quot; 76960 89232 87568 96148 98860 99280
+&quot;L 100 ttf&quot; 79764 84788 87452 92336 86368 87404
+&quot;C 100 ttf&quot; 80820 88760 85492 95368 96608 97268
+&quot;L 50 ttf&quot; 257716 270368 236536 286000 281968 284932
+&quot;C 50 ttf&quot; 259612 291688 252096 282292 286640 284348
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;comments&quot;&gt;Comments&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Run time for all Rubies except Ruby 3.0.0+JIT is roughly the same, with 3.0.0+JIT being much
+slower in nearly all cases.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Memory usage (see raw data) generally got better from 2.4 to 2.5 but got worse starting with 2.7
+and takes another hit when the JIT is used.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;One interesting thing is that Ruby 3.0.0+JIT errors out when doing the “hexapdf CSP” optimization
+benchmark on the &lt;code&gt;e.pdf&lt;/code&gt; file. I will have to look at this to see what is happening there.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;kramdown&quot;&gt;kramdown&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;assets/kramdown.png&quot; alt=&quot;kramdown benchmark&quot; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# ruby-2.4.9p362 || ruby-2.5.7p206 || ruby-2.6.5p114 || ruby-2.7.1p83 || ruby-2.7.1p83-jit || ruby-3.0.0p0 || ruby-3.0.0p0-jit
+256     0.73670 0.72830 0.69474 0.69346 0.70838 0.69294 0.69133
+512     1.72586 1.70017 1.64458 1.61140 1.65583 1.49876 1.46554
+1024    3.58049 3.50635 3.31272 3.22631 3.25020 3.32012 3.23109
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The general trend here is that Ruby got faster over time, with Ruby 2.7 and 3.0 being roughly the
+same, irrespective of JIT usage.&lt;/p&gt;
+
+&lt;h3 id=&quot;geom2d&quot;&gt;geom2d&lt;/h3&gt;
+
+&lt;p&gt;The bars represent instructions per seconds, so larger bars are better.&lt;/p&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;img src=&quot;assets/geom2d-large.png&quot; alt=&quot;geom2d large benchmark&quot; /&gt;&lt;/p&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;img src=&quot;assets/geom2d-small.png&quot; alt=&quot;geom2d small benchmark&quot; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Comparison:
+                       large
+          2.6.5:         3.0 i/s
+          2.4.9:         2.9 i/s - 1.02x  slower
+          2.5.7:         2.9 i/s - 1.03x  slower
+          3.0.0:         2.9 i/s - 1.05x  slower
+          2.7.1:         2.8 i/s - 1.05x  slower
+    3.0.0 --jit:         2.6 i/s - 1.14x  slower
+
+                       small
+          2.6.5:      3813.9 i/s
+          3.0.0:      3797.3 i/s - 1.00x  slower
+          2.5.7:      3794.6 i/s - 1.01x  slower
+          2.7.1:      3635.5 i/s - 1.05x  slower
+    3.0.0 --jit:      3582.3 i/s - 1.06x  slower
+          2.4.9:      3562.4 i/s - 1.07x  slower
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I expected that Ruby 3.0.0+JIT would perform best in this benchmark because it is largely CPU-bound.
+However, it was actually one of the slowest Rubies.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Ruby 3.0.0 brings many new things to the table with respect to concurrency and typing. If we look at
+strictly CPU-bound applications it also got much better performance, especially with the JIT.&lt;/p&gt;
+
+&lt;p&gt;However, for real world applications the performance increases are evolutionary rather than
+revolutionary. Those who follow Ruby development have known this for years. And I think that is okay
+because Ruby is already acceptably fast in many cases (e.g. the HexaPDF PDF library being only
+50%-90% slower than a PDF library written in C++).&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">On maintaining webgen</title>
+    
+    <link href="https://gettalong.org/blog/2019/on-maintaining-webgen.html" rel="alternate">
+    <id>https://gettalong.org/blog/2019/on-maintaining-webgen.html</id>
+    <updated>2019-08-15T23:16:33+02:00</updated>
+    
+    <published>2019-08-15T22:40:00+02:00</published>
+    
+    <content type="html">
+&lt;p&gt;My static website generator &lt;a href=&quot;https://webgen.gettalong.org&quot;&gt;webgen&lt;/a&gt; has been around for a long time.
+Though there are now many other static website generators written in Ruby, I still maintain webgen
+because some of its functionality is unique.&lt;/p&gt;
+
+&lt;p&gt;Development of webgen started 16 years ago, back in 2003 because I needed a tool for creating my
+personal website. From there it grew into a full-blown static website generator over the years (you
+can read more about its &lt;a href=&quot;https://webgen.gettalong.org/documentation/history.html&quot;&gt;history&lt;/a&gt; at the webgen homepage). It had its heyday around 2007/2008 when
+not many static website generators existed (&lt;a href=&quot;https://hobix.com&quot;&gt;Hobix&lt;/a&gt; anyone?). A few years later
+the “boom years” for static website generators started and &lt;a href=&quot;https://www.staticgen.com&quot;&gt;many, many&lt;/a&gt; were created.
+Ruby lends itself especially well for such a tool due to its rich ecosystem of web related
+libraries.&lt;/p&gt;
+
+&lt;p&gt;Nowadays webgen is probably only used by a handful of people besides myself; if you are one them, I
+would &lt;a href=&quot;mailto:t_leitner@gmx.at&quot;&gt;love to hear&lt;/a&gt; why you are sticking with webgen. I still maintain
+webgen and generate all my websites with it, like this personal website, the &lt;a href=&quot;https://webgen.gettalong.org&quot;&gt;webgen homepage&lt;/a&gt;, the
+&lt;a href=&quot;https://cmdparse.gettalong.org&quot;&gt;cmdparse homepage&lt;/a&gt;, the &lt;a href=&quot;https://kramdown.gettalong.org&quot;&gt;kramdown homepage&lt;/a&gt; or the &lt;a href=&quot;https://hexapdf.gettalong.org&quot;&gt;HexaPDF homepage&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;One reason is that I’m naturally very familiar with it, it works great and is reasonably fast.
+However, the main reason is that it provides some unique features that I didn’t find anywhere else.
+Here are two that I find especially useful:&lt;/p&gt;
+
+&lt;dl&gt;
+  &lt;dt&gt;Flexible file system layout&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;In contrast to most other static website generators webgen doesn’t prescribe a certain directory
+structure. The default is the following:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;website/           # your website directory
+  webgen.config    # webgen's configuration file
+  src/             # the directory with all the source files
+  ext/             # extensions to webgen's functionality
+  out/             # where all the generated files go
+  tmp/             # directory for temporary files and caches
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;However, the only thing webgen really needs is the &lt;code&gt;webgen.config&lt;/code&gt; file, which can be a YAML or
+Ruby file and configures webgen. &lt;a href=&quot;https://cmdparse.gettalong.org&quot;&gt;cmdparse&lt;/a&gt;, for example, uses the following in
+its &lt;a href=&quot;https://github.com/gettalong/cmdparse/blob/master/webgen.config#L4&quot;&gt;&lt;code&gt;webgen.config&lt;/code&gt;&lt;/a&gt; file:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;website.config['sources'] =[['/', :file_system, 'doc']]
+website.config['destination'] = [:file_system, 'htmldoc']
+website.config['website.tmpdir'] = 'webgen-tmp'
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;This means that the source directory is changed to &lt;code&gt;doc/&lt;/code&gt;, the output directory to &lt;code&gt;htmldoc/&lt;/code&gt; and
+the temporary directory to &lt;code&gt;webgen-tmp/&lt;/code&gt;. Due to this flexibility it is easy to ship the
+source for the documentation website with the code itself.&lt;/p&gt;
+  &lt;/dd&gt;
+  &lt;dt&gt;RDoc integration&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;webgen can integrate the API documentation created via RDoc into a website. This means, for
+example, that the API documentation has the same look and feel as the rest of the documentation
+(see, for example, the documentation for &lt;a href=&quot;https://cmdparse.gettalong.org/api/CmdParse/CommandParser.html&quot;&gt;CmdParse::CommandParser&lt;/a&gt;).&lt;/p&gt;
+
+    &lt;p&gt;What is more important, though, and more useful is that the other parts of the website can easily
+link to any part of the API documentation. This functionality is extensively used by the &lt;a href=&quot;https://webgen.gettalong.org&quot;&gt;webgen
+homepage&lt;/a&gt; itself and, for example, by the &lt;a href=&quot;https://hexapdf.gettalong.org&quot;&gt;HexaPDF homepage&lt;/a&gt;.&lt;/p&gt;
+
+    &lt;p&gt;Taking the &lt;a href=&quot;https://hexapdf.gettalong.org/documentation/changelog.html&quot;&gt;HexaPDF changelog&lt;/a&gt; as example, you will find that all mentions of classes or methods
+are linked to the correct place. There will be no dangling links because during the generation of
+the website all such links are automatically checked and a warning would appear if a link target
+is not found.&lt;/p&gt;
+
+    &lt;p&gt;The only other tool I know that integrates API documentation in such a way is &lt;a href=&quot;http://www.sphinx-doc.org/en/master/&quot;&gt;Sphinx&lt;/a&gt;. But maybe
+&lt;a href=&quot;https://twitter.com/_gettalong/status/1139094702693736448&quot;&gt;Antora&lt;/a&gt; (project documentation tool based on Asciidoctor) will get such a functionality,
+too!&lt;/p&gt;
+  &lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;p&gt;Until another tool provides at least these two functionalities, I guess I will maintain webgen. The
+time and effort is not that much and if I need something new I can quickly implement it.&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">kramdown 2.0 and beyond</title>
+    
+    <link href="https://gettalong.org/blog/2018/kramdown-2-0-and-beyond.html" rel="alternate">
+    <id>https://gettalong.org/blog/2018/kramdown-2-0-and-beyond.html</id>
+    <updated>2018-10-26T08:41:51+02:00</updated>
+    
+    <published>2018-10-26T08:40:00+02:00</published>
+    
+    <content type="html">
+&lt;p&gt;The &lt;a href=&quot;https://kramdown.gettalong.org&quot;&gt;kramdown&lt;/a&gt; project has become an umbrella project for many
+parsers, converters, math engines, … It is time to split things apart to make them more manageable
+and have faster release cycles.&lt;/p&gt;
+
+&lt;p&gt;Once kramdown was really a &lt;strong&gt;pure-Ruby&lt;/strong&gt; Markdown-superset conversion library. Nowadays, it includes
+many extensions that rely on Ruby gems with C extensions or even on other programming languages like
+NodeJS. This makes updating and testing kramdown more time intensive since one has to install and
+manage all dependencies – and as we all know, NodeJS &lt;em&gt;loves&lt;/em&gt; dependencies…&lt;/p&gt;
+
+&lt;p&gt;Therefore starting with release 2.0 the core kramdown gem will be reduced to a meaningful subset of
+extensions, and all other extension will get their own gem. This will allow more independent
+development and faster releases.&lt;/p&gt;
+
+&lt;p&gt;I will still develop the core kramdown gem and I will help out with the extensions if I have time
+but as of now I’m looking for developers/maintainers for the following extensions (&lt;strong&gt;&lt;a href=&quot;mailto:t_leitner@gmx.at&quot;&gt;contact
+me if you are interested&lt;/a&gt;&lt;/strong&gt;):&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;GFM parser&lt;/li&gt;
+  &lt;li&gt;PDF converter&lt;/li&gt;
+  &lt;li&gt;mathjaxnode math engine&lt;/li&gt;
+  &lt;li&gt;sskatex math engine&lt;/li&gt;
+  &lt;li&gt;katex math engine&lt;/li&gt;
+  &lt;li&gt;itex2mml math engine&lt;/li&gt;
+  &lt;li&gt;ritex math engine&lt;/li&gt;
+  &lt;li&gt;coderay syntax highlighter&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The plan is to release the next kramdown version with the current pending changes. Then kramdown 2.0
+and all extension gems (in their 1.0 version) will be released, with no code changes. From this
+point onwards each gem has its own release cycle.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">Privacy Enhancements</title>
+    
+    <link href="https://gettalong.org/blog/2018/privacy-enhancements.html" rel="alternate">
+    <id>https://gettalong.org/blog/2018/privacy-enhancements.html</id>
+    <updated>2018-06-13T20:56:47+02:00</updated>
+    
+    <published>2018-05-10T17:40:00+02:00</published>
+    
+    <content type="html">
+&lt;p&gt;The European Union’s General Data Protection Regulation (GDPR) will be enforced from May 25th
+forward. In the light of this I adjusted some things on &lt;code&gt;*.gettalong.org&lt;/code&gt; websites.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;#update&quot;&gt;&lt;strong&gt;Update 2018-06-13&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;no-external-resources&quot;&gt;No External Resources&lt;/h2&gt;
+
+&lt;p&gt;I have never used many external resources but now even those few are gone. This means:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Fonts that were previously hosted by Google Fonts are now locally hosted. So Google won’t get any
+IP adresses or other data.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;All Javascript, CSS and images are also locally hosted. This was already the case with the
+exception of a few images.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The disadvantage of this approach is that browser caching won’t be as effective. However, this is
+offset by using longer caching times due to the use of new cache-busting features of &lt;a href=&quot;https://webgen.gettalong.org/news.html#webgen-1-5-0-released&quot;&gt;webgen&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;analytics&quot;&gt;Analytics&lt;/h2&gt;
+
+&lt;p&gt;I still use &lt;a href=&quot;https://statcounter.com&quot;&gt;StatCounter&lt;/a&gt; for site analytics. So “no external resources” was not 100% correct. The
+thing is, however, that the websites &lt;em&gt;would&lt;/em&gt; work without it and that StatCounter is blocked by
+default by systems like &lt;a href=&quot;https://github.com/gorhill/uMatrix&quot;&gt;uMatrix&lt;/a&gt;. For example, if you are using uMatrix, the websites will work
+even if you only enabled 1st-party content.&lt;/p&gt;
+
+&lt;p&gt;To enhance the privacy of the data I have enabled &lt;a href=&quot;https://de.statcounter.com/support/knowledge-base/314/&quot;&gt;IP address masking&lt;/a&gt; (which replaces the last
+octet of the IP address with a dummy value) and disabled the tracking cookies in StatCounter (which
+means that every visit is the first visit).&lt;/p&gt;
+
+&lt;p&gt;If you see a cookie named &lt;code&gt;__cfduid&lt;/code&gt;: It is from CloudFlare and is not used for tracking. See the
+&lt;a href=&quot;https://support.cloudflare.com/hc/en-us/articles/200170156-What-does-the-Cloudflare-cfduid-cookie-do-&quot;&gt;CloudFlare site&lt;/a&gt; for more information.&lt;/p&gt;
+
+&lt;h2 id=&quot;web-server-enhancements&quot;&gt;Web Server Enhancements&lt;/h2&gt;
+
+&lt;p&gt;Additionally, I’m now using some HTTP headers that will enhance the privacy:&lt;/p&gt;
+
+&lt;dl&gt;
+  &lt;dt&gt;&lt;code&gt;Referrer-Policy &quot;same-origin&quot;&lt;/code&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;If you click on a link to an external website, the external site will normally get the URL of the
+original site sent during the request. This header tells the browser to do this only for the
+website itself and not for external websites (which get nothing).&lt;/p&gt;
+  &lt;/dd&gt;
+  &lt;dt&gt;&lt;code&gt;Strict-Transport-Security &quot;max-age=31536000&quot;&lt;/code&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;Also called HSTS, this header will mandate the use HTTPS for one year after the first access, even
+if the link entered into the browser is HTTP. So, essentially, it forces the browser to use HTTPS.&lt;/p&gt;
+  &lt;/dd&gt;
+  &lt;dt&gt;&lt;code&gt;X-Frame-Options &quot;SAMEORIGIN&quot;&lt;/code&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;This header disallows embedding the website into another website by use of &lt;code&gt;&amp;lt;iframe&amp;gt;&lt;/code&gt; tags.&lt;/p&gt;
+  &lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;h2 id=&quot;website-checking-tools&quot;&gt;Website Checking Tools&lt;/h2&gt;
+
+&lt;p&gt;If you want to check your website for trackers, HSTS or security related headers, have a look at the
+following websites:&lt;/p&gt;
+
+&lt;dl&gt;
+  &lt;dt&gt;&lt;a href=&quot;https://webbkoll.dataskydd.net/en&quot;&gt;https://webbkoll.dataskydd.net/en&lt;/a&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;Checks for trackers and other things&lt;/p&gt;
+  &lt;/dd&gt;
+  &lt;dt&gt;&lt;a href=&quot;https://www.ssllabs.com/ssltest/&quot;&gt;https://www.ssllabs.com/ssltest/&lt;/a&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;Checks whether HTTPS is correctly set up&lt;/p&gt;
+  &lt;/dd&gt;
+  &lt;dt&gt;&lt;a href=&quot;https://securityheaders.com&quot;&gt;https://securityheaders.com&lt;/a&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;Checks for security related HTTP headers&lt;/p&gt;
+  &lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;h2 id=&quot;update&quot;&gt;Update 2018-06-13&lt;/h2&gt;
+
+&lt;p&gt;Since StatCounter doesn’t seem to be compliant with EU regulations, I have decided to drop it and
+use a self-hosted installation of Matomo instead. Now there are really no external dependencies
+anymore.&lt;/p&gt;
+
+&lt;p&gt;Furthermore, I have added a &lt;a href=&quot;../../privacy.html&quot;&gt;privacy policy&lt;/a&gt; and a &lt;a href=&quot;../../legal.html&quot;&gt;legal notice&lt;/a&gt; page.&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">Ruby 2.5 Is Out - Let's Benchmark</title>
+    
+    <link href="https://gettalong.org/blog/2017/benchmarking-ruby-2-5.html" rel="alternate">
+    <id>https://gettalong.org/blog/2017/benchmarking-ruby-2-5.html</id>
+    <updated>2017-12-27T15:48:05+01:00</updated>
+    
+    <published>2017-12-27T15:40:00+01:00</published>
+    
+    <content type="html">
+&lt;p&gt;Ruby’s performance is getting better and better with each release and the &lt;a href=&quot;https://www.ruby-lang.org/en/news/2017/12/25/ruby-2-5-0-released/&quot;&gt;newly released 2.5.0
+version&lt;/a&gt; is no different.&lt;/p&gt;
+
+
+&lt;p&gt;Before the release of Ruby 2.4 last year I &lt;a href=&quot;../2016/ruby24-performance-looking-good.html&quot;&gt;benchmarked Ruby 2.3.3p222 and 2.4.0preview3&lt;/a&gt; and
+was pleasantly surprised. Since the &lt;a href=&quot;https://www.ruby-lang.org/en/news/2017/12/25/ruby-2-5-0-released/&quot;&gt;release notes of Ruby 2.5&lt;/a&gt; highlight some performance
+improvements I ran another benchmark.&lt;/p&gt;
+
+&lt;p&gt;This time I benchmarked Ruby 2.3.6, 2.4.3 and 2.5.0 on all three &lt;a href=&quot;http://hexapdf.gettalong.org&quot;&gt;HexaPDF&lt;/a&gt; benchmarks. Since HexaPDF
+is only compatible with Ruby 2.4 and higher, I had to modify it a bit so that it also runs under
+Ruby 2.3. Note that all Ruby versions are tested with the exact same HexaPDF code which means that
+there is no distortion through the use of newer methods (like &lt;code&gt;String#match?&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;The benchmarks themselves are not that compute-intense but generate a lot of small objects and
+strings. As no heavy computation is done it means that potential speed-ups of the Ruby interpreter
+are most likely not that pronounced. The three benchmarks are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://gist.github.com/gettalong/8955ff5403fe7abb7bee&quot;&gt;&lt;strong&gt;Optimization&lt;/strong&gt;&lt;/a&gt;: This benchmark involves reading various PDFs one by one, creating
+in-memory representations and writing size-optimized versions of the PDFs. This involves a lot of
+string to Ruby object conversion and vice versa.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://gist.github.com/gettalong/0d7c576064725774299cdf4d1a51d2b9&quot;&gt;&lt;strong&gt;Raw Text&lt;/strong&gt;&lt;/a&gt;: In this benchmark the text from then English version of Homer’s Odyssey is
+just output line by line, with no additional line breaks begin inserted or text metric measuring
+being done. This tests the low-level text output facilities of HexaPDF which generate a lot of
+small strings.&lt;/p&gt;
+
+    &lt;p&gt;To see how more text influences the performance, this test is run using the text of Homer’s
+Odyssey one, five and ten times.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://gist.github.com/gettalong/8afae547ac3e50e9b8ce6c521a2a0eea&quot;&gt;&lt;strong&gt;Line Wrapping&lt;/strong&gt;&lt;/a&gt;: Again Homer’s Odyssey is output but this time the line breaking algorithm
+is used. This means that the text needs to be segmented into parts first and then assembled into
+lines, providing a more compute intense benchmark.&lt;/p&gt;
+
+    &lt;p&gt;This test is run on different page widths where with a page width of 400pt no additional line
+breaks need to be inserted, and with a page width of 50pt even long words need to be broken.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And here are the results, graphics first followed by the raw data (note that the last four columns
+are missing on the optimization benchmark graphic because the bars would be so much higher):&lt;/p&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;img src=&quot;assets/optimization.svg&quot; alt=&quot;optimization&quot; /&gt;&lt;/p&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;img src=&quot;assets/raw_text.svg&quot; alt=&quot;raw text&quot; /&gt;&lt;/p&gt;
+
+&lt;p class=&quot;image fit&quot;&gt;&lt;img src=&quot;assets/line_wrapping.svg&quot; alt=&quot;line wrapping&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Raw data for the “Optimization” benchmark:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;|---------------------------------------------------------------------------------------------|
+| a.pdf (53,056)      |              Time              |                Memory                |
+|---------------------------------------------------------------------------------------------|
+|                     |   2.3.6  |   2.4.3  |   2.5.0  |   2.3.6    |   2.4.3    |   2.5.0    |
+|---------------------------------------------------------------------------------------------|
+| hexapdf             |    158ms |    154ms |    162ms |  15,644KiB |  14,108KiB |  14,424KiB |
+| hexapdf C           |    151ms |    141ms |    155ms |  15,704KiB |  14,224KiB |  14,728KiB |
+| hexapdf CS          |    156ms |    148ms |    161ms |  16,344KiB |  14,644KiB |  15,064KiB |
+| hexapdf CSP         |    209ms |    167ms |    176ms |  16,608KiB |  14,856KiB |  15,504KiB |
+|---------------------------------------------------------------------------------------------|
+| b.pdf (11,520,218)  |              Time              |                Memory                |
+|---------------------------------------------------------------------------------------------|
+| hexapdf             |  1,093ms |    934ms |    839ms |  31,188KiB |  31,604KiB |  25,248KiB |
+| hexapdf C           |  1,032ms |    953ms |    878ms |  31,532KiB |  30,440KiB |  26,004KiB |
+| hexapdf CS          |  1,137ms |  1,087ms |  1,001ms |  34,264KiB |  31,352KiB |  29,120KiB |
+| hexapdf CSP         |  8,938ms |  8,328ms |  7,933ms |  49,796KiB |  46,796KiB |  40,260KiB |
+|---------------------------------------------------------------------------------------------|
+| c.pdf (14,399,980)  |              Time              |                Memory                |
+|---------------------------------------------------------------------------------------------|
+| hexapdf             |  2,192ms |  1,890ms |  1,720ms |  43,272KiB |  39,936KiB |  36,520KiB |
+| hexapdf C           |  2,194ms |  2,052ms |  1,898ms |  43,604KiB |  39,836KiB |  37,968KiB |
+| hexapdf CS          |  2,396ms |  2,203ms |  2,047ms |  49,764KiB |  43,328KiB |  40,672KiB |
+| hexapdf CSP         |  9,435ms |  9,136ms |  8,431ms |  71,284KiB |  63,592KiB |  55,780KiB |
+|---------------------------------------------------------------------------------------------|
+| d.pdf (8,107,348)   |              Time              |                Memory                |
+|---------------------------------------------------------------------------------------------|
+| hexapdf             |  5,889ms |  5,002ms |  4,238ms |  99,812KiB |  59,968KiB |  57,172KiB |
+| hexapdf C           |  5,601ms |  4,967ms |  4,196ms |  85,488KiB |  57,860KiB |  57,724KiB |
+| hexapdf CS          |  6,119ms |  5,576ms |  4,685ms |  83,880KiB |  60,992KiB |  59,048KiB |
+| hexapdf CSP         |  6,284ms |  5,606ms |  4,833ms |  93,520KiB |  90,744KiB |  82,328KiB |
+|---------------------------------------------------------------------------------------------|
+| e.pdf (21,788,087)  |              Time              |                Memory                |
+|---------------------------------------------------------------------------------------------|
+| hexapdf             |  1,034ms |    851ms |    814ms |  44,596KiB |  49,688KiB |  50,704KiB |
+| hexapdf C           |  1,093ms |  1,054ms |    920ms | 109,588KiB |  93,268KiB |  66,916KiB |
+| hexapdf CS          |  1,134ms |  1,127ms |  1,006ms | 109,792KiB |  96,556KiB |  89,128KiB |
+| hexapdf CSP         | 30,476ms | 29,949ms | 28,679ms | 188,592KiB | 184,464KiB | 182,472KiB |
+|---------------------------------------------------------------------------------------------|
+| f.pdf (154,752,614) |              Time              |                Memory                |
+|---------------------------------------------------------------------------------------------|
+| hexapdf             | 59,356ms | 54,641ms | 45,201ms | 583,908KiB | 461,636KiB | 473,448KiB |
+| hexapdf C           | 63,415ms | 58,382ms | 49,877ms | 539,764KiB | 505,060KiB | 504,452KiB |
+| hexapdf CS          | 71,359ms | 64,601ms | 55,915ms | 674,008KiB | 563,100KiB | 592,072KiB |
+| ERR hexapdf CSP     |      0ms |      0ms |      0ms |       0KiB |       0KiB |       0KiB |
+|---------------------------------------------------------------------------------------------|
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Raw data for “Raw Text” benchmark:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;|-----------------------------------------------------------------------------------------|
+|                 |               Time             |               Memory                 |
+|-----------------------------------------------------------------------------------------|
+|                 |   2.3.6  |   2.4.3  |   2.5.0  |   2.3.6    |   2.4.3    |   2.5.0    |
+|-----------------------------------------------------------------------------------------|
+| hexapdf 1x      |    667ms |    585ms |    544ms |  28,892KiB |  20,904KiB |  20,956KiB |
+| hexapdf 5x      |  2,571ms |  2,362ms |  2,176ms |  40,092KiB |  35,444KiB |  32,236KiB |
+| hexapdf 10x     |  5,025ms |  4,654ms |  4,208ms |  51,360KiB |  52,664KiB |  46,092KiB |
+| hexapdf 1x ttf  |    708ms |    644ms |    619ms |  25,308KiB |  21,764KiB |  20,464KiB |
+| hexapdf 5x ttf  |  2,932ms |  2,680ms |  2,480ms |  44,800KiB |  45,756KiB |  36,900KiB |
+| hexapdf 10x ttf |  5,785ms |  5,194ms |  4,878ms |  69,996KiB |  62,876KiB |  52,808KiB |
+|-----------------------------------------------------------------------------------------|
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Raw data for “Line Wrapping” benchmark:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;|-----------------------------------------------------------------------------------------|
+|                 |     Time |     Time |     Time |     Memory |     Memory |     Memory |
+|-----------------------------------------------------------------------------------------|
+|                 |   2.3.6  |   2.4.3  |   2.5.0  |   2.3.6    |   2.4.3    |   2.5.0    |
+|-----------------------------------------------------------------------------------------|
+| hexapdf 400     |  2,251ms |  2,025ms |  1,865ms |  82,612KiB |  67,276KiB |  68,712KiB |
+| hexapdf 200     |  2,553ms |  2,308ms |  2,141ms |  94,092KiB |  69,420KiB |  69,820KiB |
+| hexapdf 100     |  2,945ms |  2,649ms |  2,434ms |  93,868KiB |  74,496KiB |  73,432KiB |
+| hexapdf 50      |  4,572ms |  4,228ms |  3,974ms | 175,492KiB | 178,932KiB | 157,028KiB |
+| hexapdf 400 ttf |  2,330ms |  2,103ms |  1,959ms |  84,920KiB |  68,812KiB |  70,660KiB |
+| hexapdf 200 ttf |  2,669ms |  2,368ms |  2,201ms |  93,688KiB |  73,540KiB |  78,452KiB |
+| hexapdf 100 ttf |  3,305ms |  2,971ms |  2,712ms |  98,556KiB |  76,804KiB |  80,880KiB |
+| hexapdf 50 ttf  |  7,051ms |  6,602ms |  6,288ms | 268,120KiB | 236,108KiB | 266,376KiB |
+|-----------------------------------------------------------------------------------------|
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I think that the graphics and numbers speak for themselves: &lt;strong&gt;Ruby is clearly getting faster and
+faster&lt;/strong&gt; which is great! And I’m especially excited by the possibility of having an &lt;a href=&quot;https://bugs.ruby-lang.org/issues/12589#note-35&quot;&gt;&lt;strong&gt;MJIT in Ruby
+2.6&lt;/strong&gt;&lt;/a&gt;! Good times! 😊&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">Memory Conscious Programming in Ruby</title>
+    
+    <link href="https://gettalong.org/blog/2017/memory-conscious-programming-in-ruby.html" rel="alternate">
+    <id>https://gettalong.org/blog/2017/memory-conscious-programming-in-ruby.html</id>
+    <updated>2017-10-31T22:06:48+01:00</updated>
+    
+    <published>2017-10-31T21:47:00+01:00</published>
+    
+    <content type="html">
+&lt;p&gt;When programming in Ruby many people think that egregious memory usage is the norm and unavoidable.
+However, there are ways and strategies to keep memory usage down and in this post I will show you
+some of them.&lt;/p&gt;
+
+&lt;h2 id=&quot;keeping-rubys-internals-in-mind&quot;&gt;Keeping Ruby’s Internals in Mind&lt;/h2&gt;
+
+&lt;p&gt;Ruby’s main built-in classes like &lt;code&gt;TrueClass&lt;/code&gt;, &lt;code&gt;FalseClass&lt;/code&gt;, &lt;code&gt;NilClass&lt;/code&gt;, &lt;code&gt;Integer&lt;/code&gt;, &lt;code&gt;Float&lt;/code&gt;,
+&lt;code&gt;Symbol&lt;/code&gt;, &lt;code&gt;String&lt;/code&gt;, &lt;code&gt;Array&lt;/code&gt;, &lt;code&gt;Hash&lt;/code&gt; and &lt;code&gt;Struct&lt;/code&gt; are highly optimized in terms of execution
+performance and memory usage. Note that I’m talking about CRuby (MRI) here and therefore most things
+will probably not apply to other Ruby implementations.&lt;/p&gt;
+
+&lt;p&gt;Internally, i.e. in its C code, each object in Ruby is referenced via the &lt;code&gt;VALUE&lt;/code&gt; type. This is a
+pointer to a C structure that holds all the necessary information.&lt;/p&gt;
+
+&lt;p&gt;All given numbers below are valid for a 64-bit Linux platform but should apply to any other 64-bit
+system.&lt;/p&gt;
+
+&lt;h3 id=&quot;nil-true-false-and-some-integers&quot;&gt;&lt;code&gt;nil&lt;/code&gt;, &lt;code&gt;true&lt;/code&gt;, &lt;code&gt;false&lt;/code&gt; and Some Integers&lt;/h3&gt;
+
+&lt;p&gt;Some classes don’t need to allocate memory for the C structure when creating an object since the
+&lt;strong&gt;objects can be directly represented by a &lt;code&gt;VALUE&lt;/code&gt;&lt;/strong&gt;. This is the case for objects of the type
+&lt;code&gt;NilClass&lt;/code&gt; (i.e. the &lt;code&gt;nil&lt;/code&gt; value), type &lt;code&gt;TrueClass&lt;/code&gt; (i.e. the &lt;code&gt;true&lt;/code&gt; value) and type &lt;code&gt;FalseClass&lt;/code&gt;
+(i.e. the &lt;code&gt;false&lt;/code&gt; value).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Small integers in the range of -2^62 to 2^62-1 are also directly represented as a &lt;code&gt;VALUE&lt;/code&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;What does this mean? It means that only the bare minimum memory is needed for representing these
+objects. And that you don’t need to think about memory usage when using such values.&lt;/p&gt;
+
+&lt;p&gt;We can test this by using the &lt;code&gt;ObjectSpace.memsize_of&lt;/code&gt; method that returns the memory used by an
+object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2.4.2 &amp;gt; require 'objspace'
+ =&amp;gt; true
+2.4.2 &amp;gt; ObjectSpace.memsize_of(nil)
+ =&amp;gt; 0
+2.4.2 &amp;gt; ObjectSpace.memsize_of(true)
+ =&amp;gt; 0
+2.4.2 &amp;gt; ObjectSpace.memsize_of(false)
+ =&amp;gt; 0
+2.4.2 &amp;gt; ObjectSpace.memsize_of(2**62-1)
+ =&amp;gt; 0
+2.4.2 &amp;gt; ObjectSpace.memsize_of(2**62)
+ =&amp;gt; 40
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see no additional memory is used, except in the last case since the integer is too big.
+Once a &lt;code&gt;VALUE&lt;/code&gt; structure is needed, an object uses at least 40 bytes of memory.&lt;/p&gt;
+
+&lt;h3 id=&quot;arrays-structs-hashes-and-strings&quot;&gt;Arrays, Structs, Hashes and Strings&lt;/h3&gt;
+
+&lt;p&gt;Objects for these four classes use special C structures instead of the general one. These structures
+allow storing some values directly inside them instead of allocating extra memory.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Arrays with up to three elements are memory efficient&lt;/strong&gt;. After that each new element needs 8
+additional bytes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2.4.2 &amp;gt; ObjectSpace.memsize_of([])
+ =&amp;gt; 40
+2.4.2 &amp;gt; ObjectSpace.memsize_of([1])
+ =&amp;gt; 40
+2.4.2 &amp;gt; ObjectSpace.memsize_of([1, 2])
+ =&amp;gt; 40
+2.4.2 &amp;gt; ObjectSpace.memsize_of([1, 2, 3])
+ =&amp;gt; 40
+2.4.2 &amp;gt; ObjectSpace.memsize_of([1, 2, 3, 4])
+ =&amp;gt; 72
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This also applies to structs with up to three members, i.e. those structs only need 40 bytes of
+memory:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2.4.2 &amp;gt; X = Struct.new(:a, :b, :c)
+ =&amp;gt; X
+2.4.2 &amp;gt; Y = Struct.new(:a, :b, :c, :d)
+ =&amp;gt; Y
+2.4.2 &amp;gt; ObjectSpace.memsize_of(X.new)
+ =&amp;gt; 40
+2.4.2 &amp;gt; ObjectSpace.memsize_of(Y.new)
+ =&amp;gt; 72
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is a bit different with hashes but the most important thing is that &lt;strong&gt;hashes without elements
+only need the minimum 40 bytes&lt;/strong&gt; (so no big penalty there, e.g. for default values):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2.4.2 :044 &amp;gt; ObjectSpace.memsize_of({})
+ =&amp;gt; 40
+2.4.2 :045 &amp;gt; ObjectSpace.memsize_of({a: 1})
+ =&amp;gt; 192
+2.4.2 :046 &amp;gt; ObjectSpace.memsize_of({a: 1, b: 2, c: 3, d: 4})
+ =&amp;gt; 192
+2.4.2 :047 &amp;gt; ObjectSpace.memsize_of({a: 1, b: 2, c: 3, d: 4, e: 5})
+ =&amp;gt; 288
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can also see that a hash with up to four entries uses 192 bytes, so this is the minimum you need
+for non-empty hashes.&lt;/p&gt;
+
+&lt;p&gt;Finally, &lt;strong&gt;strings with up to 23 bytes&lt;/strong&gt; are stored directly in the &lt;code&gt;RString&lt;/code&gt; structure that
+represents a string object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2.4.2 :062 &amp;gt; ObjectSpace.memsize_of(&quot;&quot;)
+ =&amp;gt; 40
+2.4.2 :063 &amp;gt; ObjectSpace.memsize_of(&quot;a&quot;*23)
+ =&amp;gt; 40
+2.4.2 :064 &amp;gt; ObjectSpace.memsize_of(&quot;a&quot;*24)
+ =&amp;gt; 65
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;How does this knowledge help you? I don’t suggest that you design purely around these constraints
+but they may influence your decisions when you need to choose between alternative implementations.&lt;/p&gt;
+
+&lt;h3 id=&quot;your-everyday-object&quot;&gt;Your Everyday Object&lt;/h3&gt;
+
+&lt;p&gt;All “normal” objects, i.e. those without a special C structure, use the general &lt;code&gt;RObject&lt;/code&gt; structure.
+You might think that this won’t allow you to be memory conscious but you are wrong. Even this
+structure has a “memory efficient” mode.&lt;/p&gt;
+
+&lt;p&gt;If you have an array the memory used by the array is for storing (&lt;code&gt;VALUE&lt;/code&gt; pointers to) its entries.
+Similarly, if you have a string it uses memory for storing the bytes that make up the string. So for
+what purpose is memory used in case of a general object? Instance variables!&lt;/p&gt;
+
+&lt;p&gt;The values for instance variables are stored by the object, however, the names of the instance
+variables are stored by the associated class object (because normally the objects of one class have
+the same instance variables).&lt;/p&gt;
+
+&lt;p&gt;Like with arrays &lt;strong&gt;an object with up to three instance variables only uses 40 bytes&lt;/strong&gt;, one with four
+or five uses 80 bytes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2.4.2 &amp;gt; class X; def initialize(c); c.times {|i| instance_variable_set(:&quot;@i#{i}&quot;, i)}; end; end
+ =&amp;gt; :initialize
+2.4.2 :064 &amp;gt; ObjectSpace.memsize_of(X.new(0))
+ =&amp;gt; 40
+2.4.2 :065 &amp;gt; ObjectSpace.memsize_of(X.new(1))
+ =&amp;gt; 40
+2.4.2 :066 &amp;gt; ObjectSpace.memsize_of(X.new(2))
+ =&amp;gt; 40
+2.4.2 :067 &amp;gt; ObjectSpace.memsize_of(X.new(3))
+ =&amp;gt; 40
+2.4.2 :068 &amp;gt; ObjectSpace.memsize_of(X.new(4))
+ =&amp;gt; 80
+2.4.2 :069 &amp;gt; ObjectSpace.memsize_of(X.new(5))
+ =&amp;gt; 80
+2.4.2 :070 &amp;gt; ObjectSpace.memsize_of(X.new(6))
+ =&amp;gt; 96
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;strategies&quot;&gt;Strategies&lt;/h2&gt;
+
+&lt;h3 id=&quot;class-and-system-design&quot;&gt;Class and System Design&lt;/h3&gt;
+
+&lt;p&gt;When developing applications/libraries that don’t need to create many objects, you don’t really need
+to be memory conscious. However, if they &lt;em&gt;do&lt;/em&gt; need to create many objects, it would be good to keep
+the above information in the back of your mind when designing the classes and interactions.&lt;/p&gt;
+
+&lt;p&gt;Consider this example: You need to create a class that can represent CSS margin values. As per the
+&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/CSS/margin&quot;&gt;CSS specification&lt;/a&gt;, one to four values are allowed. How would you do this?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;One idea might be to just use an array. This would not be a good abstractions but memory-wise the
+array would use either 40 bytes or, with four values, 72 bytes.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;However, since most of the array methods are not really applicable, the array should be wrapped
+inside a class. Objects of this class would use 80 or 112 bytes, depending on the size of the
+array.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Another possibility would be to create a class and store the four values in instance variables on
+initialization. Objects would then always use 80 bytes.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Finally, instead of a class a struct with four members could be used. Objects would only use 72
+bytes.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This example may be far-fetched but it nicely illustrates two points: First that using built-in
+types are often the best way to conserve memory, at the cost of having a good abstraction. And
+second that having Ruby’s internals in mind when designing classes can reduce memory usage (i.e. in
+the example’s case using a struct over a plain class saves 10% per object).&lt;/p&gt;
+
+&lt;h3 id=&quot;object-re-use&quot;&gt;Object Re-use&lt;/h3&gt;
+
+&lt;p&gt;Another way to conserve memory is to re-use objects when possible. This is easily done in case of
+immutable objects but can be applied in other cases, too.&lt;/p&gt;
+
+&lt;p&gt;A typical example for object re-use would be a graphical text editor. The text editor needs to have
+the information about each visual representation of a character (a glyph) available. By caching and
+re-using the glyph information only one instance for each glyph needs to be created, even if
+referenced from multiple positions.&lt;/p&gt;
+
+&lt;p&gt;Another example would be the freezing and deduplicating of strings. This can be done on a case by
+case basis or globally for a Ruby source file via the “frozen_string_literal: true” pragma. This
+allows the interpreter to deduplicate strings, reducing the memory usage. Starting with Ruby 2.5 you
+can also deduplicate any string yourself by using the result of the &lt;code&gt;String#-@&lt;/code&gt; method, e.g. &lt;code&gt;-str&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;appropriate-use-of-methods-and-algorithms&quot;&gt;Appropriate Use of Methods and Algorithms&lt;/h3&gt;
+
+&lt;p&gt;The best memory savings come from &lt;strong&gt;not allocating additional objects at all&lt;/strong&gt;. For example, if you
+have an array and need to map each value, you can either use &lt;code&gt;Array#map&lt;/code&gt; or &lt;code&gt;Array#map!&lt;/code&gt;. The
+difference is that the first creates a new array whereas the second one modifies the array in-place.
+It is often possible to use the second method without any other code changes. So if you have a
+hotspot that uses a transformation method like &lt;code&gt;Array#map&lt;/code&gt;, think if you can get away with using a
+different, more memory-efficient method.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Choosing appropriate algorithms&lt;/strong&gt; can also greatly reduce memory usage. For example, when
+modifying an encrypted PDF file in HexaPDF, there are situations where decryption and re-encryption
+of data streams is not needed. By identifying these situations it is possible to reduce memory usage
+and speed up processing by just copying the input data stream straight into the output file. This
+lead to &lt;a href=&quot;../2016/hexapdf-performance-benchmark.html&quot;&gt;HexaPDF using less memory than a C++ library&lt;/a&gt; when optimizing encrypted files.&lt;/p&gt;
+
+&lt;h3 id=&quot;measuring-memory-usage&quot;&gt;Measuring Memory Usage&lt;/h3&gt;
+
+&lt;p&gt;There are several gems that help with determining where a program allocates memory. The two that I
+most often use are &lt;a href=&quot;https://github.com/ko1/allocation_tracer&quot;&gt;allocation_tracer&lt;/a&gt; and &lt;a href=&quot;https://github.com/SamSaffron/memory_profiler&quot;&gt;memory_profiler&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Both tools can measure a whole program or they can be turned on and off to only measure certain
+parts of a program. Either method allows you to determine hotspots in your program and then act on
+the information. For example, while developing kramdown several years ago I found that the HTML
+converter class allocated huge amounts of throw-away strings. By changing this hotspot to a better
+alternative kramdown got faster and used less memory.&lt;/p&gt;
+
+&lt;p&gt;To get you started on using these two gems, here are two files that are intended to get pre-loaded
+using the &lt;code&gt;-r&lt;/code&gt; switch of the ruby binary (i.e. &lt;code&gt;ruby -I. -ralloc_tracer myscript.rb&lt;/code&gt;).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;BEGIN {
+  require 'allocation_tracer'
+  ObjectSpace::AllocationTracer.setup(%i{path line type})
+  ObjectSpace::AllocationTracer.trace
+}
+
+END {
+  require 'pp'
+  results = ObjectSpace::AllocationTracer.stop
+  results.reject {|k, v| v[0] &amp;lt; 10}.sort_by{|k, v| [v[0], k[0]]}.each do |k, v|
+    puts &quot;#{k[0]}:#{k[1]} - #{k[2]} - #{v[0]}&quot;
+  end
+  puts &quot;Sum: &quot; + results.inject(0) {|sum, (k,v)| sum + v[0]}.to_s
+  pp ObjectSpace::AllocationTracer.allocated_count_table
+  pp :total =&amp;gt; ObjectSpace::AllocationTracer.allocated_count_table.values.inject(:+)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;BEGIN {
+  require 'memory_profiler'
+  MemoryProfiler.start
+}
+
+END {
+  report = MemoryProfiler.stop
+  report.pretty_print
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;These two files allow you to profile memory usage without changing your program.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;There are various ways to reduce the memory usage of Ruby when developing libraries and
+applications. Knowing a bit of Ruby interpreter internals greatly helps in understanding how Ruby
+uses memory and how we can exploit that fact. Additionally, knowing the performance and memory
+impact of Ruby core methods helps in choosing the appropriate method.&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">PDF Filter Implementation in HexaPDF Using Fibers</title>
+    
+    <link href="https://gettalong.org/blog/2017/pdf-filter-implementation-in-hexapdf-using-fibers.html" rel="alternate">
+    <id>https://gettalong.org/blog/2017/pdf-filter-implementation-in-hexapdf-using-fibers.html</id>
+    <updated>2017-10-07T13:50:21+02:00</updated>
+    
+    <published>2017-10-07T12:59:00+02:00</published>
+    
+    <content type="html">
+&lt;p&gt;In the &lt;a href=&quot;../2016/pdf-object-representation-in-hexapdf.html&quot;&gt;previous post&lt;/a&gt; about &lt;a href=&quot;http://hexapdf.gettalong.org&quot;&gt;HexaPDF&lt;/a&gt; I introduced the basic PDF object system. This post will
+focus on one of the available object types, PDF streams and their filters.&lt;/p&gt;
+
+
+&lt;p&gt;If you are already familiar with the basics of PDF streams and filters, &lt;a href=&quot;#hexapdf&quot;&gt;jump down&lt;/a&gt; to the
+section about their implementation in HexaPDF.&lt;/p&gt;
+
+&lt;h2 id=&quot;pdf-streams&quot;&gt;PDF Streams&lt;/h2&gt;
+
+&lt;p&gt;As described in the previous post, a PDF stream represents a potentially unlimited sequence of
+bytes. Each stream has also some meta data associated with it and this meta data is represented by a
+PDF dictionary. Since a stream is not limited in size it is used to hold data like images, font
+files or content streams of pages (i.e. the instructions that tell a PDF viewer what to display and
+how).&lt;/p&gt;
+
+&lt;p&gt;If you look inside a PDF file you will find that the instructions for defining streams are just
+plain ASCII strings, as are the instructions for all other PDF objects. The following is a valid PDF
+stream:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1 0 obj
+&amp;lt;&amp;lt;/Length 12&amp;gt;&amp;gt;
+stream
+Hello World!
+endstream
+endobj
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The first thing to notice is that the PDF stream is defined as an indirect PDF object. Since streams
+have to follow a certain syntax and can be arbitrarily long, they can never be direct objects!&lt;/p&gt;
+
+&lt;p&gt;After the object definition comes the PDF dictionary that holds the meta data of the stream. There
+are a few keys like &lt;code&gt;/Length&lt;/code&gt;, &lt;code&gt;/Filter&lt;/code&gt; and &lt;code&gt;/DecodeParms&lt;/code&gt; that are valid for all streams. The only
+mandatory key is &lt;code&gt;/Length&lt;/code&gt; since without it would be hard (sometimes impossible) to find the end of
+the stream (in essence, we would need to scan for the &lt;code&gt;endstream&lt;/code&gt; keyword which might, or might not,
+work).&lt;/p&gt;
+
+&lt;p&gt;If the dictionary was followed by the &lt;code&gt;endobj&lt;/code&gt; keyword, we would just have an indirect object
+pointing to a dictionary. However, it is followed by the &lt;code&gt;stream&lt;/code&gt; keyword, telling us that stream
+data follows, and the stream data itself is followed by the &lt;code&gt;endstream&lt;/code&gt; keyword.&lt;/p&gt;
+
+&lt;p&gt;And that’s how streams are represented at the file level. However, before we start exploring how
+HexaPDF handles streams there is one more thing to know of: &lt;strong&gt;stream filters&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;stream-filters&quot;&gt;Stream Filters&lt;/h2&gt;
+
+&lt;p&gt;The example stream shown above contains the exact byte sequence that a PDF reader would get. But
+just dumping all streams without compression into a PDF would lead to large PDF files. Therefore
+streams can employ filters that need to be applied to the raw stream data to get the real stream
+data.&lt;/p&gt;
+
+&lt;p&gt;Of the 9 filters (I will leave out the &lt;code&gt;Crypt&lt;/code&gt; filter because it is a special construct) that are
+defined by the PDF specification four filters deal exclusively with image data:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;CCITTFaxDecode&lt;/code&gt; handles images encoded with group 3 and 4 CCITT fax encoding,&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;JBIG2Decode&lt;/code&gt; handles monochrome images in JBIG2 encoding,&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;DCTDecode&lt;/code&gt; handles JPEG images, and&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;JPXDecode&lt;/code&gt; handles JPEG2000 images.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Currently, none of these four filters are implemented in HexaPDF. Decoding JPEG or JPEG2000 images
+is currently not necessary because we can just put a whole JPEG/JPEG2000 image in a PDF stream, set
+the filter accordingly and it just works. However, this is not the case with the other two filters
+and therefore they will be implemented in a future version.&lt;/p&gt;
+
+&lt;p&gt;That leaves us with five remaining filters of which two, &lt;code&gt;ASCIIHexDecode&lt;/code&gt; and &lt;code&gt;ASCII85Decode&lt;/code&gt;, are
+used to ensure that streams in a PDF file are encoded using only ASCII characters, making it
+possible to create PDFs consisting only of ASCII characters. The problem with them is that they make
+the streams bigger instead of smaller (e.g. with &lt;code&gt;ASCIIHexDecode&lt;/code&gt; each source byte gets encoded by
+two bytes) and are therefore seldomly used.&lt;/p&gt;
+
+&lt;p&gt;Finally, the last three filters deal with compressing data:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;The &lt;code&gt;RunLengthDecode&lt;/code&gt; filter employs a simple run length encoding to compress data. You will
+probably never see it used.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The &lt;code&gt;LZWDecode&lt;/code&gt; filter uses the Lempel-Ziv-Welch algorithm, that is also used by the TIFF format,
+to compress data. You will also probably never see it used.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Finally, &lt;code&gt;FlateDecode&lt;/code&gt; uses the zlib/deflate compression method and this is what is used most of
+the time since it offers better compression than the other two.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The &lt;code&gt;LZWDecode&lt;/code&gt; and &lt;code&gt;FlateDecode&lt;/code&gt; filters can additionally use a predictor algorithm that prepares
+the input stream so that higher compression rates can be achieved. This predictor algorithm is taken
+from the PNG specification and together with the deflate algorithm allows for the easy embedding of
+PNG images into a PDF.&lt;/p&gt;
+
+&lt;p&gt;Now that you know which filters are available, we will look at how to they are used.&lt;/p&gt;
+
+&lt;p&gt;If a stream has filters applied, the stream dictionary’s &lt;code&gt;/Filter&lt;/code&gt; key needs to be set to the
+applied filters. You read correctly, more than one filter can be applied to a stream; however, this
+feature is rarely used. Additionally, the &lt;code&gt;/DecodeParms&lt;/code&gt; key can be used to supply decoding
+parameters for each filter.&lt;/p&gt;
+
+&lt;p&gt;Going back to our earlier example, it would look like this if the &lt;code&gt;ASCII85Decode&lt;/code&gt; and
+&lt;code&gt;ASCIIHexDecode&lt;/code&gt; filters were applied in that order on encoding (note that the filters describe the
+decoding order):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1 0 obj
+&amp;lt;&amp;lt;/Length 35 /Filter [/ASCIIHexDecode /ASCII85Decode]&amp;gt;&amp;gt;
+stream
+3837635552445d692c2245626f38307e3e&amp;gt;
+endstream
+endobj
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;hexapdf&quot;&gt;Implementation in HexaPDF&lt;/h2&gt;
+
+&lt;p&gt;Since PDF streams are essentially dictionaries with a byte stream attached, they are implemented in
+HexaPDF as the subclass &lt;a href=&quot;https://hexapdf.gettalong.org/api/HexaPDF/Stream.html&quot;&gt;HexaPDF::Stream&lt;/a&gt; of &lt;a href=&quot;https://hexapdf.gettalong.org/api/HexaPDF/Dictionary.html&quot;&gt;HexaPDF::Dictionary&lt;/a&gt;. The class provides all necessary
+convenience methods to access, decode and encode streams.&lt;/p&gt;
+
+&lt;p&gt;The stream data itself can either be a simple String or a &lt;a href=&quot;https://hexapdf.gettalong.org/api/HexaPDF/StreamData.html&quot;&gt;HexaPDF::StreamData&lt;/a&gt; object. The former
+is mostly used for setting the stream data when creating a PDF file or when processing the decoded
+stream data. The latter is used to represent the stream data &lt;strong&gt;without actually reading/decoding&lt;/strong&gt;
+it. The last bit is important since it means that HexaPDF can load large stream objects without
+needing to read the stream data itself if it is not used.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://hexapdf.gettalong.org/api/HexaPDF/StreamData.html&quot;&gt;HexaPDF::StreamData&lt;/a&gt; objects basically just store a reference to an IO object, an offset and a
+length. When asked for the data, i.e. when a stream needs to be read and decoded, it returns an
+object that reads the raw data in chunks to avoid huge memory use when possible. The raw stream data
+is then passed through the filters specified by the stream dictionary to get the decoded stream
+data. Since the raw data is read in chunks, it means that the filters need to be aware of that, too.
+Otherwise the benefits of reading in chunks is wasted. Finally, if the whole stream data is needed
+at once, it is read as described above but concatenated into one huge string.&lt;/p&gt;
+
+&lt;p&gt;The best way to think of this is as a &lt;strong&gt;filter pipeline&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The first object in the pipeline is responsible for providing the data chunks.&lt;/li&gt;
+  &lt;li&gt;The middle objects then transform the data chunks according to some defined algorithms.&lt;/li&gt;
+  &lt;li&gt;The last object collects the data chunks and either concatenates them into a string or does
+something else with them, e.g. writing the chunks to a file.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Therefore the requirements for filter objects used in such a pipeline are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Can handle arbitrarily large chunks of source data, from 1 byte upwards&lt;/li&gt;
+  &lt;li&gt;Can process the source data in chunks, i.e. it doesn’t need all the data to start processing&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thinking about all this, Ruby’s &lt;strong&gt;fiber&lt;/strong&gt; objects immediately came to mind, mostly because I
+remembered a &lt;a href=&quot;https://pragdave.me/blog/2007/12/30/pipelines-using-fibers-in-ruby-19.html&quot;&gt;blog post about implementing pipelines using fibers&lt;/a&gt; by Dave Thomas.&lt;/p&gt;
+
+&lt;p&gt;The neat thing about fibers is that they allow you to &lt;strong&gt;interrupt an algorithm at any point and
+return to that exact same point later on&lt;/strong&gt;, continuing with the algorithm. This is in stark contrast
+with methods, procs and the like because they always start from the top, even if interrupted in the
+middle. Koichi Sasada gave a &lt;a href=&quot;http://rubykaigi.org/2017/presentations/ko1.html&quot;&gt;great talk about fibers&lt;/a&gt; at this year’s Ruby Kaigi that
+you should definitely check out.&lt;/p&gt;
+
+&lt;p&gt;As you can see fibers are a perfect fit for implementing the PDF filter pipeline. I have implemented
+some &lt;a href=&quot;https://hexapdf.gettalong.org/api/HexaPDF/Filter/&quot;&gt;helper methods&lt;/a&gt; for creating the initial, source data yielding fibers and for
+collecting the results.&lt;/p&gt;
+
+&lt;p&gt;The filters themselves (e.g.&lt;a href=&quot;https://hexapdf.gettalong.org/api/HexaPDF/Filter/ASCIIHexDecode.html&quot;&gt;HexaPDF::Filter::ASCIIHexDecode&lt;/a&gt;) are implemented as modules that have
+the methods &lt;code&gt;encoder(source, options = nil)&lt;/code&gt; and &lt;code&gt;decoder(source, options = nil)&lt;/code&gt;. These two methods
+create fibers that transform the data received via the &lt;code&gt;source&lt;/code&gt; argument and yield the results.&lt;/p&gt;
+
+&lt;p&gt;If we were to manually read a PDF stream, the process would be like this (using our example stream
+from above):&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Create fiber &lt;code&gt;a&lt;/code&gt; that knows how to read chunks from the IO (&lt;a href=&quot;https://github.com/gettalong/hexapdf/blob/master/lib/hexapdf/stream.rb#L87&quot;&gt;the real code&lt;/a&gt;):&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;a = HexaPDF::Filter.source_from_io(io, pos: offset, length: length, chunk_size: chunk_size)
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Check whether the stream employs filters (our example stream does) and wrap the fiber &lt;code&gt;a&lt;/code&gt; in the
+necessary filter fibers (&lt;a href=&quot;https://github.com/gettalong/hexapdf/blob/master/lib/hexapdf/stream.rb#L172&quot;&gt;the real code&lt;/a&gt;):&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;b = HexaPDF::Filter::ASCIIHexDecode.decoder(a)
+c = HexaPDF::Filter::ASCII85Decode.decoder(b)
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Note that &lt;strong&gt;nothing has been read so far&lt;/strong&gt; since the fibers were just created but not resumed. To
+get the string we retrieve the chunks by continuously resuming our fiber and concatenate the
+chunks (&lt;a href=&quot;https://github.com/gettalong/hexapdf/blob/master/lib/hexapdf/stream.rb#L144&quot;&gt;the real code&lt;/a&gt;):&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;HexaPDF::Filter.string_from_source(c) # =&amp;gt; &quot;Hello World!&quot;
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And that’s the whole magic!&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;This post showed you how PDF streams and filters work in general and how they are implemented in
+HexaPDF. Using Ruby’s fiber objects HexaPDF can lazily load PDF streams and perform chunk-wise
+processing on them, avoiding huge memory usage.&lt;/p&gt;
+
+&lt;p&gt;In a future post I will introduce you to the security features of PDF, how they work and how HexaPDF
+implements them.&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">Animated Turtle Graphics using PDF</title>
+    
+    <link href="https://gettalong.org/blog/2017/turtle-graphics-with-pdf.html" rel="alternate">
+    <id>https://gettalong.org/blog/2017/turtle-graphics-with-pdf.html</id>
+    <updated>2017-02-08T23:10:55+01:00</updated>
+    
+    <published>2017-02-08T19:08:00+01:00</published>
+    
+    <content type="html">
+&lt;p&gt;After seeing one of Jamis Buck’s &lt;a href=&quot;http://weblog.jamisbuck.org/2016/11/5/weekly-programming-challenge-15.html&quot;&gt;weekly programming challenges&lt;/a&gt; being the implementation of
+a turtle graphics system, I decided to tackle this one using &lt;a href=&quot;https://hexapdf.gettalong.org&quot;&gt;HexaPDF&lt;/a&gt; as backend.&lt;/p&gt;
+
+
+&lt;p&gt;First I will introduce the basics of turtle graphics. Then I will show you how a simple
+implementation using HexaPDF looks like and some examples. After that it’s show time - (ab)using the
+presentation capabilities of PDF to animate the turtle graphics!&lt;/p&gt;
+
+&lt;h2 id=&quot;turtle-graphics-basics&quot;&gt;Turtle Graphics Basics&lt;/h2&gt;
+
+&lt;p&gt;If you are not familiar with turtle graphics, here is a short primer:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;There is a turtle which has an &lt;strong&gt;initial position and heading&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;It can &lt;strong&gt;move&lt;/strong&gt; a given number of steps forward or backwards.&lt;/li&gt;
+  &lt;li&gt;It can &lt;strong&gt;turn&lt;/strong&gt; a given number of degrees to the left or right.&lt;/li&gt;
+  &lt;li&gt;It can &lt;strong&gt;move with or without drawing a line&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The turtle follows the instructions that you give and draws an image consisting of lines as a
+result. That’s it!&lt;/p&gt;
+
+&lt;p&gt;There can also be additional instructions like changing the width or color of the drawn lines but
+they are not necessary for the basic turtle graphics.&lt;/p&gt;
+
+&lt;h2 id=&quot;implementation-using-hexapdf&quot;&gt;Implementation Using HexaPDF&lt;/h2&gt;
+
+&lt;p&gt;When you look at a PDF in a viewer, you will find that it can contain &lt;strong&gt;vector graphics&lt;/strong&gt; besides
+raster graphics and text on a page. Not everything is built-in, though. For example, there are no
+native instructions for drawing circles, they have to be approximated using Bézier curves.&lt;/p&gt;
+
+&lt;p&gt;However, for the turtle graphics I only need to be able to draw lines and there &lt;em&gt;are&lt;/em&gt; native PDF
+instructions for them. HexaPDF has a &lt;a href=&quot;https://hexapdf.gettalong.org/api/HexaPDF/Content/Canvas.html&quot;&gt;Canvas&lt;/a&gt; class that provides access to all these PDF drawing
+instructions, so I chose it as backend for drawing.&lt;/p&gt;
+
+&lt;p&gt;One other design decision was that the given &lt;strong&gt;instructions should be recorded&lt;/strong&gt; so that the turtle
+graphics can be used multiple times, either on the same PDF page or on different pages.&lt;/p&gt;
+
+&lt;p&gt;The implementation itself was straightforward (see below for comments):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;require 'hexapdf'
+
+class Turtle
+
+  Instruction = Struct.new(:operation, :arg)    # (1)
+
+  def initialize
+    @instructions = []
+    @x = 0
+    @y = 0
+  end
+
+  def move(steps)     # (2)
+    @instructions &amp;lt;&amp;lt; Instruction.new(:move, steps)
+    self
+  end
+
+  def forward(steps)  # (2)
+    move(steps)
+  end
+
+  def back(steps)     # (2)
+    move(-steps)
+  end
+
+  def turn(degrees)   # (2)
+    @instructions &amp;lt;&amp;lt; Instruction.new(:turn, degrees)
+    self
+  end
+
+  def right(degrees)  # (2)
+    turn(-degrees)
+  end
+
+  def left(degrees)   # (2)
+    turn(degrees)
+  end
+
+  def pen(up_or_down) # (2)
+    @instructions &amp;lt;&amp;lt; Instruction.new(:pen_down, up_or_down == :down)
+    self
+  end
+
+  def draw(canvas)    # (3)
+    x = @x
+    y = @y
+    heading = 0
+    pen_down = true
+
+    canvas.move_to(x, y)
+
+    @instructions.each do |instruction|
+      case instruction.operation
+      when :move
+        x += Math.cos(heading) * instruction.arg * @scale
+        y += Math.sin(heading) * instruction.arg * @scale
+        if pen_down
+          canvas.line_to(x, y)
+        else
+          canvas.move_to(x, y)
+        end
+
+      when :turn
+        heading += Math::PI / 180.0 * instruction.arg
+
+      when :pen_down
+        pen_down = instruction.arg
+
+      else
+        raise ArgumentError, &quot;Unsupported turtle graphics operation&quot;
+      end
+    end
+
+    canvas.stroke
+  end
+
+  def self.configure(**kwargs)    # (4)
+    new.configure(**kwargs)
+  end
+
+  def configure(x: nil, y: nil)   # (4)
+    @x = x if x
+    @y = y if y
+    self
+  end
+
+  def create_pdf(width, height)   # (5)
+    doc = HexaPDF::Document.new
+    page = doc.pages.add
+    page[:MediaBox] = [0, 0, width, height]
+    page.canvas.draw(self, x: width / 2.0, y: height / 2.0)
+    doc
+  end
+
+end
+
+HexaPDF::DefaultDocumentConfiguration['graphic_object.map'][:turtle] = 'Turtle'   # (4)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Comments:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;This is the struct for representing a single instruction.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The methods for moving, turning and putting the pen down or up are just adding instruction
+objects to the instruction list. Returning the turtle object allows chaining these methods
+together.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;After the instructions have been recorded, they have to be played back on a canvas. This is done
+in the &lt;code&gt;#draw(canvas)&lt;/code&gt; method by iterating over the instructions and following them.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The instance method &lt;code&gt;#configure&lt;/code&gt; is used to set the initial position of the turtle on the canvas.&lt;/p&gt;
+
+    &lt;p&gt;Together with the class method &lt;code&gt;::configure&lt;/code&gt; and the instance method &lt;code&gt;#draw&lt;/code&gt; the requirements for
+being a &lt;a href=&quot;https://hexapdf.gettalong.org/api/HexaPDF/Content/GraphicObject/index.html&quot;&gt;“graphic object”&lt;/a&gt; are fulfilled. Additionally, the turtle class is registered with
+HexaPDF so that it can be used on any canvas without knowing the actual class name.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;This convenience method returns a HexaPDF document containing a single page on which the turtle
+graphics have been drawn. The document can be modified if needed, or just written out using the
+&lt;code&gt;HexaPDF::Document#write&lt;/code&gt; method.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;As can be seen implementing the basics is rather easy. I implemented several additional features
+later on, like setting the color and line width. The final implementation is &lt;a href=&quot;https://github.com/gettalong/misc/blob/master/hexapdf-turtle/turtle.rb&quot;&gt;available on
+Github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;examples&quot;&gt;Examples&lt;/h2&gt;
+
+&lt;p&gt;Additionally to some examples written by myself, I took the three examples from Jamis Buck’s
+solution (&lt;code&gt;boxes.rb&lt;/code&gt;, &lt;code&gt;circles.rb&lt;/code&gt; and &lt;code&gt;spiral.rb&lt;/code&gt;) and adapted them for my implementation.&lt;/p&gt;
+
+&lt;p&gt;Here are the results (PDFs rendered as PNGs):&lt;/p&gt;
+
+&lt;p class=&quot;align-center&quot;&gt;&lt;code&gt;boxes.rb&lt;/code&gt; &lt;br /&gt;
+&lt;img src=&quot;assets/boxes.png&quot; alt=&quot;Boxes&quot; /&gt; &lt;br /&gt;
+&lt;code&gt;circles.rb&lt;/code&gt; &lt;br /&gt;
+&lt;img src=&quot;assets/circles.png&quot; alt=&quot;Circles&quot; /&gt; &lt;br /&gt;
+&lt;code&gt;spiral.rb&lt;/code&gt; &lt;br /&gt;
+&lt;img src=&quot;assets/spiral.png&quot; alt=&quot;Spiral&quot; /&gt; &lt;br /&gt;
+&lt;code&gt;color-spiral.rb&lt;/code&gt; &lt;br /&gt;
+&lt;img src=&quot;assets/color-spiral.png&quot; alt=&quot;Colored spiral&quot; /&gt; &lt;br /&gt;
+&lt;code&gt;tree.rb&lt;/code&gt; &lt;br /&gt;
+&lt;img src=&quot;assets/tree.png&quot; alt=&quot;Tree&quot; /&gt; &lt;br /&gt;
+&lt;code&gt;ruby.rb&lt;/code&gt; &lt;br /&gt;
+&lt;img src=&quot;assets/ruby.png&quot; alt=&quot;Ruby&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;animating-the-turtle-graphics&quot;&gt;Animating the Turtle Graphics&lt;/h2&gt;
+
+&lt;p&gt;Now that we have an implementation and some example, we can come to the fun part: &lt;strong&gt;Animating the
+turtle graphics&lt;/strong&gt;!&lt;/p&gt;
+
+&lt;p&gt;There are several ways to do animations in PDF. However, most of them are not well supported in
+viewers other than Adobe Reader:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;The only way (as far as I know) to provide animations in PDF without invoking presentation mode is
+to &lt;strong&gt;use Javascript and widgets&lt;/strong&gt; (see the &lt;a href=&quot;http://mirror.unl.edu/ctan/macros/latex/contrib/animate/animate.pdf&quot;&gt;animate&lt;/a&gt; LaTeX package as an example). However, this
+only works with Adobe Reader under Linux.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;So we are left with &lt;strong&gt;(ab)using presentation mode&lt;/strong&gt; for our animation.&lt;/p&gt;
+
+    &lt;p&gt;PDF supports &lt;strong&gt;sub-page navigation&lt;/strong&gt; where a presentation step doesn’t show the next page but does
+something else. This could be used, in conjunction with &lt;strong&gt;optional content groups&lt;/strong&gt; (OCGs; think:
+layers), to show frame after frame for the animation. The benefit is that only a single page is
+needed. However, although OCGs are supported by most Linux PDF viewers (e.g. Okular and Evince),
+sub-page navigation is not, at least not together with OCGs.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;This means that we have to use individual pages, one page for one frame of the animation.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The straightforward implementation would be to render the first frame on the first page, the first
+and second frames on the second page, the first three frames on the third page and so on. But this
+means that we have a complexity of &lt;code&gt;O(n^2/2)&lt;/code&gt; time and space wise. Therefore this is not an ideal
+solution.&lt;/p&gt;
+
+&lt;p&gt;My first though for remedying this situation was to use &lt;strong&gt;Form XObjects&lt;/strong&gt;. This is a way in PDF to
+store repeated content, like a header, in a separate object and reuse it only several pages. For the
+animation we could store all frames in separate Form XObjects and then nest the form XObjects to get
+the desired result.&lt;/p&gt;
+
+&lt;p&gt;I.e. page 1 uses xobject 1 containing frame 1; page 2 uses xobject 2 containing a reference to
+xobject 1 and frame 2; page 3 uses xobject 3 containing a reference to xobject 2 and frame 3; and so
+on.&lt;/p&gt;
+
+&lt;p&gt;As it turns out, there is a limit on how deep Form XObjects can be nested. The limit for Adobe
+Reader seems to be about 30 nesting levels, Okular’s is at about 100. So this isn’t a general
+solution either.&lt;/p&gt;
+
+&lt;p&gt;What I settled for was using &lt;strong&gt;multiple content streams&lt;/strong&gt;. In PDF page definitions are separate from
+the content streams. This means that multiple pages can refer to the same content stream and that a
+single page can refer to multiple content streams.&lt;/p&gt;
+
+&lt;p&gt;My implementation reuses an existing content stream every 10 frames. This means that the first page
+contains the first frame, the second page the first and second frames, …, up to the tenth page
+which contains the first ten frames. The eleventh page then just references the content stream with
+the first ten frames and uses another content stream with only the eleventh frame.&lt;/p&gt;
+
+&lt;p&gt;This means that the frames have to be iterated only once and that the needed space is also vastly
+reduced. The implementation can be found in the &lt;a href=&quot;https://github.com/gettalong/misc/blob/master/hexapdf-turtle/turtle.rb&quot;&gt;&lt;code&gt;#create_pdf_animation&lt;/code&gt; method&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;First and foremost: Turtle graphics are fun! Really, they are! ☺&lt;/p&gt;
+
+&lt;p&gt;But besides being fun they are also useful for &lt;strong&gt;teaching programming to kids&lt;/strong&gt; (&lt;a href=&quot;https://en.wikipedia.org/wiki/Logo_programming_language&quot;&gt;Logo programming
+language anyone?&lt;/a&gt;) or visualizing &lt;strong&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Lindenmayer_system&quot;&gt;Lindenmayer systems&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Implementing the basics was rather easy, especially when a capable backend for drawing is already
+available as was the case with HexaPDF. However, I was a bit disappointed to find out that &lt;strong&gt;a bit
+more advanced PDF functionality like sub-page navigation isn’t implemented in most Linux PDF
+viewers&lt;/strong&gt;. There is a version of Adobe Reader available on Linux but its outdated and should not be
+used due to security vulnerabilities.&lt;/p&gt;
+
+&lt;p&gt;Lastly, I gave &lt;strong&gt;talk at &lt;a href=&quot;http://www.vienna-rb.at/&quot;&gt;vienna.rb&lt;/a&gt;&lt;/strong&gt; last week on February 2nd on this topic which was quite well
+received. There is a &lt;strong&gt;&lt;a href=&quot;https://twitter.com/viennarb/status/827250584294137857&quot;&gt;video of a sample animation&lt;/a&gt;&lt;/strong&gt; shown during the talk, complete
+with a moving turtle. The &lt;strong&gt;&lt;a href=&quot;https://github.com/gettalong/misc/tree/master/talk-2017-02-vienna.rb&quot;&gt;slides of the talk in PDF format&lt;/a&gt; were created with
+&lt;a href=&quot;https://hexapdf.gettalong.org&quot;&gt;HexaPDF&lt;/a&gt;&lt;/strong&gt; and the turtle graphics systems, showing off both of them.&lt;/p&gt;
+
+&lt;h2 id=&quot;links&quot;&gt;Links&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://weblog.jamisbuck.org/2016/11/5/weekly-programming-challenge-15.html&quot;&gt;Jamis Buck Weekly Programming Challenge #15&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hexapdf.gettalong.org&quot;&gt;HexaPDF website&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/gettalong/misc/blob/master/hexapdf-turtle/&quot;&gt;Source of the turtle graphics implementation and examples&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/gettalong/misc/tree/master/talk-2017-02-vienna.rb&quot;&gt;Source for the talk at vienna.rb&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">Ruby 2.4 Performance Looking Good</title>
+    
+    <link href="https://gettalong.org/blog/2016/ruby24-performance-looking-good.html" rel="alternate">
+    <id>https://gettalong.org/blog/2016/ruby24-performance-looking-good.html</id>
+    <updated>2016-12-07T23:48:38+01:00</updated>
+    
+    <published>2016-12-07T23:08:00+01:00</published>
+    
+    <content type="html">
+&lt;p&gt;There are &lt;a href=&quot;http://www.blackbytes.info/2016/12/new-ruby-features/&quot;&gt;some&lt;/a&gt; &lt;a href=&quot;http://blog.bigbinary.com/categories/Ruby-2-4&quot;&gt;articles&lt;/a&gt; highlighting new features of the upcoming Ruby 2.4. I decided to run a
+basic benchmark comparing Ruby 2.4 to Ruby 2.3.3 and was pleasantly surprised.&lt;/p&gt;
+
+
+&lt;p&gt;A few weeks ago I wrote about &lt;a href=&quot;hexapdf-performance-benchmark.html&quot;&gt;HexaPDF’s performance&lt;/a&gt; by running a benchmark that compares
+HexaPDF to various other tools in regards to optimizing the size of a PDF file.&lt;/p&gt;
+
+&lt;p&gt;However, with this real-world benchmark I cannot only compare HexaPDF to other tools but also to
+itself on other Ruby versions. Note that this is neither an artificial benchmark nor a
+micro-benchmark since PDF files are parsed, their in-memory representation modified and then
+serialized again by the &lt;a href=&quot;http://hexapdf.gettalong.org&quot;&gt;HexaPDF library&lt;/a&gt;. This involves a lot of string to Ruby object
+conversion and vice versa.&lt;/p&gt;
+
+&lt;p&gt;Here are the results:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;|----------------------------------------------||-----------------------|
+|                      | Ruby 2.3.3p222        || Ruby 2.4.0preview3    |
+|----------------------------------------------||-----------------------|
+| a.pdf (53,056)       |     Time |     Memory ||     Time |     Memory |
+|----------------------------------------------||-----------------------|
+| hexapdf              |    189ms |  14,992KiB ||    222ms |  13,396KiB |
+| hexapdf C            |    152ms |  14,912KiB ||    137ms |  13,260KiB |
+| hexapdf CS           |    154ms |  15,920KiB ||    152ms |  14,432KiB |
+| hexapdf CSP          |    158ms |  16,600KiB ||    176ms |  15,124KiB |
+|----------------------------------------------||-----------------------|
+|----------------------------------------------||-----------------------|
+| b.pdf (11,520,218)   |     Time |     Memory ||     Time |     Memory |
+|----------------------------------------------||-----------------------|
+| hexapdf              |  1,188ms |  31,356KiB ||    900ms |  32,512KiB |
+| hexapdf C            |  1,055ms |  33,460KiB ||  1,025ms |  33,480KiB |
+| hexapdf CS           |  1,120ms |  34,512KiB ||  1,062ms |  35,396KiB |
+| hexapdf CSP          |  9,469ms |  84,896KiB ||  8,891ms |  79,924KiB |
+|----------------------------------------------||-----------------------|
+|----------------------------------------------||-----------------------|
+| c.pdf (14,399,980)   |     Time |     Memory ||     Time |     Memory |
+|----------------------------------------------||-----------------------|
+| hexapdf              |  2,286ms |  44,840KiB ||  2,020ms |  39,808KiB |
+| hexapdf C            |  2,201ms |  49,940KiB ||  2,063ms |  39,908KiB |
+| hexapdf CS           |  2,354ms |  53,076KiB ||  2,211ms |  46,944KiB |
+| hexapdf CSP          | 10,148ms | 104,680KiB ||  9,889ms |  97,088KiB |
+|----------------------------------------------||-----------------------|
+|----------------------------------------------||-----------------------|
+| d.pdf (8,107,348)    |     Time |     Memory ||     Time |     Memory |
+|----------------------------------------------||-----------------------|
+| hexapdf              |  5,834ms | 104,844KiB ||  5,113ms |  65,068KiB |
+| hexapdf C            |  5,762ms |  90,940KiB ||  5,045ms |  62,256KiB |
+| hexapdf CS           |  6,254ms |  84,860KiB ||  5,692ms |  71,036KiB |
+| hexapdf CSP          |  6,327ms |  98,496KiB ||  5,798ms | 102,684KiB |
+|----------------------------------------------||-----------------------|
+|----------------------------------------------||-----------------------|
+| e.pdf (21,788,087)   |     Time |     Memory ||     Time |     Memory |
+|----------------------------------------------||-----------------------|
+| hexapdf              |  1,001ms |  53,352KiB ||    811ms |  47,156KiB |
+| hexapdf C            |  1,111ms | 107,264KiB ||  1,065ms | 105,084KiB |
+| hexapdf CS           |  1,152ms | 108,276KiB ||  1,069ms | 101,172KiB |
+| hexapdf CSP          | 35,771ms | 186,952KiB || 37,525ms | 202,364KiB |
+|----------------------------------------------||-----------------------|
+|----------------------------------------------||-----------------------|
+| f.pdf (154,752,614)  |     Time |     Memory ||     Time |     Memory |
+|----------------------------------------------||-----------------------|
+| hexapdf              | 60,355ms | 606,736KiB || 55,118ms | 484,672KiB |
+| hexapdf C            | 64,876ms | 592,752KiB || 58,753ms | 532,488KiB |
+| hexapdf CS           | 69,811ms | 716,004KiB || 63,725ms | 653,232KiB |
+| ERR hexapdf CSP      |      0ms |       0KiB ||      0ms |       0KiB |
+|----------------------------------------------||-----------------------|
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When looking at the time, especially for &lt;code&gt;f.pdf&lt;/code&gt;, it is clear that &lt;strong&gt;Ruby 2.4 is about 9% faster
+than 2.3.3&lt;/strong&gt; (ignore the &lt;code&gt;a.pdf&lt;/code&gt; case since this is a very small file where the initialization cost
+distorts the results)!&lt;/p&gt;
+
+&lt;p&gt;To be honest, I expected Ruby 2.4 to be faster because of the Ruby 3x3 initiative. However, what I
+didn’t expect was that the &lt;strong&gt;memory consumption is also reduced by about 10%&lt;/strong&gt;!&lt;/p&gt;
+
+&lt;p&gt;Props to the Ruby core team – I’m looking forward to using Ruby 2.4!&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">PDF Object Representation in HexaPDF</title>
+    
+    <link href="https://gettalong.org/blog/2016/pdf-object-representation-in-hexapdf.html" rel="alternate">
+    <id>https://gettalong.org/blog/2016/pdf-object-representation-in-hexapdf.html</id>
+    <updated>2016-11-25T17:33:57+01:00</updated>
+    
+    <published>2016-11-25T17:29:00+01:00</published>
+    
+    <content type="html">
+&lt;p&gt;To work with PDFs using a library means that you need to understand at least the part of the PDF
+specification that is about the PDF object system. This post will introduce this part and then look
+at how &lt;a href=&quot;http://hexapdf.gettalong.org&quot;&gt;HexaPDF&lt;/a&gt; implements it.&lt;/p&gt;
+
+
+&lt;h2 id=&quot;the-pdf-file-format---a-short-introduction&quot;&gt;The PDF File Format - A Short Introduction&lt;/h2&gt;
+
+&lt;p&gt;If you look at a PDF file using a text editor (e.g. &lt;code&gt;vi -b&lt;/code&gt;) you will find &lt;strong&gt;ASCII text intermingled
+with binary data&lt;/strong&gt;. The reason for this is that the basic structure of a PDF is defined using ASCII
+characters. It is even possible to create a PDF using only ASCII characters, although it will be
+bigger than necessary.&lt;/p&gt;
+
+&lt;p&gt;A PDF file basically consists of four parts:&lt;/p&gt;
+
+&lt;dl&gt;
+  &lt;dt&gt;&lt;strong&gt;Header&lt;/strong&gt;&lt;/dt&gt;
+  &lt;dd&gt;The header defines the PDF version and may contain binary bytes to indicate that the PDF contains
+binary data.&lt;/dd&gt;
+  &lt;dt&gt;&lt;strong&gt;Body&lt;/strong&gt;&lt;/dt&gt;
+  &lt;dd&gt;The body contains the real data of the PDF file in so called “indirect objects”, see below.&lt;/dd&gt;
+  &lt;dt&gt;&lt;strong&gt;Cross-Reference Table&lt;/strong&gt;&lt;/dt&gt;
+  &lt;dd&gt;The cross-reference table contains information that allows accessing an indirect object directly,
+without scanning the whole file.&lt;/dd&gt;
+  &lt;dt&gt;&lt;strong&gt;File Trailer&lt;/strong&gt;&lt;/dt&gt;
+  &lt;dd&gt;This last part contains information to find the cross-reference table and certain other important
+objects.&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;p&gt;You may have noticed that I have written about “objects” that are inside the PDF file. The reason
+for this is that PDF has the notion of objects of various types:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Booleans&lt;/strong&gt;: Represented by &lt;code&gt;true&lt;/code&gt; and &lt;code&gt;false&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Numerics&lt;/strong&gt;: Integers like &lt;code&gt;123&lt;/code&gt; and floats like &lt;code&gt;123.45&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Strings&lt;/strong&gt;: May be serialized as literal strings using parentheses, e.g. &lt;code&gt;(Test)&lt;/code&gt;, or
+hexadecimal strings using angle brackets, e.g. &lt;code&gt;&amp;lt;ABCDEF&amp;gt;&lt;/code&gt;; also supports binary strings.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Names&lt;/strong&gt;: Work like symbols in Ruby; represented by prefixing a slash to the name, e.g.
+&lt;code&gt;/Name&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Arrays&lt;/strong&gt;: Represented by using brackets around the values, e.g. &lt;code&gt;[123 (Test) /Name]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Dictionaries&lt;/strong&gt;: Like hashes in Ruby but can only have name objects as keys; represented by
+double angle brackets where each key is followed by its value, e.g. &lt;code&gt;&amp;lt;&amp;lt;/Key (Value) /AnotherKey
+12345&amp;gt;&amp;gt;&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Null&lt;/strong&gt;: Like nil in Ruby; represented by &lt;code&gt;null&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Streams&lt;/strong&gt;: A sequence of potentially unlimited bytes; represented as a dictionary followed by
+&lt;code&gt;stream\n...stream bytes...\nendstream&lt;/code&gt;; always has to be an indirect object and may be filtered&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Indirect objects&lt;/strong&gt;: An object of any of the above types that is additionally assigned an object
+identifier consisting of an object number (a positive integer) and a generation number (a
+non-negative integer); represented like this: &lt;code&gt;4 0 obj (SomeObject) endobj&lt;/code&gt;; can be referenced
+from another object like this: &lt;code&gt;4 0 R&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Knowing the above it is possible to get any indirect object:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;First the PDF header is checked whether the PDF version is supported.&lt;/li&gt;
+  &lt;li&gt;Then the end of the file is inspected to find the file trailer and the position of the
+cross-reference table.&lt;/li&gt;
+  &lt;li&gt;The cross-reference table is searched for the position of the indirect object that should be read.&lt;/li&gt;
+  &lt;li&gt;Finally, the found position is used to read the indirect object.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The first two steps only need to be done once whereas the last two steps need to be done for each
+indirect object.&lt;/p&gt;
+
+&lt;p&gt;While this gives you access to any indirect object, the meaning of this indirect object may not be
+apparent. This is where the file trailer dictionary comes in: It provides named references to the
+most important objects. They in turn reference other objects and so on, building an object graph.
+Like the file trailer, the most important parts of a PDF are built with dictionaries, for example
+pages, fonts and annotations.&lt;/p&gt;
+
+&lt;p&gt;This all is very abstract, so let’s use the &lt;code&gt;hexapdf inspect&lt;/code&gt; command to inspect a PDF file and show
+the file trailer and some objects. The option &lt;code&gt;-o&lt;/code&gt; is used for showing an indirect object and &lt;code&gt;-s&lt;/code&gt;
+for showing raw or unfiltered stream data:&lt;/p&gt;
+
+&lt;asciinema-player src=&quot;assets/hexapdf-inspect.json&quot; cols=&quot;100&quot; rows=&quot;29&quot; speed=&quot;2&quot;&gt;&lt;/asciinema-player&gt;
+
+&lt;h2 id=&quot;hexapdf-implementation-of-the-pdf-object-types&quot;&gt;HexaPDF Implementation of the PDF Object Types&lt;/h2&gt;
+
+&lt;p&gt;Now that you know the basics of the PDF file format, I can move on to describing HexaPDF’s
+implementation of it.&lt;/p&gt;
+
+&lt;p&gt;First and foremost, &lt;strong&gt;nearly all object types can and are mapped directly to one of Ruby’s built-in
+types&lt;/strong&gt;, only stream and indirect objects need custom implementations (see &lt;a href=&quot;http://hexapdf.gettalong.org/api/HexaPDF/Stream.html&quot;&gt;HexaPDF::Stream&lt;/a&gt; and
+&lt;a href=&quot;http://hexapdf.gettalong.org/api/HexaPDF/Object.html&quot;&gt;HexaPDF::Object&lt;/a&gt;). On the one hand, this makes working with PDF objects very easy since you can
+just use the normal Ruby data structures. And on the other hand it has benefits in regards to memory
+usage and execution performance.&lt;/p&gt;
+
+&lt;p&gt;Since &lt;strong&gt;the PDF dictionary is the most important type&lt;/strong&gt;, there is a wrapper class
+&lt;a href=&quot;http://hexapdf.gettalong.org/api/HexaPDF/Dictionary.html&quot;&gt;HexaPDF::Dictionary&lt;/a&gt; which provides convenience methods. For example, accessing a value
+automatically dereferences it so that not the reference itself is returned, but the indirect object
+it references.&lt;/p&gt;
+
+&lt;p&gt;This certainly increases memory usage but allows HexaPDF to do something else, too, namely
+&lt;strong&gt;automatic mapping of PDF objects to specific subclasses of HexaPDF::Dictionary&lt;/strong&gt;. For example, a
+page object is a PDF dictionary and would normally be represented by HexaPDF::Dictionary. However,
+since there is a more specific subclass &lt;a href=&quot;http://hexapdf.gettalong.org/api/HexaPDF/Type/Page.html&quot;&gt;HexaPDF::Type::Page&lt;/a&gt; registered for it, this subclass is
+used.&lt;/p&gt;
+
+&lt;p&gt;Internally, this is made possible by a HexaPDF::Object not actually storing the indirect object’s
+data but just a &lt;a href=&quot;http://hexapdf.gettalong.org/api/HexaPDF/PDFData.html&quot;&gt;HexaPDF::PDFData&lt;/a&gt; object that holds everything related to an indirect object. So it
+doesn’t matter whether a HexaPDF::Object or a HexaPDF::Type::Page object is used as wrapper as long
+as they use the same HexaPDF::PDFData object. Again, this increases memory usage but the gains are
+worth it.&lt;/p&gt;
+
+&lt;p&gt;This mapping is done automatically behind the scenes and can be configured via the global
+configuration object (see &lt;a href=&quot;http://hexapdf.gettalong.org/api/HexaPDF/index.html#GlobalConfiguration&quot;&gt;HexaPDF::GlobalConfiguration&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;The PDF format also provides the ability to access a specific indirect object without loading any
+other. This feature is used by HexaPDF so that indirect objects are loaded only when they are
+accessed, i.e. it provides &lt;strong&gt;lazy loading of indirect objects&lt;/strong&gt;. This provides performance and
+memory benefits. However, there is currently one suboptimal part in this process: The whole
+cross-reference table is loaded after loading a PDF document. This doesn’t matter for small PDF
+files but for files with tens of thousands of objects there can be a rather large delay. I intend to
+address this problem in the future.&lt;/p&gt;
+
+&lt;p&gt;In the context of stream objects, the unfiltered stream data (i.e. after decompression) can amount
+to many mebibytes. Therefore the &lt;strong&gt;stream data itself is also lazily loaded&lt;/strong&gt;: Only when the stream
+data is needed it is read and unfiltered.&lt;/p&gt;
+
+&lt;p&gt;Everything mentioned above allows you to work with a &lt;a href=&quot;http://hexapdf.gettalong.org/api/HexaPDF/Document.html&quot;&gt;HexaPDF::Document&lt;/a&gt; and its objects in a very
+straight-forward way. As an example, the following code creates a new PDF document and assembles a
+page dictionary manually that is then added to the document’s page tree:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;require 'hexapdf'
+
+doc = HexaPDF::Document.new
+page = doc.add(Type: :Page, MediaBox: [0, 0, 100, 100])
+page.contents = &quot;0 0 m 100 100 l S&quot;
+doc.pages &amp;lt;&amp;lt; page
+doc.write(&quot;sample.pdf&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note that the &lt;code&gt;doc.add(...)&lt;/code&gt; call actually returns a page object and not a simple dictionary,
+allowing the use of the &lt;code&gt;#contents&lt;/code&gt; methods.&lt;/p&gt;
+
+&lt;p&gt;One thing to note, though, is that not all special PDF dictionaries have a subclass counterpart in
+HexaPDF. There are, among others, subclasses for page objects, the main catalog object and the
+trailer. However, this apparent lack doesn’t prevent you from working with these special PDF
+dictionaries, it just means that you need to know the various needed keys yourself. For example,
+there is currently no subclass for transition dictionaries (see section 12.4.4.1 in the PDF 1.7
+specification) but we can still make use of them using plain Ruby objects:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;require 'hexapdf'
+
+doc = HexaPDF::Document.new
+doc.pages.add
+second_page = doc.pages.add
+third_page = doc.pages.add
+second_page.canvas.line_width(20).stroke_color(255, 0, 0).line(0, 0, 400, 400).stroke
+third_page.canvas.line_width(20).stroke_color(0, 255, 0).line(0, 400, 400, 0).stroke
+second_page[:Trans] = {Type: :Trans, S: :Split, D: 5, Dm: :V}
+third_page[:Trans] = {Type: :Trans, S: :Blinds, Dm: :H}
+doc.write(&quot;sample.pdf&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Open the resulting PDF file, switch to presentation mode and move to the second and third pages.
+Your viewing application, if it is compatible, will show you transitions between the pages.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;This post introduced the PDF object system and how it is implemented in HexaPDF. As you have seen
+HexaPDF provides a very Ruby-like interface for working with the PDF object system while still
+trying to be as memory efficient and high-performance as possible.&lt;/p&gt;
+
+&lt;p&gt;In a future post I will show you how HexaPDF’s implementation of stream filters work and why Ruby’s
+Fiber objects are essential for it.&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">HexaPDF Performance Benchmark</title>
+    
+    <link href="https://gettalong.org/blog/2016/hexapdf-performance-benchmark.html" rel="alternate">
+    <id>https://gettalong.org/blog/2016/hexapdf-performance-benchmark.html</id>
+    <updated>2016-11-06T14:09:50+01:00</updated>
+    
+    <published>2016-11-06T13:22:00+01:00</published>
+    
+    <content type="html">
+&lt;p&gt;My pure Ruby PDF library &lt;a href=&quot;http://hexapdf.gettalong.org&quot;&gt;HexaPDF&lt;/a&gt; contains an application for working with PDFs. In this post I
+look at how this application performs in comparison to other such applications.&lt;/p&gt;
+
+
+&lt;h2 id=&quot;about-pdf-optimization&quot;&gt;About PDF Optimization&lt;/h2&gt;
+
+&lt;p&gt;Although the &lt;code&gt;hexapdf&lt;/code&gt; application can perform various commands, for example displaying information
+about a PDF file, modifying a PDF file or extracting files from a PDF file, I will concentrate on
+the command to modify a PDF file.&lt;/p&gt;
+
+&lt;p&gt;One of the ways to use this command is to optimize a PDF file in terms of its file size. This
+involves reading and writing the PDF file and performing the optimization. Sometimes the word
+“optimization” is used when a PDF file is linearized for faster display on web sites. Here I always
+mean file size optimization.&lt;/p&gt;
+
+&lt;p&gt;There are various ways to optimize the file size of a PDF file and they can be divided into two
+groups: lossless and lossy operations. Since all used applications perform only lossless
+optimizations, I only look at those:&lt;/p&gt;
+
+&lt;dl&gt;
+  &lt;dt&gt;Removing unused and deleted objects&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;A PDF file can store multiple revisions of an object but only the last one is used. So all other
+versions can safely be deleted.&lt;/p&gt;
+  &lt;/dd&gt;
+  &lt;dt&gt;Using object and cross-reference streams&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;A PDF file can be thought of as a collection of random-access objects that are stored sequentially
+in an ASCII-based format. Object streams take those objects and store them compressed in a binary
+format. And cross-reference streams stores the file offsets to the objects in a compressed manner,
+instead of the standard ASCII-based format.&lt;/p&gt;
+  &lt;/dd&gt;
+  &lt;dt&gt;Recompressing page content streams&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;The content of a PDF page is described in an ASCII-based format. Some PDF producers don’t optimize
+their output which can lead to bigger than necessary content streams or don’t store it in a
+compressed format.&lt;/p&gt;
+  &lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;p&gt;There are some more techniques for reducing the file size like font subsetting/merging/deduplication
+or object and image deduplication. However, those are rather advanced and not implemented in most
+PDF libraries because it is hard to get them right.&lt;/p&gt;
+
+&lt;h2 id=&quot;benchmark-setup&quot;&gt;Benchmark Setup&lt;/h2&gt;
+
+&lt;p&gt;There are many applications that can perform some or all of the optimizations mentioned above. Since
+I’m working on Linux I will use applications that are readily available on this platform and which
+are command line applications.&lt;/p&gt;
+
+&lt;p&gt;Since the abilities of the applications vary, following is a table of keys used to describe the
+various operations:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Key&lt;/th&gt;
+      &lt;th&gt;Operation&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C&lt;/td&gt;
+      &lt;td&gt;Compacting by removing unused and deleted objects&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;S&lt;/td&gt;
+      &lt;td&gt;Usage of object and cross-reference streams&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;P&lt;/td&gt;
+      &lt;td&gt;Recompression of page content streams&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The list of the benchmarked applications:&lt;/p&gt;
+
+&lt;dl&gt;
+  &lt;dt&gt;&lt;strong&gt;hexapdf&lt;/strong&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;Homepage: &lt;a href=&quot;http://hexapdf.gettalong.org&quot;&gt;http://hexapdf.gettalong.org&lt;/a&gt;&lt;br /&gt;
+Version: Latest version in &lt;a href=&quot;https://github.com/gettalong/hexapdf&quot;&gt;Github repository&lt;/a&gt; &lt;br /&gt;
+Abilities: Any combination of C, S and P&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;hexapdf&lt;/code&gt; is used multiple times, with increasing level of compression, with the following
+commands:&lt;/p&gt;
+
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;hexapdf&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;hexapdf modify -f input.pdf --no-compact output.pdf&lt;/code&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;td&gt;hexapdf C&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;hexapdf modify -f input.pdf --compact output.pdf&lt;/code&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;td&gt;hexapdf CS&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;hexapdf modify -f input.pdf --compact --object-streams generate output.pdf&lt;/code&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;td&gt;hexapdf CSP&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;hexapdf modify -f input.pdf --compact --object-streams generate --compress-pages output.pdf&lt;/code&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/dd&gt;
+  &lt;dt&gt;&lt;strong&gt;pdftk&lt;/strong&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;Homepage: &lt;a href=&quot;https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/&quot;&gt;https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/&lt;/a&gt;&lt;br /&gt;
+Version: 2.02&lt;br /&gt;
+Abilities: C&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;pdftk&lt;/code&gt; is probably the best known application because, like &lt;code&gt;hexapdf&lt;/code&gt; it allows for many
+different operations on PDFs. It is based on the Java iText library which has been compiled to
+native code using GCJ.&lt;/p&gt;
+
+    &lt;p&gt;The application doesn’t have options for optimizing a PDF file but it can be assumed that it
+removes unused and deleted objects.&lt;/p&gt;
+
+    &lt;p&gt;It is used in the benchmark like this:&lt;/p&gt;
+
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;pdftk C&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;pdftk input.pdf output output.pdf&lt;/code&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/dd&gt;
+  &lt;dt&gt;&lt;strong&gt;qpdf&lt;/strong&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;p&gt;Homepage: &lt;a href=&quot;http://qpdf.sourceforge.net/&quot;&gt;http://qpdf.sourceforge.net/&lt;/a&gt;&lt;br /&gt;
+Version: 6.0.0&lt;br /&gt;
+Abilities: C, CS&lt;/p&gt;
+
+    &lt;p&gt;QPDF is a command line application for transforming PDF file written in C++ and it is used like
+this:&lt;/p&gt;
+
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;qpdf C&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;qpdf input.pdf output.pdf&lt;/code&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;td&gt;qpdf CS&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;qpdf --object-streams=generate input.pdf output.pdf&lt;/code&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/dd&gt;
+  &lt;dt&gt;&lt;strong&gt;smpdf&lt;/strong&gt;&lt;/dt&gt;
+  &lt;dd&gt;Homepage: &lt;a href=&quot;http://www.coherentpdf.com/compression.html&quot;&gt;http://www.coherentpdf.com/compression.html&lt;/a&gt;&lt;br /&gt;
+Version: 1.4.1&lt;br /&gt;
+Abilities: CSP
+
+    &lt;p&gt;This is a commercial application but can be used for evaluation purposes. The application is
+probably written in OCaml since it uses the &lt;a href=&quot;http://www.github.com/johnwhitington/camlpdf&quot;&gt;CamlPDF library&lt;/a&gt;.&lt;/p&gt;
+
+    &lt;p&gt;There is no way to configure the operations done but judging from its output it seems it does all
+of the lossless operations:&lt;/p&gt;
+
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;smpdf CSP&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;smpdf input.pdf -o output.pdf&lt;/code&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;p&gt;Apart from &lt;code&gt;hexapdf&lt;/code&gt; all other applications are native binaries, compiled to machine code.&lt;/p&gt;
+
+&lt;p&gt;The files used in the benchmark vary in file size and internal structure:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Name&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Size&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Objects&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Pages&lt;/th&gt;
+      &lt;th&gt;Details&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;a.pdf&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;53.056&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;36&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4&lt;/td&gt;
+      &lt;td&gt;created by Prawn&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;b.pdf&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;11.520.218&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.161&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;439&lt;/td&gt;
+      &lt;td&gt;many non-stream objects&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;c.pdf&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;14.399.980&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.263&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;620&lt;/td&gt;
+      &lt;td&gt;linearized, many streams&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;d.pdf&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;8.107.348&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;34.513&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;20&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;e.pdf&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;21.788.087&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.296&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;52&lt;/td&gt;
+      &lt;td&gt;huge content streams, many pictures, object streams, encrypted with default password&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;f.pdf&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;154.752.614&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;287.977&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;28.365&lt;/td&gt;
+      &lt;td&gt;&lt;em&gt;very&lt;/em&gt; big file&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The benchmark script is a simple Bash script that uses standard Linux CLI tools for measuring the
+execution time and memory usage:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;#/bin/bash
+
+OUT_FILE=/tmp/bench-result.pdf
+
+trap exit 2
+
+function bench_file() {
+  cmdname=$1
+  FORMAT=&quot;| %-20s | %'6ims | %'7iKiB | %'11i |\n&quot;
+  shift
+
+  time=$(date +%s%N)
+  /usr/bin/time -f '%M' -o /tmp/bench-times &quot;$@&quot; &amp;amp;&amp;gt;/dev/null
+  if [ $? -ne 0 ]; then
+    cmdname=&quot;ERR ${cmdname}&quot;
+    time=0
+    mem_usage=0
+    file_size=0
+  else
+    time=$(( ($(date +%s%N)-time)/1000000 ))
+    mem_usage=$(cat /tmp/bench-times)
+    file_size=$(stat -c '%s' $OUT_FILE)
+  fi
+  printf &quot;$FORMAT&quot; &quot;$cmdname&quot; &quot;$time&quot; &quot;$mem_usage&quot; &quot;$file_size&quot;
+}
+
+cd $(dirname $0)
+FILES=(*.pdf)
+if [ $# -ne 0 ]; then FILES=(&quot;$@&quot;); fi
+
+for file in &quot;${FILES[@]}&quot;; do
+  file_size=$(printf &quot;%'i&quot; $(stat -c '%s' &quot;$file&quot;))
+  echo &quot;|------------------------------------------------------------|&quot;
+  printf &quot;| %-20s |     Time |     Memory |   File size |\n&quot; &quot;$file ($file_size)&quot;
+  echo &quot;|------------------------------------------------------------|&quot;
+  bench_file &quot;hexapdf &quot;    ruby -I../lib ../bin/hexapdf modify -f &quot;${file}&quot; --no-compact ${OUT_FILE}
+  bench_file &quot;hexapdf C&quot;   ruby -I../lib ../bin/hexapdf modify -f &quot;${file}&quot; --compact ${OUT_FILE}
+  bench_file &quot;hexapdf CS&quot;  ruby -I../lib ../bin/hexapdf modify -f &quot;${file}&quot; --compact --object-streams generate ${OUT_FILE}
+  bench_file &quot;hexapdf CSP&quot; ruby -I../lib ../bin/hexapdf modify -f &quot;${file}&quot; --compact --object-streams generate --compress-pages ${OUT_FILE}
+  bench_file &quot;pdftk C&quot;    pdftk &quot;${file}&quot; output ${OUT_FILE}
+  bench_file &quot;qpdf C&quot;      qpdf &quot;${file}&quot; ${OUT_FILE}
+  bench_file &quot;qpdf CS&quot;     qpdf &quot;${file}&quot; --object-streams=generate ${OUT_FILE}
+  bench_file &quot;smpdf CSP&quot;   smpdf &quot;${file}&quot; -o ${OUT_FILE}
+  echo &quot;|------------------------------------------------------------|&quot;
+  echo
+done
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;benchmark-results&quot;&gt;Benchmark Results&lt;/h2&gt;
+
+&lt;p&gt;Here are the results of running the benchmark script on all the PDF files. You will find comments on
+the results are afterwards:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;|------------------------------------------------------------|
+| a.pdf (53,056)       |     Time |     Memory |   File size |
+|------------------------------------------------------------|
+| hexapdf              |    146ms |  16,012KiB |      52,338 |
+| hexapdf C            |    181ms |  16,332KiB |      52,315 |
+| hexapdf CS           |    192ms |  16,992KiB |      49,181 |
+| hexapdf CSP          |    200ms |  17,872KiB |      48,251 |
+| pdftk C              |     55ms |  53,384KiB |      53,144 |
+| qpdf C               |     12ms |   4,568KiB |      53,179 |
+| qpdf CS              |     15ms |   4,652KiB |      49,287 |
+| smpdf CSP            |     20ms |   8,136KiB |      48,329 |
+|------------------------------------------------------------|
+
+|------------------------------------------------------------|
+| b.pdf (11,520,218)   |     Time |     Memory |   File size |
+|------------------------------------------------------------|
+| hexapdf              |  1,012ms |  32,736KiB |  11,464,892 |
+| hexapdf C            |  1,062ms |  35,212KiB |  11,415,701 |
+| hexapdf CS           |  1,091ms |  37,472KiB |  11,101,448 |
+| hexapdf CSP          |  9,570ms |  86,920KiB |  11,085,158 |
+| pdftk C              |    466ms |  68,532KiB |  11,501,669 |
+| qpdf C               |    581ms |  11,840KiB |  11,500,308 |
+| qpdf CS              |    700ms |  11,948KiB |  11,124,779 |
+| smpdf CSP            |  3,379ms |  51,648KiB |  11,092,428 |
+|------------------------------------------------------------|
+
+|------------------------------------------------------------|
+| c.pdf (14,399,980)   |     Time |     Memory |   File size |
+|------------------------------------------------------------|
+| hexapdf              |  2,207ms |  46,624KiB |  14,519,207 |
+| hexapdf C            |  2,225ms |  46,640KiB |  14,349,008 |
+| hexapdf CS           |  2,396ms |  55,180KiB |  13,185,262 |
+| hexapdf CSP          | 10,543ms | 106,448KiB |  13,111,094 |
+| pdftk C              |  1,625ms | 100,648KiB |  14,439,611 |
+| qpdf C               |  1,730ms |  34,840KiB |  14,432,647 |
+| qpdf CS              |  2,103ms |  35,348KiB |  13,228,102 |
+| smpdf CSP            |  3,117ms |  76,440KiB |  13,076,598 |
+|------------------------------------------------------------|
+
+|------------------------------------------------------------|
+| d.pdf (8,107,348)    |     Time |     Memory |   File size |
+|------------------------------------------------------------|
+| hexapdf              |  6,115ms | 110,760KiB |   7,774,817 |
+| hexapdf C            |  5,825ms |  92,952KiB |   7,036,577 |
+| hexapdf CS           |  6,352ms |  86,860KiB |   6,539,334 |
+| hexapdf CSP          |  6,499ms |  96,264KiB |   5,599,758 |
+| pdftk C              |  2,232ms | 102,276KiB |   7,279,035 |
+| qpdf C               |  3,153ms |  40,568KiB |   7,209,305 |
+| qpdf CS              |  3,197ms |  40,360KiB |   6,703,374 |
+| smpdf CSP            |  2,922ms |  80,288KiB |   5,528,352 |
+|------------------------------------------------------------|
+
+|------------------------------------------------------------|
+| e.pdf (21,788,087)   |     Time |     Memory |   File size |
+|------------------------------------------------------------|
+| hexapdf              |    882ms |  52,736KiB |  21,784,732 |
+| hexapdf C            |  1,172ms |  99,924KiB |  21,850,715 |
+| hexapdf CS           |  1,139ms | 101,952KiB |  21,769,651 |
+| hexapdf CSP          | 36,015ms | 201,240KiB |  21,195,877 |
+| pdftk C              |    694ms | 122,920KiB |  21,874,883 |
+| qpdf C               |  1,391ms |  64,144KiB |  21,802,439 |
+| qpdf CS              |  1,443ms |  64,588KiB |  21,787,558 |
+| smpdf CSP            | 38,209ms | 646,888KiB |  21,188,516 |
+|------------------------------------------------------------|
+
+|------------------------------------------------------------|
+| f.pdf (154,752,614)  |     Time |     Memory |   File size |
+|------------------------------------------------------------|
+| hexapdf              | 60,135ms | 575,172KiB | 154,077,468 |
+| hexapdf C            | 65,187ms | 580,344KiB | 153,946,077 |
+| hexapdf CS           | 71,495ms | 715,720KiB | 117,642,988 |
+| ERR hexapdf CSP      |      0ms |       0KiB |           0 |
+| pdftk C              | 30,563ms | 682,044KiB | 157,850,354 |
+| qpdf C               | 36,736ms | 485,060KiB | 157,723,936 |
+| qpdf CS              | 41,945ms | 487,516KiB | 118,114,521 |
+| ERR smpdf CSP        |      0ms |       0KiB |           0 |
+|------------------------------------------------------------|
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Some comments:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;HexaPDF in CSP mode produces the smallest PDF in three cases and is second in the other three&lt;/strong&gt;
+cases where &lt;code&gt;smpdf&lt;/code&gt; is the best compressor. However, since the difference in files sizes are
+marginal, HexaPDF and &lt;code&gt;smpdf&lt;/code&gt; can be considered equal.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;When page compression is activated, HexaPDF is much slower but this is expected since each content
+stream has to be parsed and serialized.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;pdftk&lt;/code&gt; is the fastest application except for the a.pdf file. And in all cases but a.pdf &lt;strong&gt;HexaPDF
+in CS mode is only up to three times slower&lt;/strong&gt;. This is rather good considering HexaPDF is written
+in Ruby while all applications are compiled binaries.&lt;/p&gt;
+
+    &lt;p&gt;The benchmark for a.pdf is a bit of an outlier because startup time greatly affects the result in
+HexaPDF’s case.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Looking at the memory usage, HexaPDF also fares quite well compared to C++ based &lt;code&gt;qpdf&lt;/code&gt;&lt;/strong&gt;. And
+it uses less memory than &lt;code&gt;pdftk&lt;/code&gt; in all cases except f.pdf!&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;There is one case where HexaPDF uses the least amount of memory, namely for e.pdf without any
+special operations done. The reason for this is that HexaPDF applies stream filters only when
+necessary.&lt;/p&gt;
+
+    &lt;p&gt;This means for e.pdf that HexaPDF doesn’t decrypt and encrypt any stream if not necessary while
+all the other applications seem to do so, leading to higher memory usage.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;The HexaPDF library is already quite optimized in terms of performance and memory usage. It is only
+up to three times slower than solutions in compiled languages and doesn’t use much memory. There are
+still some things that I think can make HexaPDF perform better and I will look into them in the
+future.&lt;/p&gt;
+
+&lt;p&gt;Also, compared to other Ruby solutions like &lt;a href=&quot;https://github.com/gdelugre/origami&quot;&gt;origami&lt;/a&gt; or &lt;a href=&quot;https://github.com/boazsegev/combine_pdf&quot;&gt;combine_pdf&lt;/a&gt;, HexaPDF uses less memory and
+is always at least two times faster. So I think that HexaPDF is currently the way to go if one needs
+to work with PDFs in Ruby.&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">HexaPDF Code and First Version Released</title>
+    
+    <link href="https://gettalong.org/blog/2016/hexapdf-code-and-first-version-released.html" rel="alternate">
+    <id>https://gettalong.org/blog/2016/hexapdf-code-and-first-version-released.html</id>
+    <updated>2016-10-26T12:31:07+02:00</updated>
+    
+    <published>2016-10-26T12:31:00+02:00</published>
+    
+    <content type="html">
+&lt;p&gt;As of today the &lt;a href=&quot;http://hexapdf.gettalong.org&quot;&gt;HexaPDF&lt;/a&gt; source code is available on &lt;a href=&quot;https://github.com/gettalong/hexapdf&quot;&gt;Github&lt;/a&gt; and the first version has been
+&lt;a href=&quot;https://rubygems.org/gems/hexapdf&quot;&gt;released&lt;/a&gt;.&lt;/p&gt;
+
+
+&lt;p&gt;HexaPDF is a pure Ruby library with an accompanying application for working with PDF files. In
+short, it allows&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;creating&lt;/strong&gt; new PDF files,&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;manipulating&lt;/strong&gt; existing PDF files,&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;merging&lt;/strong&gt; multiple PDF files into one,&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;extracting&lt;/strong&gt; meta information, text, images and files from PDF files,&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;securing&lt;/strong&gt; PDF files by encrypting them and&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;optimizing&lt;/strong&gt; PDF files for smaller file size or other criteria.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;HexaPDF was designed with ease of use and performance in mind. It uses lazy loading and lazy
+computing when possible and tries to produce small PDF files by default.&lt;/p&gt;
+
+&lt;p&gt;The initial version provides the basic functionalities for reading and writing PDFs as well as
+low-level support for creating PDFs. You can find some code examples on how to use the library on
+the &lt;a href=&quot;http://hexapdf.gettalong.org&quot;&gt;HexaPDF website&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The command line application currently provides commands for&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;getting general information about a PDF file,&lt;/li&gt;
+  &lt;li&gt;extracting files from a PDF file,&lt;/li&gt;
+  &lt;li&gt;modifying a PDF file (file size optimization, decryption, encryption, page selection and page
+rotation),&lt;/li&gt;
+  &lt;li&gt;and for inspecting the internal objects and streams of a PDF file.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In the future the application will provide the full range of standard PDF operations. This means,
+for example, that commands for merging and splitting will be added.&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">On HexaPDF and Releasing Early</title>
+    
+    <link href="https://gettalong.org/blog/2016/on-hexapdf-and-releasing-early.html" rel="alternate">
+    <id>https://gettalong.org/blog/2016/on-hexapdf-and-releasing-early.html</id>
+    <updated>2016-10-14T20:01:24+02:00</updated>
+    
+    <published>2016-10-14T20:01:00+02:00</published>
+    
+    <content type="html">
+&lt;p&gt;After my &lt;a href=&quot;http://talks.gettalong.org/euruko2016&quot;&gt;lightning talk&lt;/a&gt; about HexaPDF at &lt;a href=&quot;http://euruko2016.org/&quot;&gt;Euruko 2016&lt;/a&gt; I was asked why I haven’t released
+the source code to HexaPDF, yet. I have my reasons and in this post I will shed some light on them.&lt;/p&gt;
+
+
+&lt;h2 id=&quot;why-releasing-early-is-good&quot;&gt;Why Releasing Early is Good&lt;/h2&gt;
+
+&lt;p&gt;Many open source developers put their code online at very early stages of development in the hope
+that others are interested and contribute in one way or another. For example, this was done by Linus
+Torvalds when he announced the Linux kernel on a mailing list and many people got interested very
+fast.&lt;/p&gt;
+
+&lt;p&gt;It totally makes sense to do this in many cases, for example, when you are not sure about the
+overall design of your library or application and need input from others, or when you are basically
+finished with the “core” and need input for more features.&lt;/p&gt;
+
+&lt;p&gt;Releasing early often brings a new set of ideas to the table on how things could be done because
+there isn’t so much code and changing it is easier.&lt;/p&gt;
+
+&lt;p&gt;Whether people are interested in your code depends, naturally, on what the code does but if you put
+the code on Github or a similar service, announce it on appropriate websites, forums, mailings
+lists, etc., you will nearly always get some response and discussions.&lt;/p&gt;
+
+&lt;h2 id=&quot;except-when-it-is-not&quot;&gt;… Except When it is Not&lt;/h2&gt;
+
+&lt;p&gt;So how could this be a bad thing?&lt;/p&gt;
+
+&lt;p&gt;If you release code at very early stages where many things already work but documentation is sparse
+and some things are still broken, you will inevitably find yourself answering questions on how to do
+certain things, responding to issues, commenting on pull requests…&lt;/p&gt;
+
+&lt;p&gt;These tasks, while valueable to your project, take time away from actually developing your project.
+And what if you don’t have much time for your project in the first place?&lt;/p&gt;
+
+&lt;p&gt;You may suddenly find yourself in a situation where your project demands much more attention than
+you are able to give it which may lead to frustration on your side but will also frustrate people
+interested in the project.&lt;/p&gt;
+
+&lt;h2 id=&quot;so-what-about-hexapdf&quot;&gt;So What About HexaPDF?&lt;/h2&gt;
+
+&lt;p&gt;A couple of years ago I needed to convert kramdown documents to PDF. First I used &lt;a href=&quot;http://wkhtmltopdf.org/&quot;&gt;wkhtmltopdf&lt;/a&gt; and
+then &lt;a href=&quot;http:prawnpdf.org&quot;&gt;Prawn&lt;/a&gt; for this task. However, while implementing the Prawn solution I found that Prawn lacked
+some features I liked to have.&lt;/p&gt;
+
+&lt;p&gt;After first investigating whether patching Prawn would do the trick, I decided to look at the PDF
+specification to see what it would take to implement a PDF library from scratch. And so the idea for
+HexaPDF was born about three years ago.&lt;/p&gt;
+
+&lt;p&gt;Since I didn’t have the time to start development, I read the PDF specification and looked at many
+existing PDF libraries to see what features they had and how the libraries were designed. This gave
+me many ideas on how I wanted to design HexaPDF.&lt;/p&gt;
+
+&lt;p&gt;About a year later, in September 2014, I started implementing HexaPDF. Since I knew the order in
+which I wanted to implement the various parts of the library and for most parts how I wanted to
+implement them, there was no need to release the code early to get feedback. So that bonus of
+releasing early wasn’t really a bonus for me.&lt;/p&gt;
+
+&lt;p&gt;Another reason why I didn’t release the code was that I did all the development in my spare time.
+This meant for me that I could code whenever I wanted (or had time) and I didn’t need to concern
+myself with what other people wanted or expected from me or the code. There were times in the last
+two years when I didn’t write a single line of code for months and just pondered the design.&lt;/p&gt;
+
+&lt;p&gt;I don’t know yet whether HexaPDF will garner much interest in the Ruby community but since there are
+really only two libraries for working with PDFs, &lt;a href=&quot;http:prawnpdf.org&quot;&gt;Prawn&lt;/a&gt; and &lt;a href=&quot;https://github.com/yob/pdf-reader&quot;&gt;pdf-reader&lt;/a&gt; (both of which implement
+not nearly all aspects of the PDF specification), I guess it will.&lt;/p&gt;
+
+&lt;p&gt;Lastly, I hadn’t decided on a license for HexaPDF and releasing the code without a license doesn’t
+make much sense.&lt;/p&gt;
+
+&lt;p&gt;So here they are, my reasons for not releasing the code to HexaPDF at an early stage. I know that
+many probably won’t agree with my reasons but for me it provided me with the time and space to
+really enjoy working on HexaPDF and the challenges that came with it.&lt;/p&gt;
+
+&lt;p&gt;One question still remains: When will HexaPDF be released? The code itself will be released soon,
+but the &lt;strong&gt;&lt;a href=&quot;http://hexapdf.gettalong.org&quot;&gt;HexaPDF website&lt;/a&gt;&lt;/strong&gt; containing example scripts and their resulting PDF output as well as
+the API documentation is available &lt;em&gt;now&lt;/em&gt;.&lt;/p&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">Static Websites with webgen</title>
+    
+    <link href="https://gettalong.org/blog/2016/static-websites-with-webgen.html" rel="alternate">
+    <id>https://gettalong.org/blog/2016/static-websites-with-webgen.html</id>
+    <updated>2016-10-13T22:32:17+02:00</updated>
+    
+    <published>2016-10-13T22:30:00+02:00</published>
+    
+    <content type="html">
+&lt;p&gt;The static website generator &lt;a href=&quot;http://webgen.gettalong.org&quot;&gt;webgen&lt;/a&gt; has been in development for over a decade now. It provides the
+essential functionalities out of the box and is easy to use, even for non-programmers. Designed to
+be a general purpose static website generator it can be used for any kind of website, not just
+blogs.&lt;/p&gt;
+
+&lt;p&gt;In this post I will show you how to create a basic website with webgen.&lt;/p&gt;
+
+
+&lt;h2 id=&quot;first-steps&quot;&gt;First Steps&lt;/h2&gt;
+
+&lt;p&gt;As with most applications written in Ruby, webgen is just a &lt;code&gt;gem install webgen&lt;/code&gt; away. After the
+installation, the &lt;code&gt;webgen&lt;/code&gt; binary is used for everything, from creating the needed website structure
+to generating the output files (see &lt;code&gt;webgen help&lt;/code&gt; for all available commands).&lt;/p&gt;
+
+&lt;p&gt;When webgen is invoked in a directory that is not a valid webgen website, it tells you so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ webgen
+INFO  Generating website...
+INFO  No active source paths found - maybe not a webgen website?
+INFO  ... done in 0.02 seconds
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So we need to create the website directory first. However, before we do that we install an extension
+bundle that provides some pre-built templates:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ webgen install templates
+Installed webgen-templates-bundle
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we create the website and populate it with the “andreas07” template:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ webgen create website --template andreas07 demo -v
+INFO  [create] &amp;lt;/&amp;gt;
+INFO  [create] &amp;lt;/ext/&amp;gt;
+INFO  [create] &amp;lt;/ext/init.rb&amp;gt;
+INFO  [create] &amp;lt;/src/&amp;gt;
+INFO  [create] &amp;lt;/src/andreas07.css&amp;gt;
+INFO  [create] &amp;lt;/src/default.template&amp;gt;
+INFO  [create] &amp;lt;/src/images/&amp;gt;
+INFO  [create] &amp;lt;/src/images/bodybg.gif&amp;gt;
+INFO  [create] &amp;lt;/src/images/sidebarbg.gif&amp;gt;
+INFO  [create] &amp;lt;/webgen.config&amp;gt;
+Created a new webgen website in &amp;lt;demo&amp;gt; using the 'andreas07' template
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;By using the &lt;code&gt;-v&lt;/code&gt; option webgen provides more output, in this case showing us the created files. We
+see that inside the &lt;code&gt;demo/&lt;/code&gt; directory a &lt;code&gt;src/&lt;/code&gt; directory was created with some files and the files
+&lt;code&gt;ext/init.rb&lt;/code&gt; as well as &lt;code&gt;webgen.config&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;website-structure&quot;&gt;Website Structure&lt;/h2&gt;
+
+&lt;p&gt;The most important file for webgen is &lt;code&gt;webgen.config&lt;/code&gt; because the existence of this file means that
+the directory contains a webgen website. This file is used for setting configuration values, like
+the main language or base URL of the website. To see the full list of available configuration
+options, use &lt;code&gt;webgen show config&lt;/code&gt; or the &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/configuration_options.html&quot;&gt;configuration reference&lt;/a&gt; on the website.&lt;/p&gt;
+
+&lt;p&gt;By default webgen expects all source files to be in the &lt;code&gt;src/&lt;/code&gt; directory and puts the generated
+files into the &lt;code&gt;out/&lt;/code&gt; directory. All temporary files are put into the &lt;code&gt;tmp/&lt;/code&gt; directory (which can
+safely be deleted).&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;ext/init.rb&lt;/code&gt; file is for extending the functionality of webgen by writing Ruby code. It is not
+needed in many cases and can be deleted.&lt;/p&gt;
+
+&lt;h2 id=&quot;generating-the-website-and-adding-content&quot;&gt;Generating the Website and Adding Content&lt;/h2&gt;
+
+&lt;p&gt;Now that we have created the basic website structure we can use webgen to generate the output files:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cd demo
+$ webgen
+INFO  Generating website...
+INFO  [create] &amp;lt;/&amp;gt;
+INFO  [create] &amp;lt;/andreas07.css&amp;gt;
+INFO  [create] &amp;lt;/images/&amp;gt;
+INFO  [create] &amp;lt;/images/bodybg.gif&amp;gt;
+INFO  [create] &amp;lt;/images/sidebarbg.gif&amp;gt;
+INFO  ... done in 0.02 seconds
+$ webgen
+INFO  Generating website...
+INFO  Nothing has changed since the last invocation!
+INFO  ... done in 0.02 seconds
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see webgen supports &lt;strong&gt;partial website generation&lt;/strong&gt;, i.e. it only generates those files
+that have changed since the last invocation.&lt;/p&gt;
+
+&lt;p&gt;You might have noticed that no HTML file was created. We will remedy the situation by creating a
+page file. &lt;strong&gt;Page files&lt;/strong&gt; are those files of a webgen website that get transformed into HTML files.
+So we create the &lt;code&gt;src/index.page&lt;/code&gt; file with some content and rerun webgen:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cat src/index.page
+---
+title: Homepage
+in_menu: true
+---
+# My Homepage
+This is the first page of my homepage!
+$ webgen
+INFO  Generating website...
+INFO  [update] &amp;lt;/&amp;gt;
+INFO  [create] &amp;lt;/index.html&amp;gt;
+INFO  ... done in 0.08 seconds
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This file consists of two parts:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;The first part is the &lt;strong&gt;meta information section&lt;/strong&gt; where information about the page is defined. We
+defined the title of the page and an additional meta information called &lt;code&gt;in_menu&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The second part, after the second line containing &lt;code&gt;---&lt;/code&gt;, is the content of the page file.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All page files always have at least one content section but may have more, see the &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/webgen_page_format.html&quot;&gt;Webgen Page
+Format&lt;/a&gt; page for details.&lt;/p&gt;
+
+&lt;p&gt;If you open the resulting &lt;code&gt;out/index.html&lt;/code&gt; file in a browser you will see the following:&lt;/p&gt;
+
+&lt;p class=&quot;image main&quot;&gt;&lt;img src=&quot;assets/webgen-website-initial.png&quot; alt=&quot;initial website page&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What we can see is that the page’s content was transformed into HTML (see the middle part) and
+embedded into a template. This is the main purpose of every static website generator: Provide means
+for using other markup languages like Markdown to ease writing the content, and a templating system
+to avoid duplication of the main HTML markup that defines the layout and look of the site.&lt;/p&gt;
+
+&lt;p&gt;So where is that template? It can be found in the source directory as the file
+&lt;code&gt;src/default.template&lt;/code&gt;. Template files follow the same format as page files but most template files
+don’t use the meta information section.&lt;/p&gt;
+
+&lt;p&gt;If you look into this template file you will find that it contains a basic HTML structure with some
+additional un-HTML like statements:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Line 10 looks like this:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;{relocatable: andreas07.css}&quot; media=&quot;screen,projection&quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;This would be as standard HTML &lt;code&gt;&amp;lt;link /&amp;gt;&lt;/code&gt; tag except for the value of the “href” attribute. The
+contents is actually what is called a &lt;strong&gt;webgen tag&lt;/strong&gt; which is a system for adding dynamic content
+without programming.&lt;/p&gt;
+
+    &lt;p&gt;Each tag has a name, in this case “relocatable”, and may contain parameters, in this case
+“andreas07.css”. The &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/extensions/tag/relocatable.html&quot;&gt;“relocatable” tag&lt;/a&gt; looks up its parameter in the tree of files
+webgen knows about and creates a relative path to that file. This allows us to preview the
+generated HTML file without a webserver because all generated links are relative.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Another webgen tag is found in line 19:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;{menu: {options: {sort: true, mi: {in_menu: true}, absolute_levels: 1}}}
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;This tag creates a &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/extensions/tag/menu.html&quot;&gt;HTML menu&lt;/a&gt; by filtering the files webgen knows about using the given
+options. In this case each menu entry needs to have the meta information “in_menu” set to “true”
+(remember: we added that meta information to &lt;code&gt;src/index.page&lt;/code&gt;) and it must be on level one in the
+directory hierarchy.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The last line we look at is line 37:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;webgen:block name=&quot;content&quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;This definitely does look more like an XML tag than an HTML tag. It is a &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/extensions/content_processor/blocks.html&quot;&gt;special tag&lt;/a&gt;
+that webgen recognizes and it means that the content should be placed here.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If a page file doesn’t specify a special template file using the &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/meta_information_keys.html#template&quot;&gt;“template” meta information
+key&lt;/a&gt;, the default template is used. And templates themselves can even use other templates
+which is useful, for example, to embedded a post into a special post template that itself is
+embedded into the main template.&lt;/p&gt;
+
+&lt;p&gt;And this is all you need for a basic website! Just add some more page files, fill them with content
+and you are good to go!&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;By knowing about the &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/configuration_options.html&quot;&gt;configuration file &lt;code&gt;webgen.config&lt;/code&gt;&lt;/a&gt;, what &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/extensions/path_handler/page.html&quot;&gt;page&lt;/a&gt; and
+&lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/extensions/path_handler/template.html&quot;&gt;template&lt;/a&gt; files are and for what they are used, as well as the &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/extensions/content_processor/tags.html&quot;&gt;webgen tag
+system&lt;/a&gt; you can create a basic website without knowing a programming language.&lt;/p&gt;
+
+&lt;p&gt;If this short introduction roused your interest in webgen, have a look at the &lt;a href=&quot;http://webgen.gettalong.org/documentation/&quot;&gt;webgen
+documentation&lt;/a&gt; to see what else is possible with webgen.&lt;/p&gt;
+
+&lt;p&gt;You can also have a look at existing websites that are done with webgen to get inspiration:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Since the only file for a webgen website that has to exist is the configuration file, a webgen
+website can easily be maintained next to the source code of a project. See the &lt;a href=&quot;http://cmdparse.gettalong.org&quot;&gt;website of
+cmdparse&lt;/a&gt; and the corresponding &lt;a href=&quot;https://github.com/gettalong/cmdparse/blob/master/webgen.config&quot;&gt;webgen.config file&lt;/a&gt; as an example.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;webgen can also be used for more complex websites like the &lt;a href=&quot;https://github.com/gettalong/webgen-website&quot;&gt;website of webgen&lt;/a&gt;
+itself. This website uses some extensions in the &lt;code&gt;ext/&lt;/code&gt; directory but most things are handled
+through built-in features, e.g. the &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/extensions/path_handler/sitemap.html&quot;&gt;sitemap&lt;/a&gt;, &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/extensions/path_handler/feed.html&quot;&gt;RSS feeds&lt;/a&gt; and the &lt;a href=&quot;http://webgen.gettalong.org/documentation/reference/extensions/path_handler/api.html&quot;&gt;automatic API documentation
+generation&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/gettalong/gettalong.org&quot;&gt;This website&lt;/a&gt; is also done with webgen and shows that simple blogs can be done with
+webgen out of the box.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+  </entry>
+  
+  <entry>
+    <title type="html">A Blog at Last</title>
+    
+    <link href="https://gettalong.org/blog/2016/a-blog-at-last.html" rel="alternate">
+    <id>https://gettalong.org/blog/2016/a-blog-at-last.html</id>
+    <updated>2016-09-03T22:39:00+02:00</updated>
+    
+    <published>2016-09-03T22:39:00+02:00</published>
+    
+    <content type="html">
+&lt;p&gt;I never really started blogging all these years although I developed a &lt;a href=&quot;../../projects/webgen.html&quot;&gt;static website
+generator&lt;/a&gt; and a &lt;a href=&quot;../../projects/kramdown.html&quot;&gt;Markdown converter&lt;/a&gt; ages ago. Don’t know why really… probably thought
+that I wouldn’t find the time to actually post something.&lt;/p&gt;
+
+&lt;p&gt;But now is always a better time to start than never, isn’t it? :-)&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;What will I blog about?&lt;/strong&gt; Since I’m programming in my spare time I will write about programming
+and software engineering, especially in the context of the programming language Ruby. And probably
+about problem solving in general.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Why about Ruby?&lt;/strong&gt; It is the language I use nearly on a daily basis and therefore know most
+intimately. My open source projects use Ruby and can provide examples of real world code for
+discussion.&lt;/p&gt;
+
+&lt;p&gt;I already have some ideas for posts about HexaPDF, my newest Ruby project, a full-featured PDF
+reader and writer.&lt;/p&gt;
+</content>
+  </entry>
+  
+</feed>
+

@@ -1,8 +1,0 @@
-{
-  "title":"call table literals\n    ",
-  "date":"2021-08-20T14:00:59.000000-07:00",
-  "author":"Idiomdrottning",
-  "id":"https://idiomdrottning.org/call-table-literals",
-  "link":"https://idiomdrottning.org/call-table-literals",
-  "content":"ct, ctq, ct* and ctq* are sugar for creating a call-table\n              with some values already filled.\n            The q variants are implicitly quasiquoted while the non-q variants aren’t.\n            I.e.\n            (let ((banana-color 'yellow))\n  (ctq banana ,banana-color apple red))\n\n            is equivalent to\n            (let ((banana-color 'yellow))\n  (call-table seed: `((banana . ,banana-color) (apple . red))))\n\n            and\n            (let ((banana-color 'yellow))\n  (ct 'banana banana-color 'apple 'red))\n\n            The * variants create call-table* instances instead.\n            These call-tables aren’t closed, you can add more keys and values to them.\n            In brev-separate from version 1.42.\n            In destructuring\n            Our first example from our last post becomes:\n            (define (basket-color-inspect\n         ('shopping-basket (= (ctq banana yellow apple red pear green) x)))\n  (print &quot;The shopping basket has a &quot; x &quot; fruit.&quot;))\n\n(basket-color-inspect '(shopping-basket apple))\n\n            That prints:\n            The shopping basket has a red fruit.\n\n            ct is kinda like the curly-braced map literals in Clojure.\n    "
-}

@@ -1,0 +1,8 @@
+{
+  "title":"On the unsafety of interleaved I/O",
+  "date":"2022-10-24T17:47:25.000000Z",
+  "author":"Dan Doel",
+  "id":"http://comonad.com/reader/?p=1056",
+  "link":"http://comonad.com/reader/2015/on-the-unsafety-of-interleaved-io/",
+  "content":"One area where I'm at odds with the prevailing winds in Haskell is lazy I/O. It's often said that lazy I/O is evil, scary and confusing, and it breaks things like referential transparency. Having a soft spot for it, and not liking most of the alternatives, I end up on the opposite side when the topic comes up, if I choose to pick the fight. I usually don't feel like I come away from such arguments having done much good at giving lazy I/O its justice. So, I thought perhaps it would be good to spell out my whole position, so that I can give the best defense I can give, and people can continue to ignore it, without costing me as much time in the future. :)\nSo, what's the argument that lazy I/O, or unsafeInterleaveIO on which it's based, breaks referential transparency? It usually looks something like this:\n \nswap (x, y) = (y, x)\n \nsetup = do\n  r1 &lt; - newIORef True\n  r2 "
+}

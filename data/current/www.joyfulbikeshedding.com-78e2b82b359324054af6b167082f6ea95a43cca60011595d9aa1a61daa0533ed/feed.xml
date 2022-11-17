@@ -1,0 +1,1346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Hongli Lai</title>
+  <subtitle>On Coding, Startups &amp; Life</subtitle>
+  <id>https://www.joyfulbikeshedding.com/blog</id>
+  <link href="https://www.joyfulbikeshedding.com/blog">
+  <link href="https://www.joyfulbikeshedding.com/feed.xml" rel="self">
+  <updated>2022-04-30T00:00:00+00:00</updated>
+  <author>
+    <name>Hongli Lai</name>
+  </author>
+  <entry>
+    <title>Ubuntu 22.04 support for Fullstaq Ruby is here</title>
+    <link rel="alternate" href="https://www.joyfulbikeshedding.com/blog/2022-04-30-ubuntu-22-04-support-for-fullstaq-ruby-is-here.html">
+    <id>https://www.joyfulbikeshedding.com/blog/2022-04-30-ubuntu-22-04-support-for-fullstaq-ruby-is-here.html</id>
+    <published>2022-04-30T00:00:00+00:00</published>
+    <updated>2022-08-19T13:00:26+00:00</updated>
+    <author>
+      <name>Hongli Lai</name>
+    </author>
+    <summary type="html">&lt;p&gt;Ubuntu 22.04 was released a couple of days ago. Fullstaq Ruby now provides packages for this distribution!&lt;/p&gt;
+</summary>
+    <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;&lt;a href=&quot;https://fullstaqruby.org&quot;&gt;Fullstaq Ruby&lt;/a&gt; distributes server-optimized Ruby binaries. &lt;a href=&quot;https://github.com/fullstaq-ruby/server-edition/blob/main/README.md#installation&quot;&gt;Install&lt;/a&gt; the latest Ruby versions with APT/YUM instead of compiling. Easily keep Ruby &lt;a href=&quot;https://github.com/fullstaq-ruby/server-edition/blob/main/README.md#minor-version-packages-a-great-way-to-keep-ruby-security-patched&quot;&gt;security patched&lt;/a&gt; via auto-tiny version updates. Combat memory bloat (&lt;a href=&quot;https://dev.to/evilmartians/fullstaq-ruby-first-impressions-and-how-to-migrate-your-docker-kubernetes-ruby-apps-today-4fm7&quot;&gt;save as much as 50%&lt;/a&gt;) with &lt;a href=&quot;https://github.com/fullstaq-ruby/server-edition/blob/main/README.md#key-features&quot;&gt;memory allocator improvements&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Ubuntu 22.04 was released a couple of days ago. Fullstaq Ruby now provides packages for this distribution! Here's the corresponding pull request: #96.&lt;/p&gt;
+
+&lt;p&gt;Note that we only provide Ruby 3.1 packages for Ubuntu 22.04. This is because Ubuntu 22.04 ships with OpenSSL v3, and only Ruby 3.1 is compatible with that OpenSSL version.&lt;/p&gt;
+
+&lt;p&gt;Want to install or upgrade? Check &lt;a href=&quot;https://github.com/fullstaq-ruby/server-edition/blob/master/README.md#installation&quot;&gt;the installation instructions&lt;/a&gt;, or run &lt;code&gt;apt upgrade&lt;/code&gt;/&lt;code&gt;yum update&lt;/code&gt;.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Ruby gem: distributed locking on Google Cloud</title>
+    <link rel="alternate" href="https://www.joyfulbikeshedding.com/blog/2021-09-14-ruby-gem-distributed-locking-on-google-cloud.html">
+    <id>https://www.joyfulbikeshedding.com/blog/2021-09-14-ruby-gem-distributed-locking-on-google-cloud.html</id>
+    <published>2021-09-14T00:00:00+00:00</published>
+    <updated>2022-08-19T13:00:26+00:00</updated>
+    <author>
+      <name>Hongli Lai</name>
+    </author>
+    <summary type="html">&lt;p&gt;I previously designed a robust &lt;a href=&quot;2021-05-19-robust-distributed-locking-algorithm-based-on-google-cloud-storage.html.md&quot;&gt;distributed locking algorithm based on Google Cloud&lt;/a&gt;. Now I'm releasing a Ruby implementation of this algorithm: &lt;a href=&quot;https://github.com/FooBarWidget/distributed-lock-google-cloud-storage-ruby&quot;&gt;distributed-lock-google-cloud-storage-ruby&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;To use this, add to your Gemfile:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'distributed-lock-google-cloud-storage'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;</summary>
+    <content type="html">&lt;p&gt;I previously designed a robust &lt;a href=&quot;2021-05-19-robust-distributed-locking-algorithm-based-on-google-cloud-storage.html.md&quot;&gt;distributed locking algorithm based on Google Cloud&lt;/a&gt;. Now I'm releasing a Ruby implementation of this algorithm: &lt;a href=&quot;https://github.com/FooBarWidget/distributed-lock-google-cloud-storage-ruby&quot;&gt;distributed-lock-google-cloud-storage-ruby&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;To use this, add to your Gemfile:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'distributed-lock-google-cloud-storage'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Its typical usage is as follows. Initialize a Lock instance. It must be backed by a Google Cloud Storage bucket and object. Then do your work within a &lt;code&gt;#synchronize&lt;/code&gt; block.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Important:&lt;/strong&gt; If your work is a long-running operation, then also be sure to call &lt;code&gt;#check_health!&lt;/code&gt; &lt;em&gt;periodically&lt;/em&gt; to check whether the lock is still healthy. This call throws an exception if it's not healthy. Learn more in &lt;a href=&quot;https://github.com/FooBarWidget/distributed-lock-google-cloud-storage-ruby/blob/main/README.md#long-running-operations-lock-refreshing-and-lock-health-checking&quot;&gt;Long-running operations, lock refreshing and lock health checking&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight ruby&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'distributed-lock-google-cloud-storage'&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;lock&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;DistributedLock&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GoogleCloudStorage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;bucket_name: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'your bucket name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;path: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'locks/mywork'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;synchronize&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;do_some_work&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# IMPORTANT: _periodically_ call this!&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;check_health!&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;do_more_work&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To learn more about this gem, please check out &lt;a href=&quot;https://github.com/FooBarWidget/distributed-lock-google-cloud-storage-ruby/blob/main/README.md&quot;&gt;its README&lt;/a&gt; and its &lt;a href=&quot;https://foobarwidget.github.io/distributed-lock-google-cloud-storage-ruby/DistributedLock/GoogleCloudStorage/Lock.html&quot;&gt;full API docs&lt;/a&gt;.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>A robust distributed locking algorithm based on Google Cloud Storage</title>
+    <link rel="alternate" href="https://www.joyfulbikeshedding.com/blog/2021-05-19-robust-distributed-locking-algorithm-based-on-google-cloud-storage.html">
+    <id>https://www.joyfulbikeshedding.com/blog/2021-05-19-robust-distributed-locking-algorithm-based-on-google-cloud-storage.html</id>
+    <published>2021-05-19T00:00:00+00:00</published>
+    <updated>2022-08-19T13:00:26+00:00</updated>
+    <author>
+      <name>Hongli Lai</name>
+    </author>
+    <summary type="html">&lt;p&gt;Many workloads nowadays involve many systems that operate concurrently. This ranges from microservice fleets to workflow orchestration to CI/CD pipelines. Sometimes it's important to coordinate these systems so that concurrent operations don't step on each other. One way to do that is by using &lt;em&gt;distributed locks&lt;/em&gt; that work across multiple systems.&lt;/p&gt;
+
+&lt;p&gt;Distributed locks used to require complex algorithms or complex-to-operate infrastructure, making them expensive both in terms of costs as well as in upkeep. With the emergence of fully managed and serverless cloud systems, this reality has changed.&lt;/p&gt;
+
+&lt;p&gt;In this post I'll look into a distributed locking algorithm based on Google Cloud. I'll discuss several existing implementations and suggest algorithmic improvements in terms of performance and robustness.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/p&gt;</summary>
+    <content type="html">&lt;p&gt;Many workloads nowadays involve many systems that operate concurrently. This ranges from microservice fleets to workflow orchestration to CI/CD pipelines. Sometimes it's important to coordinate these systems so that concurrent operations don't step on each other. One way to do that is by using &lt;em&gt;distributed locks&lt;/em&gt; that work across multiple systems.&lt;/p&gt;
+
+&lt;p&gt;Distributed locks used to require complex algorithms or complex-to-operate infrastructure, making them expensive both in terms of costs as well as in upkeep. With the emergence of fully managed and serverless cloud systems, this reality has changed.&lt;/p&gt;
+
+&lt;p&gt;In this post I'll look into a distributed locking algorithm based on Google Cloud. I'll discuss several existing implementations and suggest algorithmic improvements in terms of performance and robustness.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt;: there is now a &lt;a href=&quot;https://github.com/FooBarWidget/distributed-lock-google-cloud-storage-ruby&quot;&gt;Ruby implementation&lt;/a&gt; of this algorithm!&lt;/p&gt;
+
+&lt;h2 id=&quot;use-cases-for-distributed-locks&quot;&gt;Use cases for distributed locks&lt;/h2&gt;
+
+&lt;p&gt;Distributed locks are useful in any situation in which multiple systems may operate on the same state concurrently. Concurrent modifications may corrupt the state, so one needs a mechanism to ensure that only one system can modify the state at the same time.&lt;/p&gt;
+
+&lt;p&gt;A good example is Terraform. When you store the Terraform state in the cloud, and you run multiple Terraform instances concurrently, then Terraform guarantees that only one Terraform instance can modify the infrastructure concurrently. This is done through a distributed lock. In contrast to a regular (local system) lock, a distributed lock works across multiple systems. So even if you run two Terraform instances on two different machines, then Terraform still protects you from concurrent modifications.&lt;/p&gt;
+
+&lt;p&gt;More generally, distributed locks are useful for &lt;strong&gt;ad-hoc system/cloud automation scripts and CI/CD pipelines&lt;/strong&gt;. Sometimes you want your script or pipeline to perform non-trivial modifications that take many steps. It can easily happen that multiple instances of the script or pipeline are run. When that happens, you don't want those multiple instances to perform the modification at the same time, because that can corrupt things. You can use a distributed lock to make concurrent runs safe.&lt;/p&gt;
+
+&lt;p&gt;Here's a concrete example involving a CI/CD pipeline. &lt;a href=&quot;https://fullstaqruby.org&quot;&gt;Fullstaq Ruby&lt;/a&gt; had an APT and YUM repository hosted on &lt;a href=&quot;https://bintray.com/&quot;&gt;Bintray&lt;/a&gt;. A few months ago, Bintray announced that they will shutdown in the near future, so &lt;a href=&quot;https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/main/dev-handbook/apt-yum-repo.md&quot;&gt;we had to migrate to a different solution&lt;/a&gt;. We chose to self-host our APT and YUM repository on a cloud object store.&lt;/p&gt;
+
+&lt;figure&gt;
+  &lt;img src=&quot;/images/2021/distributed-lock-arch-9433f803.svg&quot; alt=&quot;&quot; /&gt;
+  &lt;figcaption&gt;The Fullstaq Ruby package publishing pipeline uses a distributed lock to guarantee concurrency-safety. Learn more: &lt;a href=&quot;https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/main/dev-handbook/apt-yum-repo.md&quot;&gt;Fullstaq Ruby's APT and YUM repository setup&lt;/a&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;APT and YUM repositories consist of a bunch of .deb and .rpm packages, plus a bunch of metadata. Package updates are published through Fullstaq Ruby's CI/CD system. This CI/CD system directly modifies multiple files on the cloud object store. We want this publication process to be &lt;strong&gt;concurrency-safe&lt;/strong&gt; because if we commit too quickly then multiple CD/CD runs may occur at the same time. The easiest way to achieve this is by using a distributed lock, so that only one CI/CD pipeline may operate on the cloud object bucket concurrently.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-building-on-google-cloud-storage&quot;&gt;Why building on Google Cloud Storage?&lt;/h2&gt;
+
+&lt;p&gt;Distributed locks used to be hard to implement. In the past they required complicated &lt;a href=&quot;https://en.wikipedia.org/wiki/Consensus_(computer_science)&quot;&gt;consensus protocols&lt;/a&gt; such as &lt;a href=&quot;https://en.wikipedia.org/wiki/Paxos_(computer_science)&quot;&gt;Paxos&lt;/a&gt; or &lt;a href=&quot;https://en.wikipedia.org/wiki/Raft_(algorithm)&quot;&gt;Raft&lt;/a&gt;, as well as the hassle of hosting yet another service. See &lt;a href=&quot;https://en.wikipedia.org/wiki/Distributed_lock_manager&quot;&gt;Distributed lock manager&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In a more recent past, people started implementing distributed locks on top of other distributed systems, such as transactional databases and Redis. This significantly reduced the complexity of algorithms. But operational complexity was still significant. A big issue is that these systems aren't &quot;serverless&quot;: operating and maintaining a database instance or a Redis instance is not cheap. It's not cheap in terms of effort. It's also not cheap in terms of costs: you pay for a database/Redis instance based on its uptime, not based on how many operations you perform.&lt;/p&gt;
+
+&lt;p&gt;Luckily, there are many cloud systems nowadays which not only provide the building blocks necessary to build a distributed lock, but are also fully managed and serverless. Google Cloud Storage is a great system to build a distributed lock on. It's cheap, it's popular, it's highly available and it's maintenance-free. You only pay for the amount of operations you perform on it.&lt;/p&gt;
+
+&lt;h2 id=&quot;basic-challenges-of-distributed-locking&quot;&gt;Basic challenges of distributed locking&lt;/h2&gt;
+
+&lt;p&gt;One of the problems that distributed locking algorithms need to solve, is the fact that participants in the algorithm need to &lt;strong&gt;communicate&lt;/strong&gt; with each other. Distributed systems may run in different networks that aren't directly connected.&lt;/p&gt;
+
+&lt;p&gt;Another problem is that of &lt;strong&gt;concurrency control&lt;/strong&gt;. This is made difficult by communication lag. If two participants request ownership of a lock simultaneously, then we want both of them to agree on a single outcome even though it takes time for each participant to hear the other.&lt;/p&gt;
+
+&lt;p&gt;Finally, there is the problem of &lt;strong&gt;state consistency&lt;/strong&gt;. When you write to a storage system, then next time you read from that system you want to read what you just wrote. This is called &lt;em&gt;strong consistency&lt;/em&gt;. Some storage systems are &lt;em&gt;eventually consistent&lt;/em&gt;, which means that it takes a while before you read what you just wrote. Storage systems that are eventually consistent are not suitable for implementing distributed locks.&lt;/p&gt;
+
+&lt;p&gt;This is why we leverage Google Cloud Storage as both a communication channel, and as a &quot;referee&quot;. Everyone can connect to Cloud Storage, and access control is simple and well-understood. Cloud Storage &lt;a href=&quot;https://cloud.google.com/storage/docs/consistency&quot;&gt;is also a strongly consistent system&lt;/a&gt; and has &lt;a href=&quot;https://cloud.google.com/storage/docs/generations-preconditions&quot;&gt;concurrency control features&lt;/a&gt;. This latter allows Cloud Storage to make a single, final decision in case two participants want to take ownership of the lock simultaneously.&lt;/p&gt;
+
+&lt;h2 id=&quot;building-blocks-generation-numbers-and-atomic-operations&quot;&gt;Building blocks: generation numbers and atomic operations&lt;/h2&gt;
+
+&lt;p&gt;Every Cloud Storage object has two separate &lt;a href=&quot;https://cloud.google.com/storage/docs/generations-preconditions#_Generations&quot;&gt;generation numbers&lt;/a&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The normal generation number changes every time the object's data is modified.&lt;/li&gt;
+  &lt;li&gt;The metageneration number changes every time the object's metadata is modified.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When you perform a modification operation, you can use the &lt;a href=&quot;https://cloud.google.com/storage/docs/xml-api/reference-headers#xgoogifgenerationmatch&quot;&gt;x-goog-if-generation-match&lt;/a&gt;/&lt;a href=&quot;https://cloud.google.com/storage/docs/xml-api/reference-headers#xgoogifmetagenerationmatch&quot;&gt;x-goog-if-metageneration-match&lt;/a&gt; headers in the Cloud Storage API to say: &quot;only perform this operation if the generation/metageneration equals this value&quot;. Cloud Storage guarantees that this effect is atomic and free of race conditions. These headers are called &lt;strong&gt;precondition headers&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The special value 0 for x-goog-if-generation-match means &quot;only perform this operation if the object does not exist&quot;.&lt;/p&gt;
+
+&lt;p&gt;This feature — the ability to specify preconditions to operations — is key to concurrency control.&lt;/p&gt;
+
+&lt;h2 id=&quot;existing-implementations&quot;&gt;Existing implementations&lt;/h2&gt;
+
+&lt;p&gt;Several implementations of a distributed lock based on Google Cloud Storage already exist. A prominent one is &lt;a href=&quot;https://github.com/mco-gh/gcslock&quot;&gt;gcslock&lt;/a&gt; by &lt;a href=&quot;https://mco.dev/&quot;&gt;Marc Cohen&lt;/a&gt;, who works at Google. Gcslock leverages the &lt;a href=&quot;https://cloud.google.com/storage/docs/xml-api/reference-headers#xgoogifgenerationmatch&quot;&gt;x-goog-if-generation-match&lt;/a&gt; header, as described in the previous section. Its algorithm is simple, as we'll discuss in the next section.&lt;/p&gt;
+
+&lt;p&gt;Most other implementations, such as &lt;a href=&quot;https://github.com/thinkingmachines/gcs-mutex-lock&quot;&gt;gcs-mutex-lock&lt;/a&gt; and &lt;a href=&quot;https://github.com/XaF/gcslock-ruby&quot;&gt;gcslock-ruby&lt;/a&gt;, use the gcslock algorithm though with minor adaptations.&lt;/p&gt;
+
+&lt;p&gt;I've been able to find one implementation that's significantly different and more advanced: HashiCorp Vault's leader election algorithm. Though it's not functionally meant to be used as a lock, technically it boils down to a lock. We'll discuss this algorithm in a later section.&lt;/p&gt;
+
+&lt;h2 id=&quot;gcslock-a-basic-locking-algorithm&quot;&gt;Gcslock: a basic locking algorithm&lt;/h2&gt;
+
+&lt;p&gt;The gcslock algorithm is as follows:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Taking the lock means creating an object with &lt;code&gt;x-goog-if-generation-match: 0&lt;/code&gt;.
+    &lt;ul&gt;
+      &lt;li&gt;The content of the object does not matter.&lt;/li&gt;
+      &lt;li&gt;If creation is successful, then it means we've taken the lock.&lt;/li&gt;
+      &lt;li&gt;If creation fails with a 412 Precondition Failed error, then it means the object already exists. This means the lock was already taken. We retry later. The retry sleep time increases exponentially every time taking the lock fails.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Releasing the lock means deleting the object.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This algorithm is very simple. It is also relatively high-latency because Cloud Storage's response time is measured in tens to hundreds of milliseconds, and because it utilizes retries with exponential backoff. Relative high latency may or may not be a problem depending on your use case. It's probably fine for most batch operations, but it's probably unacceptable for applications that require pseudo-realtime responsiveness.&lt;/p&gt;
+
+&lt;p&gt;There are bigger issues though:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Prone to crashes&lt;/strong&gt;. If a process crashes while having taken the lock, then the lock becomes stuck forever until an administrator manually deletes the lock.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Hard to find out who the owner is&lt;/strong&gt;. There is no administration about who owns the mutex. The only way to find out who owns the lock is by querying the processes.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Unbounded backoff&lt;/strong&gt;. The exponential backoff has no upper limit. If the lock is taken for a long time (e.g. because a process crashed during a lock) then the exponential backoff will grow unbounded. This means that an administrator may need to restart all sorts of processes, after having deleted a stale lock.&lt;/p&gt;
+
+    &lt;p&gt;&lt;a href=&quot;https://github.com/thinkingmachines/gcs-mutex-lock&quot;&gt;gcs-mutex-lock&lt;/a&gt; and &lt;a href=&quot;https://github.com/XaF/gcslock-ruby&quot;&gt;gcslock-ruby&lt;/a&gt; address this by setting an upper bound to the exponential backoff.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Retry contention&lt;/strong&gt;. If multiple processes start taking the lock at the same time, then they all back off at the same rate. This means that they end up retrying at the same time. This causes spikes in API requests towards Google Cloud Storage. This can cause network contention issues.&lt;/p&gt;
+
+    &lt;p&gt;&lt;a href=&quot;https://github.com/thinkingmachines/gcs-mutex-lock&quot;&gt;gcs-mutex-lock&lt;/a&gt; addresses this by allowing adding jitter to the backoff time.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Unintended releases&lt;/strong&gt;. A lock release request may be delayed by the network. Imagine the following scenario:&lt;/p&gt;
+
+    &lt;ol&gt;
+      &lt;li&gt;An administrator thinks the lock is stale, and deletes it.&lt;/li&gt;
+      &lt;li&gt;Another process takes the lock.&lt;/li&gt;
+      &lt;li&gt;The original lock release request now arrives, inadvertently releasing the lock.&lt;/li&gt;
+    &lt;/ol&gt;
+
+    &lt;p&gt;This sort of network-delay-based problem is even &lt;a href=&quot;https://cloud.google.com/storage/docs/generations-preconditions#special-case&quot;&gt;documented in the Cloud Storage documentation as a potential risk&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;resisting-stuck-locks-via-ttls&quot;&gt;Resisting stuck locks via TTLs&lt;/h2&gt;
+
+&lt;p&gt;One way to avoid stuck locks left behind by crashing processes, is by considering locks to be &lt;strong&gt;stale&lt;/strong&gt; if they are &quot;too old&quot;. We can use the timestamps that Cloud Storage manages, which change every time an object is modified.&lt;/p&gt;
+
+&lt;p&gt;What should be considered &quot;too old&quot; really depends on the specific operation. So this should be a configurable parameter, which we call the &lt;strong&gt;time-to-live (TTL)&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;What's more, the same TTL value should be agreed upon by all processes. Otherwise we'll risk that a process thinks the lock is stuck even though the owner thinks it isn't. One way to ensure that all processes agree on the same TTL is by configuring them with the same TTL value, but this approach is error-prone. A better way is to store the TTL value into the lock object.&lt;/p&gt;
+
+&lt;p&gt;Here's the updated locking algorithm:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create the object with &lt;code&gt;x-goog-if-generation-match: 0&lt;/code&gt;.
+    &lt;ul&gt;
+      &lt;li&gt;Store the TTL in a metadata header.&lt;/li&gt;
+      &lt;li&gt;The content of the object does not matter.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;If creation is successful, then it means we've taken the lock.&lt;/li&gt;
+  &lt;li&gt;If creation fails with a 412 Precondition Failed error (meaning the object already exists), then:
+    &lt;ol&gt;
+      &lt;li&gt;Fetch from its metadata the update timestamp, generation number and TTL.&lt;/li&gt;
+      &lt;li&gt;If the update timestamp is older than the TTL, then delete the object, with &lt;code&gt;x-goog-if-generation-match: [generation]&lt;/code&gt;. Specifying this header is important, because if someone else takes the lock concurrently (meaning the lock is no longer stale), then we don't want to delete that.&lt;/li&gt;
+      &lt;li&gt;Retry the locking algorithm after an exponential backoff (potentially with an upper limit and jitter).&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;What's a good value for the TTL?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Cloud Storage's latency is relatively high, in the order of tens to hundreds of milliseconds. So the TTL should be at least a few seconds.&lt;/li&gt;
+  &lt;li&gt;If you perform Cloud Storage operations via the &lt;code&gt;gsutil&lt;/code&gt; CLI, then you should be aware that gsutil takes a few seconds to start. Thus, the TTL should be at least a few ten seconds.&lt;/li&gt;
+  &lt;li&gt;A distributed lock like this is best suited for batch workloads. Such workloads typically take seconds to tens or even hundreds of seconds. Your TTL should be a safe multiple of the time your operation is expected to take. We'll discuss this further in the next section, &quot;long-running operations&quot;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As a general rule, I'd say that a safe TTL should be in the order of minutes. It should be at least 1 minute. I think a &lt;strong&gt;good default is 5 minutes&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;long-running-operations&quot;&gt;Long-running operations&lt;/h2&gt;
+
+&lt;p&gt;If an operation takes longer than the TTL, then another process could take ownership of the lock even though the original owner is still operating. Increasing the TTL addresses this issue somewhat, but this approach has drawbacks:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;If the operation's completion time is unknown, then it's impossible to pick a TTL.&lt;/li&gt;
+  &lt;li&gt;A larger TTL means that it takes longer for processes to detect stale locks.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;A better approach is to &lt;strong&gt;refresh&lt;/strong&gt; the object's update timestamp regularly as long as the operation is still in progress. Keep the TTL relatively short, so that if the process crashes then it won't take too much time for others to detect the lock as stale.&lt;/p&gt;
+
+&lt;p&gt;We implement refreshing via a &lt;a href=&quot;https://cloud.google.com/storage/docs/json_api/v1/objects/patch&quot;&gt;PATCH object API call&lt;/a&gt;. The exact data to patch doesn't matter: we only care about the fact that Cloud Storage will change the update timestamp.&lt;/p&gt;
+
+&lt;p&gt;We call the time between refreshes the &lt;strong&gt;refresh interval&lt;/strong&gt;. A proper value for the refresh interval depends on the TTL. It must be much shorter than the TTL, otherwise refreshing the lock is pointless. Its value should take into consideration that a refresh operation is subject to network delays, or even local CPU scheduling delays.&lt;/p&gt;
+
+&lt;p&gt;As a general rule, &lt;strong&gt;I recommend a refresh interval that's at most 1/8th of the TTL&lt;/strong&gt;. Given a default TTL of 5 minutes, I recommend a &lt;strong&gt;default refresh interval of ~37 seconds&lt;/strong&gt;. This recommendation takes into consideration that refreshes can fail, which we'll discuss in the next section.&lt;/p&gt;
+
+&lt;h2 id=&quot;refresh-failures&quot;&gt;Refresh failures&lt;/h2&gt;
+
+&lt;p&gt;Refreshing the lock can fail. There are two failure categories:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Unexpected state&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;The lock object could have been unexpectedly modified by someone else.&lt;/li&gt;
+      &lt;li&gt;The lock object could be unexpectedly deleted.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Network problems&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;If this means that the refresh operation is arbitrarily delayed by the network, then we can end up refreshing a lock that we don't own. While this is unintended, it won't cause any real problems.&lt;/li&gt;
+      &lt;li&gt;But if this means that the operation failed to reach Cloud Storage, and such failures persist, then the lock can become stale even though the operation is still in progress.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;How should we respond to refresh failures?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Upon encountering unexpected state, we should abort the operation immediately.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Upon encountering network problems, there's a chance that the failure is just temporary. So we should retry a couple of times. Only if retrying fails too many times consecutively do we abort the operation.&lt;/p&gt;
+
+    &lt;p&gt;I think &lt;strong&gt;retrying 2 times&lt;/strong&gt; (so 3 tries in total) is reasonable. In order to abort way before the TTL expires, the refresh interval must be shorter than 1/3rd of the TTL.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When we conclude that we should abort the operation, we declare that the lock is in an &lt;em&gt;unhealthy state&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Aborting should happen in a manner that leaves the system in a consistent state. Furthermore, aborting takes time, so it should be initiated way before the TTL expires, and it's also another reason why in the previous section I recommended a refresh interval of 1/8th of the TTL.&lt;/p&gt;
+
+&lt;h2 id=&quot;dealing-with-inconsistent-operation-states&quot;&gt;Dealing with inconsistent operation states&lt;/h2&gt;
+
+&lt;p&gt;Aborting the operation could itself fail, for example because of network problems. This may leave the system in an inconsistent state. There are ways to deal with this issue:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Next time a process takes the lock, detect whether the state is inconsistent, and then deal with it somehow, for example by fixing the inconsistency.&lt;/p&gt;
+
+    &lt;p&gt;This means that the operation must be written in such a way that inconcistency &lt;em&gt;can&lt;/em&gt; be detected and fixed. Fixing arbitrary inconsistency is quite hard, so you should carefully design the operation's algorithm to limit &lt;em&gt;how&lt;/em&gt; inconsistent a state can become.&lt;/p&gt;
+
+    &lt;p&gt;This is a difficult topic and is outside the scope of this article. But you could take inspiration from how &lt;a href=&quot;https://pages.cs.wisc.edu/~remzi/OSTEP/file-journaling.pdf&quot;&gt;journaling filesystems work&lt;/a&gt; to recover the filesystem state after a crash.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;An easier approach that's sometimes viable, is to consider existing state to be immutable. Your operation makes a copy of the existing state, perform operations on the copy, then atomically (or at least nearly so) declare the copy as the new state.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;detecting-unexpected-releases-or-ownership-changes&quot;&gt;Detecting unexpected releases or ownership changes&lt;/h2&gt;
+
+&lt;p&gt;The lock &lt;em&gt;could&lt;/em&gt; be released, or its ownership &lt;em&gt;could&lt;/em&gt; change, at any time. Either because of a faulty process or because of an unexpected administrator operation. While such things &lt;em&gt;shouldn't&lt;/em&gt; happen, it's still a good idea if we are able to handle them somehow.&lt;/p&gt;
+
+&lt;p&gt;When these things happen, we also say that the lock is in an &lt;em&gt;unhealthy state&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;We make the following changes to the algorithm:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Right after having taken the lock, take note of its generation number.&lt;/li&gt;
+  &lt;li&gt;When refreshing the lock, use the &lt;code&gt;x-goog-if-generation-match: &amp;lt;last known generation number&amp;gt;&lt;/code&gt; header.
+    &lt;ul&gt;
+      &lt;li&gt;If it succeeds, take note of the new generation number.&lt;/li&gt;
+      &lt;li&gt;If it fails because the object does not exist, then it means the lock was deleted. We abort the operation.&lt;/li&gt;
+      &lt;li&gt;If it fails with a 412 Precondition Failed error, then it means the ownership unexpectedly changed. We abort the operation without releasing the lock.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;When releasing the lock, use the &lt;code&gt;x-goog-if-generation-match: &amp;lt;last known generation number&amp;gt;&lt;/code&gt; header, so that we're sure we're releasing the lock we owned and not one that was taken over by another process. We can ignore any 412 Precondition Failed errors.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;studying-hashicorp-vaults-leader-election-algorithm&quot;&gt;Studying HashiCorp Vault's leader election algorithm&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.vaultproject.io/&quot;&gt;HashiCorp Vault&lt;/a&gt; is a secrets management system. Its &lt;a href=&quot;https://www.vaultproject.io/docs/concepts/ha&quot;&gt;high availability setup&lt;/a&gt; involves leader election. This is done by taking ownership of a distributed lock. The instance that succeeds in taking ownership is considered the leader.&lt;/p&gt;
+
+&lt;p&gt;The leader election algorithm is implemented in &lt;a href=&quot;https://github.com/hashicorp/vault/blob/cba7abc64e4d1cb20129b534e3b1a255fbc18977/physical/gcs/gcs_ha.go&quot;&gt;physical/gcs/gcs_ha.go&lt;/a&gt; and was originally written by &lt;a href=&quot;https://twitter.com/sethvargo&quot;&gt;Seth Vargo&lt;/a&gt; at Google. This algorithm was also &lt;a href=&quot;https://cloud.google.com/blog/topics/developers-practitioners/implementing-leader-election-google-cloud-storage&quot;&gt;discussed&lt;/a&gt; by &lt;a href=&quot;https://twitter.com/ahmetb&quot;&gt;Ahmet Alp Balkan&lt;/a&gt; at the Google Cloud blog.&lt;/p&gt;
+
+&lt;figure&gt;
+  &lt;img src=&quot;/images/2021/hashicorp_vault-5d3cb5d7.svg&quot; alt=&quot;HashiCorp Vault logo&quot; class=&quot;img-xx-smallwidth&quot; /&gt;
+  &lt;figcaption&gt;&lt;a href=&quot;https://www.vaultproject.io/&quot;&gt;HashiCorp Vault&lt;/a&gt;'s leader election protocol is actually also a distributed lock! We can draw many interesting lessons from it.&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;Here are the similarities between Vault's algorithm and what we've discussed so far:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Vault utilizes Cloud Storage's precondition headers to find out whether it was successful in taking a lock.&lt;/li&gt;
+  &lt;li&gt;When Vault fails to take a lock, it also retries later until it suceeds.&lt;/li&gt;
+  &lt;li&gt;Vault detects stale locks via a TTL.&lt;/li&gt;
+  &lt;li&gt;Vault refreshes locks regularly. A Vault instance holds on to the lock as long as its willing to be the leader, so we can consider this to be a gigantic long-running operation, making lock refreshing essential.&lt;/li&gt;
+  &lt;li&gt;Vault checks regurlarly whether the lock was unexpectedly released or changed ownership.&lt;/li&gt;
+  &lt;li&gt;When Vault releases the lock, it also uses a precondition header to ensure it doesn't delete a lock that someone else took ownership of concurrently.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Notable differences:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Vault checks whether the lock is stale, &lt;em&gt;before&lt;/em&gt; trying to create the lock object. Whereas we check for staleness &lt;em&gt;after&lt;/em&gt; trying to do so. Checking for staleness afterwards is a more optimistic approach. If the lock is unlikely to be stale, then checking afterwards is faster.&lt;/li&gt;
+  &lt;li&gt;When Vault fails to take the lock, it backs off linearly instead of exponentially.&lt;/li&gt;
+  &lt;li&gt;Instead of checking the generation number, and refreshing the lock by updating its data, Vault operates purely on &lt;a href=&quot;https://cloud.google.com/storage/docs/metadata&quot;&gt;object &lt;em&gt;metadata&lt;/em&gt;&lt;/a&gt; because it's less costly to read frequently. This means the algorithm checks the &lt;em&gt;metageneration&lt;/em&gt; number, and refreshes the lock by updating metadata fields.&lt;/li&gt;
+  &lt;li&gt;Vault stores its unique instance identity name in the lock. This way administrators can easily find out who owns the lock.&lt;/li&gt;
+  &lt;li&gt;Vault's TTL is a runtime configuration parameter. Its value is not stored in the object.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If Vault's leader election system crashes non-fatally (e.g. it detected an unhealthy lock, aborted, then tried again later from the same Vault instance), and the lock hasn't been taken over by another Vault instance at the same time, then Vault is able to retake the lock instantly.&lt;/p&gt;
+
+    &lt;p&gt;In contrast, our approach so far requires waiting until the lock becomes stale per the TTL.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I think points 3, 4 and 6 are worth learning from.&lt;/p&gt;
+
+&lt;h2 id=&quot;instant-recovery-from-stale-locks--thread-safety&quot;&gt;Instant recovery from stale locks &amp;amp; thread-safety&lt;/h2&gt;
+
+&lt;p&gt;HashiCorp Vault's ability to retake the lock instantly after a non-fatal crash is worthy of further discussion. It's a desirable feature, but what are the implications?&lt;/p&gt;
+
+&lt;p&gt;Upon closer inspection, we see that this feature works by assigning an &lt;em&gt;identity&lt;/em&gt; to the lock object. This identity is a random string that's generated during Vault startup. When Vault attempts to take a lock, it checks whether the object already exists and whether its identity equals the Vault instance's own identity. If so, then Vault concludes that it's safe to retake the lock immediately.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;This identity string must be chosen with some care&lt;/strong&gt;, because it affects on the level of mutual exclusion. Vault generates a random identity string that's unique on a per-Vault-instance basis. This results in the lock being multi-process safe, but — perhaps counter-intuitively — not thread-safe!&lt;/p&gt;
+
+&lt;p&gt;We can make the lock object thread-safe by including the thread ID in the identity as well. The tradeoff is that an abandoned lock can only be quickly recovered by the same thread that abandoned it in the first place. All other threads still have to wait for the TTL timeout.&lt;/p&gt;
+
+&lt;p&gt;In the next section we'll put together everything we've discussed and learned so far.&lt;/p&gt;
+
+&lt;h2 id=&quot;putting-the-final-algorithm-together&quot;&gt;Putting the final algorithm together&lt;/h2&gt;
+
+&lt;h3 id=&quot;taking-the-lock&quot;&gt;Taking the lock&lt;/h3&gt;
+
+&lt;p&gt;Parameters:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Object URL&lt;/li&gt;
+  &lt;li&gt;TTL&lt;/li&gt;
+  &lt;li&gt;An identity that's unique on a per-process basis, and optionally on a per-thread basis as well
+    &lt;ul&gt;
+      &lt;li&gt;Example format: &quot;[process identity]&quot;. If thread-safety is desired, append &quot;/[thread identity]&quot;.&lt;/li&gt;
+      &lt;li&gt;Interpret the concept &quot;thread&quot; liberally. For example, if your language is single-threaded with cooperative multitasking using coroutines/fibers, then use the coroutine/fiber identity.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create the object at the given URL.
+    &lt;ul&gt;
+      &lt;li&gt;Use the &lt;code&gt;x-goog-if-generation-match: 0&lt;/code&gt; header.&lt;/li&gt;
+      &lt;li&gt;Set Cache-Control: no-store&lt;/li&gt;
+      &lt;li&gt;Set the following metadata values:
+        &lt;ul&gt;
+          &lt;li&gt;Expiration timestamp (based on TTL)&lt;/li&gt;
+          &lt;li&gt;Identity&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Empty contents.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;If creation is successful, then it means we've taken the lock.
+    &lt;ul&gt;
+      &lt;li&gt;Start refreshing the lock in the background.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;If creation fails with a 412 Precondition Failed error (meaning the object already exists), then:
+    &lt;ol&gt;
+      &lt;li&gt;Fetch from the object's metadata:
+        &lt;ul&gt;
+          &lt;li&gt;Update timestamp&lt;/li&gt;
+          &lt;li&gt;Metageneration number&lt;/li&gt;
+          &lt;li&gt;Expiration timestamp&lt;/li&gt;
+          &lt;li&gt;Identity&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;If step 1 fails because the object didn't exist, then restart the algorithm from step 1 immediately.&lt;/li&gt;
+      &lt;li&gt;If the identity equals our own, then delete the object, and immediately restart the algorithm from step 1.
+        &lt;ul&gt;
+          &lt;li&gt;When deleting, use the &lt;code&gt;x-goog-if-metageneration-match: [metageneration]&lt;/code&gt; header.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;If the update timestamp is older than the expiration timestamp then delete the object.
+        &lt;ul&gt;
+          &lt;li&gt;Use the &lt;code&gt;x-goog-if-metageneration-match: [metageneration]&lt;/code&gt; header.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Otherwise, restart the algorithm from step 1 after an exponential backoff (potentially with an upper limit and jitter).&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;releasing-the-lock&quot;&gt;Releasing the lock&lt;/h3&gt;
+
+&lt;p&gt;Parameters:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Object URL&lt;/li&gt;
+  &lt;li&gt;Identity&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Stop refreshing the lock in the background.&lt;/li&gt;
+  &lt;li&gt;Delete the lock object at the given URL.
+    &lt;ul&gt;
+      &lt;li&gt;Use the &lt;code&gt;x-goog-if-metageneration-match: [last known metageneration]&lt;/code&gt; header.&lt;/li&gt;
+      &lt;li&gt;Ignore the 412 Precondition Failed error, if any.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;refreshing-the-lock&quot;&gt;Refreshing the lock&lt;/h3&gt;
+
+&lt;p&gt;Parameters:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Object URL&lt;/li&gt;
+  &lt;li&gt;TTL&lt;/li&gt;
+  &lt;li&gt;Refresh interval&lt;/li&gt;
+  &lt;li&gt;Max number of times the refresh may fail consecutively&lt;/li&gt;
+  &lt;li&gt;Identity&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Every &lt;code&gt;refresh_interval&lt;/code&gt; seconds (until a lock release is requested, or until an unhealthy state is detected):&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Update the object metadata (which also updates the update timestamp).
+    &lt;ul&gt;
+      &lt;li&gt;Use the &lt;code&gt;x-goog-if-metageneration-match: [last known metageneration]&lt;/code&gt; header.&lt;/li&gt;
+      &lt;li&gt;Update the expiration timestamp metadata value, based on the TTL.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;If the operation succeeds, check the response, which contains the latest object metadata.
+    &lt;ol&gt;
+      &lt;li&gt;Take note of the latest metageneration number.&lt;/li&gt;
+      &lt;li&gt;If the identity does not equal our own, then declare that the lock is unhealthy.&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;If the operation fails because the object does not exist or because of a 412 Precondition Failed error, then declare that the lock is unhealthy.&lt;/li&gt;
+  &lt;li&gt;If the operation fails for some other reason, then check whether this is the maximum number of times that we may fail consecutively. If so, then declare that the lock is unhealthy.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;recommended-default-values&quot;&gt;Recommended default values&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;TTL: 5 minutes&lt;/li&gt;
+  &lt;li&gt;Refresh interval: 37 seconds&lt;/li&gt;
+  &lt;li&gt;Max number of times the refresh may fail consecutively: 3&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;lock-usage&quot;&gt;Lock usage&lt;/h3&gt;
+
+&lt;p&gt;Steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Take the lock&lt;/li&gt;
+  &lt;li&gt;Try:
+    &lt;ul&gt;
+      &lt;li&gt;If applicable:
+        &lt;ul&gt;
+          &lt;li&gt;Check whether state is consistent, and fix it if it isn't&lt;/li&gt;
+          &lt;li&gt;Check whether lock is healthy, abort if not&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Perform a part of the operation&lt;/li&gt;
+      &lt;li&gt;Check whether lock is healthy, abort if not&lt;/li&gt;
+      &lt;li&gt;…etc…&lt;/li&gt;
+      &lt;li&gt;If applicable: commit the operation's effects as atomically as possible&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Finally:
+    &lt;ul&gt;
+      &lt;li&gt;Release the lock&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Distributed locks are very useful for ad-hoc system/cloud automation scripts and CI/CD pipelines. Or more generally, they're useful in any situation in which multiple systems may operate on the same state concurrently. Concurrent modifications may corrupt the state, so one needs a mechanism to ensure that only one system can modify the state at the same time.&lt;/p&gt;
+
+&lt;p&gt;Google Cloud Storage is a good system to build a distributed lock on, as long as you don't care about latency that much. By leveraging Cloud Storage's capabilities, we can build a robust distributed locking algorithm that's not too complex. What's more: it's cheap to operate, cheap to maintain, and can be used from almost anywhere.&lt;/p&gt;
+
+&lt;p&gt;The distributed locking algorithm proposed by this article builds upon existing algorithms found in other systems, and makes locking more robust.&lt;/p&gt;
+
+&lt;p&gt;Eager to use this algorithm in your next system or pipeline? Check out &lt;a href=&quot;https://github.com/FooBarWidget/distributed-lock-google-cloud-storage-ruby&quot;&gt;the Ruby implementation&lt;/a&gt;. In the near future I also plan on releasing implementations in other languages.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Docker and the host filesystem owner matching problem</title>
+    <link rel="alternate" href="https://www.joyfulbikeshedding.com/blog/2021-03-15-docker-and-the-host-filesystem-owner-matching-problem.html">
+    <id>https://www.joyfulbikeshedding.com/blog/2021-03-15-docker-and-the-host-filesystem-owner-matching-problem.html</id>
+    <published>2021-03-15T00:00:00+00:00</published>
+    <updated>2022-08-19T13:00:26+00:00</updated>
+    <author>
+      <name>Hongli Lai</name>
+    </author>
+    <summary type="html">&lt;p&gt;Containers are no longer only used on servers. They are increasingly used on the desktop: as CLI apps or as development environments. I call this the &lt;em&gt;&quot;container-as-OS-app&quot;&lt;/em&gt; use case. Within this use case, containerized apps often generate files that are not owned by your local machine's user account. Sometimes they can't access files on the host machine at all. This is the &lt;em&gt;host filesystem owner matching problem&lt;/em&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;This is bad for security. Containers shouldn't run as root in the first place!&lt;/li&gt;
+  &lt;li&gt;This is a potential productivity killer. It's annoying having to deal with wrong file permissions!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Solutions are available, but they have major caveats. As a result it's easy to implement a solution that only works for some, but not everyone. &quot;It works on my machine&quot; is kind of embarrassing when you distribute a development environment to a coworker, who then runs into issues.&lt;/p&gt;
+
+&lt;p&gt;This post describes what causes the host filesystem owner matching problem, and analyzes various solutions and their caveats.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/p&gt;</summary>
+    <content type="html">&lt;p&gt;Containers are no longer only used on servers. They are increasingly used on the desktop: as CLI apps or as development environments. I call this the &lt;em&gt;&quot;container-as-OS-app&quot;&lt;/em&gt; use case. Within this use case, containerized apps often generate files that are not owned by your local machine's user account. Sometimes they can't access files on the host machine at all. This is the &lt;em&gt;host filesystem owner matching problem&lt;/em&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;This is bad for security. Containers shouldn't run as root in the first place!&lt;/li&gt;
+  &lt;li&gt;This is a potential productivity killer. It's annoying having to deal with wrong file permissions!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Solutions are available, but they have major caveats. As a result it's easy to implement a solution that only works for some, but not everyone. &quot;It works on my machine&quot; is kind of embarrassing when you distribute a development environment to a coworker, who then runs into issues.&lt;/p&gt;
+
+&lt;p&gt;This post describes what causes the host filesystem owner matching problem, and analyzes various solutions and their caveats.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-the-container-as-os-app-use-case&quot;&gt;What is the &quot;container-as-OS-app&quot; use case?&lt;/h2&gt;
+
+&lt;p&gt;An &quot;OS app&quot; is an app that:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Runs on your machine (as opposed to in the browser or on a server).&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Reads or writes files from/to the host OS filesystem.&lt;/strong&gt; Files which later may be read/written by other (non-Docker-packaged) apps, such your text editor.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure&gt;
+  &lt;a href=&quot;/images/2021/host-fs-owner-matching-problem-975a5c4f.png&quot;&gt;&lt;img src=&quot;/images/2021/host-fs-owner-matching-problem-975a5c4f.png&quot; class=&quot;img-largecover&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+  &lt;figcaption&gt;Traditional containerized apps vs container-as-OS-apps, and how the host filesystem matching problem only affects the latter&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;An OS app doesn't have to be graphical in nature. In fact, the kind of OS apps that are often containerized, are CLIs. Examples of OS apps:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;bash&lt;/li&gt;
+  &lt;li&gt;ls&lt;/li&gt;
+  &lt;li&gt;Git&lt;/li&gt;
+  &lt;li&gt;The C/Go/Rust compiler&lt;/li&gt;
+  &lt;li&gt;Your text editor&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Increasingly, Docker is used to package such apps. Here are a few examples:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/emk/rust-musl-builder&quot;&gt;rust-musl-builder&lt;/a&gt; — compilation environment for Rust that allows generating statically-linked binaries.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://phusion.github.io/holy-build-box/&quot;&gt;Holy Build Box&lt;/a&gt; — compilation environment for C/C++ that allows generating portable Linux binaries that run on any Linux distribution.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Both of these examples read or write files from/to the host OS filesystem.&lt;/p&gt;
+
+&lt;p&gt;Perhaps a little counter-intuitively, &lt;strong&gt;many development environments often also fall under this category&lt;/strong&gt;. Let's say that you setup a development environment for your Ruby, Node.js or Go app, using Docker-Compose. Here's what such a Docker-Compose environment often does:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;It mounts the project directory (on the host filesystem) into the container.&lt;/li&gt;
+  &lt;li&gt;(In case of compiled languages:) Inside the container, it compiles the source code located in the project directory. The compilation products, or cache files, are stored under the project directory.&lt;/li&gt;
+  &lt;li&gt;Inside the container, it launches the app, which runs until the user requests abortion.&lt;/li&gt;
+  &lt;li&gt;(For frameworks/languages where this is applicable:) If the source code on the host OS changes, then the app inside the container live-reloads the new code.&lt;/li&gt;
+  &lt;li&gt;The app inside the container writes to log files, located under the project directory.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Key takeaway: development environments often read or write files from/to the host OS filesystem. Files which may be read/written by other apps later.&lt;/p&gt;
+
+&lt;h2 id=&quot;mismatching-filesystem-owners&quot;&gt;Mismatching filesystem owners&lt;/h2&gt;
+
+&lt;p&gt;Many containers run apps as root. When they write to files on the host filesystem, they &lt;em&gt;create root-owned files on your host filesystem&lt;/em&gt;. You can't modify these files with your host text editor without jumping through some hoops.&lt;/p&gt;
+
+&lt;figure&gt;
+  &lt;a href=&quot;/images/2021/permission-denied-9704ef2c.png&quot;&gt;&lt;img src=&quot;/images/2021/permission-denied-9704ef2c.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+  &lt;figcaption&gt;Many containers run as root, creating root-owned files on the host OS's filesystem. These files cannot be accessed by normal apps on the host OS because of permission problems.&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;For example: on a Linux machine (not on macOS; see below), let's run a root container which writes a file on the host:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:/host&quot;&lt;/span&gt; busybox touch /host/foo.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This file is owned by root, and we can't modify it:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;$ ls -l foo.txt
+-rw-r--r-- 1 root root 0 Jan 17 10:36 foo.txt
+$ echo hi &amp;gt; foo.txt
+-bash: foo.txt: Permission denied
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Some containers adhere to better security practices, and run under a normal user account. However, this creates a new problem: &lt;em&gt;they can't write to the host filesystem anymore&lt;/em&gt;! This is because the host directory is only writable by the user who owns it, not by the user inside the container.&lt;/p&gt;
+
+&lt;p&gt;Here's an example container that runs under a normal user account instead of root:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight docker&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; debian:10&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;addgroup &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1234 app &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\
+&lt;/span&gt;    adduser &lt;span class=&quot;nt&quot;&gt;--uid&lt;/span&gt; 1234 &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1234 &lt;span class=&quot;nt&quot;&gt;--gecos&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--disabled-password&lt;/span&gt; app
+&lt;span class=&quot;k&quot;&gt;USER&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; app&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We then build and run it, telling it to create a file on the host:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;$ docker build . -t usercontainer
+$ docker run --rm -v &quot;$(pwd):/host&quot; usercontainer touch /host/foo.txt
+touch: cannot touch `/host/foo.txt': Permission denied
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;only-on-linux-not-on-macos&quot;&gt;Only on Linux, not on macOS&lt;/h3&gt;
+
+&lt;p&gt;These problems are &lt;strong&gt;only applicable when using Docker on Linux&lt;/strong&gt;. macOS users don't experience these problems at all, because Docker for Mac actually runs a Linux VM, and inside that VM it mounts host filesystems into the container as a network volume. It ensures that:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Inside the container, all mounted files look as if they're owned by the container user.&lt;/li&gt;
+  &lt;li&gt;On the host, all files written by the container become owned by the host user.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;But the fact that macOS users don't get this problem, is in itself a problem. It means that when someone creates a container-as-OS-app on macOS, and hands it over to a Linux user, then that app may not work because of the permission problems described above.&lt;/p&gt;
+
+&lt;h2 id=&quot;solution-strategies-overview&quot;&gt;Solution strategies overview&lt;/h2&gt;
+
+&lt;p&gt;There are two major strategies to solve the host filesystem owner matching problem:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Matching the container's UID/GID with the host's UID/GID.&lt;/li&gt;
+  &lt;li&gt;Remounting the host path in the container using BindFS.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Each strategy has significant caveats. Let's take a look at how each strategy is implemented, and what the caveats are.&lt;/p&gt;
+
+&lt;h2 id=&quot;strategy-1-matching-the-containers-uidgid-with-the-hosts&quot;&gt;Strategy 1: matching the container's UID/GID with the host's&lt;/h2&gt;
+
+&lt;p&gt;The kernel distinguishes users and groups by two numbers: the user ID (UID) and the group ID (GID). Accounts (usernames and group names) are implemented outside the kernel, via user/group account databases that map UIDs and GIDs to usernames and group names. These databases exist in /etc/passwd and /etc/group.&lt;/p&gt;
+
+&lt;p&gt;The kernel doesn't care about names, only about UIDs and GIDs. Even files on the filesystem are not owned by &lt;em&gt;usernames&lt;/em&gt; or &lt;em&gt;group names&lt;/em&gt;, but by UIDs and GIDs.&lt;/p&gt;
+
+&lt;p&gt;So if we run an app in a container using the the same UID/GID as the host account's UID/GID, then the files created by that app will be owned by the host's user and group.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;If the container's user/group account database already has accounts with that UID/GID, but with a different name, then that's no problem.&lt;/li&gt;
+  &lt;li&gt;If the container's account database doesn't have accounts with that UID/GID, then that's &lt;em&gt;also&lt;/em&gt; no problem.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The simplest way to do this is by running &lt;code&gt;docker run --user &amp;lt;HOST UID&amp;gt;:&amp;lt;HOST GID&amp;gt;&lt;/code&gt;. This works even if the container has no accounts with this UID/GID.&lt;/p&gt;
+
+&lt;p&gt;However, if there are no matching accounts in the container, then many applications won't behave well. This can range from cosmetic problems to crashes. A lot of library code assumes that the username can be queried, and abort on failure. Another problem is that the lack of accounts also mean that there's also no corresponding home directory. A lot of application and library code assume that they can read from or write to the home directory.&lt;/p&gt;
+
+&lt;p&gt;So a better way would be to create accounts inside the container with a UID/GID that matches the host's UID/GID. These accounts could have &lt;em&gt;any&lt;/em&gt; names: the kernel doesn't care.&lt;/p&gt;
+
+&lt;p&gt;Let's go through a practical example to learn how container UIDs/GIDs and accounts work, and how to implement this strategy.&lt;/p&gt;
+
+&lt;h3 id=&quot;example-creating-a-container-account-with-the-same-uidgid-as-the-host-account&quot;&gt;Example: creating a container account with the same UID/GID as the host account&lt;/h3&gt;
+
+&lt;p&gt;Here's an example which shows how UIDs and GIDs work. This example must be run on Linux (because you won't run into the host filesystem owner matching problem on macOS). Let's start by figuring out what the host user's UID/GID is by running this command:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;hongli@host$ id
+uid=1000(hongli) gid=1000(hongli) groups=1000(hongli),27(sudo),999(docker)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;My UID and GID are both 1000.&lt;/p&gt;
+
+&lt;p&gt;Now let's start an interactive Debian shell session. We mount the host's current working directory into the container, under /host.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;-ti&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:/host&quot;&lt;/span&gt; debian:10
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Inside the Debian container's root shell, let's create two things:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;A group called &lt;code&gt;matchinguser&lt;/code&gt;, with GID 1000.&lt;/li&gt;
+  &lt;li&gt;A user account called &lt;code&gt;matchinguser&lt;/code&gt; with UID 1000. We disable the password because it's not relevant in this example.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;addgroup &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1000 matchinguser
+adduser &lt;span class=&quot;nt&quot;&gt;--uid&lt;/span&gt; 1000 &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1000 &lt;span class=&quot;nt&quot;&gt;--gecos&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--disabled-password&lt;/span&gt; matchinguser
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Let's use this user account to create a file in the host directory:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;apt update
+apt install &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sudo
+sudo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; matchinguser &lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt; touch /host/foo2.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If we inspect the file permissions of /host/foo2.txt from inside the container, then we see that it's owned by &lt;code&gt;matchinguser&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;root@container:/# ls -l /host/foo2.txt
+-rw-r--r-- 1 hostuser hostuser 0 Mar 15 09:45 /host/foo2.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;But if we inspect the same file from the host, then we see that it's owned by the host user:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;hongli@host:/# ls -l foo2.txt
+-rw-r--r-- 1 hongli hongli 0 Mar 15 09:45 /host/foo2.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This is because the file has the UID and GID 1000, which in the container maps to &lt;code&gt;matchinguser&lt;/code&gt;, but on the host maps to &lt;code&gt;hongli&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;example-modifying-existing-container-accounts-uid&quot;&gt;Example: modifying existing container account's UID&lt;/h3&gt;
+
+&lt;p&gt;You don't even have to create new container accounts. You can actually modify the UID/GID of existing accounts.&lt;/p&gt;
+
+&lt;p&gt;For example, let's delete &lt;code&gt;matchinguser&lt;/code&gt;, and recreate it with UID/GID 1500:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;apt install &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; perl  &lt;span class=&quot;c&quot;&gt;# needed by deluser on Debian&lt;/span&gt;
+deluser &lt;span class=&quot;nt&quot;&gt;--remove-home&lt;/span&gt; matchinguser
+
+addgroup &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1500 matchinguser
+adduser &lt;span class=&quot;nt&quot;&gt;--uid&lt;/span&gt; 1500 &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1500 &lt;span class=&quot;nt&quot;&gt;--gecos&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--disabled-password&lt;/span&gt; matchinguser
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We can then use &lt;code&gt;usermod&lt;/code&gt; and &lt;code&gt;groupmod&lt;/code&gt; to change those accounts' UID/GID to 1000:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;groupmod &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1000 matchinguser
+usermod &lt;span class=&quot;nt&quot;&gt;--uid&lt;/span&gt; 1000 matchinguser
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;implementation-and-caveats&quot;&gt;Implementation and caveats&lt;/h3&gt;
+
+&lt;p&gt;Here's a simple implementation strategy. If your container doesn't need precreated accounts, then you can do it as follows:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Add an entrypoint script which creates a user/group account, whose UID/GID equal the host account's UID/GID.&lt;/li&gt;
+  &lt;li&gt;The entrypoint script requires two environment variables, &lt;code&gt;HOST_UID&lt;/code&gt; and &lt;code&gt;HOST_GID&lt;/code&gt;, which specify what the host account's UID and GID are.&lt;/li&gt;
+  &lt;li&gt;The entrypoint then executes the next container command, under the newly created user/group accounts.&lt;/li&gt;
+  &lt;li&gt;Users must run the container with root privileges, with the environment variables &lt;code&gt;HOST_UID&lt;/code&gt; and &lt;code&gt;HOST_GID&lt;/code&gt;. The container is responsible for dropping privileges.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If your container requires a precreated account, then you need to modify the strategy a little bit:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Instead of creating a new account, the entrypoint script modifies the UID/GID of the precreated user account, to the host account's UID/GID.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Here's an example of a naive entrypoint script. The container account that we want to use is called &lt;code&gt;app&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOST_UID&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;ERROR: please set HOST_UID&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&amp;amp;2
+    &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1
+&lt;span class=&quot;k&quot;&gt;fi
+if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOST_GID&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;ERROR: please set HOST_GID&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&amp;amp;2
+    &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Use this code if you want to create a new user account:&lt;/span&gt;
+addgroup &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOST_GID&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; matchinguser
+adduser &lt;span class=&quot;nt&quot;&gt;--uid&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOST_UID&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOST_GID&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--gecos&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--disabled-password&lt;/span&gt; app
+
+&lt;span class=&quot;c&quot;&gt;# -OR-&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Use this code if you want to modify an existing user account:&lt;/span&gt;
+groupmod &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOST_GID&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; app
+usermod &lt;span class=&quot;nt&quot;&gt;--uid&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOST_UID&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; app
+
+&lt;span class=&quot;c&quot;&gt;# Drop privileges and execute next container command, or 'bash' if not specified.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$# &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-gt&lt;/span&gt; 0 &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exec sudo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt; app &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$@&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exec sudo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt; app &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; bash
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The above entrypoint script is a good attempt, but fails to consider these significant caveats:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;What if there's already another container user/group, with the same UID/GID as the host UID/GID?&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;Then it's not possible to create a new user account/group with the host UID/GID.&lt;/p&gt;
+
+    &lt;p&gt;One way to deal with this is by deleting the conflicting container user/group. However, depending on which account exactly is deleted (and what that account is used for inside the container), this could degrade the behavior of the container in unpredictable ways.&lt;/p&gt;
+
+    &lt;p&gt;As a general rule of thumb, accounts with UID &amp;lt; 1000, and groups with GID &amp;lt; 1000, are considered system accounts and groups. System accounts/groups are managed by the OS maintainers, and are not supposed to be messed with by users of the OS.&lt;/p&gt;
+
+    &lt;p&gt;In contrast, accounts/groups with UID/GID &amp;gt;= 1000 are &quot;normal accounts&quot;/&quot;normal groups&quot;, not managed by the OS maintainers. Users of the OS are free to do whatever they like with those accounts. But here you have to ask yourself: who, in this context, are &quot;users of the OS&quot;? If it's only yourself, and you have full control over which normal accounts go into your container: then there's no problem. But if you're using a base image supplied by someone else, and the base image already comes with precreated normal accounts, then you have to ask yourself whether it's safe to modify them.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;What if the host user is root?&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;The host user being root (with UID 0) is a special case that you need to deal with. It's not a good idea to delete the existing root account in the container and replace it with another account. So if the entrypoint script detects that the host UID is 0, then it should run the next command as root.&lt;/p&gt;
+
+    &lt;p&gt;But on weird systems, the host's root user could have a non-zero GID! So if the entrypoint script detects that the UID is 0 but GID is non-zero, then should modify the root group's GID. This in turn could run into the problem described by (1): what if there's already another group with the same GID?&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;In case of precreated accounts: what about the files it owned?&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;If your container makes use of a precreated account, then after you modify that account's UID and GID, you should ask yourself what you should do about files that were owned by that account. Should those files' UID/GID be updated to match the new UID/GID?&lt;/p&gt;
+
+    &lt;p&gt;The Debian version of &lt;code&gt;usermod --uid&lt;/code&gt; automatically updates the UIDs of all files in that account's home directory (recursively). However, &lt;code&gt;groupmod&lt;/code&gt; does not update the GIDs, so you need to do that yourself from your entrypoint script.&lt;/p&gt;
+
+    &lt;p&gt;&lt;code&gt;usermod --uid&lt;/code&gt; does not update the UIDs of files outside that account's home directory. It's up to your entrypoint script to update those files, if any.&lt;/p&gt;
+
+    &lt;p&gt;Furthermore, you should ask yourself whether it's a good idea to update the UIDs of those files. If those files are world-readable, and your container never writes them, then updating their UIDs/GIDs is redundant. If there are &lt;em&gt;many&lt;/em&gt; files, then updating their UIDs/GIDs can take a significant amount of time. I ran into this very problem when using &lt;a href=&quot;https://github.com/emk/rust-musl-builder&quot;&gt;rust-musl-builder&lt;/a&gt;. Rust was installed via &lt;code&gt;rustup&lt;/code&gt; into the home directory, and updating the UIDs/GIDs of &lt;code&gt;~/.rustup&lt;/code&gt; takes a lot of time.&lt;/p&gt;
+
+    &lt;p&gt;Perhaps it's only necessary to update the UIDs/GIDs of only specific files. For example, only the files immediately in the home directory, not recursively. This must be judged on a per-container basis.&lt;/p&gt;
+
+    &lt;p&gt;Finally, some Linux kernel versions have bugs in OverlayFS. Updating the UIDs/GIDs of existing files doesn't always work. This can be worked around by making a copy of those files, removing the original files, and renaming the copies to their original names.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Requires root privileges&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;The simple example entrypoint script is responsible for creating and modifying accounts, which requires root privileges. It's also responsible for dropping privileges to a normal account. However, this means that we can't use the &lt;code&gt;USER&lt;/code&gt; stanza in the Dockerfile. Furthermore, users can't run the container with the &lt;code&gt;--user&lt;/code&gt; flag, which is counter-intuitive and may make some users wary about the container's security.&lt;/p&gt;
+
+    &lt;p&gt;One solution is to make the entrypoint program a &lt;em&gt;setuid root executable&lt;/em&gt;. This means turning on the &quot;setuid filesystem bit&quot; on the entrypoint program, so that when the entrypoint program runs, it gains root privileges, even if the program was started by a non-root user.&lt;/p&gt;
+
+    &lt;p&gt;The setuid bit is only used by a few select programs that are involved in privilege escalation. For example, Sudo uses the setuid bit. As you can imagine, the setuid bit is very dangerous. When not careful enough, anyone can gain root privileges without authentication. A setuid root program must be specifically written make abuse impossible.&lt;/p&gt;
+
+    &lt;p&gt;Another complication is that the setuid root bit does not work on shell scripts, only on &quot;real&quot; executables! So if you want to make use of this bit, you'll have to write the entrypoint program in a language that compiles to native executables, like C, C++, Rust or Go.&lt;/p&gt;
+
+    &lt;p&gt;Under what conditions is it safe to run a setuid root entrypoint program? One answer is: if the entrypoint's PID is 1. This means it's the very first program run in the container. This indicates that the entrypoint program is run directly by &lt;code&gt;docker run&lt;/code&gt;, so we can assume that it's a safe-ish environment.&lt;/p&gt;
+
+    &lt;p&gt;But checking for PID 1 doesn't work in combination with &lt;code&gt;docker run --init&lt;/code&gt;, which spawns an init process (whose job is to solve the &lt;a href=&quot;https://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/&quot;&gt;PID 1 zombie reaping problem&lt;/a&gt;). The init process can perform arbitrary work, and execute arbitrary processes before it executes our entrypoint program. So we can't can't assume that our PID is 2 either. Instead, we can check whether we're a child process of the init process. Because after the init process executes the next command, it won't execute any further commands.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Requires extra environment variables&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;In the ideal world, we want users to be able to run our container with &lt;code&gt;docker run --user HOST_UID:HOST_GID&lt;/code&gt;, and have the container's entrypoint automatically figure out that the values passed to &lt;code&gt;--user&lt;/code&gt; are the host UID/GID.&lt;/p&gt;
+
+    &lt;p&gt;But our example entrypoint script requires the user to specify that information through environment variables. So users have to pass redundant parameters, like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;HOST_UID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;id &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;HOST_GID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;id &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;--user&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;id &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;id &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;p&gt;This is not a good user experience.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;With the above caveats, the entrypoint script becomes no longer trivial. If you want to solve caveat 4, then the entrypoint can't even be a shell script anymore.&lt;/p&gt;
+
+&lt;h2 id=&quot;strategy-2-remounting-the-host-path-in-the-container-using-bindfs&quot;&gt;Strategy 2: remounting the host path in the container using BindFS&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://bindfs.org/&quot;&gt;BindFS&lt;/a&gt; is a &lt;a href=&quot;http://en.wikipedia.org/wiki/Filesystem_in_Userspace&quot;&gt;FUSE&lt;/a&gt; filesystem that allows us to mount a directory in another path, with different filesystem permissions. BindFS doesn't change the original filesystem permissions: it just exposes an alternative view that looks as if all the permissions are different.&lt;/p&gt;
+
+&lt;p&gt;So a container can use BindFS to create an alternative view of the host directory. In this alternative view, everything is owned by a normal account in the container (whose UID/GID doesn't have to match the host's). When the container uses that account to write to the alternative view, then the created files are still owned by the original directory's owner.&lt;/p&gt;
+
+&lt;p&gt;Thus, BindFS allows two-way mapping between the host's UID/GID and the container's UID/GID, in a way that's transparent to applications.&lt;/p&gt;
+
+&lt;figure&gt;
+  &lt;a href=&quot;/images/2021/bindfs-c1f3b36c.png&quot;&gt;&lt;img src=&quot;/images/2021/bindfs-c1f3b36c.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+  &lt;figcaption&gt;BindFS provides an alternative view of an existing mount. This alternative view can have any permissions, specified by mount options.&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;h3 id=&quot;bindfs-in-action&quot;&gt;BindFS in action&lt;/h3&gt;
+
+&lt;p&gt;Let's take a look at how BindFS works. Remember: this example must be run on Linux, because the host filesystem owner matching problem does not appear on macOS.&lt;/p&gt;
+
+&lt;p&gt;First, let's figure out what the host user's UID/GID is:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;hongli@host$ id
+uid=1000(hongli) gid=1000(hongli) groups=1000(hongli),27(sudo),999(docker)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Next, run a Debian 10 container that mounts the current working directory into &lt;code&gt;/host&lt;/code&gt; in the container. Be sure to pass &lt;code&gt;--privileged&lt;/code&gt; so that FUSE works.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;-ti&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--privileged&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:/host&quot;&lt;/span&gt; debian:10
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Once you're in the container, install BindFS:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;apt update
+apt install &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; bindfs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Next, create a user account in the container to play with:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;addgroup &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1234 app
+adduser &lt;span class=&quot;nt&quot;&gt;--uid&lt;/span&gt; 1234 &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1234 &lt;span class=&quot;nt&quot;&gt;--gecos&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--disabled-password&lt;/span&gt; app
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Let's use BindFS to mount &lt;code&gt;/host&lt;/code&gt; to &lt;code&gt;/host.writable-by-app&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;mkdir /host.writable-by-app
+bindfs &lt;span class=&quot;nt&quot;&gt;--force-user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;app &lt;span class=&quot;nt&quot;&gt;--force-group&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;app &lt;span class=&quot;nt&quot;&gt;--create-for-user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1000 &lt;span class=&quot;nt&quot;&gt;--create-for-group&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1000 &lt;span class=&quot;nt&quot;&gt;--chown-ignore&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--chgrp-ignore&lt;/span&gt; /host /host.writable-by-app
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Here's what the flags mean:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;--force-user=app&lt;/code&gt; and &lt;code&gt;--force-group=app&lt;/code&gt; mean: make everything in /host look as if they're owned by the user/group named &lt;code&gt;app&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;--create-for-user=1000&lt;/code&gt; and &lt;code&gt;--create-for-group=1000&lt;/code&gt; mean: when a new file is created, make it owned by UID/GID 1000 (the host's UID/GID).&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;--chown-ignore&lt;/code&gt; and &lt;code&gt;--chgrp-ignore&lt;/code&gt; mean: ignore requests to change a file's owner/group. Because we want all files to be owned by the host's UID/GID.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When you look at the permissions of the two directories, you see that one is owned by the host's UID/GID, and the other by &lt;code&gt;app&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;root@container:/# ls -ld /host /host.writable-by-app
+drwxr-xr-x 18 1000 1000 4096 Mar 15 10:10 /host
+drwxr-xr-x 18 app  app  4096 Mar 15 10:10 /host.writable-by-app
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Let's see what happens if we use the &lt;code&gt;app&lt;/code&gt; account to create a file in both directories. First, install sudo:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;apt install &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;root@container:/# sudo -u app -H touch /host/foo3.txt
+touch: cannot touch '/host/foo3.txt': Permission denied
+root@container:/# sudo -u app -H touch /host.writable-by-app/foo3.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Creating a file in /host doesn't work: &lt;code&gt;app&lt;/code&gt; doesn't have permissions. But creating a file in /host.writable-by-app &lt;em&gt;does&lt;/em&gt; work.&lt;/p&gt;
+
+&lt;p&gt;If you look at the file in /host.writable-by-app, then you see that it's owned by &lt;code&gt;app&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;root@container:/# ls -l /host.writable-by-app/foo3.txt
+-rw-r--r-- 1 app app 0 Mar 16 11:06 /host.writable-by-app/foo3.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;But if you look at the file in /host, then you see that it's owned by the host's UID/GID:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;root@container:/# ls -l /host/foo3.txt
+-rw-r--r-- 1 1000 1000 0 Mar 16 11:06 /host/foo3.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This is corroborated by the host. If you exit the container and look at foo3.txt, then you see that it's owned by the host's user:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;hongli@host$ ls -l foo3.txt
+-rw-r--r-- 1 hongli hongli 0 Mar 16 12:06 foo3.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;implementation&quot;&gt;Implementation&lt;/h3&gt;
+
+&lt;p&gt;A container that wishes to use the BindFS strategy should have the necessary tools installed, and should include a precreated normal user account. For example:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight docker&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; debian:10&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; entrypoint.sh /&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apt update &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\
+&lt;/span&gt;    apt install bindfs &lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\
+&lt;/span&gt;    addgroup &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1234 app &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\
+&lt;/span&gt;    adduser &lt;span class=&quot;nt&quot;&gt;--uid&lt;/span&gt; 1234 &lt;span class=&quot;nt&quot;&gt;--gid&lt;/span&gt; 1234 &lt;span class=&quot;nt&quot;&gt;--gecos&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--disabled-password&lt;/span&gt; app
+&lt;span class=&quot;k&quot;&gt;ENTRYPOINT&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;/entrypoint.sh&quot;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;docker build &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; bindfstest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The entrypoint script could be as follows. In this example, the entrypoint script assumes that the container is started with &lt;code&gt;/host&lt;/code&gt; being mounted to a host directory.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOST_UID&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;ERROR: please set HOST_UID&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&amp;amp;2
+    &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1
+&lt;span class=&quot;k&quot;&gt;fi
+if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOST_GID&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;ERROR: please set HOST_GID&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&amp;amp;2
+    &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1
+&lt;span class=&quot;k&quot;&gt;fi
+
+&lt;/span&gt;mkdir /host.writable-by-app
+bindfs &lt;span class=&quot;nt&quot;&gt;--force-user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;app &lt;span class=&quot;nt&quot;&gt;--force-group&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;app &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--create-for-user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1000 &lt;span class=&quot;nt&quot;&gt;--create-for-group&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1000 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--chown-ignore&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--chgrp-ignore&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    /host /host.writable-by-app
+
+&lt;span class=&quot;c&quot;&gt;# Drop privileges and execute next container command, or 'bash' if not specified.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$# &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-gt&lt;/span&gt; 0 &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exec sudo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt; app &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$@&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exec sudo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt; app &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; bash
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The container is then run as follows:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;docker run -ti --rm --privileged \
+  -v &quot;/some-host-path:/host&quot; \
+  -e &quot;HOST_UID=$(id -u)&quot; \
+  -e &quot;HOST_GID=$(id -g)&quot; \
+  bindfstest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;caveats&quot;&gt;Caveats&lt;/h3&gt;
+
+&lt;p&gt;BindFS works very well. But there are two caveats:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;It requires privileged mode! Because FUSE requires this. This might be a security concern.&lt;/li&gt;
+  &lt;li&gt;The container cannot be started as non-root! Although it's possible to work around this problem by using a setuid root entrypoint program, as is described in strategy 1 caveat 4.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Some Internet sources say that that &lt;code&gt;--privileged&lt;/code&gt; can be replaced with &lt;code&gt;--device /dev/fuse --cap-add SYS_ADMIN&lt;/code&gt;. However:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;SYS_ADMIN&lt;/code&gt; capabilities is not much better than &lt;code&gt;--privileged&lt;/code&gt; from a security perspective.&lt;/li&gt;
+  &lt;li&gt;This trick doesn't work on Docker for Mac. It results in an error.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;There are two major strategies to solve the host filesystem owner matching problem:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Matching the container's UID/GID with the host's UID/GID.&lt;/li&gt;
+  &lt;li&gt;Remounting the host path in the container using BindFS.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Both strategies have their own benefits and drawbacks.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Using BindFS is easy to implement by yourself, but requires starting the container with root privileges, and in privileged mode.&lt;/li&gt;
+  &lt;li&gt;Running the container in a matching UID/GID does not require privileged mode. It also allows the container to run without root privileges. But it is hard to implement if you want to address all caveats.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;BindFS's caveats can't be solved. But the caveats related to &quot;matching the container UID/GID with the host's&quot; &lt;em&gt;can&lt;/em&gt; be solved, even if it takes quite a lot of engineering.&lt;/p&gt;
+
+&lt;p&gt;Armed with the knowledge provided by this article, you'll be able to build a solution yourself. But wouldn't it be nice if you can use a solution already made by someone else — especially if that solution uses strategy 1, which is hard to implement? Stay tuned for the next article, where we'll introduce such a solution!&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;&lt;i&gt;The Docker icon used in this article's illustrations is made by &lt;a href=&quot;https://www.iconfinder.com/icons/4373190/docker_logo_logos_icon&quot;&gt;Flatart&lt;/a&gt;.&lt;/i&gt;&lt;/small&gt;&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Traveling Ruby 20210206: maintenance update featuring Ruby 2.4</title>
+    <link rel="alternate" href="https://www.joyfulbikeshedding.com/blog/2021-02-06-traveling-ruby-20210206-released.html">
+    <id>https://www.joyfulbikeshedding.com/blog/2021-02-06-traveling-ruby-20210206-released.html</id>
+    <published>2021-02-06T00:00:00+00:00</published>
+    <updated>2022-08-19T13:00:26+00:00</updated>
+    <author>
+      <name>Hongli Lai</name>
+    </author>
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;http://phusion.github.io/traveling-ruby&quot;&gt;Traveling Ruby&lt;/a&gt; allows you to easily ship Ruby apps to end users. It lets you create self-contained Ruby app packages that run on multiple versions of Windows, Linux and macOS.&lt;/p&gt;
+
+&lt;p&gt;Today I’ve released version 20210206. This release supports Ruby 2.4, bumps all the gem versions, bumps the minimum supported macOS and Linux versions, and fixes some bugs.&lt;/p&gt;
+
+&lt;p&gt;It has been a &lt;em&gt;long&lt;/em&gt; time since the last release. So this post also adresses an elephant in the room: is Traveling Ruby back?&lt;/p&gt;
+</summary>
+    <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;&lt;a href=&quot;http://phusion.github.io/traveling-ruby&quot;&gt;Traveling Ruby&lt;/a&gt; allows you to easily ship Ruby apps to end users. It lets you create self-contained Ruby app packages that run on multiple versions of Windows, Linux and macOS.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Today I've released &lt;a href=&quot;http://phusion.github.io/traveling-ruby&quot;&gt;Traveling Ruby&lt;/a&gt; version 20210206. This release supports Ruby 2.4, bumps all the gem versions, bumps the minimum supported macOS and Linux versions, and fixes some bugs. You can find the exact changelog below.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-elephant-in-the-room&quot;&gt;The elephant in the room&lt;/h2&gt;
+
+&lt;p&gt;A more interesting question that the community will probably ask, is: is Traveling Ruby back? After all, it has been a &lt;em&gt;long&lt;/em&gt; time since the last release.&lt;/p&gt;
+
+&lt;p&gt;The answer is no. I &lt;a href=&quot;/blog/2021-01-06-the-future-of-traveling-ruby.html&quot;&gt;blogged earlier about why Traveling Ruby stopped being maintained&lt;/a&gt;, and how a potential way forward would look like. Reviving Traveling Ruby is an effort that takes much more energy than just this release, and right now I do not have the resources to push such an effort.&lt;/p&gt;
+
+&lt;p&gt;So this release is meant to be a quick, conservative maintenance release. It was supposed to contain the least amount of changes to make Traveling Ruby releasable again on modern Linux and macOS systems, though these changes ended up to be &lt;a href=&quot;https://github.com/phusion/traveling-ruby/commits/rel-20210206&quot;&gt;pretty extensive&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The previous release was based on Ruby 2.2. Because of the conservative nature of this latest release, I upgraded to the oldest Ruby (past 2.2) that is compileable on modern Linux and macOS systems. And that's Ruby 2.4.&lt;/p&gt;
+
+&lt;p&gt;This has a bunch of downsides. Besides not having the latest Ruby features, not all gems are compatible with Ruby 2.4, so I didn't upgrade the gems to their very latest versions. This has security implications. For example, we ship nokogiri 1.10, but this version &lt;a href=&quot;https://github.com/phusion/traveling-ruby/pull/108&quot;&gt;has a vulnerability&lt;/a&gt; that's fixed in 1.11. Unfortunately 1.11 requires Ruby 2.5.&lt;/p&gt;
+
+&lt;p&gt;This release is mainly meant for &lt;a href=&quot;https://github.com/phusion/traveling-ruby/pull/94#issuecomment-754371791&quot;&gt;existing Traveling Ruby users&lt;/a&gt;, to address their most urgent needs. But more effort is needed to &lt;em&gt;really&lt;/em&gt; bring Traveling Ruby to a good state.&lt;/p&gt;
+
+&lt;h2 id=&quot;changelog&quot;&gt;Changelog&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;On Linux, dropped support for x86. Only x86_64 is now supported.&lt;/li&gt;
+  &lt;li&gt;On Windows, dropped support for x86. Only x64 is now supported.&lt;/li&gt;
+  &lt;li&gt;The minimum supported macOS version is now 10.14 Mojave.&lt;/li&gt;
+  &lt;li&gt;The minimum supported Linux version is now RHEL 7 / CentOS 7 / Debian 8 / Ubuntu 14.06 / glibc 2.17.&lt;/li&gt;
+  &lt;li&gt;Fixed support for paths containing spaces. Contributed by Ville Immonen (@fson) in &lt;a href=&quot;https://github.com/phusion/traveling-ruby/pull/94&quot;&gt;PR #94&lt;/a&gt;. Closes &lt;a href=&quot;https://github.com/phusion/traveling-ruby/issues/38&quot;&gt;issue #38&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Upgraded CA certificates from that of CentOS 5 to that of CentOS 8.&lt;/li&gt;
+  &lt;li&gt;Upgraded OpenSSL to 1.1.1i.&lt;/li&gt;
+  &lt;li&gt;Upgraded GMP to 6.2.1.&lt;/li&gt;
+  &lt;li&gt;Upgraded libssh2 to 1.9.0.&lt;/li&gt;
+  &lt;li&gt;Upgraded bundler gem to version 1.17.3.&lt;/li&gt;
+  &lt;li&gt;Upgraded bcrypt gem to 3.1.16.&lt;/li&gt;
+  &lt;li&gt;Upgraded charlock_holmes gem to 0.7.7.&lt;/li&gt;
+  &lt;li&gt;Upgraded curses gem to 1.4.0.&lt;/li&gt;
+  &lt;li&gt;Upgraded escape_utils gem to 1.2.1.&lt;/li&gt;
+  &lt;li&gt;Upgraded fast-stemmer gem to 1.0.2.&lt;/li&gt;
+  &lt;li&gt;Upgraded ffi gem to 1.14.2.&lt;/li&gt;
+  &lt;li&gt;Upgraded hitimes gem to 2.0.0.&lt;/li&gt;
+  &lt;li&gt;Upgraded json gem to 2.5.1.&lt;/li&gt;
+  &lt;li&gt;Upgraded kgio gem to 2.11.3.&lt;/li&gt;
+  &lt;li&gt;Upgraded mysql2 gem to 0.5.3.&lt;/li&gt;
+  &lt;li&gt;Upgraded nokogiri gem to 1.10.10.
+    &lt;ul&gt;
+      &lt;li&gt;On macOS: upgraded libxml2 to 2.9.10.&lt;/li&gt;
+      &lt;li&gt;On macOS: upgraded libxslt to 1.1.34.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Upgraded nokogumbo gem to 1.5.0.&lt;/li&gt;
+  &lt;li&gt;Upgraded pg gem to 1.2.3.
+    &lt;ul&gt;
+      &lt;li&gt;Upgraded libpq to 13.1.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Upgraded posix-spawn gem 0.3.15.&lt;/li&gt;
+  &lt;li&gt;Upgraded puma gem to 5.1.1&lt;/li&gt;
+  &lt;li&gt;Upgraded raindrops gem to 0.19.1.&lt;/li&gt;
+  &lt;li&gt;Upgraded redcarpet gem to 3.5.1.&lt;/li&gt;
+  &lt;li&gt;Upgraded RedCloth gem to 4.3.2.&lt;/li&gt;
+  &lt;li&gt;Upgraded rugged gem to 1.1.0.&lt;/li&gt;
+  &lt;li&gt;Upgraded sqlite3 gem to 1.4.2.
+    &lt;ul&gt;
+      &lt;li&gt;Upgraded libsqlite3 to 2020-3340000.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Upgraded thin gem to 1.8.0.&lt;/li&gt;
+  &lt;li&gt;Upgraded unf_ext gem to 0.0.7.7.&lt;/li&gt;
+  &lt;li&gt;Upgraded unicorn gem to 5.8.0.&lt;/li&gt;
+  &lt;li&gt;Upgraded yajl-ruby gem to 1.4.1.&lt;/li&gt;
+  &lt;li&gt;Dropped github-markdown gem.&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+  </entry>
+  <entry>
+    <title>An alternative to macOS's DYLD_LIBRARY_PATH</title>
+    <link rel="alternate" href="https://www.joyfulbikeshedding.com/blog/2021-01-13-alternative-to-macos-dyld-library-path.html">
+    <id>https://www.joyfulbikeshedding.com/blog/2021-01-13-alternative-to-macos-dyld-library-path.html</id>
+    <published>2021-01-13T00:00:00+00:00</published>
+    <updated>2022-08-19T13:00:26+00:00</updated>
+    <author>
+      <name>Hongli Lai</name>
+    </author>
+    <summary type="html">&lt;p&gt;In my &lt;a href=&quot;/blog/2021-01-06-the-future-of-traveling-ruby.html&quot;&gt;last blog post about Traveling Ruby's future&lt;/a&gt;, I said that it's hard to democratize the development of Traveling Ruby because of System Integrity Protection (SIP). Traveling Ruby's build process relies on &lt;code&gt;DYLD_LIBRARY_PATH&lt;/code&gt;, which is blocked by SIP. This means that:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Contributors that build Traveling Ruby on their own laptops, must disable SIP.&lt;/li&gt;
+  &lt;li&gt;Traveling Ruby cannot be built on many CI hosting services, such as Azure DevOps and Github Actions, because it's not possible to disable SIP there.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;After some research and experimentation, I've found an alternative to &lt;code&gt;DYLD_LIBRARY_PATH&lt;/code&gt;, meaning that it's no longer necessary to disable SIP. This significantly changes the ability to democratize Traveling Ruby's development.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/p&gt;</summary>
+    <content type="html">&lt;p&gt;In my &lt;a href=&quot;/blog/2021-01-06-the-future-of-traveling-ruby.html&quot;&gt;last blog post about Traveling Ruby's future&lt;/a&gt;, I said that it's hard to democratize the development of Traveling Ruby because of System Integrity Protection (SIP). Traveling Ruby's build process relies on &lt;code&gt;DYLD_LIBRARY_PATH&lt;/code&gt;, which is blocked by SIP. This means that:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Contributors that build Traveling Ruby on their own laptops, must disable SIP.&lt;/li&gt;
+  &lt;li&gt;Traveling Ruby cannot be built on many CI hosting services, such as Azure DevOps and Github Actions, because it's not possible to disable SIP there.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;After some research and experimentation, I've found an alternative to &lt;code&gt;DYLD_LIBRARY_PATH&lt;/code&gt;, meaning that it's no longer necessary to disable SIP. This significantly changes the ability to democratize Traveling Ruby's development.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;what-did-we-use-dyldlibrarypath-for&quot;&gt;What did we use DYLD_LIBRARY_PATH for?&lt;/h2&gt;
+
+&lt;p&gt;Before we get to the new solution, let's revisit how the old solution worked.&lt;/p&gt;
+
+&lt;h3 id=&quot;how-macos-library-lookup-works&quot;&gt;How macOS library lookup works&lt;/h3&gt;
+
+&lt;p&gt;How does macOS locate library dependencies for a given executable?&lt;/p&gt;
+
+&lt;p&gt;Answer: an executable contains a specification of library dependencies. Each entry is a path to that library, e.g. &quot;/Users/hongli/example/libyaml.dylib&quot;.&lt;/p&gt;
+
+&lt;p&gt;Here's an example which compiles a C program that does nothing, but is linked to libyaml:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'int main() { return 0; }'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; foo.c
+cc foo.c &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; foo &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/Users/hongli/example &lt;span class=&quot;nt&quot;&gt;-lyaml&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We can use &lt;code&gt;otool -L foo&lt;/code&gt; to inspect the list of libraries that this executable requires:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;foo:
+    /Users/hongli/example/libyaml.dylib &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;compatibility version 3.0.0, current version 3.3.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    /usr/lib/libSystem.B.dylib &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;compatibility version 1.0.0, current version 1281.100.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So here you go, &lt;code&gt;foo&lt;/code&gt; contains information that says &quot;I depend on /Users/hongli/example/libyaml.dylib&quot;. Note that his is a full path. That's different from Linux, where executables say &quot;I depend on libyaml.so&quot; (not a full path).&lt;/p&gt;
+
+&lt;h3 id=&quot;relative-dependency-paths&quot;&gt;Relative dependency paths&lt;/h3&gt;
+
+&lt;p&gt;In many cases, it's useful to have the OS locate dependencies &lt;em&gt;relative to&lt;/em&gt; the executable. For example, suppose we want to distribute the above program &lt;code&gt;foo&lt;/code&gt; to another user. We'll need to package all its dependencies. Hypothetically we'll want to package it like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;foo.tar.gz
+ |
+ +- bin/
+ |   |
+ |   +- foo
+ |
+ +- lib/
+     |
+     +- libyaml.dylib
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Suppose our friend extracts foo.tar.gz into &quot;/Users/xiangling/foo&quot;, then runs &quot;/Users/xiangling/foo/bin/foo&quot;. We'll want the OS to locate libyaml.dylib in &quot;/Users/xiangling/lib&quot;, not in &quot;/Users/hongli/example&quot;.&lt;/p&gt;
+
+&lt;p&gt;One way to achieve this is by ensuring that the executable's dependency list specifies &lt;code&gt;@executable_path/../lib/libyaml.dylib&lt;/code&gt;, instead of an absolute path to libyaml.dylib. macOS recognizes &lt;code&gt;@executable_path&lt;/code&gt; as a &lt;a href=&quot;https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/100-Articles/DynamicLibraryDesignGuidelines.html#//apple_ref/doc/uid/TP40002013-SW21&quot;&gt;special directive&lt;/a&gt; that means &quot;the directory in which the executable is located&quot;.&lt;/p&gt;
+
+&lt;p&gt;An executable's dependency list can be modified even after it's built, using &lt;a href=&quot;https://www.manpagez.com/man/1/install_name_tool/osx-10.11.6.php&quot;&gt;install_name_tool&lt;/a&gt;. This tool is so called because each &quot;path&quot; in the dependency list is technically called an &quot;install name&quot;.&lt;/p&gt;
+
+&lt;p&gt;So let's go ahead and modify our &lt;code&gt;foo&lt;/code&gt; executable's dependency list:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;install_name_tool &lt;span class=&quot;nt&quot;&gt;-change&lt;/span&gt; @executable_path/../lib/libyaml.dylib foo
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now, when we inspect the dependency list using &lt;code&gt;otool -L foo&lt;/code&gt;, we see that it's indeed modified:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;foo:
+    @executable_path/../lib/libyaml.dylib (compatibility version 3.0.0, current version 3.3.0)
+    /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1281.100.1)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;looking-up-dependencies-when-building-traveling-ruby&quot;&gt;Looking up dependencies when building Traveling Ruby&lt;/h3&gt;
+
+&lt;p&gt;The Traveling Ruby build process goes like this:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Before building Ruby, we build dependencies such as libyaml. Dependencies are installed to a temporary location that we call the &quot;runtime directory&quot;. This is something like &lt;code&gt;/Users/hongli/traveling-ruby/osx/runtime&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Then we build Ruby. This is done in a temporary directory such as &lt;code&gt;/tmp/ruby-XXX/ruby-XXX&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Finally, we copy the Ruby executable, as well as all dependencies, into a single directory tree, which we can then package into a tarball.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/2021/traveling-ruby-build-process-988711c0.png&quot; alt=&quot;The Traveling Ruby build process&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The final package directory looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;+- bin/
+|   |
+|   +- ruby
+|
++- lib/
+    |
+    +- libyaml.dylib
+    |
+    +- ...and other dependency libraries...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We ensure that all executables use &lt;code&gt;@executable_path/../lib&lt;/code&gt; to reference dependencies. So once packaged, the Ruby executable can locate all its dependencies.&lt;/p&gt;
+
+&lt;p&gt;But there's a problem during step 2. As part of building Ruby, we need to run the built Ruby executable, before it's copied over to the package directory. During this step, the Ruby executable is located in &lt;code&gt;/tmp/ruby-XXX/ruby-XXX/ruby&lt;/code&gt;. How will that Ruby executable locate its dependencies, which at that point are in the runtime directory &lt;code&gt;/Users/hongli/traveling-ruby/osx/runtime/lib&lt;/code&gt;?&lt;/p&gt;
+
+&lt;p&gt;We used to solve this problem by setting the environment variable &lt;code&gt;DYLD_LIBRARY_PATH&lt;/code&gt; to &lt;code&gt;/Users/hongli/traveling-ruby/osx/runtime/lib&lt;/code&gt;. This tells macOS to look for libraries in the given directories.&lt;/p&gt;
+
+&lt;p&gt;Now that &lt;code&gt;DYLD_LIBRARY_PATH&lt;/code&gt; stopped working on macOS systems with SIP enabled, it's time to look for a new solution.&lt;/p&gt;
+
+&lt;h2 id=&quot;new-solution-based-on-rpath&quot;&gt;New solution based on @rpath&lt;/h2&gt;
+
+&lt;p&gt;Every macOS executable can embed a list of &lt;em&gt;library search paths&lt;/em&gt;, or &lt;a href=&quot;https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/100-Articles/RunpathDependentLibraries.html&quot;&gt;&quot;rpaths&quot;&lt;/a&gt;. Whenever macOS encounters a dependency path that references &quot;@rpath&quot;, macOS will search for that dependency in the embedded list of paths.&lt;/p&gt;
+
+&lt;p&gt;So unlike &lt;code&gt;DYLD_LIBRARY_PATH&lt;/code&gt;, which is set during runtime, the library search paths are embedded in the executable, which Apple seems secure enough to not block via SIP.&lt;/p&gt;
+
+&lt;p&gt;Some useful facts about rpaths:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;They do not have to be absolute paths: they too can reference &quot;@executable_path&quot;!&lt;/li&gt;
+  &lt;li&gt;They can be added or removed from an executable after it's built, not just during compile time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Here's an example. Let's build a C program which does nothing but is linked to &quot;/Users/hongli/example/libyaml.dylib&quot;. We also ensure that we add an rpath to this executable.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'int main() { return 0; }'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; foo.c
+cc foo.c &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; foo &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/Users/hongli/example &lt;span class=&quot;nt&quot;&gt;-lyaml&lt;/span&gt;
+install_name_tool &lt;span class=&quot;nt&quot;&gt;-add_rpath&lt;/span&gt; @executable_path/../lib foo
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;When we inspect the executable's list of rpaths with &lt;code&gt;otool -l foo | grep LC_RPATH -A2&lt;/code&gt;, we see:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;         cmd LC_RPATH
+      cmdsize 40
+         path @executable_path/../lib (offset 12)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;However, just having this rpath entry is not enough. When we examine the dependency list with &lt;code&gt;otool -L foo&lt;/code&gt;, we see that the reference to libyaml.dylib is an absolute path.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;foo:
+    /Users/hongli/example/libyaml.dylib (compatibility version 3.0.0, current version 3.3.0)
+    /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1281.100.1)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So when we start &lt;code&gt;foo&lt;/code&gt;, macOS will ignore the rpath, and will still locate libyaml in /Users/hongli/example. We can verify this by moving libyaml.dylib, and observing that &lt;code&gt;foo&lt;/code&gt; fails to start:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;$ mkdir ../lib
+$ mv /Users/hongli/example/libyaml.dylib ../lib/
+$ ./foo
+dyld: Library not loaded: /Users/hongli/example/libyaml.dylib
+  Referenced from: ./foo
+  Reason: image not found
+Abort trap: 6
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So we change foo's dependency list to reference &quot;@rpath&quot;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight shell&quot;&gt;&lt;code&gt;install_name_tool &lt;span class=&quot;nt&quot;&gt;-change&lt;/span&gt; /Users/hongli/example/libyaml.dylib @rpath/libyaml.dylib foo
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This yields the following dependency list:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight plaintext&quot;&gt;&lt;code&gt;foo:
+    @rpath/libyaml.dylib (compatibility version 3.0.0, current version 3.3.0)
+    /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1281.100.1)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now it works as expected. Suppose you package up &lt;code&gt;foo&lt;/code&gt; and &lt;code&gt;libyaml.dylib&lt;/code&gt; according to the package structure described earlier. If your friend extracts the tarball to &quot;/Users/xiangling/foo&quot; and runs &lt;code&gt;/Users/xiangling/foo/bin/foo&lt;/code&gt;, then here's what happens:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;macOS encounters a dependency named &quot;@rpath/libyaml.dylib&quot; and concludes that it needs to look for libyaml.dylib in the list of rpaths.&lt;/li&gt;
+  &lt;li&gt;macOS sees that the list of rpaths is &lt;code&gt;[&quot;@executable_path/../lib&quot;]&lt;/code&gt;, and looks in there for libyaml.dylib.&lt;/li&gt;
+  &lt;li&gt;macOS interprets &quot;@executable_path&quot; as the actual executable's path, so it finds libyaml.dylib in &quot;/Users/xiangling/foo/bin/../lib&quot;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;So the final solution is as follows:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;We ensure that all executables are compiled with two rpaths:&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code&gt;@executable_path/../lib&lt;/code&gt;, and,&lt;/li&gt;
+      &lt;li&gt;the absolute path to the runtime directory.&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;p&gt;This way, if macOS can't find a dependency in &lt;code&gt;../lib&lt;/code&gt;, it will find it in the runtime directory.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;At the end of step 2 of the Traveling Ruby build process, we remove the absolute rpath to the runtime directory.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now that it's no longer necessary to disable SIP, developing Traveling Ruby is a lot less of a hassle, and it paves the way to building on hosted CI services.&lt;/p&gt;
+</content>
+  </entry>
+</feed>

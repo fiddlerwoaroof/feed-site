@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>https://brunosutic.com/blog</id>
+  <link rel="alternate" type="text/html" href="https://brunosutic.com/blog">
+  <link rel="self" type="application/atom+xml" href="https://brunosutic.com/blog/feed">
+  <title>Bruno Sutic's blog</title>
+  <updated>2022-03-04T21:00:00Z</updated>
+  <rights>Copyright Bruno Sutic. All rights reserved.</rights>
+  <entry>
+    <title>Ruby Fiber Scheduler</title>
+    <link href="https://brunosutic.com/blog/ruby-fiber-scheduler">
+    <id>https://brunosutic.com/blog/ruby-fiber-scheduler</id>
+    <published>2022-02-25T17:30:00Z</published>
+    <updated>2022-03-04T21:00:00Z</updated>
+    <rights>Copyright Bruno Sutic. All rights reserved.</rights>
+    <author>
+      <name>Bruno Sutic</name>
+      <uri>https://brunosutic.com</uri>
+    </author>
+    <summary>Ruby can work asynchronously with just a Fiber Scheduler and a couple built-in methods - no frameworks are required! It's easy to use, scales well, and has amazing performance benefits.</summary>
+    <content type="html"><![CDATA[<p>Fiber Scheduler enables asynchronous programming in Ruby. The feature was one of the big additions to Ruby 3.0, and is one of the core components of <a href="https://brunosutic.com/blog/async-ruby">the awesome async gem</a>.
+
+<p>The best part is that you don't need a whole framework to get started! <strong>It's possible to achieve the benefits of asynchronous programming using a standalone Fiber Scheduler with just a couple of <nobr>built-in</nobr> Ruby methods.</strong></p>
+
+<p>The Fiber Scheduler consists of two parts:</p>
+
+<dl>
+  <dt>Fiber Scheduler interface</dt>
+  <dd>A set of hooks for blocking operations built into the language. Hook implementations are delegated to the <code>Fiber.scheduler</code> object.</dd>
+  <dt>Fiber Scheduler implementation</dt>
+  <dd>Implements the asynchronous behavior. This is an object that needs to be explicitly set by the programmer, as Ruby does not provide a default Fiber Scheduler implementation.</dd>
+</dl>
+
+<p>Big thanks to Samuel Williams! He's a Ruby core developer who designed and implemented the Fiber Scheduler feature into the language.</p>
+
+<h2><a href="#fiber-scheduler-interface" id="fiber-scheduler-interface">Fiber Scheduler interface</a></h2>
+
+<p>Fiber Scheduler interface is a set of hooks for blocking operations. It allows for inserting asynchronous behavior when a blocking operation occurs. It's like callbacks with a twist: when the async callback is executed, the main blocking method does <em>not</em> run.</p>
+
+<p>These hooks are documented with <a href="https://docs.ruby-lang.org/en/3.1/Fiber/SchedulerInterface.html">Fiber::SchedulerInterface class</a>. Some of the main ideas behind this Ruby feature are:</p>
+
+<ul>
+  <li>Hooks are <nobr>low-level</nobr>. This results in a small number of hooks, with each hook handling the behavior of many <nobr>high-level</nobr> methods. For example, the <code>#address_resolve</code> hook is responsible for handling around 20 methods.</li>
+  <li>Hooks work only if <code>Fiber.scheduler</code> object is set, and hooks' implementation is delegated to that object.</li>
+  <li>Hooks' behavior should be asynchronous.</li>
+</ul>
+
+<h3><a href="#hook-implementation" id="hook-implementation">Hook implementation</a></h3>
+
+<p>Let's look at the example showing how <code>Kernel#sleep</code> hook could be implemented. In practice all hooks are coded in C, but for clarity Ruby pseudocode is used here.</p>
+
+<pre><code><span class="PreProc">module</span> <span class="Type">Kernel</span>
+  <span class="PreProc">def</span> <span class="Function">sleep</span>(duration = <span class="Constant">nil</span>)
+    <span class="Statement">if</span> <span class="Type">Fiber</span>.scheduler
+      <span class="Type">Fiber</span>.scheduler.kernel_sleep(duration)
+    <span class="Statement">else</span>
+      synchronous_sleep(duration)
+    <span class="Statement">end</span>
+  <span class="PreProc">end</span>
+<span class="PreProc">end</span></code></pre>
+
+<p>The above code reads as following:</p>
+
+<ul>
+  <li>If a <code>Fiber.scheduler</code> object is set - run its <code>#kernel_sleep</code> method. <code>#kernel_sleep</code> should run <code>sleep</code> asynchronously.</li>
+  <li>Otherwise, perform a regular <code>synchronous_sleep</code> that will block the current thread until <code>sleep</code> is done.</li>
+</ul>
+
+<p>Other hooks work in a similar manner.</p>
+
+<h3><a href="#blocking-operations" id="blocking-operations">Blocking operations</a></h3>
+
+<p>The concept "blocking operation" was mentioned a couple times already, but what does it really mean? <strong>A blocking operation is any operation where a Ruby process (more specifically: current thread) ends up waiting</strong>. A more descriptive name for blocking operations would be <nobr>"waiting operations"</nobr>.</p>
+
+<p>Some examples are:</p>
+
+<ul>
+  <li><code>sleep</code> method.</li>
+  <li><abbr title="input/output">I/O</abbr> operations like <code>URI.open("https://brunosutic.com")</code>.</li>
+  <li>System commands, for example <code>`curl https://www.ruby-lang.org`</code>.</li>
+  <li>Waiting on a thread to finish via <code>Thread#join</code>.</li>
+</ul>
+
+<p>As a counterexample, the following snippet takes a while to finish, but <em>does not</em> contain blocking operations:</p>
+
+<pre><code><span class="PreProc">def</span> <span class="Function">fibonacci</span>(n)
+  <span class="Statement">return</span> n <span class="Statement">if</span> [<span class="Constant">0</span>, <span class="Constant">1</span>].include? n
+
+  fibonacci(n - <span class="Constant">1</span>) + fibonacci(n - <span class="Constant">2</span>)
+<span class="PreProc">end</span>
+
+fibonacci(<span class="Constant">100</span>)</code></pre>
+
+<p>Getting the result of <code>fibonacci(100)</code> requires a lot of waiting, but it's only a <em>programmer</em> that's waiting! The whole time Ruby interpreter is working, crunching the numbers in the background. A naive fibonacci implementation does not contain blocking operations.</p>
+
+<p>It pays off to develop an intuition on what a blocking operation is (and is not), as <strong>the whole point of asynchronous programming is to wait on multiple blocking operations at the same time</strong>.</p>
+
+<h2><a href="#fiber-scheduler-implementation" id="fiber-scheduler-implementation">Fiber Scheduler implementation</a></h2>
+
+<p>The implementation is the second big part of the Fiber Scheduler feature.</p>
+
+<p>If you want to enable the asynchronous behavior in Ruby, you need to set a Fiber Scheduler object for the current thread. That's done with the <code>Fiber.set_scheduler(scheduler)</code> method. The implementation is commonly a class with all the <a href="https://docs.ruby-lang.org/en/3.1/Fiber/SchedulerInterface.html">Fiber::SchedulerInterface</a> methods defined.</p>
+
+<p><strong>Ruby does not provide a default Fiber Scheduler class, nor an object that could be used for that purpose.</strong> It seems unusual, but not including the Fiber Scheduler implementation with the language is actually a good <nobr>long-term</nobr> decision. It's best to leave this relatively <nobr>fast-evolving</nobr> concern outside the core Ruby.</p>
+
+<p>Writing a Fiber Scheduler class from scratch is a complex task, so it's best to use an existing solution. The list of implementations, their main differences, and recommendations can be found at <a href="https://github.com/bruno-/fiber_scheduler_list">Fiber Scheduler List project</a>.</p>
+
+<h2><a href="#examples" id="examples">Examples</a></h2>
+
+<p>Let's see what's possible with just a Fiber Scheduler.</p>
+
+<p>All examples use Ruby 3.1 and <code>FiberScheduler</code> class from the <a href="https://github.com/bruno-/fiber_scheduler">fiber_scheduler</a> gem, which is maintained by yours truly. This gem is <em>not a hard dependency</em> for the examples, as every snippet below should still work if references to <code>FiberScheduler</code> are replaced with another Fiber Scheduler class.</p>
+
+<h3><a href="#basic-example" id="basic-example">Basic example</a></h3>
+
+<p>Here's a simple example:</p>
+
+<pre><code><span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">fiber_scheduler</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">open-uri</span><span class="Delimiter">&quot;</span>
+
+<span class="Type">Fiber</span>.set_scheduler(<span class="Type">FiberScheduler</span>.new)
+
+<span class="Type">Fiber</span>.schedule <span class="Statement">do</span>
+  <span class="Type">URI</span>.open(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/2</span><span class="Delimiter">&quot;</span>)
+<span class="Statement">end</span>
+
+<span class="Type">Fiber</span>.schedule <span class="Statement">do</span>
+  <span class="Type">URI</span>.open(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/2</span><span class="Delimiter">&quot;</span>)
+<span class="Statement">end</span></code></pre>
+
+<p>The above code is creating two fibers, each making an HTTP request. The requests run in parallel and the whole program finishes in 2 seconds.</p>
+
+<dl>
+  <dt><code>Fiber.set_scheduler(FiberScheduler.new)</code></dt>
+  <dd>Sets a Fiber Scheduler in the current thread which enables <code>Fiber.schedule</code> method to work, and fibers to behave asynchronously.</dd>
+  <dt><code>Fiber.schedule { ... }</code></dt>
+  <dd>This is a <nobr>built-in</nobr> Ruby method that starts new async fibers.</dd>
+</dl>
+
+<p><strong>The example uses only standard Ruby methods - both <code>Fiber.set_scheduler</code> and <code>Fiber.schedule</code> have been available since Ruby 3.0.</strong></p>
+
+<h3><a href="#advanced-example" id="advanced-example">Advanced example</a></h3>
+
+<p>Let's see what running a multitude of different operations looks like:</p>
+
+<pre><code><span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">fiber_scheduler</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">httparty</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">open-uri</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">redis</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">sequel</span><span class="Delimiter">&quot;</span>
+
+<span class="Type">DB</span> = <span class="Type">Sequel</span>.postgres
+<span class="Type">Sequel</span>.extension(<span class="Constant">:</span><span class="Constant">fiber_concurrency</span>)
+
+<span class="Type">Fiber</span>.set_scheduler(<span class="Type">FiberScheduler</span>.new)
+
+<span class="Type">Fiber</span>.schedule <span class="Statement">do</span>
+  <span class="Type">URI</span>.open(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/2</span><span class="Delimiter">&quot;</span>)
+<span class="Statement">end</span>
+
+<span class="Type">Fiber</span>.schedule <span class="Statement">do</span>
+  <span class="Comment"># Use any HTTP library</span>
+  <span class="Type">HTTParty</span>.get(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/2</span><span class="Delimiter">&quot;</span>)
+<span class="Statement">end</span>
+
+<span class="Type">Fiber</span>.schedule <span class="Statement">do</span>
+  <span class="Comment"># Works with any TCP protocol library</span>
+  <span class="Type">Redis</span>.new.blpop(<span class="Delimiter">&quot;</span><span class="Constant">abc123</span><span class="Delimiter">&quot;</span>, <span class="Constant">2</span>)
+<span class="Statement">end</span>
+
+<span class="Type">Fiber</span>.schedule <span class="Statement">do</span>
+  <span class="Comment"># Make database queries</span>
+  <span class="Type">DB</span>.run(<span class="Delimiter">&quot;</span><span class="Constant">SELECT pg_sleep(2)</span><span class="Delimiter">&quot;</span>)
+<span class="Statement">end</span>
+
+<span class="Type">Fiber</span>.schedule <span class="Statement">do</span>
+  sleep <span class="Constant">2</span>
+<span class="Statement">end</span>
+
+<span class="Type">Fiber</span>.schedule <span class="Statement">do</span>
+  <span class="Comment"># Run system commands</span>
+  <span class="Delimiter">`</span><span class="Constant">sleep 2</span><span class="Delimiter">`</span>
+<span class="Statement">end</span></code></pre>
+
+<p>If we ran this program sequentially it would take about 12 seconds to finish. But as the operations run in parallel, the total running time is just over 2 seconds.</p>
+
+<p>You're not constrained to making just HTTP requests. <strong>Any blocking operation that's built into Ruby or implemented by an external gem works!</strong></p>
+
+<h3><a href="#scaling-example" id="scaling-example">Scaling example</a></h3>
+
+<p>Here's a simple, although synthetic example running ten thousand operations at the same time.</p>
+
+<pre><code><span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">fiber_scheduler</span><span class="Delimiter">&quot;</span>
+
+<span class="Type">Fiber</span>.set_scheduler(<span class="Type">FiberScheduler</span>.new)
+
+<span class="Constant">10_000</span>.times <span class="Statement">do</span>
+  <span class="Type">Fiber</span>.schedule <span class="Statement">do</span>
+    sleep <span class="Constant">2</span>
+  <span class="Statement">end</span>
+<span class="Statement">end</span></code></pre>
+
+<p>The code above completes in slightly more than 2 seconds.</p>
+
+<p>The <code>sleep</code> method was chosen for the scaling example due to its low overhead. If we used network requests the execution time would be longer because of the overhead of setting up thousands of connections and performing SSL handshakes etc.</p>
+
+<p>One of the main benefits of asynchronous programming is waiting on many blocking operations at the same time. <strong>The benefits increase as the number of blocking operations grows. Luckily, it's super easy to run large numbers of fibers.</strong></p>
+
+<h2><a href="#conclusion" id="conclusion">Conclusion</a></h2>
+
+<p><strong>Ruby can work asynchronously with just a Fiber Scheduler and a couple <nobr>built-in</nobr> methods - no frameworks are required!</strong></p>
+
+<p>It's easy to make it work. Choose a <a href="https://github.com/bruno-/fiber_scheduler_list">Fiber Scheduler implementation</a>, and then use these methods:</p>
+
+<ul>
+  <li><code>Fiber.set_scheduler(scheduler)</code> sets a Fiber Scheduler for the current thread, enables blocking operations to behave async.</li>
+  <li><code>Fiber.schedule { ... }</code> starts a new fiber that runs concurrently with other fibers.</li>
+</ul>
+
+<p>Once you get it going, you can <strong>make any code asynchronous by wrapping it in a <code>Fiber.schedule</code> block</strong>.</p>
+
+<pre><code><span class="Type">Fiber</span>.schedule <span class="Statement">do</span>
+  <span class="Type">SynchronousCode</span>.run
+<span class="Statement">end</span></code></pre>
+
+<p>Whole libraries can easily be converted to async with this approach, and it rarely takes more effort than shown here.</p>
+
+<p><strong>The big benefit of asynchronous programming is parallelizing blocking/waiting operations to reduce the program running time.</strong> This often translates into running more operations on a single CPU, or even better, handling more requests with your web server.</p>
+
+<p>Happy hacking with Fiber Scheduler!</p>]]></content>
+  </entry>
+  <entry>
+    <title>Async Ruby</title>
+    <link href="https://brunosutic.com/blog/async-ruby">
+    <id>https://brunosutic.com/blog/async-ruby</id>
+    <published>2021-10-30T15:00:00Z</published>
+    <updated>2022-02-25T17:30:00Z</updated>
+    <rights>Copyright Bruno Sutic. All rights reserved.</rights>
+    <author>
+      <name>Bruno Sutic</name>
+      <uri>https://brunosutic.com</uri>
+    </author>
+    <summary>Async Ruby is a powerful and highly scalable concurrency feature. It's available today, it's production-ready, and it's an awesome addition to Ruby language!</summary>
+    <content type="html"><![CDATA[<p>Ruby has an Async implementation!</p>
+
+<p>It's available today, it's <nobr>production-ready</nobr>, and it's probably the most awesome thing that's happened to Ruby in the last decade, if not longer.</p>
+
+<p>Async Ruby adds new concurrency features to the language; you can think of it as "threads with none of the downsides". It's been in the making for a couple of years, and with Ruby 3.0, it's finally ready for prime time.</p>
+
+<p>In this post, I hope to show you all the power, scalability, and magic of Async Ruby. <strong>If you love Ruby, this should be exciting, really exciting!</strong></p>
+
+<h3><a href="#async-gem" id="async-gem">Async gem</a></h3>
+
+<p>What is Async Ruby?</p>
+
+<p>First and foremost, <a href="https://github.com/socketry/async" target="_blank">Async is just a gem</a> and can be installed with <code>gem install async</code>. It's a pretty special gem because <strong>Matz invited it to Ruby's standard library</strong>, but the invite has not yet been accepted.</p>
+
+<p>Async Ruby was created by <a href="https://github.com/ioquatix" target="_blank">Samuel Williams</a>, who is also a Ruby core committer. Samuel also implemented Fiber Scheduler, a big Ruby 3.0 feature. It's "library agnostic" and may have other uses in the future, but <strong>currently, the main purpose of Fiber Scheduler is to enable seamless integration of <code>async</code> gem with Ruby</strong>.</p>
+
+<p>Not a lot of gems get their <nobr>custom-built</nobr> Ruby integrations, but this one is worth it!</p>
+
+<p>All of this tells you <code>async</code> is not "just another gem out there". <strong>The Ruby core team, including Matz himself, are backing this gem and want it to succeed.</strong></p>
+
+<h3><a href="#async-ecosystem" id="async-ecosystem">Async ecosystem</a></h3>
+
+<p>Async is also an ecosystem of gems that work nicely together. Here's a couple of the most useful examples:</p>
+
+<ul>
+  <li><code>async-http</code> a featureful HTTP client</li>
+  <li><code>falcon</code> HTTP server built around Async core</li>
+  <li><code>async-await</code> syntax sugar for Async</li>
+  <li><code>async-redis</code> Redis client</li>
+  <li>... and many others</li>
+</ul>
+
+<p>While each of the <nobr>above-listed</nobr> gems provides something useful, the truth is you only need the core <code>async</code> gem to access most of its benefits.</p>
+
+<h3><a href="#asynchronous-paradigm" id="asynchronous-paradigm">Asynchronous paradigm</a></h3>
+
+<p>Asynchronous programming (in any language, including Ruby) allows running many things at the same time. Most often, those are multiple network <abbr title="input/output">I/O</abbr> operations (like HTTP requests) because async is the most efficient at that.</p>
+
+<p>Chaos often ensues from <nobr>multi-tasking</nobr>: <nobr>"callback hell"</nobr>, <nobr>"promise hell"</nobr>, and even <nobr>"async-await hell"</nobr> are <nobr>well-known</nobr> downsides of async interfaces in other languages.</p>
+
+<p>But Ruby is different. <strong>Due to its superb design, Async Ruby does not suffer from any of these *-hell pitfalls. It allows writing surprisingly clean, simple, and sequential code.</strong> It's an async implementation as elegant as Ruby.</p>
+
+<p>A word of notice: Async does not get around Ruby's Global Interpreter Lock (GIL).</p>
+
+<h2><a href="#synchronous-example" id="synchronous-example">Synchronous example</a></h2>
+
+<p>Let's start with a simple example:</p>
+
+<pre><code><span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">open-uri</span><span class="Delimiter">&quot;</span>
+
+start = <span class="Type">Time</span>.now
+
+<span class="Type">URI</span>.open(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+<span class="Type">URI</span>.open(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+
+puts <span class="Delimiter">&quot;</span><span class="Constant">Duration: </span><span class="Delimiter">#{</span><span class="Type">Time</span>.now - start<span class="Delimiter">}</span><span class="Delimiter">&quot;</span></code></pre>
+
+<p>The above code is making two HTTP requests. The total duration of a single HTTP request is 2 seconds, and this includes:</p>
+
+<ul>
+  <li>about 0.2s of network latency when making a request</li>
+  <li>1.6s of server processing time</li>
+  <li>about 0.2s of network latency when receiving a response</li>
+</ul>
+
+<p>Let's run the example:</p>
+
+<pre><samp>Duration: 4.010390391</samp></pre>
+
+<p>As expected, the program takes 2 x 2 seconds = 4 seconds to finish.</p>
+
+<p>This code is decent, but it's slow. For both requests, the execution goes something like this:</p>
+
+<ul>
+  <li>Trigger an HTTP request</li>
+  <li>Wait 2 seconds for the response</li>
+</ul>
+
+<p>The problem is that the program is waiting for most of the time; 2 seconds are like an eternity.</p>
+
+<h3><a href="#threads" id="threads">Threads</a></h3>
+
+<p>A common approach to making multiple network requests faster is using threads. Here's an example:</p>
+
+<pre><code><span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">open-uri</span><span class="Delimiter">&quot;</span>
+
+<span class="Identifier">@counter</span> = <span class="Constant">0</span>
+
+start = <span class="Type">Time</span>.now
+
+<span class="Constant">1</span>.upto(<span class="Constant">2</span>).map {
+  <span class="Type">Thread</span>.new <span class="Statement">do</span>
+    <span class="Type">URI</span>.open(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+
+    <span class="Identifier">@counter</span> += <span class="Constant">1</span>
+  <span class="Statement">end</span>
+}.each(&amp;<span class="Constant">:</span><span class="Constant">join</span>)
+
+puts <span class="Delimiter">&quot;</span><span class="Constant">Duration: </span><span class="Delimiter">#{</span><span class="Type">Time</span>.now - start<span class="Delimiter">}</span><span class="Delimiter">&quot;</span></code></pre>
+
+<p>The code output is:</p>
+
+<pre><samp>Duration: 2.055751087</samp></pre>
+
+<p>We reduced the execution time to 2 seconds, and this indicates the requests ran at the same time. Good, problem solved then?</p>
+
+<p>Well, not so fast: <strong>if you've done any <nobr>real-world</nobr> thread programming, you know threads are hard. Really, really hard.</strong></p>
+
+<p>If you intend to do any serious work with threads, you better get comfortable using mutexes, condition variables, handling <nobr>language-level</nobr> race conditions... Even our simple example has a race condition bug on the line <code>@counter += 1</code>!</p>
+
+<p>Threads are hard, and it's no wonder the following statement continues making rounds in the Ruby community:</p>
+
+<blockquote>
+  <p>I regret adding threads.</p>
+
+  <cite>&mdash;Matz</cite>
+</blockquote>
+
+<h2><a href="#async-examples" id="async-examples">Async examples</a></h2>
+
+<p>With all the thread complexities, Ruby community is long overdue for a better concurrency paradigm. With Async Ruby, we finally have one.</p>
+
+<h3><a href="#async-http" id="async-http">async-http</a></h3>
+
+<p>Let's see the same example of making two HTTP requests, this time using Async Ruby:</p>
+
+<pre><code><span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">async</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">async/http/internet</span><span class="Delimiter">&quot;</span>
+
+start = <span class="Type">Time</span>.now
+
+<span class="Type">Async</span> <span class="Statement">do</span> |task|
+  http_client = <span class="Type">Async</span>::<span class="Type">HTTP</span>::<span class="Type">Internet</span>.new
+
+  task.async <span class="Statement">do</span>
+    http_client.get(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+  <span class="Statement">end</span>
+
+  task.async <span class="Statement">do</span>
+    http_client.get(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+  <span class="Statement">end</span>
+<span class="Statement">end</span>
+
+puts <span class="Delimiter">&quot;</span><span class="Constant">Duration: </span><span class="Delimiter">#{</span><span class="Type">Time</span>.now - start<span class="Delimiter">}</span><span class="Delimiter">&quot;</span></code></pre>
+
+<p>And the example output is:</p>
+
+<pre><samp>Duration: 1.996420725</samp></pre>
+
+<p>Looking at the total run time, we see the requests ran at the same time.</p>
+
+<p>This example shows the general structure of Async Ruby programs:</p>
+
+<ul>
+  <li>You always start with an <code>Async</code> block which is passed a task.</li>
+  <li>That main task is usually used to spawn more Async tasks with <code>task.async</code>.</li>
+  <li>These tasks run concurrently to each other and to the main task.</li>
+</ul>
+
+<p>Once you get used to it, you see this structure is actually pretty neat.</p>
+
+<h3><a href="#uri-open" id="uri-open">URI.open</a></h3>
+
+<p>One thing that could be considered a disadvantage of the previous example is the usage of <code>async-http</code>, an <nobr>async-native</nobr> HTTP client. Most of us have our preferred Ruby HTTP client, and we don't want to spend time learning the ins and outs of yet another HTTP library.</p>
+
+<p>Let's see the same example with <code>URI.open</code>:</p>
+
+<pre><code><span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">async</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">open-uri</span><span class="Delimiter">&quot;</span>
+
+start = <span class="Type">Time</span>.now
+
+<span class="Type">Async</span> <span class="Statement">do</span> |task|
+  task.async <span class="Statement">do</span>
+    <span class="Type">URI</span>.open(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+  <span class="Statement">end</span>
+
+  task.async <span class="Statement">do</span>
+    <span class="Type">URI</span>.open(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+  <span class="Statement">end</span>
+<span class="Statement">end</span>
+
+puts <span class="Delimiter">&quot;</span><span class="Constant">Duration: </span><span class="Delimiter">#{</span><span class="Type">Time</span>.now - start<span class="Delimiter">}</span><span class="Delimiter">&quot;</span></code></pre>
+
+<p>The only difference from the previous example is we swapped <code>async-http</code> with <code>URI.open</code>, a method from Ruby's standard library.</p>
+
+<p>The example output is:</p>
+
+<pre><samp>Duration: 2.030451785</samp></pre>
+
+<p>This duration shows two requests ran in parallel, so we conclude <code>URI.open</code> ran asynchronously!</p>
+
+<p>This is all really, really nice. Not only we don't have to put up with threads and their complexities, but we can also use Ruby's standard <code>URI.open</code> to run requests, both outside and inside an <code>Async</code> block. This can certainly make for some convenient code reuse.</p>
+
+<h3><a href="#other-http-clients" id="other-http-clients">Other HTTP clients</a></h3>
+
+<p><code>URI.open</code> is vanilla Ruby, but it may not be your preferred way to make HTTP requests. Also, you don't see it often being used for "serious work".</p>
+
+<p>You probably have your preferred HTTP gem, and you may be asking "will it work with Async"? To find out, here's an example using <code>HTTParty</code>, a <nobr>well-known</nobr> HTTP client.</p>
+
+<pre><code><span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">async</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">open-uri</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">httparty</span><span class="Delimiter">&quot;</span>
+
+start = <span class="Type">Time</span>.now
+
+<span class="Type">Async</span> <span class="Statement">do</span> |task|
+  task.async <span class="Statement">do</span>
+    <span class="Type">URI</span>.open(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+  <span class="Statement">end</span>
+
+  task.async <span class="Statement">do</span>
+    <span class="Type">HTTParty</span>.get(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+  <span class="Statement">end</span>
+<span class="Statement">end</span>
+
+puts <span class="Delimiter">&quot;</span><span class="Constant">Duration: </span><span class="Delimiter">#{</span><span class="Type">Time</span>.now - start<span class="Delimiter">}</span><span class="Delimiter">&quot;</span></code></pre>
+
+<p>In this example, we're running <code>URI.open</code> and <code>HTTParty</code> together, which is perfectly fine.</p>
+
+<p>The output is:</p>
+
+<pre><samp>Duration: 2.010069566</samp></pre>
+
+<p>It runs slightly longer than 2 seconds, which shows both requests ran concurrently (at the same time).</p>
+
+<p>The takeaway here is: <strong>you can run any HTTP client inside an Async context, and it will run asynchronously. Async Ruby fully supports any existing HTTP gem!</strong></p>
+
+<h2><a href="#advanced-example" id="advanced-example">Advanced example</a></h2>
+
+<p>So far, we only saw Async Ruby making requests with various HTTP clients. Let's unveil the full power of Async with Ruby 3.</p>
+
+<pre><code><span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">async</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">open-uri</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">httparty</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">redis</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">net/ssh</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">sequel</span><span class="Delimiter">&quot;</span>
+
+<span class="Type">DB</span> = <span class="Type">Sequel</span>.postgres
+<span class="Type">Sequel</span>.extension(<span class="Constant">:</span><span class="Constant">fiber_concurrency</span>)
+start = <span class="Type">Time</span>.now
+
+<span class="Type">Async</span> <span class="Statement">do</span> |task|
+  task.async <span class="Statement">do</span>
+    <span class="Type">URI</span>.open(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+  <span class="Statement">end</span>
+
+  task.async <span class="Statement">do</span>
+    <span class="Type">HTTParty</span>.get(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+  <span class="Statement">end</span>
+
+  task.async <span class="Statement">do</span>
+    <span class="Type">Redis</span>.new.blpop(<span class="Delimiter">&quot;</span><span class="Constant">abc123</span><span class="Delimiter">&quot;</span>, <span class="Constant">2</span>)
+  <span class="Statement">end</span>
+
+  task.async <span class="Statement">do</span>
+    <span class="Type">Net</span>::<span class="Type">SSH</span>.start(<span class="Delimiter">&quot;</span><span class="Constant">164.90.237.21</span><span class="Delimiter">&quot;</span>).exec!(<span class="Delimiter">&quot;</span><span class="Constant">sleep 1</span><span class="Delimiter">&quot;</span>)
+  <span class="Statement">end</span>
+
+  task.async <span class="Statement">do</span>
+    <span class="Type">DB</span>.run(<span class="Delimiter">&quot;</span><span class="Constant">SELECT pg_sleep(2)</span><span class="Delimiter">&quot;</span>)
+  <span class="Statement">end</span>
+
+  task.async <span class="Statement">do</span>
+    sleep <span class="Constant">2</span>
+  <span class="Statement">end</span>
+
+  task.async <span class="Statement">do</span>
+    <span class="Delimiter">`</span><span class="Constant">sleep 2</span><span class="Delimiter">`</span>
+  <span class="Statement">end</span>
+<span class="Statement">end</span>
+
+puts <span class="Delimiter">&quot;</span><span class="Constant">Duration: </span><span class="Delimiter">#{</span><span class="Type">Time</span>.now - start<span class="Delimiter">}</span><span class="Delimiter">&quot;</span></code></pre>
+
+<p>We extended the previous example that contains <code>URI.open</code> and <code>HTTParty</code> with five additional operations:</p>
+
+<ul>
+  <li><code>Redis</code> request</li>
+  <li><abbr title="Secure SHell">SSH</abbr> connection with <code>net-ssh</code> gem</li>
+  <li>Database query using the <code>sequel</code> gem</li>
+  <li>Ruby's <code>sleep</code> method</li>
+  <li>System command that runs <code>sleep</code> executable.</li>
+</ul>
+
+<p>All of the operations from this example also take <em>exactly</em> 2 seconds to run.</p>
+
+<p>Here's the example output:</p>
+
+<pre><samp>Duration: 2.083171146</samp></pre>
+
+<p>We get the same output as before, which indicates all the operations ran concurrently. Wow, that's a lot of different gems that can run asynchronously!</p>
+
+<p>Here's the point: <strong>any blocking operation (a method where Ruby interpreter waits) is compatible with Async and will work asynchronously within <code>Async</code> code block with Ruby 3.0 and later.</strong></p>
+
+<p>The performance looks good: 7 x 2 = 14 seconds, but the example completes in 2 seconds &ndash; an easy 7x gain.</p>
+
+<h3><a href="#fiber-scheduler" id="fiber-scheduler">Fiber Scheduler</a></h3>
+
+<p>Let's take a moment and reflect on something important. All the operations from this example (e.g., <code>URI.open</code>, <code>Redis</code>, <code>sleep</code>) behave differently based on the context:</p>
+
+<dl>
+  <dt>Synchronously</dt>
+  <dd>Operations behave <em>synchronously</em> by default. The whole Ruby program (or more specifically, the current thread) waits until an operation completes before moving to the next one.</dd>
+  <dt>Asynchronously</dt>
+  <dd>Operations behave <em>asynchronously</em> when wrapped in an <code>Async</code> block. With this, multiple HTTP or network requests can run at the same time.</dd>
+</dl>
+
+<p>But how can, for example, <code>HTTParty</code> or <code>sleep</code> method be synchronous and asynchronous at the same time? Does <code>async</code> library monkey patch all these gems and internal Ruby methods?</p>
+
+<p>This magic works because of the Fiber Scheduler. It's a Ruby 3.0 feature that enables <code>async</code> to integrate nicely with existing Ruby gems and methods &ndash; no hacks or monkey patching needed!</p>
+
+<p><a href="/blog/ruby-fiber-scheduler">Fiber Scheduler can also be used standalone</a>! With that approach, asynchronous programming can be enabled with just a couple <nobr>built-in</nobr> Ruby methods.</p>
+
+<p>As you can imagine, the scope of the code that the Fiber Scheduler touches is huge: it's every blocking API Ruby currently has! It's no small feature by any means.</p>
+
+<h2><a href="#scaling-example" id="scaling-example">Scaling example</a></h2>
+
+<p>Let's crank things up and show another aspect that Async Ruby excels at: scaling.</p>
+
+<pre><code><span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">async</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">async/http/internet</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">redis</span><span class="Delimiter">&quot;</span>
+<span class="PreProc">require</span> <span class="Delimiter">&quot;</span><span class="Constant">sequel</span><span class="Delimiter">&quot;</span>
+
+<span class="Type">DB</span> = <span class="Type">Sequel</span>.postgres(<span class="Constant">max_connections</span>: <span class="Constant">1000</span>)
+<span class="Type">Sequel</span>.extension(<span class="Constant">:</span><span class="Constant">fiber_concurrency</span>)
+<span class="Comment"># Warming up redis clients</span>
+redis_clients = <span class="Constant">1</span>.upto(<span class="Constant">1000</span>).map { <span class="Type">Redis</span>.new.tap(&amp;<span class="Constant">:</span><span class="Constant">ping</span>) }
+
+start = <span class="Type">Time</span>.now
+
+<span class="Type">Async</span> <span class="Statement">do</span> |task|
+  http_client = <span class="Type">Async</span>::<span class="Type">HTTP</span>::<span class="Type">Internet</span>.new
+
+  <span class="Constant">1000</span>.times <span class="Statement">do</span> |i|
+    task.async <span class="Statement">do</span>
+      http_client.get(<span class="Delimiter">&quot;</span><span class="Constant">https://httpbin.org/delay/1.6</span><span class="Delimiter">&quot;</span>)
+    <span class="Statement">end</span>
+
+    task.async <span class="Statement">do</span>
+      redis_clients[i].blpop(<span class="Delimiter">&quot;</span><span class="Constant">abc123</span><span class="Delimiter">&quot;</span>, <span class="Constant">2</span>)
+    <span class="Statement">end</span>
+
+    task.async <span class="Statement">do</span>
+      <span class="Type">DB</span>.run(<span class="Delimiter">&quot;</span><span class="Constant">SELECT pg_sleep(2)</span><span class="Delimiter">&quot;</span>)
+    <span class="Statement">end</span>
+
+    task.async <span class="Statement">do</span>
+      sleep <span class="Constant">2</span>
+    <span class="Statement">end</span>
+
+    task.async <span class="Statement">do</span>
+      <span class="Delimiter">`</span><span class="Constant">sleep 2</span><span class="Delimiter">`</span>
+    <span class="Statement">end</span>
+  <span class="Statement">end</span>
+<span class="Statement">end</span>
+
+puts <span class="Delimiter">&quot;</span><span class="Constant">Duration: </span><span class="Delimiter">#{</span><span class="Type">Time</span>.now - start<span class="Delimiter">}</span><span class="Constant">s</span><span class="Delimiter">&quot;</span></code></pre>
+
+<p>This example is based on the previous one, with a couple of changes:</p>
+
+<ul>
+  <li>Everything inside the <code>Async</code> block is repeated <code>1000.times</code>. This increases the number of concurrent operations to 5,000.</li>
+  <li>For performance reasons, <code>URI.open</code> and <code>HTTParty</code> are replaced with the <code>async-http</code> HTTP client. <code>async-http</code> works with HTTP2, which is much faster when making a large number of requests.</li>
+  <li>The <abbr title="Secure SHell">SSH</abbr> operation was removed as I couldn't figure out a correct configuration to make it work efficiently.</li>
+</ul>
+
+<p>As before, every individual operation takes 2 seconds to execute. The output is:</p>
+
+<pre><samp>Duration: 13.672289712</samp></pre>
+
+<p>This shows that 5,000 operations, with a cumulative running time of 10,000 seconds, ran in just 13.6 seconds!</p>
+
+<p>This duration is greater than the previous examples (2 seconds) because of the overhead of creating so many network connections.</p>
+
+<p>We did almost no performance tuning (tweaking garbage collection, memory allocations etc.), and <strong>we still achieved the 730x "speedup", a pretty impressive result in my books!</strong></p>
+
+<h3><a href="#scaling-limits" id="scaling-limits">Scaling limits</a></h3>
+
+<p>The best thing is: we're only scratching the surface of what's possible with Async Ruby.</p>
+
+<p>While the maximum number of threads is 2048 (on my machine at least), <strong>the upper limit for the number of Async tasks is millions!</strong></p>
+
+<p>Can you really run millions of Async operations concurrently? Yes, you can &ndash; some users have already done that.</p>
+
+<p>Async really opens new horizons for Ruby: think about handling tens of thousands of clients with a HTTP server or handling hundreds of thousands of websocket connections at the same time... it's all possible!</p>
+
+<h2><a href="#conclusion" id="conclusion">Conclusion</a></h2>
+
+<p><strong>Async Ruby had a long, secretive development period, but it's stable and <nobr>production-ready</nobr> now</strong>. Some companies are already running it in production and reaping the benefits. To start using it, head over to the <a href="https://github.com/socketry/async" target="_blank">Async repository</a>.</p>
+
+<p>The only caveat is that it doesn't work with Ruby on Rails, because <code>ActiveRecord</code> doesn't support <code>async</code> gem. You can still use it with Rails if <code>ActiveRecord</code> is not involved.</p>
+
+<p>Async's strongest point is scaling network <abbr title="input/output">I/O</abbr> operations, like making or receiving HTTP requests. Threads are a better choice for <nobr>CPU-intensive</nobr> workloads, but at least we don't have to use them for everything anymore.</p>
+
+<p>Async Ruby is super powerful and very scalable. It's a <nobr>game-changer</nobr>, and I hope this post demonstrates that. Async changes what's possible with Ruby, and will significantly impact the Ruby community as we all start thinking more <em>asynchronously</em>.</p>
+
+<p>One of the best things is that it does <em>not</em> make any of the existing code obsolete. <strong>Just like Ruby itself, Async is beautifully designed and a joy to use.</strong></p>
+
+<p>Happy hacking with Async Ruby!</p>]]></content>
+  </entry>
+</feed>

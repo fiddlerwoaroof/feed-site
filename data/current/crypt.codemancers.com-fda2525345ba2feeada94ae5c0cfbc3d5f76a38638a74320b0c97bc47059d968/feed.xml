@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ruby on Tales from a Codemancer</title>
+    <link>https://crypt.codemancers.com/tags/ruby/</link>
+    <description>Recent content in ruby on Tales from a Codemancer</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 17 Aug 2020 08:38:47 +0000</lastBuildDate><atom:link href="https://crypt.codemancers.com/tags/ruby/index.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Diving into the internals of Gem packaging</title>
+      <link>https://crypt.codemancers.com/posts/2020-08-17-understanding-gem-packaging/</link>
+      <pubDate>Mon, 17 Aug 2020 08:38:47 +0000</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2020-08-17-understanding-gem-packaging/</guid>
+      <description>Package managers are indispensible to most modern languages. Package managers have allowed developers to create and distribute building blocks that can be used to bootstrap complex web applications. In this post we will dive into the internals of Rubygems, the Ruby programming language&amp;rsquo;s package manager.
+Any package manager has a simple mission: take code separated into a module and convert it into a format that can be easily distributed and installed in a number of different environments</description>
+    </item>
+    
+    <item>
+      <title>Sorbet - A static type checker for Ruby</title>
+      <link>https://crypt.codemancers.com/posts/2019-08-12-sorbet-type-checker-for-ruby/</link>
+      <pubDate>Mon, 12 Aug 2019 17:32:12 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2019-08-12-sorbet-type-checker-for-ruby/</guid>
+      <description>Sorbet is a type checker which is now joining the flock on the duck typed Ruby Land. In this post, we shall explore why we would need static type checking and what are the implications of incorporating it.
+What is a Type system? Types are how a programmer can impart meaning to the raw sequence of bits such as a value, constant or some object within a program and also helps the language&amp;rsquo;s compiler/interpreter to allocate memory accordingly.</description>
+    </item>
+    
+    <item>
+      <title>Ruby 2.6 KeyError#initialize accepts message, receiver, and key as arguments</title>
+      <link>https://crypt.codemancers.com/posts/2018-08-14-ruby-2-6-key-error-accepts-message-receiver-key-as-argument/</link>
+      <pubDate>Tue, 14 Aug 2018 09:27:17 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2018-08-14-ruby-2-6-key-error-accepts-message-receiver-key-as-argument/</guid>
+      <description>Ruby 2.6.0-preview2 was recently released.
+Ruby 2.5.0 introduced public instance methods KeyError#key and KeyError#receiver. You can read my earlier blog about KeyError#key &amp;amp; KeyError#receiver here.
+Ruby csv library raises a KeyError on CSV::Row#fetch method when the field is not found.
+def fetch(header, *varargs) # ... raise KeyError, &amp;#34;key not found: #{header}&amp;#34; # ... end Instead of raising a KeyError shown above, how about if this is possible? -
+raise KeyError.new(&amp;quot;key not found&amp;quot;, key: header) with this we can check the KeyError object for the error message and key using KeyError#message and KeyError#key methods which were introduced in Ruby 2.</description>
+    </item>
+    
+    <item>
+      <title>Ruby 2.5 adds KeyError#receiver and KeyError#key</title>
+      <link>https://crypt.codemancers.com/posts/2018-08-06-ruby-2-6-adds-key-error-receiver-key/</link>
+      <pubDate>Mon, 06 Aug 2018 11:40:03 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2018-08-06-ruby-2-6-adds-key-error-receiver-key/</guid>
+      <description>Ruby 2.5.0 was recently released.
+Earlier to Ruby 1.9 Hash#fetch method would raise IndexError for an invalid key. An IndexError is raised when the given index value is invalid.
+irb(main):001:0&amp;gt; hash = { &amp;#39;foo&amp;#39; =&amp;gt; &amp;#39;bar&amp;#39; } irb(main):002:0&amp;gt; hash.fetch(&amp;#39;foo&amp;#39;) IndexError: key not found from (irb):2:in `fetch&amp;#39; from (irb):2 from :0 KeyError class was introduced in Ruby 1.9 and it inherits from IndexError class. It is raised when the specified key is not found.</description>
+    </item>
+    
+    <item>
+      <title>Ruby 2.6 added options to Exception#full_message</title>
+      <link>https://crypt.codemancers.com/posts/2018-07-30-ruby-2-6-added-options-exception-full-message/</link>
+      <pubDate>Mon, 30 Jul 2018 12:22:23 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2018-07-30-ruby-2-6-added-options-exception-full-message/</guid>
+      <description>Ruby 2.6.0-preview2 was recently released.
+Ruby 2.5.0 The Exception#full_message method returns a formatted string of the exception.
+&amp;gt;&amp;gt; e = StandardError.new(&amp;#39;foo&amp;#39;) =&amp;gt; #&amp;lt;StandardError: foo&amp;gt; &amp;gt;&amp;gt; e.full_message =&amp;gt; &amp;#34;\e[1mTraceback\e[m (most recent call last):\n(irb):14:in `full_message&amp;#39;: \e[1mfoo (\e[1;4mStandardError\e[m\e[1m)\e[m\n&amp;#34; The string contains escape sequences too.
+It was proposed that escape sequences should be excluded from the error message.
+Nobuyoshi Nakada said that since Exception#full_message is expected to return the message printed to stderr, escape sequences are intentional.</description>
+    </item>
+    
+    <item>
+      <title>Frozen middleware with Rack freeze</title>
+      <link>https://crypt.codemancers.com/posts/2018-06-07-frozen-middleware-with-rack-freeze/</link>
+      <pubDate>Thu, 07 Jun 2018 16:55:39 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2018-06-07-frozen-middleware-with-rack-freeze/</guid>
+      <description>One of my favourite pastimes is to go through GitHub issues for libraries I like. One of those is the Rack gem, where I found an issue titled &amp;ldquo;Middleware should be frozen by default&amp;rdquo;. A couple of questions I had were: What exactly is a frozen middleware? and why should that be done?
+Example: Web request count As a simple first example, let&amp;rsquo;s consider a Rack middleware which counts the number of requests received by the server.</description>
+    </item>
+    
+    <item>
+      <title>RubySpec for Tracepoint</title>
+      <link>https://crypt.codemancers.com/posts/2018-02-26-rubyspec-for-tracepoint/</link>
+      <pubDate>Mon, 26 Feb 2018 10:09:58 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2018-02-26-rubyspec-for-tracepoint/</guid>
+      <description>I like to contribute to opensource projects and learn from them. This post is about what I learned while working on my pull request to Ruby Spec which got merged recently. In Ruby github repository I found that it has a spec folder which has a Readme file and that&amp;rsquo;s how I &amp;amp; learned about Ruby Spec Suite project. Ruby Spec Suite is a test suite which has specs for Ruby methods.</description>
+    </item>
+    
+    <item>
+      <title>DIY Ruby CPU profiling - Part IV</title>
+      <link>https://crypt.codemancers.com/posts/2015-07-18-diy-ruby-cpu-profiling-part-iv/</link>
+      <pubDate>Sat, 18 Jul 2015 12:14:18 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2015-07-18-diy-ruby-cpu-profiling-part-iv/</guid>
+      <description>In Part I we saw how CPU profilers work, in Part II we learned how to measure execution time of programs using CPU time and Wall time and in Part III we learned how to use Ruby&amp;rsquo;s TracePoint API to trace method calls and returns in Ruby VM. We also started building our DiyProf gem. It&amp;rsquo;s recommended to read those first before you continue. In this part we&amp;rsquo;re going to create a simple call graph visualization using the data we collected using the TracePoint API.</description>
+    </item>
+    
+    <item>
+      <title>DIY Ruby CPU profiling - Part III</title>
+      <link>https://crypt.codemancers.com/posts/2015-04-15-diy-ruby-cpu-profiling-part-iii/</link>
+      <pubDate>Wed, 15 Apr 2015 22:16:18 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2015-04-15-diy-ruby-cpu-profiling-part-iii/</guid>
+      <description>In Part I we saw how instrumentation profilers work, and in Part II we learned how to measure execution time of programs using CPU time and Wall time. It&amp;rsquo;s recommended to read those first before you continue. In this part we&amp;rsquo;ll apply what we have learned so far and build a very basic instrumentation CPU profiler.
+Part III. DIY Instrumentation CPU Profiler Instrumentation in Ruby In Part I, we learned that instrumentation profiling tools make use of hooks which can either be installed by the profiling tools or provided by the language itself to do their job.</description>
+    </item>
+    
+    <item>
+      <title>DIY Ruby CPU profiling - Part II</title>
+      <link>https://crypt.codemancers.com/posts/2015-03-12-diy-ruby-cpu-profiling-part-ii/</link>
+      <pubDate>Thu, 12 Mar 2015 21:46:45 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2015-03-12-diy-ruby-cpu-profiling-part-ii/</guid>
+      <description>In Part I we learned what CPU profiling means and also about the two modes of CPU profiling. In this part we&amp;rsquo;re going to explore CPU time and Wall time, the units used to measure execution cost. We&amp;rsquo;ll also write some code to get these measurements as the first step towards building our CPU profiler.
+Part II. CPU time and Wall time Wall time Wall time is just the regular real world time that elapses between a method call and return.</description>
+    </item>
+    
+    <item>
+      <title>DIY Ruby CPU profiling - Part I</title>
+      <link>https://crypt.codemancers.com/posts/2015-03-06-diy-ruby-cpu-profiling-part-i/</link>
+      <pubDate>Fri, 06 Mar 2015 23:09:11 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2015-03-06-diy-ruby-cpu-profiling-part-i/</guid>
+      <description>At Codemancers, we&amp;rsquo;re building Rbkit, a fresh code profiler for the Ruby language with tonnes of cool features. I&amp;rsquo;m currently working on implementing a CPU profiler inside rbkit gem which would help rbkit UI to reconstruct the call graph of the profiled ruby process and draw useful visualizations on the screen. I learned a bunch of new things along the way and I&amp;rsquo;d love to share them with you in this series of blog posts.</description>
+    </item>
+    
+    <item>
+      <title>An Introduction to JSON Schema</title>
+      <link>https://crypt.codemancers.com/posts/2014-02-11-an-introduction-to-json-schema/</link>
+      <pubDate>Sat, 05 Apr 2014 23:00:09 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2014-02-11-an-introduction-to-json-schema/</guid>
+      <description>JSON, or JavaScript Object Notation has become the most widely used serialization and transport mechanism for information across various web-services. From it&amp;rsquo;s initial conception, the format garnered swift and wide appreciation for being really simple and non-verbose.
+Lets say you want to consume the following JSON object via an API:
+{ id: 3232, name: &amp;#34;Kashyap&amp;#34;, email: &amp;#34;kashyap@example.com&amp;#34; contact: { id: 123, address1: &amp;#34;Shire&amp;#34;, zipcode: LSQ424 } } Now, let&amp;rsquo;s assume that you want to ensure that before consuming this data, email and contact.</description>
+    </item>
+    
+    <item>
+      <title>Random Ruby tips from trenches #1</title>
+      <link>https://crypt.codemancers.com/posts/2014-01-07-random-ruby-tips-from-trenches-number-1/</link>
+      <pubDate>Tue, 07 Jan 2014 14:05:50 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2014-01-07-random-ruby-tips-from-trenches-number-1/</guid>
+      <description>Rubocop and Flycheck :   Flycheck is a emacs mode which helps us with IDE like warnings in Emacs. I am already using enh-ruby-mode which helps with some of the syntax errors and stuff, but what is nice about flycheck is it integrates with rubocop and shows rubocop errors in-place in the editor.
+A picture is worth thousand words so: ![rubocop with flycheck](https://f.cl.ly/items/1T173n0g351N381D2C2z/Screenshot%202013-12-19%2012.09.50.png &amp;quot;Rubocop stuff&amp;quot;)   pry ––gem:   pry --gem opens a pry session with .</description>
+    </item>
+    
+    <item>
+      <title>Setting up Emacs as Ruby development environment on OSX</title>
+      <link>https://crypt.codemancers.com/posts/2013-09-26-setting-up-emacs-as-development-environment-on-osx/</link>
+      <pubDate>Thu, 17 Oct 2013 18:54:50 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2013-09-26-setting-up-emacs-as-development-environment-on-osx/</guid>
+      <description>Learning and setting up Emacs can be intimidating and while some folks find much use in using a pre-configured setup like - Emacs Prelude, I personally think it is better that someone new to Emacs installs each and every module himself and learns from it. I am assuming OSX as development environment here but the instructions should work well enough on Linux as well.
+  Install Emacs : Install Emacs using Homebrew.</description>
+    </item>
+    
+    <item>
+      <title>Introducing Invoker - Manage processes in development envionment</title>
+      <link>https://crypt.codemancers.com/posts/2013-06-10-introducing-invoker/</link>
+      <pubDate>Sat, 08 Jun 2013 12:37:20 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2013-06-10-introducing-invoker/</guid>
+      <description>If you are working on a large application with several dependencies such as - more than one application server, background job, it can get tedious to start and stop and check their logs in bunch of different places.
+Invoker is a small utility we wrote to manage all such processes from one place. Invoker owes much to Foreman for inspiration, however unlike Foreman it has been exclusively written to be used in development environment.</description>
+    </item>
+    
+    <item>
+      <title>Profile Ruby 2.0 apps using DTrace - part 2</title>
+      <link>https://crypt.codemancers.com/posts/2013-05-04-profile-ruby-2-dot-0-apps-using-dtrace-part-2/</link>
+      <pubDate>Mon, 27 May 2013 18:07:19 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2013-05-04-profile-ruby-2-dot-0-apps-using-dtrace-part-2/</guid>
+      <description>This is Part - 2 in series of articles we are writing on Dtrace. If you haven&amp;rsquo;t already - do read Part 1.
+Running Dtrace scripts Before we delve deeper into guts of Dtrace, one of the questions which I often get asked is, How can I profile one off programs (i.e not a application running in background) with Dtrace.
+There are basically couple of ways you can fire Dtrace.</description>
+    </item>
+    
+    <item>
+      <title>Profile Ruby 2.0 apps using DTrace - Part 1</title>
+      <link>https://crypt.codemancers.com/posts/2013-04-16-profile-ruby-apps-dtrace-part1/</link>
+      <pubDate>Tue, 16 Apr 2013 11:16:12 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2013-04-16-profile-ruby-apps-dtrace-part1/</guid>
+      <description>This is a series of blog posts we are going to do in tutorial format, this is Part 1 of our tutorial on Dtrace.
+DTrace is awesome. If your operating system supports it, using DTrace can give incredible insight into processes that are running on your system. If you are still not convinced about its usefullness you should checkout - How Dtrace helped twitter identify bottlenecks, Profiling Rails startup with Dtrace.</description>
+    </item>
+    
+    <item>
+      <title>Bundler: Cleanup old unused gems</title>
+      <link>https://crypt.codemancers.com/posts/2013-03-27-bundle-clean/</link>
+      <pubDate>Wed, 27 Mar 2013 12:12:24 +0530</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2013-03-27-bundle-clean/</guid>
+      <description>Recently I resumed an old project {after 2 months}. My peers are still working on it and they have upgraded lots of gems. After running bundle install, many gems got upgraded and old version were still hanging around in vendor folder. This little handy command helped in removing them:
+bundle clean -V NOTE: Btw, I always install gems in ./vendor/ruby folder, and don&amp;rsquo;t maintain any rvm gemsets for projects.</description>
+    </item>
+    
+    <item>
+      <title>Upgrading to Mountain Lion and your development environment</title>
+      <link>https://crypt.codemancers.com/posts/2012-07-27-mountain-lion/</link>
+      <pubDate>Fri, 27 Jul 2012 09:00:00 +0000</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2012-07-27-mountain-lion/</guid>
+      <description>Prem of thoughtbot already had some brief instructions about upgrading to mountain lion and then thanks to Kenny for adding much to those instructions.
+What follows is my own upgrade path:
+ Take backup via Time Machine or superduper!. Upgrade using installer from App store and reboot. Install XCode 4.4 from App store. Looks like, if you don&amp;rsquo;t care much about developing iOS or OSX applications, you can skip this step.</description>
+    </item>
+    
+    <item>
+      <title>The kitchen sink libraries</title>
+      <link>https://crypt.codemancers.com/posts/2012-05-08-dawn-of-the-kitchen-sink/</link>
+      <pubDate>Tue, 08 May 2012 09:00:00 +0000</pubDate>
+      
+      <guid>https://crypt.codemancers.com/posts/2012-05-08-dawn-of-the-kitchen-sink/</guid>
+      <description>There was a time when Ruby libraries where like small Unix utilities, they did one thing and they did it well. If you go read code of some of the older plugins, it will be quite simple and straightforward affair.
+Today however trend is, to write kitchen sink libraries that do a lot. You want file upload, they work at Rack level and support not only Rails but all the rack complaint frameworks under the sun, not only relational databases but Mongo as well, not just local file storage but S3/Cloudfiles as well, not just file uploads but some kind of caching via Rack::Cache as well.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,596 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ <title>JRuby.org News</title>
+ <link href="https://www.jruby.org/atom.xml" rel="self">
+ <link href="https://www.jruby.org">
+ <updated>2022-10-24T19:46:39+00:00</updated>
+ <id>https://www.jruby.org/</id>
+ <author>
+   <name>The JRuby Team</name>
+   <email>team@jruby.org</email>
+ </author>
+ 
+ 
+ <entry>
+   <title>JRuby 9.3.9.0 Released</title>
+   <link href="https://www.jruby.org/2022/10/24/jruby-9-3-9-0.html">
+   <updated>2022-10-24T00:00:00+00:00</updated>
+   <id>https://www.jruby.org/2022/10/24/jruby-9-3-9-0</id>
+   <content type="html">&lt;p&gt;The JRuby community is pleased to announce the release of JRuby 9.3.9.0&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Homepage: &lt;a href=&quot;https://www.jruby.org/&quot;&gt;https://www.jruby.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.jruby.org/download&quot;&gt;https://www.jruby.org/download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JRuby 9.3.x is compatible with Ruby 2.6.x and stays in sync with C Ruby. As always there is a mix of miscellaneous fixes so be sure to read the issue list below.&lt;/p&gt;
+
+&lt;p&gt;Thanks to our contributors this cycle for helping to improve stability and compatibility of JRuby 9.3: &lt;a href=&quot;https://github.com/chadlwilson&quot;&gt;@chadlwilson&lt;/a&gt;, &lt;a href=&quot;https://github.com/coheigea&quot;&gt;@coheigea&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;standard-library&quot;&gt;Standard Library&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;rdoc has been updated to 6.3.3 to fix all known CVEs. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7396&quot;&gt;#7396&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7404&quot;&gt;#7404&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;rexml has been updated to 3.2.5 to fix all known CVEs. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7395&quot;&gt;#7395&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7405&quot;&gt;#7405&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;jruby-openssl has been updated to 0.14.0 to fix weak HMAC key hashing in bouncycastle, which itself is updated to 1.71. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7335&quot;&gt;#7335&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7385&quot;&gt;#7385&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7399&quot;&gt;#7399&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;psych has been updated to 3.3.4 to fix CVE-2022-38752 in the SnakeYAML library, which itself is updated to 1.33. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7386&quot;&gt;#7386&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7388&quot;&gt;#7388&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7400&quot;&gt;#7400&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;rubygems has been updated to 3.2.33 and bundler updated to 2.2.33 to address CVE-2021-43809. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7397&quot;&gt;#7397&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7401&quot;&gt;#7401&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;github-issues-resolved-for-9390&quot;&gt;Github Issues resolved for 9.3.9.0&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/5588&quot;&gt;#5588 - OpenSSL::PKey::RSA.new without password results in terminal input failure&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7335&quot;&gt;#7335 - Upgrade jruby-openssl to 0.14.0&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7367&quot;&gt;#7367 - StringIO ignores external encoding on Windows&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7380&quot;&gt;#7380 - [Tiny issue] swing2.rb example at https://github.com/jruby/jruby/blob/master/samples/swing2.rb has a warning, “swing.rb:4: warning: import is deprecated; use java_import”&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7385&quot;&gt;#7385 - Updating jruby-openssl to 0.14.0&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7386&quot;&gt;#7386 - Update SnakeYaml to 1.32+ due to CVE-2022-38752&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7388&quot;&gt;#7388 - Update to Psych 3.3.4&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7395&quot;&gt;#7395 - Update embedded rexml in jruby-complete&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7396&quot;&gt;#7396 - Update rdoc in jruby-complete&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7397&quot;&gt;#7397 - Update bundler in jruby-complete&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7399&quot;&gt;#7399 - Update bouncycastle in jruby-complete&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7400&quot;&gt;#7400 - Update snakeyaml in jruby-complete&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7401&quot;&gt;#7401 - [deps] update Bundler/Rubygems to latest patch&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7404&quot;&gt;#7404 - Update rdoc to 6.3.3 to fix known CVEs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7405&quot;&gt;#7405 - Update rexml to 3.2.5 to fix known CVEs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7406&quot;&gt;#7406 - Time.at with fractional seconds and :in doubles timezone offset&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7407&quot;&gt;#7407 - Better match CRuby zone negotiation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7416&quot;&gt;#7416 - Regexp new none option&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>JRuby 9.3.8.0 Released</title>
+   <link href="https://www.jruby.org/2022/09/13/jruby-9-3-8-0.html">
+   <updated>2022-09-13T00:00:00+00:00</updated>
+   <id>https://www.jruby.org/2022/09/13/jruby-9-3-8-0</id>
+   <content type="html">&lt;p&gt;The JRuby community is pleased to announce the release of JRuby 9.3.8.0&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Homepage: &lt;a href=&quot;https://www.jruby.org/&quot;&gt;https://www.jruby.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.jruby.org/download&quot;&gt;https://www.jruby.org/download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JRuby 9.3.x is compatible with Ruby 2.6.x and stays in sync with C Ruby. As always there is a mix of miscellaneous fixes so be sure to read the issue list below.&lt;/p&gt;
+
+&lt;p&gt;Thanks to our contributors this cycle for helping to improve stability and compatibility of JRuby 9.3: &lt;a href=&quot;https://github.com/ahorek&quot;&gt;@ahorek&lt;/a&gt;, &lt;a href=&quot;https://github.com/ccutrer&quot;&gt;@ccutrer&lt;/a&gt;, &lt;a href=&quot;https://github.com/evaniainbrooks&quot;&gt;@evaniainbrooks&lt;/a&gt;, &lt;a href=&quot;https://github.com/naveensrinivasan&quot;&gt;@naveensrinivasan&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby-compatibility&quot;&gt;Ruby Compatibility&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Altering the visibility of an included module method no longer changes what super method gets called. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7240&quot;&gt;#7240&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7343&quot;&gt;#7343&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7344&quot;&gt;#7344&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7356&quot;&gt;#7356&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;Thread termination at shutdown is more robust and visits all non-main threads. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7351&quot;&gt;#7351&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;standard-library&quot;&gt;Standard Library&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;csv has been updated to 3.2.5 to pick up a fix that eliminates fiber use for simple parse_line calls. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7346&quot;&gt;#7346&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7348&quot;&gt;#7348&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;psych has been updated to 3.3.3 to address CVE-2022-25857, an element-nesting DoS. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7342&quot;&gt;#7342&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;experimental-features&quot;&gt;Experimental Features&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Fibers can now be configured to use OpenJDK Project Loom’s virtual threads, which are lightweight and do not consume a native platform thread. Virtual threads make it possible for JRuby applications to create thousands of concurrently-executing fibers. Enable this feature on Java 19 using the JVM flag &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--enable-preview&lt;/code&gt;. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7328&quot;&gt;#7328&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;27-github-issues-resolved-for-9380&quot;&gt;27 Github Issues resolved for 9.3.8.0&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7240&quot;&gt;#7240 - Changing method visibility changes behavior for module-inherited methods&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7257&quot;&gt;#7257 - chore: Set permissions for GitHub actions&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7262&quot;&gt;#7262 - jar-dependencies cannot be updated out-of-band from jruby&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7265&quot;&gt;#7265 - Time.at argument handling&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7303&quot;&gt;#7303 - Fix included_modules method to not return wrapped modules&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7316&quot;&gt;#7316 - Incompatible error when nested &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LoadError&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7317&quot;&gt;#7317 - Oddity with the jruby parser: it warns me about “warning: found = in conditional, should be ==”&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7321&quot;&gt;#7321 - Fix issue #7316 runtime error when nested raise&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7324&quot;&gt;#7324 - Time::at with BigDecimal emits Java Negative Exponent exception&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7325&quot;&gt;#7325 - Fix negative scale BigDecimal#to_r&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7326&quot;&gt;#7326 - sum method - undefined method ‘last’ for 1:Integer&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7328&quot;&gt;#7328 - Use vthreads when available&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7332&quot;&gt;#7332 - defined reified classes with their parent class’s classloader as parent&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7333&quot;&gt;#7333 - fix Enumberable sum when elements are array&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7334&quot;&gt;#7334 - fix zlib encoding&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7338&quot;&gt;#7338 - InstanceConfiguration extra loaders not thread safe&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7342&quot;&gt;#7342 - Update SnakeYaml to 1.31+ due to CVE-2022-25857&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7343&quot;&gt;#7343 - Fix for changing method visibility changes behavior for module-inherited methods&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7344&quot;&gt;#7344 - Changing method visibility changes super_method for module-inherited methods&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7345&quot;&gt;#7345 - Use thread-safe COW lists here&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7346&quot;&gt;#7346 - Iterating over &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CSV.parse_line&lt;/code&gt; causes an explosion of threads/fibers&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7348&quot;&gt;#7348 - Update CSV to 3.2.5&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7351&quot;&gt;#7351 - Avoid accidentally killing the teardown thread&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7354&quot;&gt;#7354 - Fix 7317 it warns me about “warning: found = in conditional, should be ==”&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7356&quot;&gt;#7356 - Fix for method visibility changes super_method for module-inherited methods&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7358&quot;&gt;#7358 - Update polyglot-maven and commit updated XMLs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7359&quot;&gt;#7359 - Fixes Time.at argument handling (#7265)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>JRuby 9.3.7.0 Released</title>
+   <link href="https://www.jruby.org/2022/08/16/jruby-9-3-7-0.html">
+   <updated>2022-08-16T00:00:00+00:00</updated>
+   <id>https://www.jruby.org/2022/08/16/jruby-9-3-7-0</id>
+   <content type="html">&lt;p&gt;The JRuby community is pleased to announce the release of JRuby 9.3.7.0&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Homepage: &lt;a href=&quot;https://www.jruby.org/&quot;&gt;https://www.jruby.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.jruby.org/download&quot;&gt;https://www.jruby.org/download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JRuby 9.3.x is compatible with Ruby 2.6.x and stays in sync with C Ruby. As always there is a mix of miscellaneous fixes so be sure to read the issue list below.&lt;/p&gt;
+
+&lt;p&gt;Thanks to our contributors this cycle for helping to improve stability and compatibility of JRuby 9.3: [@evaniainbrooks], [@k77ch7], [@ccutrer], [@jimtng]&lt;/p&gt;
+
+&lt;h3 id=&quot;22-github-issues-resolved-for-9370&quot;&gt;22 Github Issues resolved for 9.3.7.0&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7120&quot;&gt;#7120 - Gem.install caused a BootstrapMethodError&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7185&quot;&gt;#7185 - Spurious constant replacement warning when using include_package&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7211&quot;&gt;#7211 - require_relative doesn’t work inside Jar with 9.3.4.0&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7218&quot;&gt;#7218 - Empty rescue block returns exception object instead of nil&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7264&quot;&gt;#7264 - update jar-dependencies gem hooks&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7267&quot;&gt;#7267 - Circular exception handling can cause infinite loop since 9.3.4.0&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7268&quot;&gt;#7268 - com.sun.nio.file.ExtendedOpenOption not available in OSGi bundles on Windows since JRuby 9.3.0.0&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7271&quot;&gt;#7271 - Fix BootstrapMethodError in runtime helpers&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7279&quot;&gt;#7279 - simple timeout script does not work&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7280&quot;&gt;#7280 - Eliminate JI-specific const replacement warning&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7281&quot;&gt;#7281 - Use the wide versions of these functions always&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7282&quot;&gt;#7282 - Fixes #7218. Empty rescue block returns exception object instead of nil.&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7288&quot;&gt;#7288 - Clear errinfo after each finalizer runs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7289&quot;&gt;#7289 - Revert “update jar-dependencies gem hooks”&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7291&quot;&gt;#7291 - update jar-dependencies 0.4.2 reference in lib/pom.rb&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7292&quot;&gt;#7292 - Always pass filename into AOT root scope creation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7298&quot;&gt;#7298 - Revert “update jar-dependencies 0.4.2 reference in lib/pom.rb”&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7299&quot;&gt;#7299 - Fix for issue 7256: Undefined constants when including a module that has been prepended&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7302&quot;&gt;#7302 - Fix for issue 7256 (jruby-9.3)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7304&quot;&gt;#7304 - Only use NOSHARE_DELETE if accessible&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7306&quot;&gt;#7306 - Syntax Error occurs in regex&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7314&quot;&gt;#7314 - Fix parsing Regexp for #7306&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>JRuby 9.3.6.0 Released</title>
+   <link href="https://www.jruby.org/2022/06/27/jruby-9-3-6-0.html">
+   <updated>2022-06-27T00:00:00+00:00</updated>
+   <id>https://www.jruby.org/2022/06/27/jruby-9-3-6-0</id>
+   <content type="html">&lt;p&gt;The JRuby community is pleased to announce the release of JRuby 9.3.6.0&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Homepage: &lt;a href=&quot;https://www.jruby.org/&quot;&gt;https://www.jruby.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.jruby.org/download&quot;&gt;https://www.jruby.org/download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JRuby 9.3.x is compatible with Ruby 2.6.x and stays in sync with C Ruby. As always there is a mix of miscellaneous fixes so be sure to read the issue list below.&lt;/p&gt;
+
+&lt;p&gt;Thanks to our contributors this cycle for helping to improve stability and compatibility of JRuby 9.3: &lt;a href=&quot;https://github.com/ahorek&quot;&gt;@ahorek&lt;/a&gt;, &lt;a href=&quot;https://github.com/keimar&quot;&gt;@keimar&lt;/a&gt;, &lt;a href=&quot;https://github.com/k77ch7&quot;&gt;@k77ch7&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby-compatibility&quot;&gt;Ruby Compatibility&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Fixed a leak in the frozen string cache and now ensure frozen strings are reused correctly without reencoding. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7166&quot;&gt;#7166&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7229&quot;&gt;#7229&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/7242&quot;&gt;#7242&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;java-integration&quot;&gt;Java Integration&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The internal cache for nested jar file contents has been optimized and a new option added for cache expiration. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7225&quot;&gt;#7225&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/7232&quot;&gt;#7232&lt;/a&gt;, [#7259])&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>JRuby 9.2.21.0 Released</title>
+   <link href="https://www.jruby.org/2022/06/27/jruby-9-2-21-0.html">
+   <updated>2022-06-27T00:00:00+00:00</updated>
+   <id>https://www.jruby.org/2022/06/27/jruby-9-2-21-0</id>
+   <content type="html">&lt;p&gt;The JRuby community is pleased to announce the release of JRuby 9.2.21.0&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Homepage: &lt;a href=&quot;http://www.jruby.org/&quot;&gt;http://www.jruby.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;http://www.jruby.org/download&quot;&gt;http://www.jruby.org/download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JRuby 9.2.x is compatible with Ruby 2.5.x and stays in sync with C Ruby.  As always there is a mix of miscellaneous fixes so be sure to read the issue list below.  All users are encouraged to upgrade.&lt;/p&gt;
+
+&lt;p&gt;Thanks to our contributors this cycle for helping to maintain and improve JRuby 9.2: &lt;a href=&quot;https://github.com/dee-see&quot;&gt;@dee-see&lt;/a&gt;, &lt;a href=&quot;https://github.com/edipofederle&quot;&gt;@edipofederle&lt;/a&gt;, &lt;a href=&quot;https://github.com/DirkMahler&quot;&gt;@DirkMahler&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby-compatibility&quot;&gt;Ruby Compatibility&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Fixes for a memory leak in the frozen string cache have been backported. (&lt;a href=&quot;https://github.com/jruby/jruby/pull/7021&quot;&gt;#7021&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;java-integration&quot;&gt;Java Integration&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The internal cache for nested jar file contents has been optimized and a new option added for cache expiration. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7225&quot;&gt;#7225&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/7232&quot;&gt;#7232&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/7259&quot;&gt;#7259&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;hardware-support&quot;&gt;Hardware Support&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Support for Apple’s M processors has been backported. It has not been heavily tested, but it has been confirmed working by users. (&lt;a href=&quot;https://github.com/jruby/jruby/pull/6953&quot;&gt;#6953&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6965&quot;&gt;#6965&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6985&quot;&gt;#6985&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;standard-library&quot;&gt;Standard Library&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;jruby-openssl update to 0.12.2. (&lt;a href=&quot;https://github.com/jruby/jruby/pull/7140&quot;&gt;#7140&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>JRuby 9.3.4.0 Released</title>
+   <link href="https://www.jruby.org/2022/03/23/jruby-9-3-4-0.html">
+   <updated>2022-03-23T00:00:00+00:00</updated>
+   <id>https://www.jruby.org/2022/03/23/jruby-9-3-4-0</id>
+   <content type="html">&lt;p&gt;The JRuby community is pleased to announce the release of JRuby 9.3.4.0&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Homepage: &lt;a href=&quot;https://www.jruby.org/&quot;&gt;https://www.jruby.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.jruby.org/download&quot;&gt;https://www.jruby.org/download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JRuby 9.3.x is compatible with Ruby 2.6.x and stays in sync with C Ruby. As always there is a mix of miscellaneous fixes so be sure to read the issue list below.&lt;/p&gt;
+
+&lt;p&gt;Thanks to our contributors this cycle for helping to improve compatibility: &lt;a href=&quot;https://github.com/ahorek&quot;&gt;@ahorek&lt;/a&gt;, &lt;a href=&quot;https://github.com/byteit101&quot;&gt;@byteit101&lt;/a&gt;, &lt;a href=&quot;https://github.com/k77ch7&quot;&gt;@k77ch7&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby-compatibility&quot;&gt;Ruby Compatibility&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;define_singleton_method&lt;/code&gt; now always uses public visibility. This simplifies its implementation and eliminates warnings when aliasing it, as in the ostruct gem. (&lt;a href=&quot;https://github.com/ruby/ostruct/issues/40&quot;&gt;ruby/ostruct#40&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7031&quot;&gt;#7031&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/7055&quot;&gt;#7055&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;java-integration&quot;&gt;Java Integration&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;import&lt;/code&gt; method for importing Java classes remains deprecated for removal in 9.4, but now provides a better warning with a source location. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6976&quot;&gt;#6976&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;Ruby subclasses of Java classes and Ruby classes converted into Java classes can now include instance variables that are accessible from Java as normal fields. This improves integration with Java frameworks that use reflection to access object state. (&lt;a href=&quot;https://github.com/jruby/jruby/pull/7012&quot;&gt;#7012&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;hardware-support&quot;&gt;Hardware Support&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Generated make files now properly set the platform architecture when running on Linux/aarch64 and Apple’s M1 family of CPUs. This allows sassc and other non-extension C-based gems to build and install properly. (&lt;a href=&quot;https://github.com/sass/sassc-ruby/issues/231&quot;&gt;sass/sassc-ruby#231&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/7132&quot;&gt;#7132&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/7133&quot;&gt;#7133&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;standard-library&quot;&gt;Standard Library&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ostruct is updated to 0.5.1, which fixes warnings in verbose mode loading the json library. (&lt;a href=&quot;https://github.com/jruby/jruby/pull/6831&quot;&gt;#6831&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6963&quot;&gt;#6963&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;logger is updated to 1.5.1, which fixes a log rotation locking issue on Windows. (&lt;a href=&quot;https://github.com/ruby/logger/issues/67&quot;&gt;ruby/logger#67&lt;/a&gt;, &lt;a href=&quot;https://github.com/ruby/logger/pull/68&quot;&gt;ruby/logger#68&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7038&quot;&gt;#7038&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;Socket IPv6 constants are now always defined regardless of platform support, matching CRuby and JRuby 9.2. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/7069&quot;&gt;#7069&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/7071&quot;&gt;#7071&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;33-github-issues-resolved-for-9340&quot;&gt;33 Github Issues resolved for 9.3.4.0&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6976&quot;&gt;#6976 - [Better error/notification message] “calling java_import on a non-Module object is deprecated”&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7009&quot;&gt;#7009 - Break in block passed to Thread doesn’t cause LocalJumpError&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7012&quot;&gt;#7012 - Allow reified classes to store instance variables in raw fields&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7016&quot;&gt;#7016 - Compile splatted rescue as splat&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7018&quot;&gt;#7018 - New string literals are marked as tainted if previously equal tainted strings were read from a file&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7020&quot;&gt;#7020 - Avoid interning tainted strings&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7029&quot;&gt;#7029 - Handle unrooted break jumps in Thread&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7031&quot;&gt;#7031 - warning: OpenStruct#define_singleton_method accesses caller method’s state and should not be aliased &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7035&quot;&gt;#7035 - Circular exception causes break JRuby&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7038&quot;&gt;#7038 - Log rotation inter-process lock failed, Issue occurs in JRuby 9.3.0.0 and Windows&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7055&quot;&gt;#7055 - Explicitly use public visibility for define_singleton_method&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7056&quot;&gt;#7056 - Restore 9.2 collect signature and add more API&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7069&quot;&gt;#7069 - Socket::PF_INET6 is nil on 9.3 when ipv6 is not available, unlike with MRI and 9.2&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7070&quot;&gt;#7070 - Regression: 9.3 converts LoadError to NameError when autoloading repeatedly and loading fails and file being loaded is not in current directory&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7071&quot;&gt;#7071 - revert ipv6 availability&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7074&quot;&gt;#7074 - Remove the require lock on LoadError&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7102&quot;&gt;#7102 - ArgumentError re-splatting empty keyword arguments&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7104&quot;&gt;#7104 - Integer#to_s, Integer#to_json includes null character(\x00, \u0000) on JRuby 9.3.*&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7111&quot;&gt;#7111 - Fix #7104&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7117&quot;&gt;#7117 - java_signature throws NPE when using positional annotation arguments&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7131&quot;&gt;#7131 - More checking for null fd&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7132&quot;&gt;#7132 - Architecture tweaks for JRuby on M1&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7133&quot;&gt;#7133 - [aarch64] fix unrecognized command -m64 for native extensions&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7137&quot;&gt;#7137 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Range#===&lt;/code&gt; should not accept range argument&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7138&quot;&gt;#7138 - Use non-range cover logic for eqq and include&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7139&quot;&gt;#7139 - [deps] bump jruby-openssl to latest (0.12.2)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7142&quot;&gt;#7142 - Update jcodings&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7143&quot;&gt;#7143 - Better warnings for deprecated java_import forms&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7145&quot;&gt;#7145 - Disallow circular causes&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7146&quot;&gt;#7146 - Revert ivar Java fields to fix remaining issues&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7147&quot;&gt;#7147 - Fixes #7102. ArgumentError re-splatting empty keyword arguments&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7150&quot;&gt;#7150 - Allow reified classes to store instance variables in raw fields (fixed)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/7153&quot;&gt;#7153 - Ripper.sexp throws error while parsing ‘ö’&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>JRuby 9.3.3.0 Released</title>
+   <link href="https://www.jruby.org/2022/01/19/jruby-9-3-3-0.html">
+   <updated>2022-01-19T00:00:00+00:00</updated>
+   <id>https://www.jruby.org/2022/01/19/jruby-9-3-3-0</id>
+   <content type="html">&lt;p&gt;The JRuby community is pleased to announce the release of JRuby 9.3.3.0&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Homepage: &lt;a href=&quot;https://www.jruby.org/&quot;&gt;https://www.jruby.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.jruby.org/download&quot;&gt;https://www.jruby.org/download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JRuby 9.3.x is compatible with Ruby 2.6.x and stays in sync with C Ruby. As always there is a mix of miscellaneous fixes so be sure to read the issue list below.&lt;/p&gt;
+
+&lt;p&gt;The big news this release is support for Apple’s M1 family of processors (Apple Silicon) via an update to our native FFI backend library. Nearly all our usual test suites are passing on M1 and we have added a self-hosted CI runner thanks to &lt;a href=&quot;https://www.macstadium.com/opensource&quot;&gt;MacStadium’s OSS program&lt;/a&gt;. Callbacks from C to Ruby are unsupported, but this does not affect any libraries we ship. We will continue to improve M1 support with your help and bug reports.&lt;/p&gt;
+
+&lt;p&gt;We encourage users to file issues first and ask questions later! Please join our &lt;a href=&quot;https://www.jruby.org/chat&quot;&gt;Matrix room&lt;/a&gt; if you have any issues or just want to get involved.&lt;/p&gt;
+
+&lt;p&gt;Thanks to our contributors this cycle for helping to improve compatibility: &lt;a href=&quot;https://github.com/ahorek&quot;&gt;@ahorek&lt;/a&gt;, &lt;a href=&quot;https://github.com/byteit101&quot;&gt;@byteit101&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Additional thanks to &lt;a href=&quot;https://github.com/kovyrin&quot;&gt;@kovyrin&lt;/a&gt; for working through M1 issues with us and confirming that a large application builds and tests successfully.&lt;/p&gt;
+
+&lt;h2 id=&quot;hardware-support&quot;&gt;Hardware Support&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;This release includes greatly improved support for Apple Silicon processors like the M1. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6813&quot;&gt;#6813&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6853&quot;&gt;#6853&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6974&quot;&gt;#6974&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6977&quot;&gt;#6977&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6983&quot;&gt;#6983&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6986&quot;&gt;#6986&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/7006&quot;&gt;#7006&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;Known issue: passing a Ruby FFI Function object to C code as a callback is not currently supported due to security restrictions on Apple Silicon. Neither JRuby nor any libraries we ship require this functionality. We will fix it for a future release. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6995&quot;&gt;#6995&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ruby-compatibility&quot;&gt;Ruby Compatibility&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The parser once again handles files larger than 32k lines. This issue affected simplecov and mailer gems that we know of. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6984&quot;&gt;#6984&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6991&quot;&gt;#6991&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;standard-library&quot;&gt;Standard Library&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ostruct is updated to 0.5.1, which fixes warnings in verbose mode loading the json library. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6831&quot;&gt;#6831&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6963&quot;&gt;#6963&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;java-integration&quot;&gt;Java Integration&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Additional fixes for super calls from Ruby subclasses of Java classes to match behavior in 9.2.x. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6935&quot;&gt;#6935&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6957&quot;&gt;#6957&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;22-github-issues-resolved-for-9330&quot;&gt;22 Github Issues resolved for 9.3.3.0&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6813&quot;&gt;#6813 - File.directory? returns false on macOS M1 for a directory&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6831&quot;&gt;#6831 - require “json” outputs warnings&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6853&quot;&gt;#6853 - Getting “io/console on JRuby shells out to stty for most operations” on Jruby 9.3 with JDK17&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6935&quot;&gt;#6935 - RuntimeError: Found multiple supers in java ctor&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6957&quot;&gt;#6957 - Make split-super errors slightly more user friendly&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6963&quot;&gt;#6963 - Update ostruct to 0.5.1&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6968&quot;&gt;#6968 - Calling super() in a reopened Java subclass method triggers NPE in IRRuntimeHelpers.javaProxySuper&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6974&quot;&gt;#6974 - Dir.mktmpdir errors on apple-silicon native JDK&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6977&quot;&gt;#6977 - gem install error “Permission denied” for jruby 9.3.2.0 [darwin-aarch64] (Apple M1)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6981&quot;&gt;#6981 - JRuby 9.3.2.0 case/when array comparison differs from CRuby 2.6.9&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6983&quot;&gt;#6983 - Wrong file mode/permission when opening/creating a new file [Apple Silicon, arm64, aarch64]&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6984&quot;&gt;#6984 - Java::JavaLang::ArrayIndexOutOfBoundsException on jruby-9.3.2.0&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6986&quot;&gt;#6986 - Merge 9.2 for JNR update and Symbol fix&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6989&quot;&gt;#6989 - case when with an empty array&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6991&quot;&gt;#6991 - Fix #9684. AIIOBE when files &amp;gt;16bit lines and using coverage&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6993&quot;&gt;#6993 - Possible memory leak from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;instance_eval&lt;/code&gt; with jruby 9.3&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6994&quot;&gt;#6994 - Fixes #6993.  Evals cause memory leak.&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6996&quot;&gt;#6996 - Do not cache non-“once” dregexp&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7004&quot;&gt;#7004 - Module check mishandles bash operator precedence&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7006&quot;&gt;#7006 - Fixes to run tests on Apple Silicon&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7007&quot;&gt;#7007 - Java class reopened to add a super call should dispatch normally&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/7010&quot;&gt;#7010 - Avoid subshell for module check&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>JRuby 9.3.2.0 Released</title>
+   <link href="https://www.jruby.org/2021/12/02/jruby-9-3-2-0.html">
+   <updated>2021-12-02T00:00:00+00:00</updated>
+   <id>https://www.jruby.org/2021/12/02/jruby-9-3-2-0</id>
+   <content type="html">&lt;p&gt;The JRuby community is pleased to announce the release of JRuby 9.3.2.0&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Homepage: &lt;a href=&quot;https://www.jruby.org/&quot;&gt;https://www.jruby.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.jruby.org/download&quot;&gt;https://www.jruby.org/download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JRuby 9.3.x is compatible with Ruby 2.6.x and stays in sync with C Ruby. As always there is a mix of miscellaneous fixes so be sure to read the issue list below.&lt;/p&gt;
+
+&lt;h2 id=&quot;security&quot;&gt;Security&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Date-parsing methods have been modified to accept an input-size &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;limit&lt;/code&gt; option. This addresses &lt;a href=&quot;https://www.ruby-lang.org/en/news/2021/11/15/date-parsing-method-regexp-dos-cve-2021-41817/&quot;&gt;CVE-2021-41817&lt;/a&gt;. It was originally reported against Ruby’s C-based &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;date&lt;/code&gt; extension, which JRuby does not use, but JRuby’s own implementation of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;date&lt;/code&gt; is also affected by the same issue.&lt;/p&gt;
+
+    &lt;p&gt;The fix is detailed in &lt;a href=&quot;https://github.com/jruby/jruby/pull/6952&quot;&gt;#6952&lt;/a&gt;. A workaround is provided, via patching the pure-Ruby &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;date&lt;/code&gt; code in your own JRuby install. Rebuilding JRuby is not necessary.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;In order to match Ruby behavior and permit interrupting these date-parsing regular expression matches, this release also enables interruptible regular expressions globally. This feature can be disabled using the “regexp.interruptible” JRuby option as described in the above PR.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;performance&quot;&gt;Performance&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The performance of Time#strftime has been greatly improved (3.5x-5.8x faster). (&lt;a href=&quot;https://github.com/jruby/jruby/pull/6942&quot;&gt;#6942&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6956&quot;&gt;#6956&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;native-integration&quot;&gt;Native Integration&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The jffi library on MacOS has been updated to sign the native library, allowing it to load properly on Apple Silicon. This improves compatibility on Apple’s AArch64 systems (M1 and friends). (&lt;a href=&quot;https://github.com/jnr/jffi/pull/116&quot;&gt;jnr/jffi#116&lt;/a&gt;, &lt;a href=&quot;https://github.com/jnr/jnr-ffi/issues/257&quot;&gt;jnr/jnr-ffi#257&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;github-issues-resolved-for-9320&quot;&gt;Github Issues resolved for 9.3.2.0&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/5729&quot;&gt;#5729 - Check to see if we can do single nanosecond level math&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6813&quot;&gt;#6813 - File.directory? returns false on macOS M1 for a directory&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6843&quot;&gt;#6843 - move syslog constants to jnr-constants&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6889&quot;&gt;#6889 - Also print causes of bubbled-out exceptions&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6895&quot;&gt;#6895 - JRuby 9.3 Hash eats key String subclass instance variables&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6896&quot;&gt;#6896 - JRuby 9.3 singleton_class bug&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6899&quot;&gt;#6899 - Do not deduplicate strings with ivars&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6900&quot;&gt;#6900 - Skip prepend wrappers in each_object(Module)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6924&quot;&gt;#6924 - java.lang.Iterable object has Enumerable ancestor but map cannot be called (jruby-9.3.x)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6942&quot;&gt;#6942 - New strftime&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6943&quot;&gt;#6943 - Honor the requested address even given hostname&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6945&quot;&gt;#6945 - Socket fixes for GHA CI&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6952&quot;&gt;#6952 - Limit Date.parse input length and make interruptible&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6954&quot;&gt;#6954 - Fix 6924&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6956&quot;&gt;#6956 - Improve Performance of Time#strftime&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>JRuby 9.2.20.1 Released</title>
+   <link href="https://www.jruby.org/2021/12/01/jruby-9-2-20-1.html">
+   <updated>2021-12-01T00:00:00+00:00</updated>
+   <id>https://www.jruby.org/2021/12/01/jruby-9-2-20-1</id>
+   <content type="html">&lt;p&gt;The JRuby community is pleased to announce the release of JRuby 9.2.20.1&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Homepage: &lt;a href=&quot;http://www.jruby.org/&quot;&gt;http://www.jruby.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;http://www.jruby.org/download&quot;&gt;http://www.jruby.org/download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JRuby 9.2.x is compatible with Ruby 2.5.x and stays in sync with C Ruby.  As always there is a mix of miscellaneous fixes so be sure to read the issue list below.  All users are encouraged to upgrade.&lt;/p&gt;
+
+&lt;p&gt;This is a security release to address CVE-2021-41817. It was originally reported against Ruby’s C-based date extension, which JRuby does not use, but JRuby’s own implementation of date is also affected by the same issue.&lt;/p&gt;
+
+&lt;p&gt;The issue affects calls to various Date and DateTime parsing methods with extremely long strings. The regular expressions associated with these methods may run much longer than desired or never return.&lt;/p&gt;
+
+&lt;p&gt;The fix is detailed in #6951. A workaround is provided, via patching the pure-Ruby date code in your own JRuby install. Rebuilding JRuby is not necessary. This PR is the only functional difference from JRuby 9.2.20.0.&lt;/p&gt;
+
+&lt;p&gt;We recommend that all JRuby 9.2 users upgrade.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6951&quot;&gt;#6951 - Limit Date.parse input length and make interruptible&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>JRuby 9.2.20.0 Released</title>
+   <link href="https://www.jruby.org/2021/11/02/jruby-9-2-20-0.html">
+   <updated>2021-11-02T00:00:00+00:00</updated>
+   <id>https://www.jruby.org/2021/11/02/jruby-9-2-20-0</id>
+   <content type="html">&lt;p&gt;The JRuby community is pleased to announce the release of JRuby 9.2.20.0&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Homepage: &lt;a href=&quot;http://www.jruby.org/&quot;&gt;http://www.jruby.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;http://www.jruby.org/download&quot;&gt;http://www.jruby.org/download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JRuby 9.2.x is compatible with Ruby 2.5.x and stays in sync with C Ruby.  As always there is a mix of miscellaneous fixes so be sure to read the issue list below.  All users are encouraged to upgrade.&lt;/p&gt;
+
+&lt;h2 id=&quot;compatiblity&quot;&gt;Compatiblity&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Argument-count errors will now produce a more accurate backtrace. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6335&quot;&gt;#6335&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6768&quot;&gt;#6768&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6771&quot;&gt;#6771&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/issues/6846&quot;&gt;#6846&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6928&quot;&gt;#6928&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;standard-library&quot;&gt;Standard Library&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;jruby-openssl has been updated to 0.11.0, which includes fixes for expired and replaced certificate verification. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6872&quot;&gt;#6871&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6909&quot;&gt;#6909&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;native-integration&quot;&gt;Native Integration&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The built-in FFI library has been updated to match the FFI gem, and can now be upgraded independently of JRuby. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6732&quot;&gt;#6732&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6747&quot;&gt;#6747&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;FFI-based core methods on Windows and Solaris have been modified to delay activating FFI until after RubyGems has loaded any upgrades. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6751&quot;&gt;#6751&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6760&quot;&gt;#6760&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6762&quot;&gt;#6762&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;java-integration&quot;&gt;Java Integration&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Nested jar files (jars packaged within another application jar) should load more quickly with caching improvements. (&lt;a href=&quot;https://github.com/jruby/jruby/issues/6730&quot;&gt;#6730&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6734&quot;&gt;#6734&lt;/a&gt;, &lt;a href=&quot;https://github.com/jruby/jruby/pull/6740&quot;&gt;#6740&lt;/a&gt;)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;39 issues fixed for 9.2.20.0&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;github-issues-resolved-for-92200&quot;&gt;Github Issues resolved for 9.2.20.0&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/5617&quot;&gt;#5617 - JRuby raises ENOENT instead of EACCES&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6184&quot;&gt;#6184 - NullPointerException or “class is not compiled Ruby” error when using a “for” loop&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6335&quot;&gt;#6335 - ArgumentError is reported at wrong level for some jitted methods&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6726&quot;&gt;#6726 - Open3 with no JAVA_OPTS fails silently&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6727&quot;&gt;#6727 - Fixes #6184. NullPointerException/”class is not compiled Ruby” for loop&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6730&quot;&gt;#6730 - JarCache checking for File.lastModified heavily slowing down startup&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6731&quot;&gt;#6731 - Use java_home command on MacOS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6734&quot;&gt;#6734 - Backport JarCache soft reference fix&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6737&quot;&gt;#6737 - GPL-2.0 with Classpath Exception in the COPYING file&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6740&quot;&gt;#6740 - 6730 jar cache slowing down startup time 9.2&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6741&quot;&gt;#6741 - Fix reference type and avoid closing jar directly&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6742&quot;&gt;#6742 - Backport FFI from master&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6745&quot;&gt;#6745 - exec on Windows doesn’t find &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.bat&lt;/code&gt; files in PATH&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6746&quot;&gt;#6746 - Fixes for Windows native exec&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6747&quot;&gt;#6747 - Backport FFI from master&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6748&quot;&gt;#6748 - Inconsistent encoding when calling #to_s on arrays containing hashes with non us-ascii characters&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6750&quot;&gt;#6750 - JRuby issue with Installer EXE file&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6758&quot;&gt;#6758 - private/private_method_defined? raising error when a module is prepended&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6759&quot;&gt;#6759 - Fixes #6748. Inconsistent encoding when calling #to_s on arrays.&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6761&quot;&gt;#6761 - JRuby crashes instead of reporting a syntax error in sequential &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rescue&lt;/code&gt;s where the error variable wasn’t defined for the first one&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6764&quot;&gt;#6764 - 1r should equal to 1.0r&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6765&quot;&gt;#6765 - Use canonical form for “r” liternal&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6767&quot;&gt;#6767 - Calling String#dup on strings used as a buffer in IO.copy_stream alters the body of all strings duped from the original&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6768&quot;&gt;#6768 - stacktrace first line erroneously reports line number. Reports duplicate line # as second line of stacktrace.&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6769&quot;&gt;#6769 - Undo shared-buffer optimizations from #6557&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6770&quot;&gt;#6770 - Use line number of scope for initial backtrace&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6771&quot;&gt;#6771 - Handle varargs frame on arity error in jitted code&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6776&quot;&gt;#6776 - With prepend the aliased method gets the wrong self target&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6779&quot;&gt;#6779 - fix CGI.unescapeHTML with invalid encoding&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6782&quot;&gt;#6782 - Real fix for #6676 for 9.2&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6784&quot;&gt;#6784 - Create and use pure-bash dirname and basename&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6799&quot;&gt;#6799 - update ffi to 1.15.4&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6872&quot;&gt;#6872 - Jruby does not support the “old” LetsEncrypt chain after DST Root CA X3 has expired&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6883&quot;&gt;#6883 - Trust native unlink errno to do the right thing&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/issues/6903&quot;&gt;#6903 - Set#dup does not seem to call #initialize_copy&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6909&quot;&gt;#6909 - [deps] update jruby-openssl to 0.11.0&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6910&quot;&gt;#6910 - Dynamic dispatch to super.initialize_[dup,clone] in native Set&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6911&quot;&gt;#6911 - Update jnr and asm&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jruby/jruby/pull/6928&quot;&gt;#6928 - Fix raw and varargs backtrace elements&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+</feed>

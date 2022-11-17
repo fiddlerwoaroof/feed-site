@@ -1,0 +1,928 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+
+<channel>
+	<title>The RubyMine Blog : Intelligent Ruby and Rails IDE | The JetBrains Blog</title>
+	<atom:link href="https://blog.jetbrains.com/ruby/feed/" rel="self" type="application/rss+xml"/>
+	<link>https://blog.jetbrains.com</link>
+	<description>Developer Tools for Professionals and Teams</description>
+	<lastBuildDate>Mon, 14 Nov 2022 12:01:23 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	
+
+<image>
+	<url>https://blog.jetbrains.com/wp-content/uploads/2020/07/favicon-32x32-1.png</url>
+	<title>The RubyMine Blog : Intelligent Ruby and Rails IDE | The JetBrains Blog</title>
+	<link>https://blog.jetbrains.com</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>RubyMine 2022.3 Beta2: Improved Writing Methods Process and Updated Documentation Tool Window</title>
+		<link>https://blog.jetbrains.com/ruby/2022/11/rubymine-2022-3-beta-2/</link>
+		
+		<dc:creator><![CDATA[Iryna Pisklyarova]]></dc:creator>
+		<pubDate>Mon, 14 Nov 2022 11:37:00 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/11/RubyMine_blog_featured-1.png</featuredImage>		<category><![CDATA[2022-3]]></category>
+		<category><![CDATA[beta]]></category>
+		<category><![CDATA[rubymine]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=296730</guid>
+
+					<description><![CDATA[Our Early Access Program is coming to an end, and we are happy to announce that RubyMine 2022.3 Beta 2 is now available! We invite you to download it and share your feedback via our issue tracker or in the comments below. Here are some of the features in the upcoming release that we have [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Our Early Access Program is coming to an end, and we are happy to announce that RubyMine 2022.3 Beta 2 is now available!</p>
+
+
+
+<p>We invite you to <a href="https://www.jetbrains.com/ruby/nextversion/?_gl=1*1921ufc*_ga*MTkyMjY3OTIxMy4xNjY0ODc1NjA2*_ga_9J976DJZ68*MTY2NzQyNjM5Ny4xNTEuMS4xNjY3NDI3MzY3LjYwLjAuMA..&amp;_ga=2.225437146.1764924952.1667148446-1922679213.1664875606&amp;_gac=1.263182718.1665925393.Cj0KCQjw166aBhDEARIsAMEyZh7433tM-8yQ2sF8hAndlDTnIPXEEq3LUt6SCWWIQcz1zziT-3Ka_I0aAt4fEALw_wcB">download</a> it and share your feedback via our <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a> or in the comments below.</p>
+
+
+
+<p>Here are some of the features in the upcoming release that we have not presented to you yet.</p>
+
+
+
+<h2>Improved editing and adding method signatures to Ruby method definitions</h2>
+
+
+
+<p>In RubyMine 2022.3, we have simplified the process of writing methods with type signatures.&nbsp;</p>
+
+
+
+<p>You can learn more about RBS support in <a href="https://www.jetbrains.com/help/ruby/rbs.html">this article</a>. There is no longer any need to switch between multiple files, Ruby, and RBS, just to write one method definition. We’ve implemented an easy way to edit and add new type signatures.</p>
+
+
+
+<p>To edit type signatures, you can use the quick-fix available for the <em>Mismatched Type</em> inspection or an intention action on the declaration&#8217;s name in a Ruby file.</p>
+
+
+
+<figure class="wp-block-video"><video controls src="https://blog.jetbrains.com/wp-content/uploads/2022/11/Add-signature-1.mp4"></video></figure>
+
+
+
+<p>If a type signature is missing, you can add it using the quick-fix for the Missing Type Signature inspection.</p>
+
+
+
+<figure class="wp-block-video"><video controls src="https://blog.jetbrains.com/wp-content/uploads/2022/11/Add-signature-2.mp4"></video></figure>
+
+
+
+<p>The actions of editing and adding type signatures are both only applicable to declarations that actually have types. This includes methods, attributes, instance/class variables, global variables, constants, and method aliases. These actions are unavailable for classes and modules as these do not have type signatures directly themselves.</p>
+
+
+
+<p>The feature will open the type signature file in a new tab and begin a live template on all of the type signature elements. In case of overloaded methods, one template per overload will be opened and you are able to tab between them.</p>
+
+
+
+<p>Upon completing the live template, you will be taken back to where you were in the Ruby code. The interaction is smooth and unobtrusive to your work. You can easily edit signatures without you having to manage multiple files yourself.</p>
+
+
+
+<h2>Showing info from RBS in Documentation Tool Window</h2>
+
+
+
+<p>We&#8217;ve added the ability to view type information from RBS using the <em>Quick Documentation popup (Ctrl+Q)</em>. Now, if the method is described in RBS, RubyMine will display information about the parameters and return value in the documentation.</p>
+
+
+
+<p>Regarding type variables, they show up as the type variable name (e.g. public method #foo(a &lt;- T)) when the action is invoked on the method definition and as the parameter type when it&#8217;s invoked on a call.</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img src="https://blog.jetbrains.com/wp-content/uploads/2022/11/Document-popup-1-1.png" alt="" class="wp-image-297052" width="568" height="146"/></figure>
+
+
+
+<p></p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/Document-popup-2-1.png" alt="" class="wp-image-297064" width="569" height="196"/></figure>
+
+
+
+<p></p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/Document-popup-3-1.png" alt="" class="wp-image-297075" width="572" height="199"/></figure>
+
+
+
+<p>Overloads are represented not as a union of proc signatures but as one proc signature with a union for each parameter type and return type whenever applicable.</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/overloads-1.png" alt="" class="wp-image-297005" width="559" height="70"/></figure>
+
+
+
+<p></p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/overloads-2.png" alt="" class="wp-image-297017" width="560" height="137"/></figure>
+
+
+
+<p></p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/overloads-3.png" alt="" class="wp-image-297028" width="559" height="115"/></figure>
+
+
+
+<p>To view <em>Quick Documentation</em> in a popup, just hover the mouse over the necessary symbol in the editor, place the caret at the symbol and press <em>Ctrl+Q (View | Quick Documentation)</em>.</p>
+
+
+
+<p>With the default settings, pressing<em> Ctrl+Q</em> (<em>View | Quick Documentation</em>) opens <a href="https://www.jetbrains.com/help/ruby/viewing-javascript-reference.html#ws_js_quick_doc_tool_window">quick documentation</a> in a popup.</p>
+
+
+
+<h2>Support for the .dockerignore file type</h2>
+
+
+
+<p>We’ve introduced full support for .dockerignore files, including code highlighting and completion. These files are now taken into account when you build an image from the IDE.</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/dockerignore.png" alt="" class="wp-image-297039" width="652" height="261"/></figure>
+
+
+
+<h2>Join the Early Access Program</h2>
+
+
+
+<p>You can download RubyMine 2022.3 Beta 2 from <a href="https://www.jetbrains.com/ruby/nextversion/">our website</a> or via the <a href="https://www.jetbrains.com/toolbox-app/">Toolbox app</a>. The full list of improvements in this Beta version is available in the <a href="https://youtrack.jetbrains.com/articles/RUBY-A-220364993">release notes</a>.</p>
+
+
+
+<p>To learn about the newest features as they come out, follow <a href="https://twitter.com/rubymine">RubyMine on Twitter</a>. We post product news and tips several times a week.</p>
+
+
+
+<p>We encourage you to share your thoughts in the comments below and to suggestcreate and vote for new features in the <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a>.</p>
+
+
+
+<p><em>Happy developing!</em></p>
+
+
+
+<p><em>The RubyMine team</em></p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>RubyMine 2022.3 Beta is Here!</title>
+		<link>https://blog.jetbrains.com/ruby/2022/11/rubymine-2022-3-beta/</link>
+		
+		<dc:creator><![CDATA[Iryna Pisklyarova]]></dc:creator>
+		<pubDate>Sun, 06 Nov 2022 20:31:51 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/11/RubyMine_blog_featured.png</featuredImage>		<category><![CDATA[2022-3]]></category>
+		<category><![CDATA[beta]]></category>
+		<category><![CDATA[rubymine]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=294964</guid>
+
+					<description><![CDATA[The RubyMine 2022.3 Early Access Program has reached Beta!&#160; We invite you to download it and share your feedback in our issue tracker or in the comments below.&#160; Here are some of the features in the upcoming release that we haven’t covered yet. Support for RBS type provision in case of method reference In the [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>The RubyMine 2022.3 Early Access Program has reached Beta!&nbsp;</p>
+
+
+
+<p>We invite you to <a href="https://www.jetbrains.com/ruby/nextversion/?_gl=1*1921ufc*_ga*MTkyMjY3OTIxMy4xNjY0ODc1NjA2*_ga_9J976DJZ68*MTY2NzQyNjM5Ny4xNTEuMS4xNjY3NDI3MzY3LjYwLjAuMA..&amp;_ga=2.225437146.1764924952.1667148446-1922679213.1664875606&amp;_gac=1.263182718.1665925393.Cj0KCQjw166aBhDEARIsAMEyZh7433tM-8yQ2sF8hAndlDTnIPXEEq3LUt6SCWWIQcz1zziT-3Ka_I0aAt4fEALw_wcB">download</a> it and share your feedback in our <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a> or in the comments below.&nbsp;</p>
+
+
+
+<p>Here are some of the features in the upcoming release that we haven’t covered yet.</p>
+
+
+
+<h2>Support for RBS type provision in case of method reference</h2>
+
+
+
+<p>In the 2022.3 version, we&#8217;ve added support for RBS type provision when you call a method reference. To invoke the popup that shows the names of the parameters in the method (if the popup has closed or if your IDE is configured to not show it automatically), you just need to select the method and press <em>Ctrl+P</em> (or click <em>View | Parameter Info</em>).</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/Parameter-info.png" alt="" class="wp-image-295325" width="604" height="373"/></figure>
+
+
+
+<h2>A new way to work with projects in WSL2</h2>
+
+
+
+<p>RubyMine allows you to use the remote Ruby interpreter installed on Windows Subsystem for Linux (WSL and WSL2) for your local projects. RubyMine 2022.3 brings an alternative way to use the Remote Development functionality if you work with projects running in WSL2 file systems. Instead of running a full IDE on Windows, your IDE backend will launch directly in WSL2 itself. Then you can connect to it the same way you would connect to any remote machine when using Remote Development in RubyMine. This provides better IDE performance when working with projects in WSL2.</p>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" width="1918" height="706" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/WSL.png" alt="" class="wp-image-295336"/></figure>
+
+
+
+<h2>Usability improvements</h2>
+
+
+
+<h3>Improved <em>Add action</em> dialog</h3>
+
+
+
+<p>The action tree now takes up the full available height of the dialog and can be rescaled in both directions.</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/2022-11-02_22-21-35.gif" alt="" class="wp-image-295347" width="800" height="622"/></figure>
+
+
+
+<h3>New label for empty state on <em>What&#8217;s new</em> tab in plugins overview</h3>
+
+
+
+<p>An empty state message is displayed for plugins with no update information on the <em>What&#8217;s new</em> tab. Now you won’t have any doubts as to whether plugin update information has been loaded!</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/Bezymyannyj-2.png" alt="" class="wp-image-295359" width="776" height="476"/></figure>
+
+
+
+<h3><em>Finger</em> cursor pointer is now displayed on plugins navigation buttons</h3>
+
+
+
+<p><em>Finger</em> is now displayed when hovering on the <em>Left</em> and <em>Right</em> buttons for convenient navigation.</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/11/Usability-cursor.gif" alt="" class="wp-image-295370" width="691" height="537"/></figure>
+
+
+
+<p>To reproduce this improvement you can take the following steps:</p>
+
+
+
+<ol><li>Open IDE &gt; Open Settings (Alt+Ctrl+S) &gt; Plugins</li><li>Find a plugin with several screenshots on the <em>Overview</em> tab (i.e. IDE Features Trainer)</li><li>Hover the mouse over the <em>Left / Right</em> buttons</li></ol>
+
+
+
+<h2>Join the Early Access Program</h2>
+
+
+
+<p>You can download RubyMine 2022.3 Beta <a href="https://www.jetbrains.com/ruby/nextversion/">from our website</a> or via the <a href="https://www.jetbrains.com/toolbox-app/">Toolbox app</a>. The full list of improvements in this Beta version is available in the <a href="https://youtrack.jetbrains.com/articles/RUBY-A-220365012" title="https://youtrack.jetbrains.com/articles/RUBY-A-220365012">release notes</a>.</p>
+
+
+
+<p>To learn about the newest features as they come out, follow <a href="https://twitter.com/rubymine">RubyMine on Twitter</a>. We post product news and tips several times a week.</p>
+
+
+
+<p>We encourage you to share your thoughts in the comments below and to suggest and vote for new features in the <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a>.</p>
+
+
+
+<p><em>Happy developing!</em></p>
+
+
+
+<p><em>The RubyMine team</em></p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>RubyMine 2022.3 EAP5: Improved Navigation, New Project Wizard, and Vue Support</title>
+		<link>https://blog.jetbrains.com/ruby/2022/10/rubymine-2022-3-eap5/</link>
+		
+		<dc:creator><![CDATA[Iryna Pisklyarova]]></dc:creator>
+		<pubDate>Fri, 28 Oct 2022 13:43:13 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/10/Blog_Featured_image_1280x600_RubyMine-2x.png</featuredImage>		<category><![CDATA[eap]]></category>
+		<category><![CDATA[2022-3]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=292165</guid>
+
+					<description><![CDATA[RubyMine 2022.3 EAP5 is out!&#160; In this post, you’ll find details about the most notable improvements available in this build. We invite you to download it and share your feedback in our issue tracker or in the comments below.&#160; Gutter icons for navigating from a model to schema create_table calls We&#8217;ve added new gutter icons [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>RubyMine 2022.3 EAP5 is out!&nbsp;</p>
+
+
+
+<p>In this post, you’ll find details about the most notable improvements available in this build. We invite you to <a href="https://www.jetbrains.com/ruby/nextversion/?_gl=1*swa5s6*_ga*MTkyMjY3OTIxMy4xNjY0ODc1NjA2*_ga_9J976DJZ68*MTY2NjcyNjI3My4xMTMuMS4xNjY2NzI2NTE3LjUzLjAuMA..&amp;_ga=2.84863961.1982119256.1666557307-1922679213.1664875606&amp;_gac=1.23469384.1665925393.Cj0KCQjw166aBhDEARIsAMEyZh7433tM-8yQ2sF8hAndlDTnIPXEEq3LUt6SCWWIQcz1zziT-3Ka_I0aAt4fEALw_wcB">download</a> it and share your feedback in our <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a> or in the comments below.&nbsp;</p>
+
+
+
+<h2>Gutter icons for navigating from a model to schema create_table calls</h2>
+
+
+
+<p>We&#8217;ve added new <a href="https://www.jetbrains.com/help/ruby/settings-gutter-icons.html">gutter icons</a> for navigating from models to the corresponding <code>create_table</code> calls in the schema.Gutter icons are located on the left-hand side of the editor.&nbsp;</p>
+
+
+
+<figure class="wp-container-2 wp-block-gallery-1 wp-block-gallery has-nested-images columns-default is-cropped">
+<figure class="wp-block-image size-large"><img loading="lazy" width="1280" height="720" data-id="292283"  src="https://blog.jetbrains.com/wp-content/uploads/2022/10/2022-10-27_18-39-15-1.gif" alt="" class="wp-image-292283"/></figure>
+</figure>
+
+
+
+<p>To customize which gutter icons are displayed, tick the checkboxes of the desired options on the Gutter Icons page in:</p>
+
+
+
+<ul><li><em>Settings | Editor | General | Gutter Icons</em> for Windows and Linux</li><li><em>RubyMine | Preferences | Editor | General | Gutter Icons</em> for macOS</li></ul>
+
+
+
+<h2>Improved New Project wizard</h2>
+
+
+
+<p>In this new build, we’ve improved the interface for choosing a JavaScript framework in the Rails New Project wizard. In the JavaScript framework field, we replaced the “default” value with the explicit name of the framework that is used by default. We’ve implemented this update both in RubyMine and in the Ruby plugin for IntelliJ IDEA.&nbsp;</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/JS-framework.png" alt="" class="wp-image-292320" width="602" height="499"/></figure>
+
+
+
+<p>In one of the previous builds, we also removed the Skip option and added a checkbox that allows you to enable or disable the selection of a JavaScript framework. To skip the framework selection (meaning that no framework at all is used) you need to uncheck the box next to the JavaScript framework tickbox.&nbsp;</p>
+
+
+
+<h2>Prop destructure syntax support in Vue</h2>
+
+
+
+<p>In the EAP 5 build, RubyMine&#8217;s intelligence is applied to prop destructure syntax in Vue.This means the IDE will now provide prop suggestions, type checking, and missing prop detection. For example, props with a value assigned in destructuring now report missing required attributes. RubyMine also makes sure you don’t reference props that are not destructured in template expressions without a <strong>rest.qualifier</strong>, and that default values with both a runtime declaration and type declaration are recognized.</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><img loading="lazy" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/Vue.png" alt="" class="wp-image-292332" width="718" height="359"/></figure>
+
+
+
+<h2>Option to bookmark open editor tabs</h2>
+
+
+
+<p>You can now quickly bookmark files from editor tabs. You can bookmark individual files or all files in all open tabs. To bookmark files one by one, you just need to right-click the tab with the file that you want to bookmark and select <em>Bookmarks | Add Bookmark (F11).</em> You can choose to add an anonymous bookmark or use <em>Add Mnemonic Bookmark</em> (<em>Ctrl+F11</em>) to add a bookmark with an identifier. Then press <em>Enter </em>or click the selected letter or number once again to save the bookmark.</p>
+
+
+
+<figure class="wp-container-4 wp-block-gallery-3 wp-block-gallery has-nested-images columns-default is-cropped">
+<figure class="wp-block-image size-large"><img loading="lazy" width="1280" height="720" data-id="292350"  src="https://blog.jetbrains.com/wp-content/uploads/2022/10/Bookmarks.gif" alt="" class="wp-image-292350"/></figure>
+</figure>
+
+
+
+<p>If you want to bookmark all open files and add these bookmarks to a new list, just right-click any editor tab and select <em>Bookmarks | Bookmark Open Tabs</em>. The IDE will put all open tabs into a new list of bookmarks, which you can name as you please.</p>
+
+
+
+<h2>Other improvements</h2>
+
+
+
+<h3>Installers for Windows ARM64</h3>
+
+
+
+<p>We’re working to add support for Windows ARM64, and we’re now running tests to make sure RubyMine works smoothly on Windows machines with ARM64 processors. Meanwhile, with the RubyMine 2022.3 EAP 5, we’ve started distributing installers for Windows ARM64.</p>
+
+
+
+<h2>Join the Early Access Program</h2>
+
+
+
+<p>You can download the latest EAP build <a href="https://www.jetbrains.com/ruby/nextversion/">from our website</a> or via the <a href="https://www.jetbrains.com/toolbox-app/">Toolbox app</a>. The full list of improvements in this EAP build is available in the <a href="https://youtrack.jetbrains.com/articles/RUBY-A-220364993">release notes</a>.</p>
+
+
+
+<p>To learn about the newest features as they come out, follow <a href="https://twitter.com/rubymine">RubyMine on Twitter</a>. We post product news and tips several times a week.</p>
+
+
+
+<p>We encourage you to share your thoughts in the comments below and to create and vote for new features in the <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a>.</p>
+
+
+
+<p><em>Happy developing!</em></p>
+
+
+
+<p>The RubyMine team</p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Meet RubyMine 2022.3 EAP4, with the New UI and Settings Sync Solution</title>
+		<link>https://blog.jetbrains.com/ruby/2022/10/rubymine-2022-3-eap4/</link>
+		
+		<dc:creator><![CDATA[Iryna Pisklyarova]]></dc:creator>
+		<pubDate>Fri, 21 Oct 2022 06:28:40 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/10/Blog_Featured_image_1280x600_RubyMine-2x.png</featuredImage>		<category><![CDATA[eap]]></category>
+		<category><![CDATA[2022-3]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=289042</guid>
+
+					<description><![CDATA[RubyMine 2022.3 EAP4 is here! Below, you can see the most notable new functionality. Please try it out and share your feedback in the comments or by using our issue tracker. New UI available via settings Last year, we announced a closed preview program for the new UI for JetBrains IDEs. We aimed to introduce [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>RubyMine 2022.3 EAP4 is here!</p>
+
+
+
+<p>Below, you can see the most notable new functionality. Please <a href="https://www.jetbrains.com/ruby/nextversion/">try it out</a> and share your feedback in the comments or by using our <a href="https://youtrack.jetbrains.com/issues/ruby" target="_blank" rel="noreferrer noopener">issue tracker</a>.</p>
+
+
+
+<h2>New UI available via settings</h2>
+
+
+
+<p>Last year, we announced a <a href="https://blog.jetbrains.com/idea/2022/05/take-part-in-the-new-ui-preview-for-your-jetbrains-ide/">closed preview program</a> for the new UI for JetBrains IDEs. We aimed to introduce the reworked look and feel of IntelliJ-based products to a limited number of users. The preview program helped us accumulate and process a lot of insightful feedback, and now we’re ready to invite everyone to try out the new RubyMine UI.</p>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" width="1918" height="622" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/new-UI_1-2.png" alt="" class="wp-image-289178"/></figure>
+
+
+
+<p>Our goals were to reduce visual complexity, provide easy access to essential features, and progressively disclose complex functionality as needed, resulting in a look-and-feel that we believe is clean, modern, and powerful.</p>
+
+
+
+<p>We invite you to switch to the new UI in <em>Settings</em> | <em>Appearance &amp; Behavior</em> | <em>New UI (Beta)</em>, give it a test drive, and share your thoughts about this huge change with us.</p>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" width="1229" height="711" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/new-UI_2-1.png" alt="" class="wp-image-289189"/></figure>
+
+
+
+<h2>New Settings Sync solution</h2>
+
+
+
+<p>In this EAP build, we’ve presented a completely reworked solution for custom IDE settings synchronization.</p>
+
+
+
+<p>For a long time, two solutions have existed in parallel and featured intersecting functionality – <a href="https://www.jetbrains.com/help/ruby/sharing-your-ide-settings.html#IDE_settings_sync">IDE Settings Sync</a> and <a href="https://www.jetbrains.com/help/ruby/settings-tools-settings-repository.html">Settings Repository</a>, which were bundled with RubyMine as plugins. To avoid the confusion caused by having two similar bundled plugins, we’ve merged their feature sets into a single solution – the new Settings Sync plugin. It covers all of the basic prerequisites for settings synchronization and is now available in RubyMine and other IntelliJ-based IDEs.</p>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" width="1226" height="695" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/Settings-sync-3.png" alt="" class="wp-image-289200"/></figure>
+
+
+
+<p>Settings synchronization is essential if you use your IntelliJ-based IDEs on multiple computers. After changing a color scheme or a keymap on one machine, you’ll want to have the same setup on your other machines. If you have only one machine, <em>Settings Sync</em> can still be useful as a backup solution, as it will allow you to automatically restore all of your settings when setting up a new machine from scratch.</p>
+
+
+
+<p>The new <em>Settings Sync</em> plugin can sync all shareable IDE settings, bundled plugins, and third-party plugins. By default, the plugins themselves will be synced and installed silently. As for third-party plugin settings, not all of them will be transferred seamlessly, as this depends on the vendors. We are currently discussing the required actions with plugin developers.</p>
+
+
+
+<h3>How does the new Settings Sync plugin work?</h3>
+
+
+
+<p>The settings are stored in the cloud attached to your JetBrains Account. If you use different IntelliJ-based IDEs with the same JetBrains Account, your settings will automatically sync.</p>
+
+
+
+<p>In cases where a conflict arises due to the simultaneous modification of settings on two different computers, the settings will be merged using the most recent configuration.</p>
+
+
+
+<h3>How to enable the new Settings Sync plugin</h3>
+
+
+
+<p>Depending on your current approach to settings synchronization, you may need to enable the new plugin manually:</p>
+
+
+
+<ul><li>You won’t need to take any action, if you are using <em>IDE Settings Sync</em>. Your data will be automatically migrated to the new plugin.</li><li>If you are a <a href="https://www.jetbrains.com/help/ruby/settings-tools-settings-repository.html"><em>Settings Repository</em></a> user, we advise you to continue using your current setup. The migration to a new setting sync solution is still a work in progress. You’ll get an in-IDE notification when the functionality is ready.</li><li>If you weren’t previously using a settings synchronization solution but want to try the new one, you can enable it via <em>Settings | Settings Sync | Enable Settings Sync</em>.</li></ul>
+
+
+
+<h2>Join the Early Access Program</h2>
+
+
+
+<p>You can download the latest EAP build <a href="https://www.jetbrains.com/ruby/nextversion/">from our website</a> or via the <a href="https://www.jetbrains.com/toolbox-app/" target="_blank" rel="noreferrer noopener">Toolbox app</a>. The full list of closed tickets in this EAP build is available in the <a href="https://youtrack.jetbrains.com/articles/RUBY-A-220365005/RubyMine-20223-EAP-4-22371262-build-Release-Notes" target="_blank" rel="noreferrer noopener">release notes</a>.</p>
+
+
+
+<p>To learn about the newest features as they come out, please follow <a href="https://twitter.com/rubymine" target="_blank" rel="noreferrer noopener">RubyMine on Twitter</a>. We post product news and tips several times a week.</p>
+
+
+
+<p>We encourage you to share your thoughts in the comments below and to create and vote for new features in the <a href="https://youtrack.jetbrains.com/issues/ruby" target="_blank" rel="noreferrer noopener">issue tracker</a>.</p>
+
+
+
+<p><em>Happy developing!</em></p>
+
+
+
+<p>The RubyMine team</p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>RubyMine 2022.3 EAP3: Improved RSpec Support, Code Insights in RBS, and Much More</title>
+		<link>https://blog.jetbrains.com/ruby/2022/10/rubymine-2022-3-eap3/</link>
+		
+		<dc:creator><![CDATA[Iryna Pisklyarova]]></dc:creator>
+		<pubDate>Mon, 17 Oct 2022 11:49:31 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/10/Blog_Featured_image_1280x600_RubyMine-2x.png</featuredImage>		<category><![CDATA[eap]]></category>
+		<category><![CDATA[2022-3]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=287367</guid>
+
+					<description><![CDATA[It’s time to unveil the third build of RubyMine 2022.3 EAP! We invite you to download RubyMine 2022.3 EAP3 from our website or via the Toolbox app. Let’s check out the updated features and improvements in detail. Search for usages and rename shared contexts and examples in RSpec We continue to improve coding assistance for [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>It’s time to unveil the third build of RubyMine 2022.3 EAP!</p>
+<p>We invite you to <a href="https://www.jetbrains.com/ruby/nextversion/?_gl=1*1le12lq*_ga*MTkyMjY3OTIxMy4xNjY0ODc1NjA2*_ga_9J976DJZ68*MTY2NTU4MzY3My41NS4xLjE2NjU1ODM2NzQuMC4wLjA.&amp;_ga=2.24359165.693918800.1664875606-1922679213.1664875606">download RubyMine 2022.3 EAP3</a> from our website or via the <a href="https://www.jetbrains.com/toolbox-app/?_gl=1*1uab4q*_ga*MTkyMjY3OTIxMy4xNjY0ODc1NjA2*_ga_9J976DJZ68*MTY2NTU4MzY3My41NS4xLjE2NjU1ODM2NzQuMC4wLjA.&amp;_ga=2.256143692.693918800.1664875606-1922679213.1664875606">Toolbox app</a>.</p>
+<p>Let’s check out the updated features and improvements in detail.</p>
+<h2>Search for usages and rename shared contexts and examples in RSpec</h2>
+<p>We continue to improve coding assistance for shared contexts and examples in RSpec. In this build, we&#8217;ve supported the <strong>Rename</strong> refactorings and the <strong>Find Usages</strong> action.</p>
+<p>Now you can <a href="https://www.jetbrains.com/help/ruby/find-highlight-usages.html">search for usages</a> of shared contexts in RubyMine. The <strong>Find Usages</strong> action works with shared contexts represented by a string or a symbol. In the editor, select the element for which you want to find usages and press <strong>⌥ F7</strong> on macOS or <strong>Alt+F7</strong> on Windows.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-287601" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/find-usages.png" alt="" width="512" height="131"></p>
+<p></p>
+<p>RubyMine also provides an inline preview of a usage when you click the related declaration.</p>
+<p>RubyMine lets you change names of shared contexts and examples along with their references by using the <a href="https://www.jetbrains.com/help/ruby/2022.3/rename-refactorings.html">Rename</a> refactoring. To invoke the Rename refactoring, place the caret at the desired shared context or example and press <strong>⇧ F6</strong> on macOS or <strong>Shift+F6</strong> on Windows. Then, specify the new name and press <strong>Enter</strong>.</p>
+<h2>Run shared examples in the context of referencing groups in RSpec</h2>
+<p>We introduced the ability to specify the context for executing shared examples in RSpecNow when you run specs containing shared examples, RubyMine displays a dialog where you can choose a context for executing them.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-287390" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/rm_223_shared_examples_context.png" alt="" width="1440" height="506"></p>
+<h2>New inlay hints for self-type bindings in RBS</h2>
+<p>We&#8217;ve added new inlay hints for blocks with self-type bindings in RBS. To avoid displaying too many inlay hints, RubyMine shows the Numbered parameter type hints only when you actually use a numbered parameter inside a block.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-287502" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/inlay-hints.png" alt="inlay hints" width="512" height="215"></p>
+<h2>Inject ruby into strings used in eval and eval-related functions automatically</h2>
+<p>Strings in <code>eval</code> and <code>eval</code>-like functions are automatically injected with Ruby. Hints, code completion, and other code editing features now work inside <code>eval</code> functions the same way they do in Ruby code.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-287513" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/eval-1.png" alt="" width="512" height="204"></p>
+<p><img loading="lazy" class="alignnone size-full wp-image-287524" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/eval-2.png" alt="" width="512" height="63"></p>
+<h2>More accurate search results</h2>
+<p>Starting from this release, RubyMine will freeze the initial search results when you start typing your query in the Search Everywhere dialog. <a href="https://www.jetbrains.com/help/ruby/searching-everywhere.html">Search Everywhere</a> query results will be displayed and not reordered when more options are found. Thus, the behavior of the Search Everywhere result list has become more predictable, and the selection of items that are found has become more accurate.</p>
+<div style="width: 1920px;" class="wp-video"><!--[if lt IE 9]><script>document.createElement('video');</script><![endif]-->
+<video class="wp-video-shortcode" id="video-287367-1" width="1920" height="1080" preload="metadata" controls="controls"><source type="video/mp4" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/search-everywhere-results.mp4?_=1" /><a href="https://blog.jetbrains.com/wp-content/uploads/2022/10/search-everywhere-results.mp4">https://blog.jetbrains.com/wp-content/uploads/2022/10/search-everywhere-results.mp4</a></video></div>
+<p></p>
+<h2>Option to dock tool windows to floating editor tabs</h2>
+<p>We’ve implemented options for dragging tool windows in the main window and docking them to floating editor tabs. Now you can easily set up and interact with your RubyMine workspace on multiple monitors.</p>
+<div style="width: 2180px;" class="wp-video"><video class="wp-video-shortcode" id="video-287367-2" width="2180" height="1334" preload="metadata" controls="controls"><source type="video/mp4" src="https://blog.jetbrains.com/wp-content/uploads/2022/10/dock_tool_windows.mp4?_=2" /><a href="https://blog.jetbrains.com/wp-content/uploads/2022/10/dock_tool_windows.mp4">https://blog.jetbrains.com/wp-content/uploads/2022/10/dock_tool_windows.mp4</a></video></div>
+<p></p>
+<h2>Join the Early Access Program</h2>
+<p>You can download the latest EAP build <a href="https://www.jetbrains.com/ruby/nextversion/">from our website</a> or via the <a href="https://www.jetbrains.com/toolbox-app/">Toolbox app</a>. The full list of closed tickets in this EAP build is available in the <a href="https://youtrack.jetbrains.com/articles/RUBY-A-220365004">release notes</a>.</p>
+<p>To learn about the newest features as they come out, please follow <a href="https://twitter.com/rubymine">RubyMine on Twitter</a>. We post product news and tips several times a week.</p>
+<p>We’re encouraging users to share your thoughts in the comments below and to suggest and vote for new features in the <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a>.</p>
+<p><em>Happy developing!</em></p>
+<p>The RubyMine team</p>
+
+
+<p></p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>RubyMine 2022.3 EAP2</title>
+		<link>https://blog.jetbrains.com/ruby/2022/10/rubymine-2022-3-eap2/</link>
+		
+		<dc:creator><![CDATA[Anna Zykova]]></dc:creator>
+		<pubDate>Mon, 10 Oct 2022 09:14:05 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/10/Blog_Featured_image_1280x600_RubyMine-2x.png</featuredImage>		<category><![CDATA[eap]]></category>
+		<category><![CDATA[2022-3]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=283255</guid>
+
+					<description><![CDATA[RubyMine 2022.3 EAP2 is now available. Here are the most notable new features of this build: RSpec Support for example group aliases: xdescribe, xcontext, fdescribe, fcontext RubyMine recognizes the xdescribe, xcontext, fdescribe, and fcontext example group aliases and shows such blocks in the Structure tool window (⌘ 7 on macOS or Alt+7 on Windows). Now, [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>RubyMine 2022.3 EAP2 is now available. Here are the most notable new features of this build:</p>
+<h2>RSpec</h2>
+<h3>Support for example group aliases: <code>xdescribe</code>, <code>xcontext</code>, <code>fdescribe</code>, <code>fcontext</code></h3>
+<p>RubyMine recognizes the <code>xdescribe</code>, <code>xcontext</code>, <code>fdescribe</code>, and <code>fcontext</code> example group aliases and shows such blocks in the <a href="https://www.jetbrains.com/help/ruby/2022.3/viewing-structure-of-a-source-file.html">Structure tool window</a> (<strong>⌘ 7</strong> on macOS or <strong>Alt+7</strong> on Windows). Now, you can also <a href="https://www.jetbrains.com/help/ruby/2022.3/performing-tests.html#run-tests">run these tests</a> using the gutter icons right in the editor.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-283269" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rspec_aliases.png" alt="" width="2104" height="1044" /></p>
+<h3>Completion of shared context names</h3>
+<p>In this build, we’ve added support for completion of shared contexts and examples. RubyMine offers completion options from any defined shared contexts and examples.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-283280" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_shared_context_completion.png" alt="" width="1228" height="368" /></p>
+<p>Filtering of completion options will be coming next, so stay tuned.</p>
+<h3>Navigation between controllers and request and routing specs</h3>
+<p>RubyMine links request and routing specs to their respective controllers. Open the necessary request or routing spec and press <strong>⇧ ⌘ T </strong>on macOS or <strong>Ctrl+Shift+T </strong>on Windows to navigate to the controller used as a test subject. You can use the same shortcut to navigate from the controller file to the corresponding spec.</p>
+<div style="width: 2168px;" class="wp-video"><video class="wp-video-shortcode" id="video-283255-3" width="2168" height="1380" preload="metadata" controls="controls"><source type="video/mp4" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_controller_spec_navigation.mp4?_=3" /><a href="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_controller_spec_navigation.mp4">https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_controller_spec_navigation.mp4</a></video></div>
+<p>You can always find request specs in the <code>spec/requests/</code> folder, and routing specs in the <code>spec/routing/</code> folder.</p>
+<h2>Other improvements</h2>
+<h3>Clickable URLs in string literals</h3>
+<p>You can now open URLs directly from your Ruby code. While holding <strong>⌘ </strong>(on macOS) or <strong>Ctrl</strong> (on Windows), click the URL to open it in your default browser.</p>
+<div style="width: 3360px;" class="wp-video"><video class="wp-video-shortcode" id="video-283255-4" width="3360" height="1900" preload="metadata" controls="controls"><source type="video/mp4" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_clickable_urls.mp4?_=4" /><a href="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_clickable_urls.mp4">https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_clickable_urls.mp4</a></video></div>
+<p>Alternatively, place the caret next to the desired URL and press <strong>⌘ B </strong>on macOS or <strong>Ctrl+B</strong> on Windows.</p>
+<h3>Support for the Devise gem</h3>
+<p>In this release, we’ve added support for the <a href="https://github.com/heartcombo/devise">Devise</a> gem as well as several of code assistance features for the Devise methods, including:</p>
+<ul>
+<li><a href="https://www.jetbrains.com/help/ruby/2022.3/auto-completing-code.html">Code completion</a></li>
+<li><a href="https://www.jetbrains.com/help/ruby/2022.3/navigating-through-the-source-code.html">Navigation</a> from dynamic methods</li>
+<li><a href="https://www.jetbrains.com/help/ruby/2022.3/find-highlight-usages.html">Search for usages</a></li>
+<li><a href="https://www.jetbrains.com/help/ruby/2022.3/viewing-reference-information.html#type-info">Type info</a></li>
+<li><a href="https://www.jetbrains.com/help/ruby/2022.3/refactoring-source-code.html">Refactorings</a></li>
+</ul>
+<h3>RuboCop as an external formatter</h3>
+<p>Starting with this release, RubyMine can use RuboCop <a href="https://docs.rubocop.org/rubocop/usage/server.html">running in server mode</a> as an external formatter.</p>
+<p>This feature is experimental and to try it, you need to select the <code>ruby.external.formatter</code> key in the <em>Registry</em>.</p>
+<p>Once the feature is enabled, you can configure the external formatter. Go to <em>Settings / Preferences | Editor | Code Style | Ruby. </em>Then open the <em>Other</em> tab, toggle the <em>Use external formatter</em> checkbox, and select <em>Rubocop </em>in the <em>Select external formatter</em> field.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-283335" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_select_external_editor.png" alt="" width="1964" height="760" /></p>
+<p>To reformat a code fragment using RuboCop, select the necessary code in the editor and press <strong>⌥ ⌘ L</strong> on macOS or <strong>Ctrl+Alt+L</strong> on Windows.</p>
+<div style="width: 1954px;" class="wp-video"><video class="wp-video-shortcode" id="video-283255-5" width="1954" height="1130" preload="metadata" controls="controls"><source type="video/mp4" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_rubocop_formatting.mp4?_=5" /><a href="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_rubocop_formatting.mp4">https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_rubocop_formatting.mp4</a></video></div>
+<p>If you disable the use of RuboCop as an external formatter, RubyMine will use its internal formatter again. The same is true in cases where the RuboCop gem is not added to your Gemfile.</p>
+<h3>Updated Ruby template header</h3>
+<p>We’ve included the <code># frozen_string_literal: true</code> comment in the header of the default Ruby file template. Previously, you could edit the template manually in <em>Settings / Preferences</em>, but now everything works out of the box.</p>
+<p>When you create a new Ruby file, class, or module, RubyMine will add the comment at the beginning of the file automatically.</p>
+<div style="width: 2504px;" class="wp-video"><video class="wp-video-shortcode" id="video-283255-6" width="2504" height="1498" preload="metadata" controls="controls"><source type="video/mp4" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_frozen_comment.mp4?_=6" /><a href="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_frozen_comment.mp4">https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_frozen_comment.mp4</a></video></div>
+<h2>Join the Early Access Program</h2>
+<p>You can download the latest EAP build <a href="https://www.jetbrains.com/ruby/nextversion/">from our website</a> or via the <a href="https://www.jetbrains.com/toolbox-app/">Toolbox app</a>. The full list of closed tickets in this EAP build is available in the <a href="https://youtrack.jetbrains.com/articles/RUBY-A-220365003">release notes</a>.</p>
+<p>To learn about the newest features as they come out, please follow <a href="https://twitter.com/rubymine">RubyMine on Twitter</a>. We post product news and tips several times a week.</p>
+<p>We encourage you to share your thoughts in the comments below and to create and vote for new features in the <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a>.</p>
+<p><em>Happy developing!</em></p>
+<p>The RubyMine team</p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>RubyMine 2022.3 EAP Is Open!</title>
+		<link>https://blog.jetbrains.com/ruby/2022/09/rubymine-2022-3-eap-is-open/</link>
+		
+		<dc:creator><![CDATA[Anna Zykova]]></dc:creator>
+		<pubDate>Fri, 23 Sep 2022 13:25:00 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/09/Blog_Featured_image_1280x600_RubyMine-2x.png</featuredImage>		<category><![CDATA[eap]]></category>
+		<category><![CDATA[2022-3]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=279878</guid>
+
+					<description><![CDATA[Hello everyone, Welcome to the third Early Access Program of 2022! As always, we encourage you to try the new features before the official release, and we’re looking forward to your feedback. In this build, we smartened up our existing Rails features and supported some new ones. Let us know what you think in the [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Hello everyone,</p>
+<p>Welcome to the third Early Access Program of 2022! As always, we encourage you to try the new features before the official release, and we’re looking forward to your feedback.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-280420" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/Blog_Social_share_image_1280x720_RubyMine-2x.png" alt="" width="2560" height="1440" /></p>
+<p>In this build, we smartened up our existing Rails features and supported some new ones. Let us know what you think in the comments or by selecting <em>Main menu | Help | Submit feedback</em> in your IDE.</p>
+<p>Here are the highlights of the first 2022.3 EAP build:</p>
+<h2>A new inlay hint for controller actions</h2>
+<p>We&#8217;ve added inlay hints above each controller action with a URL that links to the action.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-280130" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_controller_actions_inlay_hints.png" alt="" width="1516" height="768" /></p>
+<p>Clicking an inlay hint opens the list of available actions for the URL:</p>
+<ul>
+<li><em>Go to declaration or usages</em>: navigates you to the declaration in the <code>routes.rb</code> file.</li>
+<li><em>Generate request in HTTP Client</em>: creates a new request in the <a href="https://www.jetbrains.com/help/ruby/2022.3/http-client-in-product-code-editor.html">HTTP Client</a>.</li>
+<li><em>Show all endpoints of module</em>: provides an aggregated view of the module’s APIs in the <a href="https://www.jetbrains.com/help/ruby/2022.3/endpoints-tool-window.html">Endpoints</a> tool window.</li>
+</ul>
+<div style="width: 2312px;" class="wp-video"><video class="wp-video-shortcode" id="video-279878-7" width="2312" height="1432" preload="metadata" controls="controls"><source type="video/mp4" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_controller_actions.mp4?_=7" /><a href="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_controller_actions.mp4">https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_controller_actions.mp4</a></video></div>
+<p>To enable or disable the URL path inlay hints, go to <strong>Settings/Preferences | Editor | Inlay hints</strong> and toggle the <em>URL path</em> checkbox.</p>
+<h2>Structure view changes</h2>
+<h3>Quick navigation to tables in the structure view of schema.rb</h3>
+<p>In this EAP, we’re introducing the ability to view and navigate to specific database tables when browsing your <code>schema.rb</code> file. You can examine and quickly find a database table or table column using the <a href="https://www.jetbrains.com/help/ruby/2022.3/viewing-structure-of-a-source-file.html">Structure tool window</a> (<strong>⌘ 7</strong> on macOS or <strong>Alt + 7</strong> on Windows).</p>
+<div style="width: 2312px;" class="wp-video"><video class="wp-video-shortcode" id="video-279878-8" width="2312" height="1564" preload="metadata" controls="controls"><source type="video/mp4" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_schema_structure.mp4?_=8" /><a href="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_schema_structure.mp4">https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_schema_structure.mp4</a></video></div>
+<h3>Better ERB structure view</h3>
+<p>Another structure view update is also coming for ERB files. We’ve polished the way tags are displayed in the Structure tool window, increased their readability, and cleaned up extra entries.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-280208" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_erb_structure-1.png" alt="" width="2320" height="1572" /></p>
+<h3>ActiveRecord structure view</h3>
+<p>In the structure view, RubyMine now displays database attributes at the very top of the tree, and they are enabled by default. You can check out this functionality in both the <em>Structure</em> tool window (<strong>⌘ 7</strong> on macOS or <strong>Alt + 7</strong> on Windows) and the <em>Structure</em> popup (<strong>⌘ F12</strong> on macOS or <strong>Ctrl + F12</strong> on Windows).</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-280219" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_activerecord_structure.png" alt="" width="1842" height="1278" /></p>
+<p>Additionally, you can now navigate from a model file to the corresponding table in the <a href="https://www.jetbrains.com/help/ruby/2022.3/relational-databases.html">Database</a> tool window by using the <em>Select In</em> action (<strong>⌥ F1</strong> on macOS or <strong>Alt + F1</strong> on Windows).</p>
+<h2>Improved support for Rails fixtures</h2>
+<p>We&#8217;ve refined coding assistance for working with Rails fixtures in RubyMine. This includes <a href="https://www.jetbrains.com/help/ruby/2022.3/auto-completing-code.html">code completion</a> in Ruby and YAML files, the <a href="https://www.jetbrains.com/help/ruby/2022.3/rename-refactorings.html">rename refactorings</a>, <a href="https://www.jetbrains.com/help/ruby/2022.3/find-highlight-usages.html">search for usages</a>, and more.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-280174" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_rails_fixtures.png" alt="" width="2320" height="1368" /></p>
+<h2>Support for UUID</h2>
+<p>You can now specify UUID as a column type in migration files and schema. RubyMine recognizes it as an attribute with the <code>String</code> type.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-280298" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_uuid_example.png" alt="" width="1904" height="1120" /></p>
+<h2>Project Wizard enhancements</h2>
+<p>In this release cycle, we’re continuing to polish the <em>New Project</em> dialog. When creating a new Rails project, you will see its path right under the <em>Location</em> field. We’ve also updated the <em>Rails version</em> field so it is now easier to install the necessary version of the Rails gem using the plus icon.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-280230" src="https://blog.jetbrains.com/wp-content/uploads/2022/09/rm_new_project_wizard-1.png" alt="" width="1608" height="1308" /></p>
+<h2>Join the Early Access Program</h2>
+<p>You can download the latest EAP build <a href="https://www.jetbrains.com/ruby/nextversion/">from our website</a> or via the <a href="https://www.jetbrains.com/toolbox-app/">Toolbox app</a>. The full list of closed tickets in this EAP build is available in the <a href="https://youtrack.jetbrains.com/articles/RUBY-A-220364993">release notes</a>.</p>
+<p>To learn about the newest features as they come out, please follow <a href="https://twitter.com/rubymine">RubyMine on Twitter</a>. We post product news and tips several times a week.</p>
+<p>We encourage you to share your thoughts in the comments below and to create and vote for new features in the <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a>.</p>
+<p><em>Happy developing!</em></p>
+<p>The RubyMine team</p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>RubyMine 2022.2 Released</title>
+		<link>https://blog.jetbrains.com/ruby/2022/07/rubymine-2022-2-released/</link>
+		
+		<dc:creator><![CDATA[Artem Sarkisov]]></dc:creator>
+		<pubDate>Tue, 26 Jul 2022 11:59:00 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/07/rm_222_Release_Preview_image_1280x600_RubyMine.png</featuredImage>		<category><![CDATA[news]]></category>
+		<category><![CDATA[releases]]></category>
+		<category><![CDATA[2022-2]]></category>
+		<category><![CDATA[2022-2-new-features]]></category>
+		<category><![CDATA[newsletter]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=267552</guid>
+
+					<description><![CDATA[Hi all, RubyMine 2022.2 is now available! Below is a brief overview of the most notable features. For a detailed description of this update, please visit our What&#8217;s New page. Support for Rails URLs With RubyMine 2022.2 you can click links in server logs for View, Route, and other references to navigate to the corresponding [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><img src="https://blog.jetbrains.com/wp-content/uploads/2022/07/rm_222_Release_Preview_image_1280x600_RubyMine.png" alt="RubyMine 2022.2" width="640"></p>
+<p>Hi all,</p>
+<p>RubyMine 2022.2 is now available! Below is a brief overview of the most notable features. For a detailed description of this update, please visit our <a href="https://www.jetbrains.com/ruby/whatsnew/" target="_blank" rel="noopener">What&#8217;s New</a> page.</p>
+<h2>Support for Rails URLs</h2>
+<p>With RubyMine 2022.2 you can click links in server logs for <em>View</em>, <em>Route</em>, and other references to navigate to the corresponding files. You can now also find and navigate to the urls with <em>Search Everywhere</em>, autocomplete HTTP requests, and use the <em>Endpoints</em> tool window.</p>
+<p><img src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_routes_navigation_in_server_logs.png" alt="rails urls" width="670"></p>
+<h2>YARD</h2>
+<p>Starting with v2022.2 RubyMine recognizes YARD macro extensions and provides general coding assistance for them.</p>
+<p><img src="https://blog.jetbrains.com/wp-content/uploads/2022/07/rm_222_navigate_to_macros.png" alt="yard macros" width="670"></p>
+<h2>Various new features</h2>
+<p>The new version is also equipped with code insight for pattern-matched local variables, an option to run a currently opened file, RBS and debugger improvements, and other miscellaneous features.</p>
+<p><img src="https://blog.jetbrains.com/wp-content/uploads/2022/07/rm_222_rigthward_assigment.png" alt="rightward assignments support" width="670"></p>
+<p>Check out the <a href="https://www.jetbrains.com/ruby/whatsnew/" target="_blank" rel="noopener">What&#8217;s new page</a> to learn about new features for the code editor, tests, Docker support, VCS integration, and more.</p>
+<p align="center"><a class="jb-download-button" href="https://www.jetbrains.com/ruby/download/">DOWNLOAD RUBYMINE 2022.2</a></p>
+<p>Happy developing!</p>
+<p>The RubyMine team</p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>RubyMine 2022.2 EAP4</title>
+		<link>https://blog.jetbrains.com/ruby/2022/06/rubymine-2022-2-eap4/</link>
+		
+		<dc:creator><![CDATA[Anna Zykova]]></dc:creator>
+		<pubDate>Mon, 13 Jun 2022 12:14:59 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/05/rm_222_blog_banner.png</featuredImage>		<category><![CDATA[eap]]></category>
+		<category><![CDATA[2022-2-eap]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=255106</guid>
+
+					<description><![CDATA[RubyMine 2022.2 EAP4 is here! Catch up on all the new features by checking out the previous EAP blog posts. Below you can find the most notable improvements. Support for YARD macros We’re continuing to improve our YARD support. Now RubyMine recognizes YARD macro extensions and provides general coding assistance for them. Use the Go [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">RubyMine 2022.2 EAP4 is here! Catch up on all the new features by checking out the </span><a href="https://blog.jetbrains.com/ruby/"><span style="font-weight: 400;">previous EAP blog posts</span></a><span style="font-weight: 400;">.</span></p>
+<p><span style="font-weight: 400;">Below you can find the most notable improvements.</span></p>
+<h2><span style="font-weight: 400;">Support for YARD macros</span></h2>
+<p><span style="font-weight: 400;">We’re continuing to improve our YARD support. Now RubyMine recognizes YARD macro extensions and provides general coding assistance for them.</span></p>
+<p><span style="font-weight: 400;">Use the </span><a href="https://www.jetbrains.com/help/ruby/2022.2/navigating-through-the-source-code.html#go_to_declaration"><span style="font-weight: 400;">Go to declaration</span></a><span style="font-weight: 400;"> action on a macro reference to jump to the corresponding macro declaration. In the main menu, go to </span><b>Navigate | Declaration or Usages </b>or press <b>⌘ B (macOS) / Ctrl+B (Windows)</b><span style="font-weight: 400;">.</span></p>
+<p><img loading="lazy" class="alignnone size-full wp-image-255155" src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_eap4_navigate_to_macros.gif" alt="" width="1984" height="1216" /></p>
+<p><span style="font-weight: 400;">RubyMine allows you to search for usages of a macro declaration by invoking the </span><a href="https://www.jetbrains.com/help/ruby/2022.2/find-highlight-usages.html#find-usages"><span style="font-weight: 400;">Find usages</span></a><span style="font-weight: 400;"> action. Press </span><b>⌥ F7 (macOS) / </b><b>Alt+F7 (Windows)</b><span style="font-weight: 400;"> or go to </span><b>Edit | Find Usages | Find Usages</b><span style="font-weight: 400;"> in the main menu.</span></p>
+<p><img loading="lazy" class="alignnone size-full wp-image-255188" src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_eap4_macros_find_usages.png" alt="" width="1982" height="1382" /></p>
+<p><span style="font-weight: 400;">You can use the </span><a href="https://www.jetbrains.com/help/ruby/2022.2/rename-refactorings.html"><span style="font-weight: 400;">Rename</span></a><span style="font-weight: 400;"> refactoring on macros by pressing </span><b>⇧ F6 (macOS) / Shift+F6 (Windows)</b><i><span style="font-weight: 400;">. </span></i><span style="font-weight: 400;">Then, specify a new name for the macro and press </span><b>Enter</b><span style="font-weight: 400;">.</span></p>
+<p><img loading="lazy" class="alignnone size-full wp-image-255166" src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_eap4_rename_macros.gif" alt="" width="1716" height="850" /></p>
+<p><a href="https://www.jetbrains.com/help/ruby/2022.2/documenting-source-code.html#toggle-rendered-view"><span style="font-weight: 400;">Render the YARD documentation</span></a><span style="font-weight: 400;"> to check out the macro data in place of the macro reference. RubyMine </span><span style="font-weight: 400;">supports any variable substitutions that may be used in the macro data</span><span style="font-weight: 400;"> ($1, $2, etc.).</span></p>
+<p><img loading="lazy" class="alignnone size-full wp-image-255177" src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_eap4_render_yard.gif" alt="" width="1752" height="1100" /></p>
+<h2><span style="font-weight: 400;">Keyboard shortcut to change the font size globally</span></h2>
+<p><span style="font-weight: 400;">We’ve recently introduced a keyboard shortcut that changes the font size across all editors. To increase the font size, press </span><b>⌃⇧</b><i><span style="font-weight: 400;">. </span></i><span style="font-weight: 400;">(macOS) or </span><b>Alt+Shift+.</b> <span style="font-weight: 400;">(Windows). To decrease it, press </span><b>⌃⇧</b><span style="font-weight: 400;"> (macOS) or </span><b>Alt+Shift+, (Windows)</b><span style="font-weight: 400;">.</span></p>
+<p><img loading="lazy" class="alignnone size-full wp-image-255143" src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_eap4_font_resize.gif" alt="" width="2140" height="1328" /></p>
+<h2><span style="font-weight: 400;">Run Current File</span></h2>
+<p><span style="font-weight: 400;">RubyMine uses </span><a href="https://www.jetbrains.com/help/ruby/2022.2/run-debug-configuration.html"><span style="font-weight: 400;">run/debug configurations</span></a><span style="font-weight: 400;"> to run, debug, deploy, and test your code. In this release, we’ve introduced a new feature to run and debug the file that is currently open in the editor.</span></p>
+<p><span style="font-weight: 400;">You can find the </span><i><span style="font-weight: 400;">Current file </span></i><span style="font-weight: 400;">option on the toolbar. If there are no run/debug configurations in your project yet, the </span><i><span style="font-weight: 400;">Current file </span></i><span style="font-weight: 400;">option shows up on the toolbar by default. Otherwise, you can find the option in the dropdown menu with run/debug configurations.</span></p>
+<p><img loading="lazy" class="alignnone size-full wp-image-255121" src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_eap4_current_file1.png" alt="" width="2136" height="1328" /></p>
+<p><span style="font-weight: 400;">When you launch the <em>Current file</em> configuration, RubyMine automatically determines the run/debug configuration type. Click the ‘</span><b>Run</b>’<span style="font-weight: 400;"> button next to the option to run the most suitable configuration for the file. Alternatively, you can use the dropdown menu options to run or debug your file.</span></p>
+<p><img loading="lazy" class="alignnone size-full wp-image-255132" src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_eap4_current_file2.png" alt="" width="2380" height="1438" /></p>
+<h2><span style="font-weight: 400;">New option to control auto-insertion of parentheses</span></h2>
+<p><span style="font-weight: 400;">Now you can choose whether you want RubyMine to automatically insert parentheses on code completion or not. To enable auto-insertion of parentheses, go to </span><b>Settings/Preferences | Editor | General | Code Completion</b> <span style="font-weight: 400;">and toggle the </span><i><span style="font-weight: 400;">Insert parentheses automatically when applicable</span></i><span style="font-weight: 400;"> checkbox.</span></p>
+<p><img loading="lazy" class="alignnone size-full wp-image-255110" src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_eap4_auto-parentheses_option.png" alt="" width="1964" height="1400" /></p>
+<h2><span style="font-weight: 400;">Join the Early Access Program</span></h2>
+<p><span style="font-weight: 400;">You can download the latest EAP build </span><a href="https://www.jetbrains.com/ruby/nextversion/"><span style="font-weight: 400;">from our website</span></a><span style="font-weight: 400;"> or via the </span><a href="https://www.jetbrains.com/toolbox-app/"><span style="font-weight: 400;">Toolbox app</span></a><span style="font-weight: 400;">. The full list of closed tickets in this EAP build is in the </span><a href="https://youtrack.jetbrains.com/articles/RUBY-A-220364956"><span style="font-weight: 400;">release notes</span></a><span style="font-weight: 400;">.</span></p>
+<p><span style="font-weight: 400;">To learn about the newest features as they come out, please follow </span><a href="https://twitter.com/rubymine"><span style="font-weight: 400;">RubyMine on Twitter</span></a><span style="font-weight: 400;">. We post product news and tips several times a week.</span></p>
+<p><span style="font-weight: 400;">We encourage you to share your thoughts in the comments below and to create and vote for new features in the </span><a href="https://youtrack.jetbrains.com/issues/ruby"><span style="font-weight: 400;">issue tracker</span></a><span style="font-weight: 400;">.</span></p>
+<p><i><span style="font-weight: 400;">Happy developing!</span></i></p>
+<p><span style="font-weight: 400;">The RubyMine team</span></p>
+
+
+<p></p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>RubyMine 2022.2 EAP3</title>
+		<link>https://blog.jetbrains.com/ruby/2022/06/rubymine-2022-2-eap-3/</link>
+		
+		<dc:creator><![CDATA[Artem Sarkisov]]></dc:creator>
+		<pubDate>Mon, 06 Jun 2022 10:25:00 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/05/rm_222_blog_banner.png</featuredImage>		<category><![CDATA[eap]]></category>
+		<category><![CDATA[2022-2-eap]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=253199</guid>
+
+					<description><![CDATA[RubyMine 2022.2 EAP 3 is now available! Here are the build highlights: Code completion for Rails URLs in the HTTP client Support for URL searches in Rails applications Endpoints toolwindow Improved clickable links in Rails server logs Better completion for HTML tags in ERB files Other improvements Code completion for Rails URLs in the HTTP [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>RubyMine 2022.2 EAP 3 is now available! Here are the build highlights:</p>
+<ul>
+<li><a href="#http_rails_completion">Code completion for Rails URLs in the HTTP client</a></li>
+<li><a href="#url_searches">Support for URL searches in Rails applications</a></li>
+<li><a href="#endpoints_toolwindow">Endpoints toolwindow</a></li>
+<li><a href="#clickable_links">Improved clickable links in Rails server logs</a></li>
+<li><a href="#html_tags_erb">Better completion for HTML tags in ERB files</a></li>
+<li><a href="#other">Other improvements</a></li>
+</ul>
+<h2 id="http_rails_completion">Code completion for Rails URLs in the HTTP client</h2>
+<p><img src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_http_client_url_completion.png" alt="" width="1340" /></p>
+<p>In this EAP, we&#8217;ve introduced autocompletion for HTTP requests. This means you now can autocomplete Rails URLs and navigate to their related <code>Routes</code>. The completion suggestions also display the types of available HTTP requests, as seen in the screenshot above.</p>
+<p>RubyMine also now <a href="https://youtrack.jetbrains.com/issue/RUBY-29729/">recognizes</a> the <code>shallow_path</code> option in routes and uses it to determine the path or url that a route generates.</p>
+<h2 id="url_searches">Support for URL searches in Rails applications</h2>
+<p><img src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_se_url_search.png" alt="" width="1340" /></p>
+<p>RubyMine now supports searching for Rails URLs. Go to &gt;<em>Navigate | URL Mapping </em>and&gt;press <em>⇧ + ⌘ + \ </em>&gt;on Mac or <em>Ctrl + Shift + \ </em>on Windows and Linux, or simply type &gt;<em>/url</em> in the &gt;<em>Search Everywhere</em> dialog.</p>
+<p>We&#8217;ve also <a href="https://youtrack.jetbrains.com/issue/RUBY-29730/">added support</a> for <code>.format</code> in Rails paths and urls.</p>
+<h2 id="endpoints_toolwindow">Endpoints tool window</h2>
+<p><img src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_endpoints_tool_window.png" alt="" width="1340" /></p>
+<p>The newly added <em>Endpoints</em> tool window provides an aggregated view of client and server APIs used in your project. The tool window can assist you when developing microservices and backend-frontend communication. You can refer to <a href="https://www.jetbrains.com/help/idea/endpoints-tool-window.html">this help topic</a> to learn more.</p>
+<h2 id="clickable_links">Improved clickable links in Rails server logs</h2>
+<p><img src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_routes_navigation_in_server_logs.png" alt="" width="1340" /></p>
+<p>You can now click URLs in Rails server logs to navigate to the corresponding <code>Routes</code> that generated them.</p>
+<h2 id="html_tags_erb">Better completion for HTML tags in ERB files</h2>
+<p><img src="https://blog.jetbrains.com/wp-content/uploads/2022/06/rm_222_html_tags.png" alt="" width="1340" /></p>
+<p>You no longer need to manually type opening HTML tags when you edit .html.erb files. Just start typing the name of an HTML tag, and RubyMine will provide a proper autocomplete suggestion. Press <em>Tab</em> to autocomplete the tag and continue editing things inside the tag.</p>
+<h2 id="other">Other improvements</h2>
+<ul>
+<li>Added support for anonymous rest and keyword rest argument forwarding [<a href="https://youtrack.jetbrains.com/issue/RUBY-29677/">RUBY-29677</a>].</li>
+<li>Added support for YARD macros [<a href="https://youtrack.jetbrains.com/issue/RUBY-29796/">RUBY-29796</a>].</li>
+<li>Fixed a variety of bugs.</li>
+</ul>
+<h2>Join the Early Access Program</h2>
+<p>You can download the latest EAP build <a href="https://www.jetbrains.com/ruby/nextversion/">from our website</a> or via the <a href="https://www.jetbrains.com/toolbox-app/">Toolbox app</a>. The full list of closed tickets in this EAP build is in the <a href="https://youtrack.jetbrains.com/articles/RUBY-A-220364953/RubyMine-20222-EAP-3-222288914-build-Release-Notes">release notes</a>.</p>
+<p>To learn about the newest features as they come out, please follow <a href="https://twitter.com/rubymine">RubyMine on Twitter</a>. We post product news and tips several times a week.</p>
+<p>We encourage you to share your thoughts in the comments below and to create and vote for new features in the <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a>.</p>
+<p><em>Happy developing!</em></p>
+<p>The RubyMine team</p>
+
+
+<p></p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>RubyMine 2022.1.2 Is Available</title>
+		<link>https://blog.jetbrains.com/ruby/2022/06/rubymine-2022-1-2-is-available/</link>
+		
+		<dc:creator><![CDATA[Artem Sarkisov]]></dc:creator>
+		<pubDate>Fri, 03 Jun 2022 11:42:57 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/04/RM_2022.1_release_featured_1280x600.png</featuredImage>		<category><![CDATA[2022-1]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=253317</guid>
+
+					<description><![CDATA[RubyMine 2022.1.2 is available! You can update using the Toolbox App or right from inside the IDE. You can also download RubyMine 2022.1.2 from our website. Fixes and improvements: RBS: supported inline visibility modifiers RUBY-29638, RUBY-29678. YARD: supported the @example tag RUBY-28014, RUBY-29750. Improved Ruby inlay hints RUBY-29592. Check out the release notes for the [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><strong>RubyMine 2022.1.2</strong> is available!</p>
+<p>You can update using the <a href="https://www.jetbrains.com/toolbox-app/">Toolbox App</a> or right from inside the IDE. You can also download RubyMine 2022.1.2 from our <a href="https://www.jetbrains.com/ruby/download/">website</a>.</p>
+<p>Fixes and improvements:</p>
+<ul>
+<li>RBS: supported inline visibility modifiers <a href="https://youtrack.jetbrains.com/issue/RUBY-29638">RUBY-29638</a>, <a href="https://youtrack.jetbrains.com/issue/RUBY-29678">RUBY-29678</a>.</li>
+<li>YARD: supported the <code>@example</code> tag <a href="https://youtrack.jetbrains.com/issue/RUBY-28014">RUBY-28014</a>, <a href="https://youtrack.jetbrains.com/issue/RUBY-29750">RUBY-29750</a>.</li>
+<li>Improved Ruby inlay hints <a href="https://youtrack.jetbrains.com/issue/RUBY-29592">RUBY-29592</a>.</li>
+</ul>
+<p>Check out the <a href="https://youtrack.jetbrains.com/articles/RUBY-A-220364952">release notes</a> for the complete list of closed tickets. And as always, please <a href="https://youtrack.jetbrains.com/issues/ruby">report</a> any issues you encounter.</p>]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>RubyMine 2022.2 EAP2</title>
+		<link>https://blog.jetbrains.com/ruby/2022/05/rubymine-2022-2-eap2/</link>
+		
+		<dc:creator><![CDATA[Anna Zykova]]></dc:creator>
+		<pubDate>Fri, 27 May 2022 13:49:01 +0000</pubDate>
+		<featuredImage>https://blog.jetbrains.com/wp-content/uploads/2022/05/rm_222_blog_banner.png</featuredImage>		<category><![CDATA[eap]]></category>
+		<category><![CDATA[2022-2-eap]]></category>
+		<guid isPermaLink="false">https://blog.jetbrains.com/?post_type=ruby&amp;p=250500</guid>
+
+					<description><![CDATA[The second 2022.2 EAP build is now available! Here are the build highlights: Improved support for retrieving types from unknown classes in RBS New option to exit line comment continuation Open Gemfile from a RuboCop suggestion Improved rendering of YARD docs Improved support for retrieving types from unknown classes in RBS Previously, we only provided [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>The second 2022.2 EAP build is now available! Here are the build highlights:</p>
+<ul>
+<li><a href="https://blog.jetbrains.com/ruby/2022/05/rubymine-2022-2-eap2#rbs_generic_fallback">Improved support for retrieving types from unknown classes in RBS</a></li>
+<li><a href="https://blog.jetbrains.com/ruby/2022/05/rubymine-2022-2-eap2#exit_comment_line">New option to exit line comment continuation</a></li>
+<li><a href="https://blog.jetbrains.com/ruby/2022/05/rubymine-2022-2-eap2#gemfile_from_rubocop">Open Gemfile from a RuboCop suggestion</a></li>
+<li><a href="https://blog.jetbrains.com/ruby/2022/05/rubymine-2022-2-eap2#yard_rendering">Improved rendering of YARD docs</a></li>
+</ul>
+<h2 id="rbs_generic_fallback">Improved support for retrieving types from unknown classes in RBS</h2>
+<p>Previously, we only provided types for an object if its class had an RBS signature. If there was no corresponding RBS signature, we could only retrieve the types of methods from <code>Object</code>.</p>
+<p>We&#8217;ve improved type inference for unknown classes, so RubyMine will now look up the types for methods from all known ancestors from Ruby, not just <code>Object</code>.</p>
+<p><img loading="lazy" class="alignnone wp-image-250526 size-full" src="https://blog.jetbrains.com/wp-content/uploads/2022/05/rm_222_rbs_generic_fallback.png" alt="" width="1362" height="564"></p>
+<p>This feature is especially useful when using classes and modules from the standard library in the ancestry of your own classes.</p>
+<h2 id="exit_comment_line">New option to exit line comment continuation</h2>
+<p>This version adds the new option to delete an empty comment line by pressing <em>Enter</em>. To enable the option, toggle the <strong>Delete empty line comment with Enter</strong> checkbox in <strong>Preferences / Settings | Advanced Settings | Ruby</strong>.</p>
+<p><img loading="lazy" class="alignnone wp-image-250573 size-full" src="https://blog.jetbrains.com/wp-content/uploads/2022/05/rm_222_exit_comment_line_continuation-1.gif" alt="" width="1780" height="860"></p>
+<p>Use <em><span style="color: #19191c;">⇧⏎ </span></em><span style="color: #19191c;">on macOS or </span><span style="color: #19191c;"><em>Shift+Enter</em></span><span style="color: #19191c;"> on Windows to insert an empty comment line.</span></p>
+<h2 id="gemfile_from_rubocop">Open Gemfile from a RuboCop suggestion</h2>
+<p>Now you can open your Gemfile and add the RuboCop gem right from the <a href="https://www.jetbrains.com/help/ruby/2022.2/notifications.html">Notifications tool window</a>. When you see the <strong>Set up RuboCop </strong>suggestion in the <em>Notifications</em> tool window, click <strong>Add</strong>.</p>
+<p><img loading="lazy" class="alignnone wp-image-250537 size-full" src="https://blog.jetbrains.com/wp-content/uploads/2022/05/rm_222_rubocop_gemfile.png" alt="" width="1912" height="1028"></p>
+<h2 id="yard_rendering">Improved rendering of YARD docs</h2>
+<p>Check out the updated look and feel of <a href="https://www.jetbrains.com/help/ruby/2022.2/documenting-source-code.html#toggle-rendered-view">YARD comments and tags</a> when rendering them in the editor. We tidied up indentation and styles to make code documentation inside the IDE more uniform.</p>
+<p><img loading="lazy" class="alignnone wp-image-250548 size-full" src="https://blog.jetbrains.com/wp-content/uploads/2022/05/rm_222_yard_rendering.png" alt="" width="1610" height="772"></p>
+<p>In this EAP, we’ve also fixed a bunch of inspection problems (<a href="https://youtrack.jetbrains.com/issue/RUBY-28714/Ruby-inspections-Redundant-safe-navigation-is-triggered-wrongly" data-wplink-edit="true">RUBY-28714</a>, <a href="https://youtrack.jetbrains.com/issue/RUBY-29700/Redundant-safe-navigation-inspection-wrongly-triggered-by-Array-">RUBY-29700</a>, <a href="https://youtrack.jetbrains.com/issue/RUBY-29507/Incorrectly-flagging-safe-navigation-on-array-index-as-redundant">RUBY-29507</a>, <a href="https://youtrack.jetbrains.com/issue/RUBY-29698/Possibly-incorrect-RBS-for-Array-collect-map-body-is-marked-as-i">RUBY-29698</a>) and the issue with the browser preview links from views (<a href="https://youtrack.jetbrains.com/issue/RUBY-15328/Browser-url-from-views-is-incorrect-for-the-namespaced-controlle">RUBY-15328</a>).</p>
+<h2>Join the Early Access Program</h2>
+<p>You can download the latest EAP build <a href="https://www.jetbrains.com/ruby/nextversion/">from our website</a> or via the <a href="https://www.jetbrains.com/toolbox-app/">Toolbox app</a>. The full list of closed tickets in this EAP build is in the <a href="https://youtrack.jetbrains.com/articles/RUBY-A-220364950/RubyMine-2022-2-EAP-2-222-2680-4-build-Release-Notes">release notes</a>.</p>
+<p>To learn about the newest features as they come out, please follow <a href="https://twitter.com/rubymine">RubyMine on Twitter</a>. We post product news and tips several times a week.</p>
+<p>We encourage you to share your thoughts in the comments below and to create and vote for new features in the <a href="https://youtrack.jetbrains.com/issues/ruby">issue tracker</a>.</p>
+<p><em>Happy developing!</em></p>
+<p>The RubyMine team</p>
+
+
+<p></p>]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

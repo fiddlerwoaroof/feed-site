@@ -6,6 +6,48 @@
  <description>Programming languages news, articles and discussion</description>
  <language>en</language>
 <item>
+ <title>LtU is now running in a new, more stable environment</title>
+ <link>http://lambda-the-ultimate.org/node/5654</link>
+ <description>&lt;p &gt;LtU has experienced a long period of downtime recently. Its software infrastructure was outdated enough that it became difficult to maintain when problems arose. It has now been migrated to a brand new environment. It should be much more stable from now on.&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/3">Admin</category>
+ <pubDate>Wed, 31 Aug 2022 06:37:45 +0000</pubDate>
+</item>
+<item>
+ <title>Graydon Hoare: 21 compilers and 3 orders of magnitude in 60 minutes</title>
+ <link>http://lambda-the-ultimate.org/node/5648</link>
+ <description>&lt;p &gt;In 2019, Graydon Hoare gave &lt;a href=&quot;http://venge.net/graydon/talks/CompilerTalk-2019.pdf?utm_source=thenewstack&amp;amp;utm_medium=website&amp;amp;utm_campaign=platform&quot;&gt;a talk to undergraduates (PDF of slides)&lt;/a&gt; trying to communicate a sense of what compilers looked like from the perspective of people who did it for a living.&lt;/p&gt;
+&lt;p &gt;I've been aware of this talk for over a year and meant to submit a story here, but was overcome by the sheer number of excellent observations. I'll just summarise the groups he uses:&lt;/p&gt;
+&lt;ul &gt;
+&lt;li &gt;The giants: by which he means the big compilers that are built the old-fashioned way that throw massive resources at attaining efficiency
+&lt;li &gt;The variants, which use tricks to avoid being so massive:
+&lt;ol &gt;
+&lt;li &gt;Fewer optimisations: be traditional, but be selective and only the optimisations that really pay off
+&lt;li &gt;Use compiler-friendly languages, by which he is really taking about languages that are good for implementing compilers, like Lisp and ML
+&lt;li &gt;Theory-driven meta-languages, esp. how something like yacc allows a traditional Dragon-book style compiler to be written more easily
+&lt;li &gt;Base compiler on a carefully designed IR that is either easy to compile or reasonable to bytecode-interpret
+&lt;li &gt;Exercise discretion  to have the object code be a mix of compiled and interpreted
+&lt;li &gt;Use sophisticated partial evaluation
+&lt;li &gt;Forget tradition and implement everything directly by hand
+&lt;/ol&gt;
+&lt;/ul&gt;
+&lt;p &gt;I really recommend spending time working through these slides. While much of the material I was familiar with, enough was new, and I really appreciated the well-made points, shout-outs to projects that deserve more visibility, such as Nanopass compilers and CakeML, and the presentation of the Futamura projections, a famously tricky concept, at the undergraduate level.&lt;/p&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/8">Implementation</category>
+ <pubDate>Sun, 27 Feb 2022 14:47:26 +0000</pubDate>
+</item>
+<item>
+ <title>Latent Effects for Reusable Language Components</title>
+ <link>http://lambda-the-ultimate.org/node/5640</link>
+ <description>&lt;p &gt;Latent Effects for Reusable Language Components, by Birthe van den Berg, Tom Schrijvers, Casper Bach Poulsen, Nicolas Wu:&lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;The development of programming languages can be quite complicated and costly. Hence, much effort has been devoted to the modular definition of language features that can be reused in various combinations to define new languages and experiment with their semantics. A notable outcome of these efforts is the algebra-based “datatypes &quot;a la carte&quot; (DTC) approach. When combined with algebraic effects, DTC can model a wide range of common language features. Unfortunately, the&lt;br &gt;
+current state of the art does not cover modular definitions of advanced control-flow mechanisms that defer execution to an appropriate point, such as call-by-name and call-by-need evaluation, as well as (multi-)staging. This paper defines latent effects, a generic class of such control-flow mechanisms. We demonstrate how function abstractions, lazy computations and a MetaML-like staging can all be expressed in a modular fashion using latent effects, and how they can be combined in various ways to obtain complex semantics. We provide a full Haskell implementation of our effects and handlers with a range of examples.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p &gt;Looks like a nice generalization of the basic approach taken by algebraic effects to more subtle contexts. Algebraic effects &lt;a href=&quot;https://duckduckgo.com/?q=site%3Alambda-the-ultimate.org%2F+algebraic+effects&amp;amp;atb=v213-1&amp;amp;ia=web&quot;&gt;have been discussed here on LtU many times&lt;/a&gt;. I think this description from section 2.3 is a pretty good overview of their approach:&lt;/p&gt;
+&lt;blockquote &gt;&lt;p &gt;LE&amp;amp;H is based on a different, more sophisticated structure than AE&amp;amp;H’s free monad. This structure supports non-atomic operations (e.g., function abstraction, thunking, quoting) that contain or delimit computations whose execution may be deferred. Also, the layered handling is different. The idea is still the same, to replace bit by bit the structure of the tree by its meaning. Yet, while AE&amp;amp;H grows the meaning around the shrinking tree, LE&amp;amp;H grows little “pockets of meaning” around the individual nodes remaining in the tree, and not just around the root. The latter supports deferred effects because later handlers can still re-arrange the semantic pockets created by earlier handlers.&lt;/p&gt;&lt;/blockquote&gt;</description>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/35">Effects</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/11">Functional</category>
+ <category domain="http://lambda-the-ultimate.org/taxonomy/term/19">Theory</category>
+ <pubDate>Thu, 14 Oct 2021 14:02:48 +0000</pubDate>
+</item>
+<item>
  <title>Introducing PathQuery, Google's Graph Query Language</title>
  <link>http://lambda-the-ultimate.org/introducing-google-path-query</link>
  <description>&lt;p &gt;&lt;a href=&quot;https://arxiv.org/abs/2106.09799&quot;&gt;Introducing PathQuery, Google's Graph Query Language&lt;/a&gt;&lt;/p&gt;
@@ -154,59 +196,6 @@ Turnstile+ represents a major research leap over its predecessor. Specifically, 
  <category domain="http://lambda-the-ultimate.org/taxonomy/term/10">Paradigms</category>
  <category domain="http://lambda-the-ultimate.org/taxonomy/term/25">Spotlight</category>
  <pubDate>Mon, 05 Aug 2019 14:08:02 +0000</pubDate>
-</item>
-<item>
- <title>Tensor Considered Harmful</title>
- <link>http://lambda-the-ultimate.org/tensor-considered-harmful</link>
- <description>&lt;p &gt;&lt;a href=&quot;http://nlp.seas.harvard.edu/NamedTensor&quot;&gt;Tensor Considered Harmful&lt;/a&gt;, by Alexander Rush&lt;/p&gt;
-&lt;blockquote &gt;&lt;p &gt;
-TL;DR: Despite its ubiquity in deep learning, Tensor is broken. It forces bad habits such as exposing private dimensions, broadcasting based on absolute position, and keeping type information in documentation. This post presents a proof-of-concept of an alternative approach, &lt;strong &gt;named tensors&lt;/strong&gt;, with named dimensions. This change eliminates the need for indexing, dim arguments, einsum- style unpacking, and documentation-based coding. The prototype &lt;strong &gt;PyTorch library&lt;/strong&gt; accompanying this blog post is available as &lt;a href=&quot;https://github.com/harvardnlp/NamedTensor&quot;&gt;namedtensor&lt;/a&gt;.
-&lt;/p&gt;&lt;/blockquote&gt;
-&lt;p &gt;Thanks to Edward Z. Yang for pointing me to this &quot;Considered Harmful&quot; position paper.&lt;/p&gt;</description>
- <category domain="http://lambda-the-ultimate.org/taxonomy/term/4">Critiques</category>
- <category domain="http://lambda-the-ultimate.org/taxonomy/term/8">Implementation</category>
- <category domain="http://lambda-the-ultimate.org/taxonomy/term/18">Teaching &amp; Learning</category>
- <pubDate>Thu, 27 Jun 2019 14:26:57 +0000</pubDate>
-</item>
-<item>
- <title>Seven Sketches in Compositionality: An Invitation to Applied Category Theory</title>
- <link>http://lambda-the-ultimate.org/node/5571</link>
- <description>&lt;a href=&quot;http://xahlee.info/math/i/category_theory_brendan_fong_david_spivak_2018-03.pdf&quot;&gt;Seven Sketches in Compositionality: An Invitation to Applied Category Theory&lt;/a&gt;
-&lt;p &gt;2018 by Brendan Fong and David I. Spivak&lt;/p&gt;
-&lt;blockquote &gt;
-Category theory is becoming a central hub for all of pure mathematics. It is unmatched
-in its ability to organize and layer abstractions, to find commonalities between structures of all sorts, and to facilitate communication between different mathematical
-communities.
-But it has also been branching out into science, informatics, and industry. We believe
-that it has the potential to be a major cohesive force in the world, building rigorous
-bridges between disparate worlds, both theoretical and practical. The motto at MIT is
-mens et manus, Latin for mind and hand. We believe that category theory—and pure
-math in general—has stayed in the realm of mind for too long; it is ripe to be brought
-to hand.
-&lt;/blockquote&gt;
-A very approachable but useful introduction to category theory. It avoids the Scylla and Charybdis of becoming incomprehensible after page 2 (as many academic texts do), and barely scratching the surface (as many popular texts do).</description>
- <category domain="http://lambda-the-ultimate.org/taxonomy/term/22">Category Theory</category>
- <category domain="http://lambda-the-ultimate.org/taxonomy/term/18">Teaching &amp; Learning</category>
- <pubDate>Sun, 28 Apr 2019 03:53:25 +0000</pubDate>
-</item>
-<item>
- <title>&quot;Three Things I Wish I Knew When I Started Designing Languages&quot;</title>
- <link>http://lambda-the-ultimate.org/node/5569</link>
- <description>&lt;p &gt;&lt;a href=&quot;https://www.infoq.com/presentations/language-design-process&quot;&gt;The transcript of &lt;i &gt;Three Things I Wish I Knew When I Started Designing Languages&lt;/i&gt;&lt;/a&gt;, a talk given by Peter Alvaro somewhere or other, is up at Info Q.&lt;/p&gt;
-&lt;p &gt;Peter Alavaro's main research interest is in taming distributed systems. He starts his talk with the provocative thesis, &quot;In the future, all radical new languages will be domain-specific languages.&quot;  He talks of the evolution of his ideas about dealing with distributed systems:&lt;/p&gt;
-&lt;ol &gt;
-&lt;li &gt;Little interest by designers of programming-language designers in filling huge difficulty of debugging in context of distributed systems;
-&lt;li &gt;PLs often make handling of data somewhat implicit, even with functional programming, which he says is dangerous in distributed programming;
-&lt;li &gt;To talk about the flow of data properly, we need to talk about time;
-&lt;li &gt;Two things that influenced him as a grad student: Jeff Ullman's claim that encapsulation and declarativity are in tension, and &lt;a href=&quot;https://en.wikipedia.org/wiki/Fagin%27s_theorem&quot;&gt;Fagin's theorem&lt;/a&gt; (the existential fragment of second-order logic characterises NP);
-&lt;li &gt;Idea that distributed systems can be considered as protocols specified a bit like SQL or Datalog queries;
-&lt;li &gt;Triviality with query languages of characterising the idea of place in distributive systems: they are just another relation parameter;
-&lt;li &gt;Describing evolution of a system in time can be done with two other things: counters and negation, leading to Bertram Ludäscher's language Statelog.  But this way of doing things leads to the kind of low-level overexpressive modelling he was trying to avoid;
-&lt;li &gt;&quot;What is it about...protocols that they seem to require negation to express?”  Turns out that if you drop negation, you characterise the protocols that deliver messages deterministically.
-&lt;/ol&gt;
-&lt;p &gt;He summarises by saying the only good reason to design a programming language (I assume he means a radically novel language) is to shape your understanding of the problem.  No regrets of being the only user of his first language, Datalist, because the point is that it shaped all his later thought in his research.&lt;/p&gt;</description>
- <category domain="http://lambda-the-ultimate.org/taxonomy/term/16">Parallel/Distributed</category>
- <pubDate>Tue, 19 Mar 2019 00:20:53 +0000</pubDate>
 </item>
 </channel>
 </rss>

@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+
+<channel>
+	<title>Code with Jason</title>
+	<atom:link href="https://www.codewithjason.com/feed/" rel="self" type="application/rss+xml"/>
+	<link>https://www.codewithjason.com</link>
+	<description/>
+	<lastBuildDate>Tue, 08 Nov 2022 02:07:40 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.0.3</generator>
+
+<image>
+	<url>https://www.codewithjason.com/wp-content/uploads/2022/06/cropped-portrait-2-32x32.png</url>
+	<title>Code with Jason</title>
+	<link>https://www.codewithjason.com</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Premature generalization</title>
+		<link>https://www.codewithjason.com/premature-generalization/</link>
+					<comments>https://www.codewithjason.com/premature-generalization/#respond</comments>
+		
+		<dc:creator><![CDATA[Jason Swett]]></dc:creator>
+		<pubDate>Tue, 08 Nov 2022 02:07:40 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<guid isPermaLink="false">https://www.codewithjason.com/?p=2625</guid>
+
+					<description><![CDATA[<p>Most programmers are familiar with the concept of premature optimization and the reasons why it&#8217;s bad. As a reminder, the main reason premature optimization is bad is because it&#8217;s an effort to solve problems that probably aren&#8217;t real. It&#8217;s more economical to wait and observe where the performance bottlenecks are than to try to predict [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/premature-generalization/">Premature generalization</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Most programmers are familiar with the concept of premature optimization and the reasons why it&#8217;s bad. As a reminder, the main reason premature optimization is bad is because it&#8217;s an effort to solve problems that probably aren&#8217;t real. It&#8217;s more economical to wait and observe where the performance bottlenecks are than to try to predict where the bottlenecks are going to be.</p>
+<p>Perhaps fewer programmers are familiar with the idea of <b>premature generalization</b>, also known as the code smell <a href="https://refactoring.guru/smells/speculative-generality">Speculative Generality</a>. Premature generalization is when you generalize a piece of code beyond its current requirements in anticipation of more general future requirements. In my experience it&#8217;s a very common mistake.</p>
+<p>Premature generalization is bad for the same exact reason premature optimization is bad: because it&#8217;s an effort to solve problems that probably aren&#8217;t real.</p>
+<p>Making a piece of code more general than it needs to be in anticipation of future needs might seem like a smart planning measure. If you can see that the code you&#8217;re writing will probably need to accommodate more use cases in the future, why not just make the code general enough now? That way you only have to write the code once.</p>
+<p>When programmers do this they&#8217;re making a bet. Sometimes their bet is right and sometimes it&#8217;s wrong. In my experience, these sorts of bets are wrong enough of the time that you lose on average. It&#8217;s like betting $50 for a 10% chance at winning $100. If you were to do that 10 times, you&#8217;d spend $500 and win just once (on average), meaning you&#8217;ll have paid $500 to win $100.</p>
+<p>It&#8217;s more economical to make your code <b>no more general than what&#8217;s called for by today&#8217;s requirements</b> and accept the risk that you might have to rework the code later to generalize it. This is also a bet but it&#8217;s a sounder one. Imagine a lottery system where you can either <b>buy a ticket for $50 for a 10% chance of winning $100</b>, or you can <b>choose <i>not</i> to play and accept a 10% chance of getting fined $30</b>. (I know it&#8217;s a weird lottery but bear with me.) If you buy a ticket ten times then on average you lose $400 because you&#8217;ve paid $500 to win $100. If ten times in a row you choose not to buy a ticket, then on average you get fined $30. So you&#8217;re obviously way better off with a policy of never buying the ticket.</p>
+<h2>Takeaways</h2>
+<ul>
+<li>Premature generalization is when you generalize a piece of code beyond its current requirements in anticipation of more general future requirements.</li>
+<li>On average, premature generalization doesn&#8217;t pay. It&#8217;s more economical to write the code in such a way as to only accommodate today&#8217;s requirements and then only generalize if and when a genuine need arises.</li>
+</ul>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/premature-generalization/">Premature generalization</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.codewithjason.com/premature-generalization/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Cohesion</title>
+		<link>https://www.codewithjason.com/cohesion/</link>
+					<comments>https://www.codewithjason.com/cohesion/#comments</comments>
+		
+		<dc:creator><![CDATA[Jason Swett]]></dc:creator>
+		<pubDate>Mon, 31 Oct 2022 10:54:47 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<guid isPermaLink="false">https://www.codewithjason.com/?p=2631</guid>
+
+					<description><![CDATA[<p>Every codebase is a story. Well-designed programs tell a coherent, easy-to-understand story. Other programs are poorly designed and tell a confusing, hard-to-understand story. And it&#8217;s often the case that a program wasn&#8217;t designed at all, and so no attempt was made to tell a coherent story. But there&#8217;s some sort of story in the code [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/cohesion/">Cohesion</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Every codebase is a story. Well-designed programs tell a coherent, easy-to-understand story. Other programs are poorly designed and tell a confusing, hard-to-understand story. And it&#8217;s often the case that a program wasn&#8217;t <i>designed</i> at all, and so no attempt was made to tell a coherent story. But there&#8217;s some sort of story in the code no matter what.</p>
+<p>If a codebase is like a story, a file in a codebase is like a chapter in a book. A well written-chapter will clearly let the reader know what the most important points are and will feature those important points most prominently. A chapter is most understandable when it principally sticks to just one topic.</p>
+<p>The telling of the story may unavoidably require the conveyance of incidental details. When this happens, those incidental details will be put in their proper place and not mixed confusingly with essential points. If a detail would pose too much of a distraction or an interruption, it gets moved to a footnote or appendix or parenthetical clause.</p>
+<p>A piece of code is <b>cohesive</b> if a) everything in it shares one single idea and b) it doesn&#8217;t mix incidental details with essential points.</p>
+<p>Now let&#8217;s talk about ways that cohesion tends to get lost as well as ways to maintain cohesion.</p>
+<h2>How cohesion gets lost</h2>
+<p>Fresh new projects are usually pretty easy to work with. This is because a) when you don&#8217;t have very much code, it&#8217;s easier to keep your code organized, and b) when the total amount of code is small, you can <i>afford</i> to be fairly disorganized without hurting overall understandability too much.</p>
+<p>Things get tougher as the project grows. Entropy (the tendency for all things to decline into disorder) unavoidably sets in. Unless there are constant efforts to fight back against entropy, the codebase grows increasingly disordered. The code grows harder to understand and work with.</p>
+<p>One common manifestation of entropy is the tendency for developers to hang new methods onto objects like ornaments on a Christmas tree. A developer is tasked with adding a new behavior. He or she goes looking for the object that seems like the most fitting home for that behavior. He or she adds the new behavior, which doesn&#8217;t <i>perfectly</i> fit the object where it was placed, but the new code only makes the object 5% less cohesive, and it&#8217;s not clear where might be a better place for that behavior, so in it goes.</p>
+<p>This ornament-hanging habit is never curtailed because no individual &#8220;offense&#8221; appears to be all that bad. This is the nature of entropy: disorder sets in not because anything bad was done but simply because no one is going out of their way to stave off disorder.</p>
+<p>So, even though no individual change appears to be all that bad, the result of all these changes in aggregate is a surprisingly bad mess. The objects are huge. They confusingly mix unrelated ideas. Their essential points are obscured by incidental details. They&#8217;re virtually impossible to understand. They lack cohesion.</p>
+<p>How can this problem be prevented?</p>
+<h2>How cohesion can be preserved</h2>
+<p>The first key to maintaining cohesion is to make a clear distinction between what&#8217;s <b>essential</b> and what&#8217;s <b>incidental</b>. More specifically, a distinction must be made between what&#8217;s essential and what&#8217;s incidental with respect to the object in question.</p>
+<p>For example, let&#8217;s say I have a class called <code class="inline">Appointment</code>. The concerns of <code class="inline">Appointment</code> include, among other things, a start time, a client and some matters related to caching.</p>
+<p>I would say that the start time and client are <i>essential</i> concerns of the appointment and that the caching is probably <i>incidental</i>. In the story of <code class="inline">Appointment</code>, start time and client are important highlights, whereas caching concerns are incidental details and should be tucked away in a footnote or appendix.</p>
+<p>That explains how to identify incidental details <i>conceptually</i> but it doesn&#8217;t explain how to separate incidental details <i>mechanically</i>. So, how do we do that?</p>
+<p>The primary way I do this is to simply move the incidental details into different objects. Let&#8217;s say for example that I have a <code class="inline">Customer</code> object with certain methods including one called <code class="inline">balance</code>.</p>
+<p>Over time the balance calculation becomes increasingly complicated to the point that it causes <code class="inline">Customer</code> to lose cohesion. No problem: I can just move the guts of the <code class="inline">balance</code> method into a new object (a PORO) called <code class="inline">CustomerBalance</code> and delegate all the gory details of balance calculation to that object. Now <code class="inline">Customer</code> can once again focus on the essential points and forget about the incidental details.</p>
+<p>Now, in this case it made perfect sense to recognize the concept of a customer balance as a brand new <a href="https://www.codewithjason.com/abstraction-in-rails/">abstraction</a>. But it doesn&#8217;t always work out this way. In our earlier <code class="inline">Appointment</code> example, for example, it&#8217;s maybe not so natural to take our caching concerns and conceive of them as a new extraction. It&#8217;s not particularly clear how that would go.</p>
+<p>What we can do in these cases, when we want to move an incidental detail out of an object but we can&#8217;t put our finger on a befitting new abstraction, is we can use a mixin instead. I view mixins as a good way to hold a bit of code which has cohesion with itself but which doesn&#8217;t quite qualify as an abstraction and so doesn&#8217;t make sense as an object. For me, mixins usually don&#8217;t have standalone value, and they&#8217;re usually only ever &#8220;mixed in&#8221; to one object as opposed to being reusable.</p>
+<p>(I could have said concern instead of mixin, but a) to me it&#8217;s a distinction without a meaningful difference, and b) <a href="https://www.codewithjason.com/used-intelligently-rails-concerns-great/">concerns come along with some conceptual baggage</a> that I didn&#8217;t want to bring into the picture here.)</p>
+<p>So for our <code class="inline">Appointment</code> example, we could move the caching code into a mixin in order to get it out of <code class="inline">Appointment</code> so that <code class="inline">Appointment</code> could once again focus solely on its essential points and forget about its incidental details.</p>
+<h2>Where to put these newly-sprouted files</h2>
+<p>When I make an object more cohesive by breaking out its incidental details into new <a href="https://www.codewithjason.com/what-is-a-rails-model/">model</a> file, you might wonder where I put that new file.</p>
+<p>The short answer is that I put these files into <code class="inline">app/models</code>, with additional subfolders based on the meaning of the code.</p>
+<p>So for the <code class="inline">Appointment</code>, I might have <code class="inline">app/models/appointment.rb</code> and <code class="inline">app/models/scheduling/appointment_caching.rb</code>, provided that the caching code is related specifically to scheduling. The rationale here is that the caching logic will only ever be relevant to scheduling whereas an appointment might be viewed in multiple contexts, e.g. sometimes scheduling and sometimes billing.</p>
+<p>For the customer balance example, I might have <code class="inline">app/models/customer.rb</code> and <code class="inline">app/models/billing/customer_balance.rb</code>. Again, a customer balance is always a billing concern whereas a customer could be looked at through a billing lens or conceivably through some other sort of lens.</p>
+<p>Note that even though <code class="inline">appointment_caching.rb</code> is a mixin or concern, I don&#8217;t put it in a <code class="inline">concerns</code> or <code class="inline">mixins</code> folder. That&#8217;s because I believe in <a href="https://www.codewithjason.com/organizing-rails-files-by-meaning/">organizing files by meaning</a> rather than type. I find that doing so makes it easier to find what I want to find when I want to find it.</p>
+<h2>Takeaways</h2>
+<ul>
+<li>A piece of code is cohesive if a) everything in it shares single idea and b) it doesn’t mix incidental details with essential points.</li>
+<li>Cohesion naturally erodes over time due to entropy.</li>
+<li>The first key to maintaining cohesion is to make a clear distinction between what’s essential and what’s incidental.</li>
+<li>Incidental details can be moved into either new objects or into mixins/concerns in order to help preserve cohesion.</li>
+</ul>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/cohesion/">Cohesion</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.codewithjason.com/cohesion/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Crisp boundaries</title>
+		<link>https://www.codewithjason.com/crisp-boundaries/</link>
+					<comments>https://www.codewithjason.com/crisp-boundaries/#respond</comments>
+		
+		<dc:creator><![CDATA[Jason Swett]]></dc:creator>
+		<pubDate>Tue, 25 Oct 2022 21:06:15 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<guid isPermaLink="false">https://www.codewithjason.com/?p=2624</guid>
+
+					<description><![CDATA[<p>If you&#8217;re going to make a change to an area, you have to understand that area. If you don&#8217;t understand the area you&#8217;re changing very well, your lack of understanding might lead to you accidentally introducing a bug. Well-written code is loosely coupled from the other pieces of code it touches. &#8220;Loosely coupled&#8221; means that [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/crisp-boundaries/">Crisp boundaries</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>If you&#8217;re going to make a change to an area, you have to understand that area. If you don&#8217;t understand the area you&#8217;re changing very well, your lack of understanding might lead to you accidentally introducing a bug.</p>
+<p>Well-written code is <b>loosely coupled</b> from the other pieces of code it touches. &#8220;Loosely coupled&#8221; means that if you have classes A and B which talk to each other, you can understand class A without having to know much about class B and vice versa.</p>
+<p>Conversely, if A and B are <b>tightly coupled</b>, then you might have to understand both class A <i>and</i> class B just to understand class A. Tight coupling makes code harder to work with.</p>
+<p>One aspect of loosely-coupled code is that it has <b>crisp boundaries</b>, which are the opposite of <b>blurry boundaries</b>. Here&#8217;s an example of a piece of code with <i>blurry</i> boundaries.</p>
+<pre><code class="language-ruby decode:true">class Person
+  def initialize(params)
+    @name = params[:name]
+  end
+end
+
+person = Person.new(params)</code></pre>
+<p>The only thing <code class="inline">Person</code> needs from the outside world is a name, but <code class="inline">Person</code> is accepting the broader <code class="inline">params</code> as an argument.</p>
+<p>Looking outward from inside the <code class="inline">Person</code> class, we might wonder: what exactly is in <code class="inline">params</code>? Who knows! It could be anything.</p>
+<p>The inclusion of <code class="inline">params</code> is a &#8220;leak&#8221; from the outside world into <code class="inline">Person</code>.</p>
+<p>Looking the other direction, from outside <code class="inline">Person</code> inward, we might see <code class="inline">Person.new(params)</code> and wonder what exactly of <code class="inline">params</code> <code class="inline">Person</code> needs in order to do its job. Does <code class="inline">Person</code> need everything inside of <code class="inline">params</code>? Just some of it? Who knows! Could be anything.</p>
+<p>Let&#8217;s contrast the blurry-boundary code above with the crisp-boundary code below.</p>
+<pre><code class="language-ruby decode:true ">class Person
+  def initialize(name)
+    @name = name
+  end
+end
+
+person = Person.new(params[:name])</code></pre>
+<p>In this case, looking outward from inside the <code class="inline">Person</code> class, it&#8217;s clear that <code class="inline">Person</code> takes a <code class="inline">name</code> and that&#8217;s it.</p>
+<p>And then looking in from outside, <code class="inline">Person.new(params[:name])</code> makes it clear exactly what&#8217;s being sent to <code class="inline">Person</code>.</p>
+<p>In order to make your classes and methods more understandable, <b>keep your boundaries crisp</b> by accepting the <b>minimum</b> amount of argument information necessary in order to get the job done.</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/crisp-boundaries/">Crisp boundaries</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.codewithjason.com/crisp-boundaries/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Why I organize my tests by domain concept, not by test type</title>
+		<link>https://www.codewithjason.com/why-i-organize-my-tests-by-domain-concept-not-by-test-type/</link>
+					<comments>https://www.codewithjason.com/why-i-organize-my-tests-by-domain-concept-not-by-test-type/#comments</comments>
+		
+		<dc:creator><![CDATA[Jason Swett]]></dc:creator>
+		<pubDate>Mon, 24 Oct 2022 20:41:47 +0000</pubDate>
+				<category><![CDATA[Automated Testing]]></category>
+		<guid isPermaLink="false">https://www.codewithjason.com/?p=2618</guid>
+
+					<description><![CDATA[<p>In Rails apps that use RSpec, it&#8217;s customary to have a spec directory with certain subdirectories named for the types of tests they contain: models, requests, system. The Minitest organization scheme doesn&#8217;t share the exact same nomes but it does share the custom of organizing by test type. I would like to raise the question: [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/why-i-organize-my-tests-by-domain-concept-not-by-test-type/">Why I organize my tests by domain concept, not by test type</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>In Rails apps that use RSpec, it&#8217;s customary to have a <code class="inline">spec</code> directory with certain subdirectories named for the types of tests they contain: <code class="inline">models</code>, <code class="inline">requests</code>, <code class="inline">system</code>. The Minitest organization scheme doesn&#8217;t share the exact same nomes but it does share the custom of organizing by test type.</p>
+<p>I would like to raise the question: <b>Why do we do it this way?</b></p>
+<p>To get at the answer to that question I&#8217;d like to ask a broader question: <b>What&#8217;s the benefit of organizing test files at all?</b> Why not just throw all the tests in a single directory? For me there are two reasons.</p>
+<h2>Reasons to organize test files into directories</h2>
+<h3>Finding tests</h3>
+<p>Sometimes I&#8217;m changing a feature and I want to know where the tests are for that feature so I can change or extend the tests accordingly</p>
+<p>When I&#8217;m making a change to a feature, I usually want to know where the tests are that are related to that feature so I can update or extend the tests accordingly. Or, if that feature doesn&#8217;t have tests, I want to know so, and with a reasonable degree of certainty, so that I don&#8217;t accidentally create new tests that duplicate existing ones.</p>
+<h3>Running tests in groups</h3>
+<p>If tests are organized into directories then they can be conveniently run in groups.</p>
+<p>It is of course possible, at least in some frameworks, to apply certain tags to tests and then run the tagged tests as a group. But doing so depends on developers remembering to add tags. This seems to me like a fragile link in the chain.</p>
+<p>I find directories to be better than tags for this purpose since it&#8217;s of course impossible to forget to put a file in a directory.</p>
+<h2>Test type vs. meaning</h2>
+<p>At some point I realized that if I organize my test files <a href="https://www.codewithjason.com/organizing-rails-files-by-meaning/">based on meaning</a> rather than test type, it makes it much easier to both a) find the tests when I want to find them and b) run the tests in groups that serve my purposes. Here&#8217;s why.</p>
+<h3>Finding tests</h3>
+<p>When I want to find the tests that correspond to a certain feature, I don&#8217;t necessarily know a lot about the characteristics of those tests. There <i>might</i> be a test that matches the filename of the application code file that I&#8217;m working on, but also there might not be. I&#8217;m also not always sure whether the application code I&#8217;m working on is covered by a model test, a system test, some other type of test, some combination of test types, or no test at all. The best I can do is either guess, search manually, or grep for some keywords and hope that the results aren&#8217;t too numerous to be able to examine one-by-one.</p>
+<p>If on the other hand the files are organized in a directory tree that corresponds to the tests&#8217; meaning in the <a href="https://www.codewithjason.com/what-is-a-rails-model/">domain model</a>, then finding the tests is easier. If I&#8217;m working in the application&#8217;s billing area, for example, I can look in <code class="inline">spec/billing</code> folder to see if the relevant tests are there. If I use a nested structure, I can look in <code class="inline">spec/billing/payments</code> to find tests that are specifically related to payments.</p>
+<p>I don&#8217;t need to worry about whether the payments-related tests are model tests, system tests or some other type of tests. I can just look in <code class="inline">spec/billing/payments</code> and work with whatever&#8217;s there. (I do, however, like to keep folders at the leaf level with names like <code class="inline">models</code>, <code class="inline">system</code>, etc. because it can be disorienting to not know what types of tests you&#8217;re looking at, and also it can create naming conflicts if you don&#8217;t separate files by type.)</p>
+<h3>Running tests in groups</h3>
+<p>I don&#8217;t often find it particularly useful to, say, run all my model tests or all my system tests. I do however find it useful to run all the tests in a certain conceptual area.</p>
+<p>When I make a change in a certain area and I want to check for regressions, I of course want to check in the most likely places first. It&#8217;s usually more likely that I&#8217;ve introduced a regression to a conceptually related area than a conceptually unrelated area.</p>
+<p>To continue the example from above, if I make a change to the payments area, then I can run all the tests in <code class="inline">spec/billing/payments</code> to conveniently check for regressions. If those tests all pass then I can zoom out one level and run all the tests in <code class="inline">spec/billing</code>. This gives me four &#8220;levels&#8221; of progressively broader regression testing: 1) a single file in <code class="inline">spec/billing/payments</code>, 2) all the tests in <code class="inline">spec/billing/payments</code>, 3) all the tests in <code class="inline">spec/billing</code>, and 4) all the tests in the whole test suite. If I organize my tests by type, I don&#8217;t have that ability.</p>
+<h2>On breaking convention</h2>
+<p>I&#8217;m not often a big fan of diverging from framework conventions. Breaking conventions often results in a loss of convenience which isn&#8217;t made up for by whatever is gained by breaking convention.</p>
+<p>But don&#8217;t mistake this break from convention with other types of breaks from conventions you might have seen. Test directory structure is a very <i>weak</i> convention and it&#8217;s not even a Rails convention, it&#8217;s a convention of RSpec or Minitest. And in fact, it&#8217;s not even a technical convention, it&#8217;s a cultural convention. Unless I&#8217;m mistaken, there&#8217;s not actually any functionality tied to the test directory structure in RSpec or Minitest, and so diverging from the cultural standard doesn&#8217;t translate to a loss of functionality. It&#8217;s virtually all upside.</p>
+<h2>Takeaways</h2>
+<ul>
+<li>The benefits of organizing tests into directories include to be able to <b>find tests</b> and to be able to <b>run tests in groups</b>.</li>
+<li>Organizing tests by meaning rather than type makes it easier to find tests and to run them in groups in a way that&#8217;s more logical for the purpose of finding regressions.</li>
+</ul>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/why-i-organize-my-tests-by-domain-concept-not-by-test-type/">Why I organize my tests by domain concept, not by test type</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.codewithjason.com/why-i-organize-my-tests-by-domain-concept-not-by-test-type/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Organizing Rails files by meaning</title>
+		<link>https://www.codewithjason.com/organizing-rails-files-by-meaning/</link>
+					<comments>https://www.codewithjason.com/organizing-rails-files-by-meaning/#comments</comments>
+		
+		<dc:creator><![CDATA[Jason Swett]]></dc:creator>
+		<pubDate>Thu, 20 Oct 2022 13:09:36 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<guid isPermaLink="false">https://www.codewithjason.com/?p=2621</guid>
+
+					<description><![CDATA[<p>Every once in a while I come across the question &#8220;Where should I put my POROs in Rails?&#8221; In order to answer this question, I would actually zoom out and ask a broader question: How should we organize our files in Rails in general? Rails&#8217; organizational limits To some it might seem that this question [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/organizing-rails-files-by-meaning/">Organizing Rails files by meaning</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Every once in a while I come across the question &#8220;Where should I put my POROs in Rails?&#8221;</p>
+<p>In order to answer this question, I would actually zoom out and ask a broader question: <b>How should we organize our files in Rails in general?</b></p>
+<h2>Rails&#8217; organizational limits</h2>
+<p>To some it might seem that this question already has an answer. Rails already gives us <code class="inline">app/controllers</code> for controllers, <code class="inline">app/models</code> for models, <code class="inline">app/helpers</code> for helpers and so on.</p>
+<p>But after a person works with a growing Rails app for a while, it eventually becomes clear that <a href="https://www.codewithjason.com/rails-can-take-far/">Rails can only take you so far</a>. The sheer quantity of code overwhelms Rails&#8217; ability to help keep the code organized. It&#8217;s like piling pound after pound of spaghetti onto a single dinner plate. It only makes sense up to a certain point. Past that point the result is a mess. (This isn&#8217;t a criticism of Rails. It&#8217;s a natural fact of frameworks in general.)</p>
+<p>A Rails codebase can grow both &#8220;horizontally&#8221; and &#8220;vertically&#8221;. Horizontal growth means adding more resources: more database tables, more model files, more controller files, etc. Rails can handle horizontal growth just fine, indefinitely.</p>
+<p>Vertical growth means a growth in complexity. If the amount of domain logic in an application continues to grow but the number of controllers/models/etc. stays the same, then the result is that the individual files all grow. If the &#8220;fat models, skinny controllers&#8221; heuristic is followed, then the complexity accumulates in the model files. The result is huge models. These huge models are hard to understand because of their sheer size and because they lack <b>cohesion</b>, meaning that each model isn&#8217;t &#8220;about&#8221; one thing, but rather each model file is just a dumping ground for everything that might be loosely related to that model.</p>
+<h2>Common (poor) attempts to manage complexity growth</h2>
+<p>A common way to address the complexity problem is to split the code according to design patterns (decorators, builders, etc.) and put the files in folders that are named for the design patterns: <code class="inline">app/decorators</code>, <code class="inline">app/builders</code> and so on. The logic of this approach is that it&#8217;s a continuation of what Rails is already doing for us, which is to divide files by design pattern. At first glance it seems like a sensible approach.</p>
+<p>However, I don&#8217;t think this approach does a very good job of addressing the problem of being able to find what we need to find when we need to find it. Here&#8217;s why.</p>
+<p>Let&#8217;s say for example that I need to make a change to some billing-related logic. I know that the code I&#8217;m looking for has something to do with billing of course, but I might not know much else about the code I&#8217;m looking for. I have no idea whether the code I&#8217;m interested in might lie in <code class="inline">app/models</code>, <code class="inline">app/decorators</code> or anywhere else. I probably have a sense of whether the code is display-related (<code class="inline">app/views</code>), domain-logic-related (<code class="inline">app/models</code>) or related to the request/response lifecycle (<code class="inline">app/controllers</code>), but beyond that, I probably have no clue where the code is located. How could I?</p>
+<p>When people try to extend Rails&#8217; convention of dividing files by design pattern, they&#8217;re missing an important point. Decorators, builders, commands, queries, etc. are all different from each other, but they&#8217;re different from each other <b>in a different way</b> than models, views and controllers are different from each other.</p>
+<p>Think of it this way. Imagine if instead of being divided into meat, produce, dairy, etc. sections a grocery store was organized by &#8220;things in boxes&#8221;, &#8220;things in plastic bags&#8221;, etc. The former is an <b>essential</b> difference while the latter is an <b>incidental</b> difference. Unless you know how everything is packaged, you won&#8217;t be sure where to look. The difference between models, views and controllers is like the difference between meat, produce and dairy. The difference between decorators, builders, commands, queries, etc. is more like the difference between how the items are packaged. Again, the former is essential while the latter is incidental.</p>
+<h2>Organizing by meaning</h2>
+<p>A better way to organize Rails code is by <b>meaning</b>. Instead of having one folder for each design pattern I have, I can have one folder for each conceptual area of my app. For example, if my app has a lot of billing code, I can have folders called <code class="inline">app/models/billing</code>, <code class="inline">app/controllers/billing</code> and so on. This makes it much easier to find a piece of code when I don&#8217;t know anything about the code&#8217;s structure, I only know about its meaning.</p>
+<p>Regarding design patterns, I think design patterns are both overrated and overemphasized, at least in the Rails world. A lot of Rails developers seem to have the idea that every file they create must belong to some category: model, controller, worker, helper, decorator, <a href="https://www.codewithjason.com/code-without-service-objects/">service</a>, etc. Maybe this is because in a vanilla Rails app, pretty much everything <i>is</i> slotted in to a category in some way. But there&#8217;s no logical reason that every piece of code has to fit into some design pattern. The plain old &#8220;object&#8221; is an extremely powerful and versatile device.</p>
+<p>But what if everything in a Rails app is just plain old Ruby objects? Won&#8217;t the app lose structure? Not necessarily. Most objects represent <a href="https://www.codewithjason.com/what-is-a-rails-model/">models</a> in the broad sense of the term &#8220;model&#8221;, which is that the code represents some aspect of the world in a way that&#8217;s easy to understand and work with. Therefore, the objects that comprise the app&#8217;s domain logic can go in <code class="inline">app/models</code>, organized hierarchically by domain concept. Plain old objects can sit quite comfortably in <code class="inline">app/models</code> alongside Active Record models.</p>
+<p>Now let&#8217;s go all the way back to the original question: where should you put POROs in Rails?</p>
+<p>The answer depends on how you organize your Rails code in general. It also depends on what you consider POROs to be. I consider most of my POROs to be models, so I put them in <code class="inline">app/models</code>.</p>
+<h2>Takeaways</h2>
+<ul>
+<li>Rails can only help with code organization when the amount of code is small. Past a certain point it&#8217;s up to you to impose your own structure.</li>
+<li>If the aim is to be able to find the code you need to find when you need to find it, organizing by design pattern doesn&#8217;t help much if you don&#8217;t already know how the code is structured. Organizing the code by meaning is better.</li>
+</ul>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/organizing-rails-files-by-meaning/">Organizing Rails files by meaning</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.codewithjason.com/organizing-rails-files-by-meaning/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Duplication</title>
+		<link>https://www.codewithjason.com/duplication/</link>
+					<comments>https://www.codewithjason.com/duplication/#comments</comments>
+		
+		<dc:creator><![CDATA[Jason Swett]]></dc:creator>
+		<pubDate>Sat, 13 Aug 2022 16:05:22 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<guid isPermaLink="false">https://www.codewithjason.com/?p=2596</guid>
+
+					<description><![CDATA[<p>Duplication can pose serious maintenance problems to codebases. In addition to the potential harm caused by duplication itself, developers&#8217; attempts to fix duplication can sometimes introduce new problems. Certain popular approaches to addressing duplication exist, such as the rule of three and the refrain duplication is cheaper than the wrong abstraction. I think these advice [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/duplication/">Duplication</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Duplication can pose serious maintenance problems to codebases. In addition to the potential harm caused by duplication itself, developers&#8217; attempts to fix duplication can sometimes introduce new problems.</p>
+<p>Certain popular approaches to addressing duplication exist, such as the <a href="https://en.wikipedia.org/wiki/Rule_of_three_(computer_programming)">rule of three</a> and the refrain <a href="https://www.codewithjason.com/duplication-cheaper-wrong-abstraction/">duplication is cheaper than the wrong abstraction</a>.</p>
+<p>I think these advice snippets treat duplication in an oversimplified way that doesn&#8217;t stand up to the nuanced reality of the problem of duplication. We&#8217;ll see exactly why shortly.</p>
+<p>In this post I&#8217;ll show what duplication is, why it&#8217;s such a surprisingly complicated problem, and what can be done to address it.</p>
+<p>We&#8217;ll start with a definition of duplication.</p>
+<h2>What duplication is</h2>
+<p>We could imagine that duplication could be defined as a piece of code that appears in two or more places. Indeed, this sounds like a very reasonable and accurate definition. But it&#8217;s actually wrong.</p>
+<p>Here&#8217;s what duplication really is. <b>Duplication is when there&#8217;s a single <i>behavior</i> that&#8217;s specified in two or more places</b>.</p>
+<p>Just because two identical pieces of code are present doesn&#8217;t necessarily mean duplication exists. And just because there are no two identical pieces of code present doesn&#8217;t mean there&#8217;s no duplication.</p>
+<p>Two pieces of code could happen to be identical, but if they actually serve different purposes and lead separate lives, then they don&#8217;t represent the same behavior, and they don&#8217;t constitute duplication. To &#8220;DRY up&#8221; these identical-looking pieces of code would create new problems, like handcuffing two people together who need to walk in two different directions.</p>
+<p>On the other hand, it&#8217;s possible for a single behavior to be represented in a codebase but with non-identical code. The way to tell if two pieces of code are duplicative isn&#8217;t to see if their code matches (although most of the time duplicative behavior and duplicative code do appear together.) The question that determines duplication is: if I changed one piece of code in order to meet a new requirement, would it be logically necessary to update the other piece of code the same way? If so, then the two pieces of code are probably duplicates of each other, even if their behavior is not achieved using the same exact syntax.</p>
+<h2>Why duplication is bad</h2>
+<p>The main reason duplication is bad is because it leaves a program susceptible to developing logical inconsistencies.</p>
+<p>If a behavior is expressed in two different places in a program, and one of them accidentally doesn&#8217;t match the other, then the deviating behavior is necessarily wrong. (Or if the deviating happens to still meet its requirements, it only does so by accident.)</p>
+<p>Another reason duplication can be bad is because it can pose an extra maintenance burden. It takes longer, and requires more <a href="https://www.codewithjason.com/brainpower-conservation-principle">mental energy</a>, to apply a change to two areas of code instead of just one.</p>
+<p>But not all instances of duplication are equally bad. Some kinds of duplication are more dangerous than others.</p>
+<h2>When duplication is more dangerous or less dangerous</h2>
+<p>There are three factors that determine the degree of harm of an instance of duplication: 1) how easily discoverable the duplication is, 2) how much extra overhead the presence of the duplication incurs, and 3) how much &#8220;traffic&#8221; that area receives, i.e. how frequently that area of code needs to be changed or understood. Let&#8217;s look at each of these factors more closely.</p>
+<h3>Discoverability</h3>
+<p>If there&#8217;s a piece of behavior that&#8217;s specified twice in the codebase, but the two pieces of code are only separated by one line, then there&#8217;s not a big problem because everyone is basically guaranteed to notice the problem. If someone updates one of the copies of the behavior to meet a new requirement, they&#8217;re very unlikely to accidentally miss updating the other one. You might call this the <b>proximity factor</b>.</p>
+<p>If two pieces of duplicated behavior appear in different files in different areas of the application, then a &#8220;miss&#8221; is much more likely to occur, and therefore the duplication constitutes a worse problem.</p>
+<p>Another quality that makes discovery of duplication easier is similitude. If two pieces of code <i>look</i> very similar, then their duplicity is more likely to be noticed than if the two pieces of code don&#8217;t look the same. You might call this the <b>similitude factor</b>.</p>
+<p>If the proximity factor is bad (the pieces of duplicated code are at a great distance from each other) and/or if the similitude factor is bad (the duplication is obscured by the pieces of duplicated code not being similar enough to appear obviously duplicative) then it means the duplication is riskier.</p>
+<h3>Overhead</h3>
+<p>Some instances of duplication are easier to live with than others. Two short lines of very similar code, located right next to each other, are very easy to keep in sync with one another. Other types of duplication are much more deeply baked into the system and can cause a much bigger headache.</p>
+<p>For example, if a piece of duplication exists as part of the database schema, that&#8217;s a much higher maintenance cost than a short code duplication. Instances of duplication that are big and aren&#8217;t represented by identical code can also be costly to maintain because, in those cases, you can&#8217;t just type the same thing twice, you have to perform a potentially <a href="https://www.codewithjason.com/brainpower-conservation-principle/">expensive</a> translation step in your head.</p>
+<h3>Traffic level</h3>
+<p>Duplication is a type of &#8220;bad code&#8221;, and so principles that apply to bad code apply to duplication as well. One of these principles is that bad code in heavily-trafficked areas costs more than bad code in lightly-trafficked areas.</p>
+<p>When considering how much a piece of bad code costs, it&#8217;s worth considering <i>when</i> that cost is incurred. When a piece of bad code incurs a cost, we might think of this as analogous to paying a toll on a toll road.</p>
+<p>One tollway is when a piece of code is changed. The more frequently the code is changed, the more of a toll it&#8217;s going to incur, and so the bigger a problem it is.</p>
+<p>Another tollway is when a piece of code needs to be understood as a prerequisite to understanding a different piece of code. Every codebase has &#8220;leaf code&#8221; and &#8220;branch code&#8221;. If a piece of code is leaf code, as in nothing depends on it, then we can afford for that code to be pretty bad and it doesn&#8217;t matter. Branch code, on the other hand, gets heavy intellectual traffic, and so incurs a higher toll, and so is a bigger problem.</p>
+<h2>How to decide whether to DRY up a piece of code or to keep the duplication</h2>
+<p>The way to decide whether or not to DRY up a piece of duplication is pretty simple, although it&#8217;s not easy. There are two factors to consider.</p>
+<h3>Severity</h3>
+<p>If a piece of duplication is &#8220;severe&#8221;&mdash;i.e. it has low discoverability, poses high overhead, and/or has a high traffic level&mdash;it should probably be fixed. If not, it should probably be left alone.</p>
+<h3>Quality of alternative</h3>
+<p>Just because a piece of duplication costs something doesn&#8217;t automatically mean that the de-duplicated version costs less. It doesn&#8217;t happen very often, but sometimes a de-duplication unavoidably results in code that&#8217;s so generalized that it&#8217;s virtually impossible to understand. In these cases the duplicated version may be the lesser of two evils.</p>
+<p>But be careful to make the distinction between &#8220;this code can&#8217;t be de-duplicated without making it worse&#8221; and &#8220;<i>this particular attempt</i> to de-duplicate this code made it worse&#8221;. Like all refactoring projects, sometimes you just need to try a few times before you land on something you&#8217;re happy with. And sometimes you just need to be careful not to <a href="https://www.codewithjason.com/avoid-wasteful-refactoring/">go overboard</a>.</p>
+<h2>Why the popular guidelines make little sense</h2>
+<p>It currently seems to be fashionable to hold the belief that developers apply DRY too eagerly. This hasn&#8217;t been my experience. The opposite has been my experience.</p>
+<p>Claims that developers apply DRY too eagerly are often accompanied by advice to follow WET (&#8220;write everything twice&#8221;) or the &#8220;rule of three&#8221;, or &#8220;duplication is cheaper than the wrong abstraction&#8221;. Here&#8217;s why I think these popular guidelines make little sense.</p>
+<h3>Rule of three/&#8221;write everything twice&#8221;</h3>
+<p>Here&#8217;s my way of deciding whether to DRY up a duplication: Is the duplication very bad? Are we able to come up with a fix that&#8217;s better than the duplicated version and not worse? If so, then clean it up. If not, leave it alone.</p>
+<p>Notice that my criteria do not include &#8220;does the duplication appear three times&#8221;? I can&#8217;t see how that could be among the most meaningful factors.</p>
+<p>Imagine, for example, a piece of duplication in the form of three very simple and nearly-identical lines, grouped together in a single file. The file is an unimportant one which only gets touched a couple times a year, and no one needs to understand that piece of code as a prerequisite to understanding anything else.</p>
+<p>Now imagine another piece of duplication. The duplication appears in only two places, but the places are distant from one another and therefore the duplication is hard to discover. The two places where the duplicated behavior appear are expressed differently enough that the code would elude detection by a code quality tool or a manual human search. The behavior is a vitally central and important one. It doesn&#8217;t get changed often enough that it stays at the top of everyone&#8217;s mind, but it gets changed often enough that there are lots of opportunities for divergences to arise. And the two places the behavior appears are brutally painful to keep in sync.</p>
+<p>Given this scenario, why on earth would I choose to fix the triple-duplicate and leave the double-duplicate alone?</p>
+<p>The rule of three and &#8220;write everything twice&#8221; (WET) make little sense. The number of times a piece of duplication appears is not the main factor in judging its harmfulness.</p>
+<h3>Duplication is cheaper than the wrong abstraction</h3>
+<p>This statement is repeated very frequently in the Ruby community, usually to discourage people from applying the DRY principle too eagerly.</p>
+<p>I wish we would think about this statement more deeply. Why are we setting up such a strong a connection between duplication and abstractions? It strikes me as a non-sequitur.</p>
+<p>And why are we imagining such a strong danger of creating the <i>wrong</i> abstraction? Do we not trust ourselves to DRY up a piece of code and end up with something <i>good</i>? And again, why does the result of our de-duplicating have to be an <i>abstraction</i>? I find it an illogical connection.</p>
+<p>If we take out the word &#8220;abstraction&#8221; then the sentiment that remains is &#8220;duplicated code is better than a de-duplicated version that&#8217;s even worse&#8221;. In which case I of course agree, but the statement is so banal that it&#8217;s not even a statement worth making.</p>
+<p>I think &#8220;duplication is cheaper than the wrong abstraction&#8221; is a statement devoid of any useful meaning, and one we should stop repeating.</p>
+<h2>How to fix instances of duplication</h2>
+<p>A duplication-removal project is just a special case of a refactoring project. (Remember, refactoring means &#8220;changing the structure of code without changing its behavior&#8221;). Any guidelines that apply to general refactoring projects also apply to de-duplication projects.</p>
+<p>When de-duplicating, it helps to work in small, <a href="https://www.codewithjason.com/atomic-commits/">atomic</a> units. If the refactoring was triggered by a need to make a behavior change, <a href="https://www.codewithjason.com/dont-mix-refactorings-behavior-changes/">don&#8217;t mix the behavior change with the refactoring</a>. Perform the refactoring either before implementing the change or after or both, not during. And when you reach the point when you&#8217;re no longer sure that your refactorings are an improvement, <a href="https://www.codewithjason.com/avoid-wasteful-refactoring/">stop</a>.</p>
+<p>When I&#8217;m de-duplicating two pieces of code, it&#8217;s often not clear how the unification will be achieved. In these cases I like to make it my first step to make the duplicate pieces of code <i>completely identical</i> while still keeping them separate. Merging two subtly different pieces of code can be tricky but merging two identical pieces of code is trivial. So make them identical first, then merge.</p>
+<p>You can find a lot of other great refactoring techniques in Martin Fowler&#8217;s book <a href="https://www.amazon.com/Refactoring-Improving-Existing-Addison-Wesley-Signature/dp/0134757599">Refactoring: Improving the Design of Existing Code</a>.</p>
+<h2>Takeaways</h2>
+<ul>
+<li>Duplication exists when there’s a single behavior that’s specified in two or more places.</li>
+<li>The main reason duplication is bad is because it leaves a program susceptible to developing logical inconsistencies.</li>
+<li>Not all instances of duplication are equally dangerous. The severity of a piece of duplication can be judged based on its discoverability, overhead cost and traffic level.</li>
+<li>In order to decide whether an instance of duplication is worth fixing, consider the severity of the duplication. Also compare the duplicative code with the de-duplicated code, and only keep the &#8220;fixed&#8221; version if the fixed version is actually better.</li>
+<li>The rule of three/&#8221;write everything twice&#8221; makes little sense because it doesn&#8217;t take the factors into account that determine whether a piece of duplication is dangerous or innocuous. &#8220;Duplication is the wrong abstraction&#8221; makes little sense because it sets up a false dichotomy between duplication and &#8220;the wrong abstraction&#8221;.</li>
+<li>To get good at removing duplication, get good at refactoring.</li>
+<li>When attempting to remove an instance of duplication, it&#8217;s often helpful to make the duplicative code completely identical as a first step, and then merge the identical code as a second step.</li>
+</ul>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/duplication/">Duplication</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.codewithjason.com/duplication/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>The difference between procs and lambdas in Ruby</title>
+		<link>https://www.codewithjason.com/the-difference-between-procs-and-lambdas-in-ruby/</link>
+					<comments>https://www.codewithjason.com/the-difference-between-procs-and-lambdas-in-ruby/#comments</comments>
+		
+		<dc:creator><![CDATA[Jason Swett]]></dc:creator>
+		<pubDate>Fri, 29 Jul 2022 18:41:20 +0000</pubDate>
+				<category><![CDATA[Ruby]]></category>
+		<guid isPermaLink="false">https://www.codewithjason.com/?p=2587</guid>
+
+					<description><![CDATA[<p>Note: before starting this post, I recommend reading my other posts about procs and closures for background. Overview What&#8217;s the difference between a proc and a lambda? Lambdas actually are procs. Lambdas are just a special kind of proc and they behave a little bit differently from regular procs. In this post we&#8217;ll discuss the [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/the-difference-between-procs-and-lambdas-in-ruby/">The difference between procs and lambdas in Ruby</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p><iframe loading="lazy" title="The difference between procs and lambdas in Ruby" width="625" height="352" src="https://www.youtube.com/embed/jS1hbXSuiTo?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+<p><i>Note: before starting this post, I recommend reading my other posts about <a href="https://www.codewithjason.com/ruby-procs/">procs</a> and <a href="https://www.codewithjason.com/ruby-closures/">closures</a> for background.</i></p>
+<h2>Overview</h2>
+<p>What&#8217;s the difference between a proc and a lambda?</p>
+<p>Lambdas actually <i>are</i> procs. Lambdas are just a special kind of proc and they behave a little bit differently from regular procs. In this post we&#8217;ll discuss the two main ways in which lambdas differ from regular procs:</p>
+<ol>
+<li>The <code class="inline">return</code> keyword behaves differently</li>
+<li>Arguments are handled differently</li>
+</ol>
+<p>Let&#8217;s take a look at each one of these differences in more detail.</p>
+<h2>The behavior of &#8220;return&#8221;</h2>
+<p>In lambdas, <code class="inline">return</code> means &#8220;exit from this lambda&#8221;. In regular procs, <code class="inline">return</code> means &#8220;exit from embracing method&#8221;.</p>
+<p>Below is an example, pulled straight from the <a href="https://ruby-doc.org/core-2.6/Proc.html">official Ruby docs</a>, which illustrates this difference.</p>
+<pre><code class="language-ruby">def test_return
+  # This is a lambda. The &quot;return&quot; just exits
+  # from the lambda, nothing more.
+  -&gt; { return 3 }.call
+
+  # This is a regular proc. The &quot;return&quot; returns
+  # from the method, meaning control never reaches
+  # the final &quot;return 5&quot; line.
+  proc { return 4 }.call
+
+  return 5
+end
+
+test_return # =&gt; 4</code></pre>
+<h2>Argument handling</h2>
+<h3>Argument matching</h3>
+<p>A proc will happily execute a call with the wrong number of arguments. A lambda requires all arguments to be present.</p>
+<pre><code class="language-ruby">&gt; p = proc { |x, y| &quot;x is #{x} and y is #{y}&quot; }
+&gt; p.call(1)
+ =&gt; &quot;x is 1 and y is &quot;
+&gt; p.call(1, 2, 3)
+ =&gt; &quot;x is 1 and y is 2&quot;</code></pre>
+<pre><code class="language-ruby">&gt; l = lambda { |x, y| &quot;x is #{x} and y is #{y}&quot; }
+&gt; l.call(1)
+(irb):5:in `block in &lt;main&gt;&#039;: wrong number of arguments (given 1, expected 2) (ArgumentError)
+&gt; l.call(1, 2, 3)
+(irb):14:in `block in &lt;main&gt;&#039;: wrong number of arguments (given 3, expected 2) (ArgumentError)</code></pre>
+<h3>Array deconstruction</h3>
+<p>If you call a proc with an array instead of separate arguments, the array will get deconstructed, as if the array is preceded with a splat operator.</p>
+<p>If you call a lambda with an array instead of separate arguments, the array will be interpreted as the first argument, and an <code class="inline">ArgumentError</code> will be raised because the second argument is missing.</p>
+<pre><code class="language-ruby">&gt; proc { |x, y| &quot;x is #{x} and y is #{y}&quot; }.call([1, 2])
+ =&gt; &quot;x is 1 and y is 2&quot;</code></pre>
+<pre><code class="language-ruby">&gt; lambda { |x, y| &quot;x is #{x} and y is #{y}&quot; }.call([1, 2])
+(irb):9:in `block in &lt;main&gt;&#039;: wrong number of arguments (given 1, expected 2) (ArgumentError)</code></pre>
+<p>In other words, lambdas behave exactly like Ruby methods. Regular procs don&#8217;t.</p>
+<h2>Takeaways</h2>
+<ul>
+<li>In lambdas, <code class="inline">return</code> means &#8220;exit from this lambda&#8221;. In regular procs, <code class="inline">return</code> means &#8220;exit from embracing method&#8221;.</li>
+<li>A regular proc will happily execute a call with the wrong number of arguments. A lambda requires all arguments to be present.</li>
+<li>Regular procs deconstruct arrays in arguments. Lambdas don&#8217;t.</li>
+<li>Lambdas behave exactly like methods. Regular procs behave differently.</li>
+</ul>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/the-difference-between-procs-and-lambdas-in-ruby/">The difference between procs and lambdas in Ruby</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.codewithjason.com/the-difference-between-procs-and-lambdas-in-ruby/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Why global variables are bad</title>
+		<link>https://www.codewithjason.com/global-variables/</link>
+					<comments>https://www.codewithjason.com/global-variables/#comments</comments>
+		
+		<dc:creator><![CDATA[Jason Swett]]></dc:creator>
+		<pubDate>Wed, 13 Jul 2022 11:33:22 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<guid isPermaLink="false">https://www.codewithjason.com/?p=2591</guid>
+
+					<description><![CDATA[<p>If you&#8217;ve been programming for any length of time, you&#8217;ve probably come across the advice &#8220;don&#8217;t use global variables&#8221;. Why are global variables so often advised against? The reason is that global variables make a program less understandable. When you&#8217;re looking at a piece of code that uses a global variable, you don&#8217;t know if [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/global-variables/">Why global variables are bad</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>If you&#8217;ve been programming for any length of time, you&#8217;ve probably come across the advice &#8220;don&#8217;t use global variables&#8221;.</p>
+<p>Why are global variables so often advised against?</p>
+<p>The reason is that global variables make a program less <a href="https://www.codewithjason.com/defend-good-code/">understandable</a>. When you&#8217;re looking at a piece of code that uses a global variable, you don&#8217;t know if you&#8217;re seeing the whole picture. The code isn&#8217;t self-contained. In order to understand your piece of code, you potentially have to venture to some outside place to have a look at some other code that&#8217;s influencing your code at a distance.</p>
+<p>The key idea is <b>scope</b>. If a local variable is defined inside of a function, for example, then that variable&#8217;s scope is limited to that function. Nobody from outside that function can see or mess with that variable. As another example, if a private instance variable is defined for a class, then that variable&#8217;s scope is limited to that class, and nobody from outside that class can see or mess with the variable.</p>
+<p>The broader a variable&#8217;s scope, the more code has to be brought into the picture in order to understand any of the code that involves that variable. If I have a function that depends on its own arguments and nothing else, then that function can be understood in isolation. All I need in order to understand the function (at least in terms of causes and effects, as opposed to conceptual understanding which may require outside context) is the code inside the function. If alternatively the function involves a class instance variable, for example, then I potentially need to look at the other places in the class that involve the instance variable in order to understand the behavior of the function.</p>
+<p>The maximum scope a variable can have is global scope. In terms of understanding, a global variable presents the biggest burden and requires the most investigative work. That&#8217;s why global variables are so often cautioned against.</p>
+<p>Having said that, it&#8217;s actually a little simplistic to say &#8220;global variables are bad&#8221;. It would be more precise to say &#8220;global variables are costly&#8221;. There are some scenarios where the cost of a global variable is worth the price. In those cases, the idea of a global variable could be said to be <i>good</i> because it&#8217;s less costly than the alternatives.</p>
+<p>But in the vast majority of cases, it&#8217;s good to keep the scope of variables as small as possible. The smaller the scopes of your variables are, the more it will aid the understandability of your code.</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/global-variables/">Why global variables are bad</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.codewithjason.com/global-variables/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>When good code is important and when it’s not</title>
+		<link>https://www.codewithjason.com/when-good-code-is-important-and-when-its-not/</link>
+					<comments>https://www.codewithjason.com/when-good-code-is-important-and-when-its-not/#comments</comments>
+		
+		<dc:creator><![CDATA[Jason Swett]]></dc:creator>
+		<pubDate>Wed, 08 Jun 2022 20:04:56 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<guid isPermaLink="false">https://www.codewithjason.com/?p=2573</guid>
+
+					<description><![CDATA[<p>Tollways All code has a maintenance cost. Some code of course is an absolute nightmare to maintain. We would say its maintenance cost is high. Other code is easier to maintain. We would say its maintenance cost is low, or at least relatively low compared to worse code. When thinking about good code and bad [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/when-good-code-is-important-and-when-its-not/">When good code is important and when it&#8217;s not</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<h2>Tollways</h2>
+<p>All code has a maintenance cost. Some code of course is an absolute nightmare to maintain. We would say its maintenance cost is high. Other code is easier to maintain. We would say its maintenance cost is low, or at least relatively low compared to worse code.</p>
+<p>When thinking about good code and bad code, it&#8217;s worth considering <i>when</i> exactly code&#8217;s maintenance cost is incurred. We might refer to these events as &#8220;tollways&#8221;. We can&#8217;t travel these roads without paying a toll.</p>
+<h3>Tollway 1: when the code is changed</h3>
+<p>For any particular piece of code, a toll is incurred every time that code needs to be changed. The size of the toll depends on how easy the code is to understand and change.</p>
+<h3>Tollway 2: when the code needs to be understood in order to support a change in a different area</h3>
+<p>Even if a piece of code doesn&#8217;t need to be changed, the code incurs a toll whenever someone it needs to be understood in order to make a different change. This dependency of understanding happens when pieces of code are coupled via inheritance, passing values in methods, global variables, or any of the other ways that code can be coupled.</p>
+<p>We could put code into two categories: &#8220;leaf code&#8221;, which depends on other code but has no dependencies itself, and &#8220;branch code&#8221;, which does have dependencies, and may or may not depend on other code. Branch code incurs tolls and leaf code doesn&#8217;t.</p>
+<h2>Good code matters in proportion to future tollway traffic</h2>
+<p>When any new piece of code is added to a codebase, it may be possible to predict the future &#8220;tollway traffic&#8221; of that code.</p>
+<p>Every codebase has some areas that change more frequently than others. If the code you&#8217;re adding lies in a high-change area, then it&#8217;s probably safe to predict that that code will have high future tollway traffic. On average it&#8217;s a good investment to spend time making this code especially <a href="https://www.codewithjason.com/defend-good-code/">good</a> because the upfront effort will get paid back a little bit every time the code gets touched in the future.</p>
+<p>Conversely, if there&#8217;s a piece of code that you have good reason to believe will change infrequently, it&#8217;s less important to make this code good, because the return on investment won&#8217;t be as great. (If you find out that your original prediction was wrong, it may be wise to <a href="https://www.codewithjason.com/when-to-refactor/">refactor</a> the code so you don&#8217;t end up paying more in toll fees than you have to.)</p>
+<p>If there&#8217;s a piece of code that&#8217;s very clearly &#8220;branch code&#8221; (other code depends on it) then it&#8217;s usually a good idea to spend extra time to make sure this code is easily understandable. Most codebases have a small handful of key <a href="https://www.codewithjason.com/what-is-a-rails-model/">models</a> which are touched by a large amount of code in the codebase. If the branch code is sound, it&#8217;s a great benefit. If the branch code has problems (e.g. some fundamental concept was poorly-named early on) then those problems will stretch their tentacles throughout the codebase and cause very expensive problems.</p>
+<p>On the other hand, if a piece of code can be safely identified as leaf code, then it&#8217;s not so important to worry about making that code super high-quality.</p>
+<p>But in general, it&#8217;s hard to predict whether a piece of code will have high or low future tollway traffic, so it&#8217;s good to err on the side of assuming high future tollway traffic. Rarely do codebases suffer from the problem that the code is <i>too good</i>.</p>
+<h2>Bad reasons to write bad code</h2>
+<p>It&#8217;s commonly believed that it&#8217;s wise to take on &#8220;strategic technical debt&#8221; in order to meet deadlines. In theory this is a smart way to go, but in practice it&#8217;s always a farce. The debt gets incurred but then never paid back.</p>
+<p>It&#8217;s also a mistake to write crappy code because <a href="https://www.codewithjason.com/users-and-code/">&#8220;users don&#8217;t care about code&#8221;</a>. Users obviously don&#8217;t literally care about code, but users do experience the symptoms of bad code when the product is full of bugs and the development team&#8217;s productivity slows to a crawl.</p>
+<h2>Takeaways</h2>
+<ul>
+<li>A piece of code incurs a &#8220;toll&#8221; when it gets changed or when it needs to be understood in order to support a change in a different piece of code.</li>
+<li>The return on investment of making a piece of code good is proportionate to the future tollway traffic that code will receive.</li>
+<li>Predicting future tollway traffic is not always easy or possible, but it&#8217;s not always impossible either. Being judicious about when to spend extra effort on code quality or to skip effort is more economical than indiscriminately writing &#8220;medium-quality&#8221; code throughout the entire codebase.</li>
+</ul>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/when-good-code-is-important-and-when-its-not/">When good code is important and when it&#8217;s not</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.codewithjason.com/when-good-code-is-important-and-when-its-not/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Why DSLs are a necessary part of learning Rails testing</title>
+		<link>https://www.codewithjason.com/ruby-dsls-rails-testing/</link>
+					<comments>https://www.codewithjason.com/ruby-dsls-rails-testing/#respond</comments>
+		
+		<dc:creator><![CDATA[Jason Swett]]></dc:creator>
+		<pubDate>Tue, 31 May 2022 17:12:16 +0000</pubDate>
+				<category><![CDATA[Automated Testing]]></category>
+		<category><![CDATA[Ruby]]></category>
+		<category><![CDATA[Ruby on Rails]]></category>
+		<guid isPermaLink="false">https://www.codewithjason.com/?p=2576</guid>
+
+					<description><![CDATA[<p>If you want to be a competent Rails tester, there are a lot of different things you have to learn. The things you have to learn might be divided into three categories. The first of these three categories is tools. For example, you have to choose a testing framework and learn how to use it. [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/ruby-dsls-rails-testing/">Why DSLs are a necessary part of learning Rails testing</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>If you want to be a competent <a href="https://www.codewithjason.com/complete-guide-to-rails-testing/">Rails tester</a>, there are a lot of different things you have to learn. The things you have to learn might be divided into three categories.</p>
+<p>The first of these three categories is <b>tools</b>. For example, you have to choose a <a href="https://www.codewithjason.com/test-framework-learn-rspec-minitest/">testing framework</a> and learn how to use it. Then there are <b>principles</b>, such as the principle of <a href="https://www.codewithjason.com/testing-implementation-vs-behavior-rails/">testing behavior vs. implementation</a>. Lastly, there are <b>practices</b>, like the practice of programming in <a href="https://www.codewithjason.com/testing-feedback-loops/">feedback loops</a>.</p>
+<p>This post will focus on the first category, tools.</p>
+<p>For better or worse, the testing tools most commercial Rails projects use are RSpec, Factory Bot and Capybara. When developers who are new to testing (and possibly Ruby) first see RSpec syntax, for example, they&#8217;re often confused. </p>
+<p>Below is an example of a test written using RSpec, Factory Bot and Capybara. To a beginner the syntax may look very mysterious.</p>
+<pre><code class="language-ruby">describe &quot;Signing in&quot;, type: :system do
+  it &quot;signs the user in&quot; do
+    user = create(:user)
+    visit new_user_session_path
+    fill_in &quot;Username&quot;, with: user.username
+    fill_in &quot;Password&quot;, with: user.password
+    click_on &quot;Submit&quot;
+    expect(page).to have_content(&quot;Sign out&quot;)
+  end
+end</code></pre>
+<p>The way to take the above snippet from something mysterious to something perfectly clear is to learn all the details of how RSpec, Factory Bot and Capybara work. And doing that will require us to become familiar with domain-specific languages (DSLs).</p>
+<p>For each of RSpec, Factory Bot and Capybara, there&#8217;s a lot to learn. And independently of those tools, there&#8217;s a lot to be learned about DSLs as well. Therefore I recommend learning a bit about DSLs separately from learning about the details of each of those tools.</p>
+<p>Here are some posts that can help you learn about DSLs. If you&#8217;re learning testing, I suggest going through these posts and seeing if you can connect them to the code you see in your Rails projects&#8217; codebases. As you gain familiarity with DSL concepts and the ins and outs of your particular tools, your test syntax should look increasingly clear to you.</p>
+<p><a href="https://www.codewithjason.com/ruby-procs/">Understanding Ruby Proc objects</a><br />
+<a href="https://www.codewithjason.com/ruby-closures/">Understanding Ruby closures</a><br />
+<a href="https://www.codewithjason.com/understanding-ruby-blocks/">Understanding Ruby blocks</a><br />
+<a href="https://www.codewithjason.com/ampersand-ruby-block/">What the ampersand in front of &amp;block means</a><br />
+<a href="https://www.codewithjason.com/two-common-ways-call-ruby-block/">The two common ways to call a Ruby block</a><br />
+<a href="https://www.codewithjason.com/how-map-works/">How map(&amp;:some_method) works</a><br />
+<a href="https://www.codewithjason.com/ruby-instance-exec/">How Ruby&#8217;s instance_exec works</a><br />
+<a href="https://www.codewithjason.com/ruby-method-missing/">How Ruby’s method_missing works</a></p>
+<p>Learning how Ruby DSLs work can be difficult and time-consuming but it&#8217;s well worth it. And if you&#8217;re using testing tools that make use of DSLs, learning about DSLs is a necessary step toward becoming a fully competent Rails tester.</p>
+<p>The post <a rel="nofollow" href="https://www.codewithjason.com/ruby-dsls-rails-testing/">Why DSLs are a necessary part of learning Rails testing</a> appeared first on <a rel="nofollow" href="https://www.codewithjason.com">Code with Jason</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://www.codewithjason.com/ruby-dsls-rails-testing/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

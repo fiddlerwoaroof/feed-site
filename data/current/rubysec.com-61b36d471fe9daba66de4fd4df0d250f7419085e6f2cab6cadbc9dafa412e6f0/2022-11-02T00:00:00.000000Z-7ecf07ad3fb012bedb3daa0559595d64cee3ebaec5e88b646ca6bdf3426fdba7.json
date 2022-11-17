@@ -1,0 +1,8 @@
+{
+  "title":"CVE-2022-39379 (fluentd): fluentd vulnerable to remote code execution due to insecure deserialization (in non-default configuration)",
+  "date":"2022-11-02T00:00:00.000000Z",
+  "author":null,
+  "id":"https://rubysec.com/advisories/CVE-2022-39379",
+  "link":"https://rubysec.com/advisories/CVE-2022-39379/",
+  "content":"### Impact\nA remote code execution (RCE) vulnerability in non-default configurations of\nFluentd allows unauthenticated attackers to execute arbitrary code via\nspecially crafted JSON payloads.\n\nFluentd setups are only affected if the environment variable\n`FLUENT_OJ_OPTION_MODE` is explicitly set to `object`.\n\nPlease note: The option FLUENT_OJ_OPTION_MODE was introduced in Fluentd\nversion 1.13.2. Earlier versions of Fluentd are not affected by this\nvulnerability.\n\n### Patches\nv1.15.3\n\n### Workarounds\nDo not use `FLUENT_OJ_OPTION_MODE=object`.\n\n### References\n* GHSL-2022-067\n"
+}

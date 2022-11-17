@@ -1,0 +1,1769 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[naildrivin5.com - David Bryant Copeland's Website]]></title>
+  <link href="https://naildrivin5.com/atom.xml" rel="self">
+  <link href="https://naildrivin5.com/">
+  <updated>2022-11-10T12:36:54+00:00</updated>
+  <id>https://naildrivin5.com/</id>
+  <author>
+    <name><![CDATA[David Bryant Copeland]]></name>
+    <email><![CDATA[davec@naildrivin5.com]]></email>
+  </author>
+
+  
+  <entry>
+    <title type="html"><![CDATA[RSpec Examples are, well, Examples]]></title>
+    
+    <link href="https://naildrivin5.com/blog/2022/11/09/rspec-examples-are-well-examples.html">
+    
+    <updated>2022-11-09T08:00:00+00:00</updated>
+    <id>https://naildrivin5.com/blog/2022/11/09/rspec-examples-are--well--examples</id>
+    <content type="html"><![CDATA[<p>RSpec’s internal DSL allows creating some difficult-to-sustain structures and code, but there is one guiding principle that has helped me avoid making tests that are <em>too</em> weird:</p>
+
+<p>RSpec tests should be examples of how the code under test would be used.</p>
+
+<p>Let’s see a few examples: using <code class="language-plaintext highlighter-rouge">subject</code> and avoiding predicate matchers.</p>
+
+<!-- more -->
+
+<h2 id="subject-is-the-heart-of-your-test"><code class="language-plaintext highlighter-rouge">subject</code> is the heart of your test</h2>
+
+<p>RSpec provides the <code class="language-plaintext highlighter-rouge">subject</code> method, which it documents to <a href="https://relishapp.com/rspec/rspec-core/v/3-11/docs/subject/explicit-subject">allow all kinds of odd stuff</a>, but at it’s core:</p>
+
+<blockquote>
+  <p>Use <code class="language-plaintext highlighter-rouge">subject</code> in the group scope to explicitly define the value that is returned by the <code class="language-plaintext highlighter-rouge">subject</code> method in the example scope.</p>
+</blockquote>
+
+<p>The problem is, you would never call your object <code class="language-plaintext highlighter-rouge">subject</code> in your regular code:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Yes, naming is hard, but it's not THIS hard</span>
+<span class="n">subject</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">orders</span><span class="p">.</span><span class="nf">last</span>
+
+<span class="c1"># You would almost certainly do this</span>
+<span class="n">order</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">orders</span><span class="p">.</span><span class="nf">last</span>
+
+<span class="c1"># or maybe this</span>
+<span class="n">last_order</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">orders</span><span class="p">.</span><span class="nf">last</span>
+</code></pre></div></div>
+
+<p>You would call the object being tested ideally the name that would be used in most common scenarios where the object is being used.  RSpec even recommends this (despite spending the rest of the docs explaining how to not follow this recommendation):</p>
+
+<blockquote>
+  <p>We recommend using the named helper method over subject in examples</p>
+</blockquote>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">subject</span><span class="p">(</span><span class="ss">:order</span><span class="p">)</span> <span class="p">{</span> <span class="n">described_class</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>This is better than <code class="language-plaintext highlighter-rouge">let</code> because it indicates that this particular variable is special: it’s the object under test.</p>
+
+<p>Another use of <code class="language-plaintext highlighter-rouge">subject</code> is to enable the <a href="https://relishapp.com/rspec/rspec-core/v/3-11/docs/subject/one-liner-syntax">one-liner syntax</a>, which hides a ton of information about what is being tested inside implicit behavior (<em>note</em>: a previous version of this post erroneously claimed you could not use this syntax with a named subject):</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">it</span> <span class="p">{</span> <span class="n">is_expected_to</span> <span class="n">be_empty</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Absolutely none of that is an example of the code you would write, meaning you have to mentally translate this code into what would actually happen in order to understand what is being tested. That it reads like English—”it is expected to be empty”—is not nearly as useful as knowing what code is being tested.</p>
+
+<p>Aside from the <code class="language-plaintext highlighter-rouge">is_expected_to</code>, the <code class="language-plaintext highlighter-rouge">be_empty</code> can be used in other contexts, however it is still problematic.</p>
+
+<h2 id="predicate-matchers-mask-behavior-for-no-real-benefit">Predicate Matchers mask Behavior For No Real Benefit</h2>
+
+<p><a href="https://relishapp.com/rspec/rspec-expectations/v/3-12/docs/built-in-matchers/predicate-matchers">Predicate matchers</a> allow you to write an expectation in a pidgen-like English:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">expect</span><span class="p">(</span><span class="n">order</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">be_sent</span>
+</code></pre></div></div>
+
+<p>What is being tested here?  Sure, we can say that the order is expected not to have been sent, but this is a test, not documentation. We need to understand exactly what invocations of what code should have what behavior. If the test isn’t the place where that goes, I’m not sure what is.</p>
+
+<p>This is better:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">expect</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="nf">sent?</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><em>This</em> test shows the actual code being tested. This is good (it also tests precisely the behavior, which the predicate matcher does not. Read on).</p>
+
+<p>A commonly-cited benefit of the predict matcher form is that it produces a better error message, something like</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expected order.sent? to be truthy
+</code></pre></div></div>
+
+<p>The more explicit version would produce this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expected false to be true
+</code></pre></div></div>
+
+<p>In both cases, the default error formatter would also show the line of code in the test that failed, so in both cases you would see the call to <code class="language-plaintext highlighter-rouge">.sent?</code> in the error output.  To me, this is fine. While “expected false to be true” is not a great message, since it’s shown right next to the line of code being executed, it’s not a problem for me to sort out what went wrong.</p>
+
+<p>But note also what the predicate matcher is testing. It’s not testing that <code class="language-plaintext highlighter-rouge">.send?</code> returned <code class="language-plaintext highlighter-rouge">true</code>. It’s testing that it <em>didn’t return false or nil</em>.  If that is not
+what <code class="language-plaintext highlighter-rouge">.sent?</code> is supposed to do, the predicate-based test is <em>wrong</em>.  I like to assert the test results to be precisely what I mean them to be, and for Ruby that means
+you have to use <code class="language-plaintext highlighter-rouge">eq(true)</code> if you want to test that a predicate method returned true (or false).</p>
+
+<p>For me, the predicate matcher is all downside - it makes it hard to understand what code is actually being tested, it does not assert precisely the value you may think
+it does, and the error message for the <em>non</em> predicate test has all the information the predicate one does.</p>
+
+<p>There are a ton of other ways in which writing tests as <em>examples</em> of the code under test can lead to explicit, yet clear code.  It does mean you won’t use several RSpec features, but this is fine.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Wrap Third Party APIs in Service Wrappers to Simplify Your Code]]></title>
+    
+    <link href="https://naildrivin5.com/blog/2022/10/31/wrap-third-party-apis-in-service-wrappers-to-simplify-your-code.html">
+    
+    <updated>2022-10-31T09:00:00+00:00</updated>
+    <id>https://naildrivin5.com/blog/2022/10/31/wrap-third-party-apis-in-service-wrappers-to-simplify-your-code</id>
+    <content type="html"><![CDATA[<p>The app I work on has a lot of API integrations.  These API calls are often tied into
+various business processes.  By wrapping an adapter around each API, presenting only the
+features of that API my app needs, I can more easily manage and test my app. It also provides
+clear documentation about how my app uses each API.  I’ve heard this called a <em>service wrapper</em> and it’s incredibly useful.</p>
+
+<!-- more -->
+
+<h2 id="third-party-integrations-make-everything-complicated">Third Party Integrations Make Everything Complicated</h2>
+
+<p>Integrating with a third party API carries a host of problems, but most of the boil down to:</p>
+
+<ul>
+  <li>Any codepath that uses the API can be hard to test since you have to mock HTTP calls or the
+client library, both of which are often complex.</li>
+  <li>The API has many more features than you need, often implemented in a way that makes your use-case overcomplicated.  We’ve all built massive hashes that contain only a few bits of relevant
+data in them, just to satisfy a highly-generalized API call.</li>
+</ul>
+
+<div data-ad=""></div>
+
+<p><a href="https://stripe.com/docs/api/payment_intents/create">Stripe’s Payment Intents API</a> is a great
+example. It’s highly flexible, handling many use-cases.  But, if all you need to do is charge a
+card on file, you end up with a somewhat complicated call no matter what.</p>
+
+<p>The <em>service wrapper</em> I’ll demonstrate below will wrap Stripe in a simplified—but still
+Stripe-like—API that only does what we need.  The resulting class creates a boundary that is easier to mock for upstream tests and easier to test and manage for assuring a good integration.</p>
+
+<p>Let’s see the problem directly and derive the service wrapper.</p>
+
+<h2 id="a-naive-integration-with-everything-inline">A Naive Integration with Everything Inline</h2>
+
+<p>Suppose our company, Example Co, sells products to customers. We have a routine that is triggered when an order ships.  That routine will charge the customer the price of the order plus shipping, as well as performing some basic bookkeeping.  The domain is outlined in this figure:</p>
+
+<figure>
+<a href="/images/service-wrapper-domain.png"><img src="/images/service-wrapper-domain.png" alt="A rough class diagram showing the relationship to the domain objects described in the text of this pst" /></a>
+<figcaption>
+Click image to embiggen.
+</figcaption>
+</figure>
+
+<p>The code will accept an <code class="language-plaintext highlighter-rouge">order</code>, which is related to a <code class="language-plaintext highlighter-rouge">customer</code>, a <code class="language-plaintext highlighter-rouge">product</code>, and a
+<code class="language-plaintext highlighter-rouge">shipping_method</code>.  The customer also has several <code class="language-plaintext highlighter-rouge">payment_method</code> objects representing cards
+they have added previously.  One is marked <code class="language-plaintext highlighter-rouge">primary</code>, and that’s what we want to use here.</p>
+
+<p>We’ll create a <code class="language-plaintext highlighter-rouge">charge</code> that represents our charge with Stripe, and that will relate to the order, plus record Stripe’s ID.  A <code class="language-plaintext highlighter-rouge">charge</code> also has an <code class="language-plaintext highlighter-rouge">externalizable_id</code> which uniquely identifies the charge in our system so we can share it with Stripe (but not expose our database keys).</p>
+
+<p>Here’s the method with all the code in it in one big blob. This method looks like what you might produce during TDD before you’ve done any refactoring:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">on_order_shipped</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+  <span class="n">customer</span>       <span class="o">=</span> <span class="n">order</span><span class="p">.</span><span class="nf">customer</span>
+  <span class="n">payment_method</span> <span class="o">=</span> <span class="n">customer</span><span class="p">.</span><span class="nf">payment_methods</span><span class="p">.</span><span class="nf">primary</span>
+  <span class="n">product</span>        <span class="o">=</span> <span class="n">order</span><span class="p">.</span><span class="nf">product</span>
+  <span class="n">shipping_cost</span>  <span class="o">=</span> <span class="n">order</span><span class="p">.</span><span class="nf">shipping_method</span><span class="p">.</span><span class="nf">price_cents</span>
+
+  <span class="n">total_price</span> <span class="o">=</span> <span class="n">product</span><span class="p">.</span><span class="nf">price_cents</span> <span class="o">+</span> <span class="n">shipping_cost</span>
+
+  <span class="n">charge</span> <span class="o">=</span> <span class="no">Charge</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span>
+    <span class="ss">order: </span><span class="n">order</span><span class="p">,</span>
+    <span class="ss">amount_cents: </span><span class="n">total_price</span>
+  <span class="p">)</span>
+
+  <span class="n">stripe_args</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">currency: </span><span class="s2">"usd"</span><span class="p">,</span>
+    <span class="ss">confirm: </span><span class="kp">true</span><span class="p">,</span>
+    <span class="ss">off_session: </span><span class="kp">true</span><span class="p">,</span>
+    <span class="ss">amount: </span><span class="n">total_price</span><span class="p">,</span>
+    <span class="ss">description: </span><span class="s2">"Purchase of </span><span class="si">#{</span><span class="n">product</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2">"</span>
+    <span class="ss">receipt_email: </span><span class="n">customer</span><span class="p">.</span><span class="nf">email</span><span class="p">,</span>
+    <span class="ss">payment_method: </span><span class="n">payment_method</span><span class="p">.</span><span class="nf">id</span><span class="p">,</span>
+    <span class="ss">metadata: </span><span class="p">{</span>
+      <span class="ss">example_co_id: </span><span class="n">charge</span><span class="p">.</span><span class="nf">externalizable_id</span><span class="p">,</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="n">payment_intent</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">PaymentIntent</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">payment_intent</span><span class="p">.</span><span class="nf">charges</span><span class="p">.</span><span class="nf">count</span> <span class="o">!=</span> <span class="mi">0</span>
+    <span class="c1"># Imagine a more sophisticated error handling</span>
+    <span class="c1"># strategy here...</span>
+    <span class="k">raise</span> <span class="s2">"Expected exactly one charge"</span>
+  <span class="k">end</span>
+
+  <span class="n">stripe_charge</span> <span class="o">=</span> <span class="n">payment_intent</span><span class="p">.</span><span class="nf">charges</span><span class="p">.</span><span class="nf">first</span>
+
+  <span class="n">charge</span><span class="p">.</span><span class="nf">update!</span><span class="p">(</span><span class="ss">stripe_id: </span><span class="n">stripe_charge</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This method is a bit long, and the simplest thing we can do to clean it up is to extract the
+Stripe stuff into a private method, like so:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">on_order_shipped</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+  <span class="n">customer</span>       <span class="o">=</span> <span class="n">order</span><span class="p">.</span><span class="nf">customer</span>
+  <span class="n">payment_method</span> <span class="o">=</span> <span class="n">customer</span><span class="p">.</span><span class="nf">payment_methods</span><span class="p">.</span><span class="nf">primary</span>
+  <span class="n">product</span>        <span class="o">=</span> <span class="n">order</span><span class="p">.</span><span class="nf">product</span>
+  <span class="n">shipping_cost</span>  <span class="o">=</span> <span class="n">order</span><span class="p">.</span><span class="nf">shipping_method</span><span class="p">.</span><span class="nf">price_cents</span>
+
+  <span class="n">total_price</span> <span class="o">=</span> <span class="n">product</span><span class="p">.</span><span class="nf">price_cents</span> <span class="o">+</span> <span class="n">shipping_cost</span>
+
+  <span class="n">charge</span> <span class="o">=</span> <span class="no">Charge</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span>
+    <span class="ss">order: </span><span class="n">order</span><span class="p">,</span>
+    <span class="ss">amount_cents: </span><span class="n">total_price</span>
+  <span class="p">)</span>
+
+  <span class="n">stripe_charge</span> <span class="o">=</span> <span class="n">charge_stripe</span><span class="p">(</span><span class="n">customer</span><span class="p">,</span>        <span class="c1"># &lt;---</span>
+                                <span class="n">payment_method</span><span class="p">,</span>  <span class="c1"># &lt;---</span>
+                                <span class="n">total_price</span><span class="p">,</span>     <span class="c1"># &lt;---</span>
+                                <span class="n">product</span><span class="p">,</span>         <span class="c1"># &lt;---</span>
+                                <span class="n">charge</span><span class="p">)</span>          <span class="c1"># &lt;---</span>
+
+  <span class="n">charge</span><span class="p">.</span><span class="nf">update!</span><span class="p">(</span><span class="ss">stripe_id: </span><span class="n">stripe_charge</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="kp">private</span>
+
+<span class="k">def</span> <span class="nf">charge_stripe</span><span class="p">(</span><span class="n">customer</span><span class="p">,</span>
+                  <span class="n">payment_method</span><span class="p">,</span>
+                  <span class="n">total_price</span><span class="p">,</span>
+                  <span class="n">product</span><span class="p">,</span>
+                  <span class="n">charge</span><span class="p">)</span>
+  <span class="n">stripe_args</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">currency: </span><span class="s2">"usd"</span><span class="p">,</span>
+    <span class="ss">confirm: </span><span class="kp">true</span><span class="p">,</span>
+    <span class="ss">off_session: </span><span class="kp">true</span><span class="p">,</span>
+    <span class="ss">amount: </span><span class="n">total_price</span><span class="p">,</span>
+    <span class="ss">description: </span><span class="s2">"Purchase of </span><span class="si">#{</span><span class="n">product</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2">"</span>
+    <span class="ss">receipt_email: </span><span class="n">customer</span><span class="p">.</span><span class="nf">email</span><span class="p">,</span>
+    <span class="ss">payment_method: </span><span class="n">payment_method</span><span class="p">.</span><span class="nf">id</span><span class="p">,</span>
+    <span class="ss">metadata: </span><span class="p">{</span>
+      <span class="ss">example_co_id: </span><span class="n">charge</span><span class="p">.</span><span class="nf">externalizable_id</span><span class="p">,</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="n">payment_intent</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">PaymentIntent</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">payment_intent</span><span class="p">.</span><span class="nf">charges</span><span class="p">.</span><span class="nf">count</span> <span class="o">!=</span> <span class="mi">0</span>
+    <span class="k">raise</span> <span class="s2">"Expected exactly one charge"</span>
+  <span class="k">end</span>
+
+  <span class="n">payment_intent</span><span class="p">.</span><span class="nf">charges</span><span class="p">.</span><span class="nf">first</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Although this cleans up the code for <code class="language-plaintext highlighter-rouge">on_order_shipped</code>, it’s still problematic to test.  We have
+to test that we are using the right card, calculating the proper price, <em>and</em> calling Stripe in just the right way (as well as handling errors from Stripe).</p>
+
+<p>To mock our call to Stripe requires assembling a large hash and creating a mock object for Stripe to return that wraps its charge id. Or, we have to set up an HTTP-mocking system like VCR, which is unpleasant and flaky.  None of this has to do with the core logic of the routine, which is calculate the price.</p>
+
+<p>The problem is that the seam created by our private method isn’t right.</p>
+
+<h2 id="a-boundary-at-the-wrong-place-makes-things-worse">A Boundary At the Wrong Place Makes Things Worse</h2>
+
+<p>Our private method may seem like it could be the public method of a new class. We can then mock
+that class to test our method and not worry about Stripe’s API.  Since this will wrap our
+integration with Stripe (a web service), let’s call this class a <em>service wrapper</em>.  Here’s what that looks like:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Stripe::ServiceWrapper</span>
+  <span class="k">def</span> <span class="nf">charge</span><span class="p">(</span><span class="n">customer</span><span class="p">,</span>
+             <span class="n">payment_method</span><span class="p">,</span>
+             <span class="n">total_price</span><span class="p">,</span>
+             <span class="n">product</span><span class="p">,</span>
+             <span class="n">charge</span><span class="p">)</span>
+
+    <span class="c1"># all the code from before</span>
+
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This is an improvement, but it uncovers a third behavior of the original method, which is to
+map our domain to Stripe’s.  That mapping is now inside <code class="language-plaintext highlighter-rouge">Stripe::ServiceWrapper</code>, and it’s
+tightly coupled to the use-case of charging for a shipped order.</p>
+
+<p>This creates an immediate problem in that we need to create several Active Records just to test
+this method, but it’s also not a very useful method for charging credit cards for other reasons
+than the shipment of an order.</p>
+
+<p>We’ve created the wrong boundary.  We need a boundary between our domain and Stripe’s.  Let’s try
+to create that.</p>
+
+<h2 id="service-wrappers-should-be-in-the-domain-of-the-service-not-your-app">Service Wrappers Should be in the Domain of the Service, not Your App</h2>
+
+<p>Let’s change the service wrapper so that it <em>does not</em> map our domain to Stripe’s and instead
+acts like a simplified API from Stripe itself.  We don’t need the full power of the payment
+intents API, we only need to charge an amount to a card and send a receipt email.</p>
+
+<p>Meaning, we want a method that accepts:</p>
+
+<ul>
+  <li>A Stripe payment method ID</li>
+  <li>An amount to charge</li>
+  <li>An email where a receipt will be sent</li>
+  <li>A description to go in that email</li>
+  <li>Some sort of ID from our system to go into the metadata</li>
+</ul>
+
+<p>Our routine uses the payment intents API, and in addition to creating a payment intent, it also
+“confirms” it, which is Stripe’s way of saying it will actually charge the card.</p>
+
+<p>Here it is written in the domain of Stripe:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Stripe::ServiceWrapper</span>
+  <span class="k">def</span> <span class="nf">create_and_confirm_payment_intent</span><span class="p">(</span>
+    <span class="n">payment_method_id</span><span class="p">:,</span>
+    <span class="n">receipt_email</span><span class="p">:,</span>
+    <span class="n">description</span><span class="p">:,</span>
+    <span class="n">amount_cents</span><span class="p">:,</span>
+    <span class="n">example_co_id</span><span class="p">:)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="p">{</span>
+
+      <span class="ss">currency: </span><span class="s2">"usd"</span><span class="p">,</span>
+      <span class="ss">confirm: </span><span class="kp">true</span><span class="p">,</span>
+      <span class="ss">off_session: </span><span class="kp">true</span><span class="p">,</span>
+
+      <span class="ss">amount: </span><span class="n">amount_cents</span><span class="p">,</span>
+      <span class="ss">description: </span><span class="n">description</span><span class="p">,</span>
+      <span class="ss">receipt_email: </span><span class="n">receipt_email</span><span class="p">,</span>
+      <span class="ss">payment_method: </span><span class="n">payment_method_id</span><span class="p">,</span>
+      <span class="ss">metadata: </span><span class="p">{</span>
+        <span class="ss">example_co_id: </span><span class="n">example_co_id</span><span class="p">,</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">payment_intent</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">PaymentIntent</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">payment_intent</span><span class="p">.</span><span class="nf">charges</span><span class="p">.</span><span class="nf">count</span> <span class="o">!=</span> <span class="mi">0</span>
+      <span class="c1"># Imagine a more sophisticated error handling</span>
+      <span class="c1"># strategy here...</span>
+      <span class="k">raise</span> <span class="s2">"Expected exactly one charge"</span>
+    <span class="k">end</span>
+
+    <span class="n">charge</span> <span class="o">=</span> <span class="n">payment_intent</span><span class="p">.</span><span class="nf">charges</span><span class="p">.</span><span class="nf">first</span>
+    <span class="n">charge</span><span class="p">.</span><span class="nf">id</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now, <code class="language-plaintext highlighter-rouge">Stripe::ServiceWrapper</code> has nothing to do with our domain. It’s just a much simpler method
+to charge a card in Stripe.  The argument names use Stripe’s domain, save for <code class="language-plaintext highlighter-rouge">example_co_id</code>.  This is preferable to a metadata hash because this value will show up in Stripe’s web UI and it’s part of the <em>Stripe</em> API we are creating.  It’s specific to us on purpose.</p>
+
+<p><code class="language-plaintext highlighter-rouge">on_order_shipped</code> will now call <code class="language-plaintext highlighter-rouge">create_and_confirm_payment_intent</code>, but the job of mapping our domain to Stripe’s will revert back to <code class="language-plaintext highlighter-rouge">on_order_shipped</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">on_order_shipped</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+  <span class="n">customer</span>       <span class="o">=</span> <span class="n">order</span><span class="p">.</span><span class="nf">customer</span>
+  <span class="n">payment_method</span> <span class="o">=</span> <span class="n">customer</span><span class="p">.</span><span class="nf">payment_methods</span><span class="p">.</span><span class="nf">primary</span>
+  <span class="n">product</span>        <span class="o">=</span> <span class="n">order</span><span class="p">.</span><span class="nf">product</span>
+  <span class="n">shipping_cost</span>  <span class="o">=</span> <span class="n">order</span><span class="p">.</span><span class="nf">shipping_method</span><span class="p">.</span><span class="nf">price_cents</span>
+
+  <span class="n">total_price</span> <span class="o">=</span> <span class="n">product</span><span class="p">.</span><span class="nf">price_cents</span> <span class="o">+</span> <span class="n">shipping_cost</span>
+
+  <span class="n">charge</span> <span class="o">=</span> <span class="no">Charge</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span>
+    <span class="ss">order: </span><span class="n">order</span><span class="p">,</span>
+    <span class="ss">amount_cents: </span><span class="n">total_price</span>
+  <span class="p">)</span>
+
+  <span class="n">service_wrapper</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">ServiceWrapper</span><span class="p">.</span><span class="nf">new</span>
+
+  <span class="n">stripe_id</span> <span class="o">=</span> <span class="n">service_wrapper</span><span class="p">.</span><span class="nf">create_and_confirm_payment_intent</span><span class="p">(</span>
+      <span class="ss">payment_method_id: </span><span class="n">payment_method</span><span class="p">.</span><span class="nf">id</span><span class="p">,</span>
+          <span class="ss">receipt_email: </span><span class="n">customer</span><span class="p">.</span><span class="nf">email</span><span class="p">,</span>
+            <span class="ss">description: </span><span class="n">description</span><span class="p">,</span>
+           <span class="ss">amount_cents: </span><span class="n">total_price</span><span class="p">,</span>
+          <span class="ss">example_co_id: </span><span class="n">charge</span><span class="p">.</span><span class="nf">externalizable_id</span><span class="p">)</span>
+
+  <span class="n">charge</span><span class="p">.</span><span class="nf">update!</span><span class="p">(</span><span class="ss">stripe_id: </span><span class="n">stripe_id</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Note that our invocation now provides a clear mapping of our domain to Stripe’s, in the context
+of the operation being performed inside <code class="language-plaintext highlighter-rouge">on_order_shipped</code>.  The service wrapper doesn’t need access to our domain objects, nor we to theirs.  This is a good boundary between the two systems.</p>
+
+<p>I’ve repeated this pattern of extraction over and over again that I now start any code requiring
+an API integration with a service wrapper just like the one we created.</p>
+
+<h2 id="four-properties-of-a-service-wrapper">Four Properties of a Service Wrapper</h2>
+
+<p>I <em>always</em> make a service wrapper, and I start it to suit whatever use-case is driving the
+integration.  The service wrapper can be enhanced as the app needs it to, but it always
+represents exactly and only how the app uses the wrapped service.</p>
+
+<p>These classes should have these properties to maximize their effectiveness:</p>
+
+<ul>
+  <li>Methods should be named in the language of the <em>service</em>, not the language of the app.</li>
+  <li>Arguments should use the domain of the <em>service</em>, not the domain of the app.</li>
+  <li>Arguments should be whatever type is directly needed by the service, so passing in complex stuff like Active Record should be avoided.</li>
+  <li>The return value should not be a complex object from the third party, but ideally only what data a caller will need (often nothing at all). If it must be a complex object, its name or properties should be in the domain of the service.</li>
+</ul>
+
+<p>A class with the properties above can be more easily mocked in a test of a class that uses it.
+For example:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="n">customer</span>        <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="ss">:customer</span><span class="p">)</span>
+<span class="n">payment_method</span>  <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="ss">:payment_method</span><span class="p">,</span>
+                         <span class="ss">customer: </span><span class="n">customer</span><span class="p">,</span>
+                         <span class="ss">stripe_id: </span><span class="s2">"9876"</span><span class="p">)</span>
+<span class="n">product</span>         <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="ss">:product</span><span class="p">,</span>
+                         <span class="ss">name: </span><span class="s2">"Stembolt"</span><span class="p">,</span>
+                         <span class="ss">price_cents: </span><span class="mi">45_98</span><span class="p">)</span>
+<span class="n">shipping_method</span> <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="ss">:shipping_method</span><span class="p">,</span>
+                         <span class="ss">price_cents: </span><span class="mi">4_32</span><span class="p">)</span>
+<span class="n">order</span>           <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="ss">:order</span><span class="p">,</span>
+                         <span class="ss">product: </span><span class="n">product</span><span class="p">,</span>
+                         <span class="ss">customer: </span><span class="n">customer</span><span class="p">,</span>
+                         <span class="ss">shipping_method: </span><span class="n">shipping_method</span><span class="p">)</span>
+
+<span class="n">stripe_charge_id</span> <span class="o">=</span> <span class="s2">"12345"</span>
+
+<span class="n">allow</span><span class="p">(</span><span class="n">stripe_service_wrapper</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span>
+    <span class="ss">:create_and_confirm_payment_intent</span>
+  <span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="no">OpenStruct</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">id: </span><span class="n">stripe_charge_id</span><span class="p">))</span>
+
+<span class="n">subject</span><span class="p">.</span><span class="nf">on_order_shipped</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+
+<span class="n">expect</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="nf">charge</span><span class="p">).</span><span class="nf">not_to</span>       <span class="n">eq</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span>
+<span class="n">expect</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="nf">charge</span><span class="p">.</span><span class="nf">stripe_id</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s2">"12345"</span><span class="p">)</span>
+<span class="n">expect</span><span class="p">(</span><span class="n">stripe_service_wrapper</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_recieved</span><span class="p">(</span>
+    <span class="ss">:create_and_confirm_payment_intent</span>
+  <span class="p">).</span><span class="nf">with</span><span class="p">(</span>
+    <span class="ss">payment_method_id: </span><span class="s2">"9876"</span><span class="p">,</span>
+    <span class="ss">receipt_email: </span><span class="s2">"pat@example.com"</span><span class="p">,</span>
+    <span class="ss">description: </span><span class="s2">"Purcahase of Stembolt"</span><span class="p">,</span>
+    <span class="ss">amount_cents: </span><span class="mi">50_30</span><span class="p">,</span>
+    <span class="ss">example_co_id: </span><span class="n">order</span><span class="p">.</span><span class="nf">charge_id</span><span class="p">,</span>
+  <span class="p">)</span>
+</code></pre></div></div>
+
+<p>This mock expectation is much clearer than if we’d mocked Stripe’s API client, since it only
+contains information relevant to our domain and this specific use-case.</p>
+
+<p>This leaves the question of how to ensure the service wrapper itself is working.</p>
+
+<h2 id="apply-multiple-techniques-to-ensure-the-service-wrapper-works">Apply Multiple Techniques to Ensure the Service Wrapper Works</h2>
+
+<p>Regardless of how we model our integration, third party services always present a testing
+problem, since you can’t always call into the service directly, setting up HTTP-mocking systems
+is brittle and flaky, and mock-only unit tests don’t give much confidence.</p>
+
+<p>Remember, tests are only one strategy available to ensure the proper functioning of our system.
+There are other techniques we can use.  I find success combining these four techniques:</p>
+
+<ul>
+  <li>The service wrapper pattern itself yields a class that has little or no branching or data transformation logic.  The methods often look like example integration code and so tend to be
+pretty simple.</li>
+  <li>A basic unit test of the wrapper that mocks the client or the HTTP library (but not HTTP itself) can make sure there’s no typos or syntax errors, as well as handle coverage of any branching that might be needed.</li>
+  <li>At least one integration test of an end-to-end feature is set up to call into the actual service or it’s dedicated testing environment (assuming that’s possible). This might be flaky, but it’s only one test and allows you to call the service before shipping to production.</li>
+  <li>Use background jobs for any codepath that will call the service wrapper.  The jobs must be
+idempotent and you must have adequate monitoring of your background job system.  If anything goes
+wrong, you’ll be notified, can fix it, and retry the jobs.</li>
+</ul>
+
+<p>These techniques aren’t enough on their own. You have to bring them all together.  The primary app I work on at the time of this writing has <em>many</em> third party integrations, and while I’ve certainly experienced a wide variety of failure modes, there has never been user impact and rarely business impact.</p>
+
+<p>Next time you do an API integration, no matter how simple the API might seem, try creating a
+service wrapper.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How I Use Tachyons for CSS]]></title>
+    
+    <link href="https://naildrivin5.com/blog/2022/10/28/how-i-use-tachyons-for-css.html">
+    
+    <updated>2022-10-28T09:00:00+00:00</updated>
+    <id>https://naildrivin5.com/blog/2022/10/28/how-i-use-tachyons-for-css</id>
+    <content type="html"><![CDATA[<p>I’ve long come to prefer the “functional” style of CSS, where each class represents a single CSS property set to a single value. I learned this from <a href="https://mrmrs.cc">Adam Morse</a>, author of <a href="http://tachyons.io">Tachyons</a>, which is a older framework, but it still checks out.  I’m not here to advocate for this style (read <a href="https://mrmrs.cc/writing/scalable-css">Adam’s post</a> for that), but to talk about how I use SASS to create higher-level re-usable styles with Tachyons, achieve the best of all worlds when managing CSS, all without some unstable, unfriendly JavaScript toolchain.</p>
+
+<!-- more -->
+
+<p>One benefit of Tachyhons-like frameworks is that you don’t have to create a named component or
+semantic class for everything you want to style.  If you only ever need a padded box with a grey
+rounded border one time in your app, you can just create it directly:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"pa2 ba br3 b--gray"</span><span class="nt">&gt;</span>
+Some Stuff
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<p>But even modest apps will end up with reusable components.  A common example is a button.   You might have a button like so:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"#"</span> <span class="na">class=</span><span class="s">"ph3 pv2 ba br3 white b--green bg-green"</span><span class="nt">&gt;</span>
+  Click Me
+<span class="nt">&lt;/a&gt;</span>
+</code></pre></div></div>
+
+<aside style="margin: 1rem;">
+<a href="#" onclick="return false" style="display: inline-block; padding: 1rem 2rem; border: solid thin green; border-radius: 4rem; background: green; color: white;">
+  Click Me
+</a>
+</aside>
+
+<p>(This says that our horizontal padding is the 3rd step of our design system’s spacing, our
+vertical spacing is the 2nd step (smaller), our border radius is the 3rd roundest, our text is
+white and both our background and border colors are the green from our design system. Great.)</p>
+
+<p>If we need to use a button like this a lot, we don’t want to repeat that string of classes. In
+fact, that is often what makes people bristle at this style.</p>
+
+<h2 id="remove-trivial-duplication-with-your-templating-system">Remove Trivial Duplication with Your Templating System</h2>
+
+<p>This type of duplication, where you need almost identical markup in several places, can be
+eliminated using the templating system of your web framework. In Rails, you could make a partial:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="ss">partial: </span><span class="s2">"shared/button"</span><span class="p">,</span>
+           <span class="ss">locals: </span><span class="p">{</span> <span class="ss">href: </span><span class="s2">"#"</span><span class="p">,</span> <span class="ss">label: </span><span class="s2">"Click Me"</span> <span class="p">}</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>Or you could make a helper:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">button</span><span class="p">(</span><span class="n">label</span><span class="p">,</span><span class="n">href</span><span class="p">)</span>
+  <span class="n">link_to</span> <span class="n">label</span><span class="p">,</span> <span class="n">href</span><span class="p">,</span>
+          <span class="ss">class: </span><span class="s2">"ph3 pv2 ba br3 white b--green bg-green"</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The good thing about this is that your reusable components are modeled the same way, regardless
+of what is being re-used.  In the case of our button, we are re-using styles, but we could also
+make a component that reuses some display logic, or one that has both.  Regardless, they are
+managed the same way (you can also use the wonderful <a href="https://viewcomponent.org">ViewComponent library</a>).</p>
+
+<p>Sometimes, you want to reuse only some of those classes.</p>
+
+<h2 id="more-complex-re-use-can-create-problems">More Complex Re-use Can Create Problems</h2>
+
+<p>Consider the need for a secondary button:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"#"</span> <span class="na">class=</span><span class="s">"ph3 pv2 ba br3 green b--green bg-white"</span><span class="nt">&gt;</span>
+  I'm Also Here
+<span class="nt">&lt;/a&gt;</span>
+</code></pre></div></div>
+
+<aside style="margin: 1rem;">
+<a href="#" onclick="return false" style="display: inline-block; padding: 1rem 2rem; border: solid thin green; border-radius: 4rem; background: white; color: green;">
+  I'm also here
+</a>
+</aside>
+
+<p>This is similar to our original button, but uses different colors.  It also has a slightly different design. Our primary button is a solid background whereas our secondary button has an outline.</p>
+
+<p>We could allow the re-use of the common classes as a parameter to our helper:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">button</span><span class="p">(</span><span class="n">label</span><span class="p">,</span><span class="n">href</span><span class="p">,</span> <span class="ss">colors: </span><span class="s2">"white b--green bg-green"</span><span class="p">)</span>
+  <span class="n">link_to</span> <span class="n">label</span><span class="p">,</span> <span class="n">href</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"ph3 pv2 ba br3 </span><span class="si">#{</span><span class="n">colors</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Which is used thusly:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">button</span><span class="p">(</span><span class="s2">"I'm Also Here"</span><span class="p">,</span> <span class="s2">"#"</span><span class="p">,</span>
+           <span class="ss">colors: </span><span class="s2">"green, g--green bg-white"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>This can become unwieldy.  If we acknowledge that we <em>do</em> have a reusable component on our hands,
+it might be better if we had a class like <code class="language-plaintext highlighter-rouge">button-base</code> that defined everything about every
+button that is consistent.  We could then use it like so:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"#"</span> <span class="na">class=</span><span class="s">"button-base white b--green bg-green"</span><span class="nt">&gt;</span>
+  Click Me
+<span class="nt">&lt;/a&gt;</span>
+<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"#"</span> <span class="na">class=</span><span class="s">"button-base green b--green bg-white"</span><span class="nt">&gt;</span>
+  I'm also here
+<span class="nt">&lt;/a&gt;</span>
+</code></pre></div></div>
+
+<p>The problem is that it’s not clear how to do this without some uncomfortable duplication.</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.button-base</span> <span class="p">{</span>
+  <span class="nl">border-style</span><span class="p">:</span> <span class="nb">solid</span><span class="p">;</span>
+  <span class="nl">padding</span><span class="p">:</span> <span class="err">???</span><span class="p">;</span>
+  <span class="nl">border-radius</span><span class="p">:</span> <span class="err">???</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>To provide values for <code class="language-plaintext highlighter-rouge">padding</code> and <code class="language-plaintext highlighter-rouge">border-radius</code> we can duplicate the sizes, thus creating
+problematic duplication:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.button-base</span> <span class="p">{</span>
+  <span class="nl">border-style</span><span class="p">:</span> <span class="nb">solid</span><span class="p">;</span>
+  <span class="nl">padding</span><span class="p">:</span> <span class="m">2rem</span> <span class="m">4rem</span><span class="p">;</span>  <span class="c">/* Where did these values come from?! */</span>
+  <span class="nl">border-radius</span><span class="p">:</span> <span class="m">2rem</span><span class="p">;</span> <span class="c">/* Where did these values come from?! */</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We could use CSS variables, assuming Tachyons makes them available:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.button-base</span> <span class="p">{</span>
+  <span class="nl">border-style</span><span class="p">:</span> <span class="nb">solid</span><span class="p">;</span>
+  <span class="nl">padding</span><span class="p">:</span> <span class="n">var</span><span class="p">(</span><span class="n">--spacing-small</span><span class="p">)</span>
+           <span class="n">var</span><span class="p">(</span><span class="n">--spacing-medium</span><span class="p">);</span>
+  <span class="nl">border-radius</span><span class="p">:</span> <span class="n">var</span><span class="p">(</span><span class="n">--border-radius-medium</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This re-uses our design system, but now we have two ways to specify values: the classes that
+Tachyons provides, and the variables it uses to produce its classes.</p>
+
+<p><a href="https://sass-lang.com">SASS</a> allows us to address this.</p>
+
+<h2 id="sass-can-re-use-classes">SASS Can Re-use Classes</h2>
+
+<p>If we use the Tachyons SASS port, we can do this:</p>
+
+<div class="language-scss highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.button-base</span> <span class="p">{</span>
+  <span class="k">@extend</span> <span class="nc">.ph3</span><span class="p">;</span>
+  <span class="k">@extend</span> <span class="nc">.pv2</span><span class="p">;</span>
+  <span class="k">@extend</span> <span class="nc">.ba</span><span class="p">;</span>
+  <span class="k">@extend</span> <span class="nc">.br3</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This is the best of all worlds:</p>
+
+<ul>
+  <li>Whenever we specify a CSS property, we have exactly one way to do it: using the Tachyons class, either directly in our HTML, or via <code class="language-plaintext highlighter-rouge">@extend</code> in SASS.</li>
+  <li>We don’t have to name components that aren’t reusable just so we can style them.</li>
+  <li>We <em>can</em> name components that <em>are</em> reusable to control how our design system evolves and allow new code to more easily know what standard styles are in place: any class defined in our main <code class="language-plaintext highlighter-rouge">.scss</code> file is an intended-to-be-reused component.</li>
+</ul>
+
+<p>This technique also provides benefits when you need to write CSS to solve a problem Tachyons
+cannot.</p>
+
+<h2 id="sass-extend-works-for-complex-components-too">SASS <code class="language-plaintext highlighter-rouge">@extend</code> Works for Complex Components, too</h2>
+
+<p>An example of something that Tachyons alone cannot easily style is a custom checkbox, where you need to style against pseudo-selectors to achieve the design.  I’m sure there are other ways to do this, but this is a way I have done it that demonstrates the technique.</p>
+
+<p>Instead of using Tachyons classes in our HTML, we change to a <a href="https://getbem.com/introduction/">BEM-like</a> style:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"styled-checkbox-container"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"confirm"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">id=</span><span class="s">"confirm"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"styled-checkbox"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"styled-checkbox-check"</span><span class="nt">&gt;</span><span class="ni">&amp;check;</span><span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"styled-checkbox-label"</span><span class="nt">&gt;</span>
+      I get it
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+
+</code></pre></div></div>
+
+<p>We define <code class="language-plaintext highlighter-rouge">.styled-checkbox-container</code>, <code class="language-plaintext highlighter-rouge">.styled-checkbox</code>, <code class="language-plaintext highlighter-rouge">.styled-checkbox-check</code>, and
+<code class="language-plaintext highlighter-rouge">.styled-checkbox-label</code> in our app’s <code class="language-plaintext highlighter-rouge">.scss</code> file, which will be just a series of <code class="language-plaintext highlighter-rouge">@extend</code>
+calls to Tachyons classes:</p>
+
+<div class="language-scss highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.styled-checkbox-container</span> <span class="nt">input</span><span class="o">[</span><span class="nt">type</span><span class="o">=</span><span class="nt">checkbox</span><span class="o">]</span> <span class="p">{</span>
+  <span class="k">@extend</span> <span class="nc">.absolute</span><span class="p">;</span> <span class="c1">// absolute position</span>
+  <span class="k">@extend</span> <span class="nc">.o-0</span><span class="nd">:</span>      <span class="o">//</span> <span class="nt">opacity</span> <span class="nt">0</span>
+<span class="p">}</span>
+
+<span class="nc">.styled-checkbox-container</span> <span class="nt">input</span> <span class="o">~</span> <span class="nc">.styled-checkbox</span> <span class="p">{</span>
+  <span class="k">@extend</span> <span class="nc">.b--moon-gray</span><span class="p">;</span> <span class="c1">// border moon gray</span>
+  <span class="k">@extend</span> <span class="nc">.ba</span><span class="p">;</span>           <span class="c1">// has a border</span>
+  <span class="k">@extend</span> <span class="nc">.dib</span><span class="p">;</span>          <span class="c1">// display inline block</span>
+  <span class="k">@extend</span> <span class="nc">.h2</span><span class="p">;</span>           <span class="c1">// height using 2nd level of scale</span>
+  <span class="k">@extend</span> <span class="nc">.pointer</span><span class="p">;</span>      <span class="c1">// pointer cursor on hover</span>
+  <span class="k">@extend</span> <span class="nc">.tc</span><span class="p">;</span>           <span class="c1">// text centered</span>
+  <span class="k">@extend</span> <span class="nc">.w2</span><span class="p">;</span>           <span class="c1">// width using 2nd level of scale</span>
+  <span class="nc">.styled-checkbox-check</span> <span class="p">{</span>
+    <span class="k">@extend</span> <span class="nc">.dn</span><span class="p">;</span>         <span class="c1">// display none</span>
+    <span class="k">@extend</span> <span class="nc">.f4</span><span class="p">;</span>         <span class="c1">// font size is fourth in our scale</span>
+    <span class="k">@extend</span> <span class="nc">.pa1</span><span class="p">;</span>        <span class="c1">// padding first in scale</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="nc">.styled-checkbox-container</span> <span class="nt">input</span> <span class="o">~</span> <span class="nc">.styled-checkbox</span> <span class="p">{</span>
+  <span class="k">@extend</span> <span class="nc">.br2</span><span class="p">;</span>          <span class="c1">// border radius 2nd in scale</span>
+<span class="p">}</span>
+
+<span class="nc">.styled-checkbox-container</span> <span class="nt">input</span> <span class="o">~</span> <span class="nc">.styled-checkbox-label</span> <span class="p">{</span>
+  <span class="k">@extend</span> <span class="nc">.b--transparent</span><span class="p">;</span> <span class="c1">// transparent border</span>
+  <span class="k">@extend</span> <span class="nc">.ba</span><span class="p">;</span>             <span class="c1">// has a border</span>
+  <span class="k">@extend</span> <span class="nc">.br2</span><span class="p">;</span>            <span class="c1">// radius second in scale</span>
+  <span class="k">@extend</span> <span class="nc">.dib</span><span class="p">;</span>            <span class="c1">// display inline block</span>
+  <span class="k">@extend</span> <span class="nc">.f4</span><span class="p">;</span>             <span class="c1">// font size fourth in scale</span>
+  <span class="k">@extend</span> <span class="nc">.fw3</span><span class="p">;</span>            <span class="c1">// font weight 300</span>
+  <span class="k">@extend</span> <span class="nc">.ml2</span><span class="p">;</span>            <span class="c1">// margin left second in scale</span>
+  <span class="k">@extend</span> <span class="nc">.pa2</span><span class="p">;</span>            <span class="c1">// padding second in scale</span>
+  <span class="k">@extend</span> <span class="nc">.w-80</span><span class="p">;</span>           <span class="c1">// 80% width</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div data-ad=""></div>
+
+<p>Again, we have exactly one way to set CSS properties - the Tachyons classes.  And again, this is
+the best of all worlds because we <em>can</em> do this if we need to, with a minimum of duplication, but
+we don’t have to.</p>
+
+<p>And, we don’t need a complicated JavaScript toolchain. We just need SASS, which is
+a battle-hardened, build-time-only, stable tool.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Treat Rails for What it Is and Organize Code By Structural Purpose]]></title>
+    
+    <link href="https://naildrivin5.com/blog/2022/10/25/treat-rails-for-what-it-is-and-organize-code-by-structural-purpose.html">
+    
+    <updated>2022-10-25T09:00:00+00:00</updated>
+    <id>https://naildrivin5.com/blog/2022/10/25/treat-rails-for-what-it-is-and-organize-code-by-structural-purpose</id>
+    <content type="html"><![CDATA[<p>If I had one piece of advice for using Rails, it is to treat Rails for what it <em>is</em>, not what you might like it to be.  This was the subject of my talk at Rails Conf 2022, but it has a few practical implications for, among other things, how to organize the code in your Rails app.</p>
+
+<!-- more -->
+
+<p>No matter how simple your app is, it will have business logic, and you will have a boundary
+between your controllers/jobs/mailboxes/tasks and that logic.  The code that defines that
+boundary is called a <em>service layer</em>. It should go in <code class="language-plaintext highlighter-rouge">app/services</code>, because Rails organizes
+code by <em>structural</em> purpose, not domain purpose.  Following Rails conventions will make
+development of your app easier to sustain over time.</p>
+
+<h2 id="an-apps-architecture-starts-with-code-organization">An App’s Architecture Starts with Code Organization</h2>
+
+<p>The reason the question “where does this code go?” is important to answer is because it’s
+the foundation of the application’s architecture.  If developers don’t know (or can’t agree on) where code is supposed to go, sustained development is going to be difficult.</p>
+
+<p>Rails is a framework that will manage <em>most</em> of the classes you need to build an app: HTTP, Email, database, background jobs, etc.  Rails does not provide any specific way to manage your core domain or business logic.  The only feature it provides is the ability to auto-load classes in <code class="language-plaintext highlighter-rouge">app/«whatever»</code>.</p>
+
+<div data-ad=""></div>
+
+<p>The easier it is to answer the question “where does the code go?” the easier it will be to work
+on your app over time and through change (in requirements, team, etc). If answering this question
+is difficult, change is harder. Questions that are difficult to answer create more friction than
+questions that are easy to answer, and you want to reduce friction, <em>especially</em> around questions
+that must be answered before coding can start.</p>
+
+<p>Fortunately, Rails <em>does</em> provide an easier answer for <em>almost</em> all of the code you have to
+write: controllers go in <code class="language-plaintext highlighter-rouge">app/controllers</code>, Active Records go in <code class="language-plaintext highlighter-rouge">app/models</code>, Mailers go in <code class="language-plaintext highlighter-rouge">app/mailers</code>, and so on.  Developers don’t need to do a lot of analysis to figure out where that sort of code goes. So it should be with business logic.</p>
+
+<p>Business (or perhaps <em>domain</em>) logic doesn’t fit into any of the Rails-managed classes, and Rails
+doesn’t provide an answer for where this code goes.  I find it useful to acknowledge the boundary
+between Rails-managed classes and business logic, and I find the best term for this boundary to
+be <em>service layer</em>.</p>
+
+<h2 id="business-logic-should-be-encapsulated">Business Logic Should be Encapsulated</h2>
+
+<p>Even if you don’t explicitly define a boundary between your controllers and business logic, it
+doesn’t mean it doesn’t exist, at least conceptually.  This boundary is called a <em>service layer</em>, which <a href="https://martinfowler.com/eaaCatalog/serviceLayer.html">Martin Fowler</a> defines thusly, emphasis mine:</p>
+
+<blockquote>
+  <p>A Service Layer defines an application’s boundary and its set of available operations from the perspective of interfacing client layers. It <em>encapsulates the application’s business logic</em>, controlling transactions and coordinating responses in the implementation of its operations.</p>
+</blockquote>
+
+<p>The highlighted section is important.  The service layer <em>encapsulates</em> the business logic from
+“clients”. In a Rails app, a client is a controller, mailbox, task, or background job.  They
+invoke business logic and interpret its results.  The service layer is where this happens.</p>
+
+<aside class="pullquote">
+The service layer encapsulates the business logic.
+</aside>
+
+<p>This does <em>not</em> imply that the service layer contain all the logic.  It is just a boundary.  It encapsulate whatever the logic is.</p>
+
+<p>Rails developers often fail to create an explicit service layer, and have methods littered all
+over the place—often on Active Records—that trigger (and implement) business logic.  This is needlessly confusing and hard to manage over time.  Having instead a single place where business logic is invoked makes everything easier.</p>
+
+<p><em>Inside</em> <code class="language-plaintext highlighter-rouge">app/services</code>, because of encapsulation, you are free to organize the code however you
+like. If you prefer stateless procedures, you can do that.  If you prefer a rich collection of
+objects passing messages, you can do that, too.  If you need to create subdirectories for domain
+concepts, you can do that as well.  This is the primary benefit of encapsulation and, because
+this code is tucked into <code class="language-plaintext highlighter-rouge">app/services</code>, it also is consistent with Rails’ conventions.</p>
+
+<h2 id="what-about-decorators-and-other-classes">What About Decorators and Other Classes?</h2>
+
+<p>Most apps should not need more than <code class="language-plaintext highlighter-rouge">app/services</code> plus what Rails gives you, but if you do end
+up having a lot of classes that conform to some structural purpose, you can certainly create a
+directory in <code class="language-plaintext highlighter-rouge">app</code> to store them.</p>
+
+<p>This is what Rails intends you to do, and creating a directory like <code class="language-plaintext highlighter-rouge">app/decorators</code> is a clear way to communicate that there is a concept of a decorator, and that the way it is constructed is important to be consistent.</p>
+
+<p>This provides an easy answer to “where do decorators go?” and is also consistent with how Rails
+wants you to structure your code.  The more easy answers your architecture provides, the better.</p>
+
+<h2 id="what-about-lib">What About <code class="language-plaintext highlighter-rouge">lib</code>?</h2>
+
+<p>There is a second type of code that is particular to your app but doesn’t fall into a
+Rails-managed class <em>or</em> business logic, and <em>that</em> is the code that should go in <code class="language-plaintext highlighter-rouge">lib</code>.  This
+code is often infrastructure-type code like middleware or plugins.  <code class="language-plaintext highlighter-rouge">lib</code> can also hold code you
+intend to extract as a gem in the future.</p>
+
+<p>This convention follows the policy we’ve been discussing: easy answer to where code goes.  If you
+need to create some code that is not business logic and does not go in a Rails-managed class, it
+goes in <code class="language-plaintext highlighter-rouge">lib</code>.</p>
+
+<h2 id="what-about-organizing-by-domain-concept">What About Organizing by Domain Concept?</h2>
+
+<p>There are advantages to organizing code by domain concept instead of structural purpose.  For
+example, you might want <code class="language-plaintext highlighter-rouge">app/shopping</code> to contain all the code about purchasing from your store
+and <code class="language-plaintext highlighter-rouge">app/reporting</code> to contain all the reporting.</p>
+
+<p>To entirely organize your app this way requires quite the configuration feat with Rails and would
+obviate may of Rails’ benefits.  It also creates a far more difficult-to-answer to the question of
+where code goes.  Is there an existing concept where this new code should go?  I there an
+existing concept that is close, and if we rename it would this code go there?  Or, does adding
+this code to an existing concept make that concept too complex such that it requires splitting up
+into two smaller concepts?</p>
+
+<aside class="pullquote">
+It creates a far more difficult-to-answer question of where code goes.
+</aside>
+
+<p>These questions can be hard to answer, especially if the app is undergoing rapid change. You may
+not know what concepts the app will need or if a concept will be developed beyond the initial
+feature. When organizing by structural purpose you can always safely put the code in
+<code class="language-plaintext highlighter-rouge">app/controllers</code> or <code class="language-plaintext highlighter-rouge">app/services</code> or wherever, and organize it later.</p>
+
+<p>The ability to organize later is powerful: it’s much easier to organize code that exists and is
+tested than it is to try to predict where code should go in the future.  The contents of your
+structurally-based folders will show you exactly what concepts are important and which ones
+aren’t.</p>
+
+<p>When <code class="language-plaintext highlighter-rouge">app</code> contains structurally-organized directories and <em>those</em> directories contain
+domain-organized code, you get the best of both worlds.  You can group by domain concept, but
+also easily answer the question of where code goes.  You also have an escape hatch if the
+question is too hard to answer: put it in the top of the relevant directory.</p>
+
+<h2 id="treat-rails-for-what-it-is">Treat Rails for What it Is</h2>
+
+<p>Rails is a web framework that organizes code by structural purpose. It provides rudimentary tools
+for adding your own new structural purposes, and does not prescribe how the code inside should be
+organized.  Thus, define your service layer explicitly in <code class="language-plaintext highlighter-rouge">app/services</code>, then organize the code
+in there—as well as your domain logic—however you see fit. If you always try to treat Rails for
+what it is—not what you might like it to be—your app’s architecture will provide a solid
+foundation for sustainable development.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Actual Reasons to Use Test-Driven Development]]></title>
+    
+    <link href="https://naildrivin5.com/blog/2022/09/06/actual-reasons-to-use-tdd.html">
+    
+    <updated>2022-09-06T09:00:00+00:00</updated>
+    <id>https://naildrivin5.com/blog/2022/09/06/actual-reasons-to-use-tdd</id>
+    <content type="html"><![CDATA[<p>Test-Driven Development is often sold as a way to be more productive or produce better
+designs, but it’s these unprovable claims that make skeptics even less likely to adopt
+the practice. Instead, TDD should be sold as a tool to reduce the risk of software not
+working as intended without expending huge amounts of effort and time doing so. Because
+that’s what it does (yes, it’s about testing).</p>
+
+<!-- more -->
+
+<p>You can’t measure developer productivity, and you can’t analyze a design to see if it’s
+good, or even better as compared to some other design.  You can’t even get two engineers to agree on subjective traits of a good design.  I can’t understand why TDD’s proponents promise this stuff.  They don’t need to.</p>
+
+<p>What TDD—in the more literal interpretation of using tests to drive development—<em>can</em> do
+is provide a process to produce reliable, automated tests that provide great coverage of
+the software, while scaling pretty well as size of team and codebase increases.</p>
+
+<p>To see how, let’s start with the basics: how do we know our software is doing what we
+expect?</p>
+
+<h2 id="we-can-all-agree-software-should-do-what-we-expect">We Can All Agree Software Should Do What We Expect</h2>
+
+<p>Set aside “correctness” (a meaningless term if I’ve ever heard one). Don’t worry about
+“working software”.  Instead think about the question on our minds as we write code, the
+question we had from our first moment of coding, and that we still ask as we do our jobs
+today: is the software doing what I expect?</p>
+
+<aside class="pullquote">Is the software doing what I expect?</aside>
+
+<p>The most obvious way to answer this question is to run the software and use it.  See if
+it’s doing what you were trying to get it to do. If it does, well, that’s something.
+This method of checking our software is pretty easy to understand and, at least when the
+codebase and team are small, pretty easy to do.</p>
+
+<p>However, we don’t usually get the luxury of a small codebase and a small team.  We also
+don’t often write software that we ourselves use. Typically, we are part of a growing
+organization building an increasingly large and complex software system for someone else
+to use.</p>
+
+<p>In that situation, running the software to see if does what we want becomes tedious, time-consuming, and, well, ineffective as a management practice.</p>
+
+<h2 id="manually-checking-everything-is-not-sustainable">Manually Checking Everything Is Not Sustainable</h2>
+
+<p>The reason manual checking is so painful is that you can’t check only the change you
+made.  You really need to check if your change broke anything else that was previously
+checked before the change was made.  Over time, the software does more and more things, so that’s more and more things to check.</p>
+
+<figure style="float: left; padding-right: 0rem; padding-left: 0; width: 300px">
+<a href="/images/lots-of-testers.png"><img src="/images/lots-of-testers.png" alt="Picture of tons and tons of people at computer terminals" /></a>
+<figcaption>
+Click to embiggen.  Generated by OpenAI's DALL-E.
+</figcaption>
+</figure>
+
+<p>But even just checking the current change starts to consume more time. Using the
+software to arrange <em>just</em> the right state of affairs becomes difficult.  What was once purchasing an item from a store is now specifying a postal code, choosing a carrier, deciding on gift wrap, and shipping to more than one address, all so we can check that our post-payment email confirmation gets sent with the right formatting.</p>
+
+<p>The absolutely simplest way to try to sustain <em>this</em> method of checking that our software
+meets our expectations is to write out all the checks we do every time, and hand them to
+an ever-growing team of lower-paid testers.  When you change something, you throw it to the testers and they check it for you.</p>
+
+<p>This increases the lines of communication and creates a significant coordination and management burden.  Who decides what is to be checked?  Who decides what constitutes a valid check?  Who decides what is a failure and what is a miscommunication of expectations? And who makes sure that all the checks check the changes they are supposed to check?</p>
+
+<h2 id="scaling-a-manual-process-requires-people-management-and-a-lot-of-it">Scaling a Manual Process Requires People Management, and a Lot of It</h2>
+
+<p>The only way to manage this is to have more people and more process for them to follow.  The developers and the testers and the “business people” all meet regularly to figure out what they want and how to test it.  The testers and the developers have to constantly try to align on what is being done and how.</p>
+
+<p>You need managers for everyone and managers for those managers.  Everything has to be checked.  You end up spending most of your time trying to manage three key problems:</p>
+
+<ul>
+  <li><strong>Reliability</strong>: are the checks actually checking what they are supposed to?  When a check passes, how do we know it really asserted some desired behavior?</li>
+  <li><strong>Coverage</strong>: are we checking everything that’s being developed?  When all the checks come back as passing, how do we know that we actually checked the new changes?</li>
+  <li><strong>Scaling</strong>: can we manage an increase in the size and complexity of the software without an exponential increase in time and people to check it?</li>
+</ul>
+
+<aside class="pullquote">The testers and the developers have to constantly try to align on what is being done and how.</aside>
+
+<p>This is how you end up with big QA teams and quarterly releases.  It’s so much effort to
+even check the existing features of the software that you have to only do it four times
+per year.  That’s an average of about 7 weeks delay for anything getting shipped.</p>
+
+<p>In addition to delaying the delivery of value to users, it also means that valuable context is lost along a lengthy feedback cycle. When you check your own code right after you wrote it and it doesn’t do what you think, you are in a great place to fix it.  If someone you just met tells you that a feature you built three months ago isn’t working, you may not even remember working on it, but now you have to fix it.</p>
+
+<p>We wouldn’t need batch releases if it didn’t take so long to develop, run, and analyze
+all these checks.  If checks could be created reliably, covering new features without a
+lot of overhead, and could be executed quickly, there’d be no reason to batch releaes.
+We could deliver code as soon as all the checks were run because we’d be confident they
+covered everything we wanted them to cover.</p>
+
+<p>This is what most teams want to achieve, and it’s possible.</p>
+
+<h2 id="reliably-checking-the-whole-system-without-a-massive-team-is-possible">Reliably Checking The Whole System Without a Massive Team is Possible</h2>
+
+<p>A common way to address the issues with an ever-increasing team is to turn the manual
+checking into automated checking.  The QA team becomes <em>software engineers in test</em>, and
+they write programs that do the checking.</p>
+
+<p>This <em>can</em> reduce the feedback time, but merely automating this process still won’t help
+issues with reliable checks that provide good coverage.  You still have to manage that
+part manually, and that makes scaling hard.  Automated tests help, but they don’t solve
+the problem.</p>
+
+<p>The way to do this is to invert the process of writing software like so:</p>
+
+<ol>
+  <li>Write an automated test of the system that fails <em>exactly</em> because the desired feature is not present in the system.</li>
+  <li>Write only enough code to make that test pass.</li>
+</ol>
+
+<p>That’s it.  It’s only two steps.  Everyone knows how to do step 2 already.  Step 1 isn’t
+easy, but it can be learned.</p>
+
+<p>Why does this address reliability and coverage and allow us to scale?  It’s because we
+see the tests fail, thus knowing they work, and we don’t write code without a test,
+meaning all features should have a test, thus achieving good coverage.</p>
+
+<h2 id="testing-tests-by-watching-them-fail">Testing Tests By Watching Them Fail</h2>
+
+<p>When you see a test fail, you can be sure it’s testing something.  You have to be
+careful to make sure it <a href="/blog/2022/08/04/the-four-stages-of-testing-that-help-your-focus.htm">fails in just the right way</a>, and you may need several individual
+tests to hone in on a larger behavior.  But a failing test is a reliable test.</p>
+
+<p>Writing a test of already-working code doesn’t tell you nearly as much.  Because an
+empty test passes the same as a reliable test of working code, you have to examine
+the test to make sure it works.  This is hard. And time consuming.</p>
+
+<p>Take this test of calculating the radius of a circle:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">circle</span> <span class="o">=</span> <span class="no">Circle</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">radius: </span><span class="mi">5</span><span class="p">)</span>
+<span class="n">assert</span> <span class="mf">78.5</span><span class="p">,</span> <span class="n">circle</span><span class="p">.</span><span class="nf">area</span>
+</code></pre></div></div>
+
+<p>This test will always pass, and if you wrote it <em>after</em> you implemented the <code class="language-plaintext highlighter-rouge">area</code>
+method, you might think your implementation is working.  Look closer.</p>
+
+<p>We should’ve called <code class="language-plaintext highlighter-rouge">assert_equals</code>.  If we wrote this test <em>before</em> implementing
+<code class="language-plaintext highlighter-rouge">area</code>, we’d see our fresh test of unimplemented behavior pass and we’d know our test
+was wrong.</p>
+
+<p>Now, imagine a system more complex than calculating the area of a circle.  You just can’t
+assert the reliability of tests by reading them.  You need to see them fail.  And it’s
+much simpler to see them fail before you write the code than after.</p>
+
+<p>When you write the test first, and only write code to make that test pass, you can
+then be sure your tests have good coverage.</p>
+
+<h2 id="writing-code-second-ensures-that-code-is-tested">Writing Code Second Ensures That Code is Tested</h2>
+
+<p>When you write code only to make a failing test pass, you can be pretty confident that
+all features are being checked.  If you write tests after the code, well, who knows
+what’s being tested?  Aside from the difficultly in assessing the reliability of the
+tests, you also have to make sure to do it, perhaps writing several lengthy tests to
+assert a specific behavior.</p>
+
+<p>It’s a subtle difference but it’s important. We can’t help but think we are done with
+the code is written.  That’s because in many ways we <em>are</em> done.  We could ship that
+code without any tests.  To provide test coverage we have to remember to do it and also
+feel like doing it.</p>
+
+<aside class="pullquote">
+You cannot underestimate how well a process works where being done is the final step, not the first step.
+</aside>
+
+<p>Granted, we have to remember to write tests first and feel like doing <em>that</em>, but writing
+the tests first is much easier muscle to build because it always puts being done as the last step.  You cannot underestimate how well a process works where being done is the final step, not the first step.</p>
+
+<p>This process scales. You don’t need more and more testers as your codebase gets bigger.
+You may not even need testers at all.</p>
+
+<h2 id="automated-tests-that-are-reliable-and-have-good-coverage-scale">Automated Tests That are Reliable and Have Good Coverage Scale</h2>
+
+<p>More software means more tests. There’s no way around it.  When humans are running the
+tests and coordinating about what they should do that means more humans are needed. And
+when more humans are needed, more management is needed—it’s not just a linear thing.</p>
+
+<p>When the tests are automated from the start, written first so we can watch them fail,
+and when code is only written to make them pass, you <em>don’t</em> need more humans  to
+run tests.  Yes, you need more humans to write tests (and write code), but it turns out
+you can get the same person to do both.</p>
+
+<p>That person doesn’t have to coordinate about how to test something, and doesn’t have to
+negotiate about what is and isn’t valid test.  This requires management and training of
+the developers, but it’s overall less of an investment than a dedicated testing team.</p>
+
+<p>When the team is bought-in to testing first—with clear management expectations that they
+do so—and are trained on who to think through testing as a practice (a nontrivial, but
+one-time thing), the team will produce reliable tests with good coverage, and not
+require an explosion of team members and managers to scale up development.</p>
+
+<div data-ad=""></div>
+
+<p>Some may bristle at having developers test their own code. They may think that you cannot trust the developers to do this and this is why you have a separate team. This line of thinking means that you don’t have developers who care if their code works or, at best, should not have to check that their code works.</p>
+
+<p>You don’t have to create such a culture if you don’t want it.  If you instead create a culture where developers only write code when a test is failing, you won’t have to worry about it. They literally can’t ship unless there is test coverage.  You can still have a small team of dedicated testers do exploratory testing to try to find bugs that make it out of development.</p>
+
+<p>At this point, I’ve laid out the reasoning for a team to adopt driving their development
+with tests instead of the other way around.  I would hope this is all not very
+controversial: you need to check if the software is doing what it should, and you want
+that done reliably, effectively, and without an ever-increasing number of people to do
+so.</p>
+
+<p>But, it’s not a perfect system.  Don’t let uncles and grandpas tell you you always have to work this way. TDD is a technique, not a religion.</p>
+
+<h2 id="test-driven-development-is-a-tool-not-a-way-of-life">Test-Driven Development is a Tool, not a Way of Life</h2>
+
+<p>Some features are hard to test. When you write your tests first, it’s much easier to
+identify such features.  When you write your tests last, it’s harder.  Writing tests
+last means you can conflate a test that is possible, but requires a lot of effort, vs a
+test that is going to be highly complex and perhaps not even possible.</p>
+
+<p>Writing tests first requires you to think throw <em>how</em> you are going to test the code
+before you write it. There are many ways to write code to solve some problem, but when
+you write the tests first, you kinda have to write that code in a way that affords
+testing. This is not the same as “good design”.</p>
+
+<aside class="pullquote">You can discuss the issues making it hard to write a test before code is written.</aside>
+
+<p>When writing tests first, if you come across a feature that is hard to test, it’s much
+easier to discuss it. You can discuss the issues before any code is written. Perhaps the
+feature can be re-thought to make testing easier?  Perhaps you’ll need additional
+monitoring in production to make up for the lack of coverage?  Perhaps you have to find
+a better way to implement it so it can be tested more easily? This is all useful
+discussion to be had before any code is written.</p>
+
+<p>But in no way will you always write code to make a failing test pass. You’ll just know
+exactly why you aren’t when you can’t.</p>
+
+<p>The harder part is that pesky first step - writing a test that clearly asserts the
+behavior you want to add.</p>
+
+<h2 id="test-driven-development-requires-learning-how-to-test">Test-Driven Development Requires Learning How to Test</h2>
+
+<p>Programmers tend to have the mindset to think through alternatives and
+exceptions the way a tester does, or at least they tend to have this ability
+commensurate with their general ability to write code.  Placing the implementation
+second will provide a natural incentive to refine their ability to test.</p>
+
+<p>But, like any skill the team needs to have, mentorship, training, and critique are all
+required to make sure the team is performing well.  Writing tests first doesn’t really
+change these fundamentals of management. If you want developers writing tests first, you
+need to make sure they can learn how to do it.</p>
+
+<p>And, to be clear, adopting test-driven development is a team decision. And that means
+management has to make sure it’s happening.</p>
+
+<h2 id="benefits-come-from-team-not-individual-practices">Benefits Come From Team, Not Individual, Practices</h2>
+
+<p>The benefits outlined above only really work when the entire team is using the
+practice.  Discussing a feature that might be hard to test is much more difficult to do
+if half the team isn’t writing tests first.  The entire notion of coverage goes out the
+window if only some developers are writing tests first.</p>
+
+<p>To get the entire team doing it is a management problem.  While it should take fewer
+managers to get a team following a test-first process than to manage a sea of QA
+engineers, it still requires someone to ensure that the team agrees to follow the
+practice and then actually does it.</p>
+
+<aside class="pullquote">To get the entire team doing TDD is a management problem.</aside>
+
+<p>Pair programming, code reviews, retrospectives, and post-incident reviews are all ways
+to manage this, and you may need to be doing some form of all of them. You can’t have
+managers look over developers’ shoulders or require them to show you tests before
+allowing them to write code.  The developers have to want to do this.</p>
+
+<p>Fortunately, the reason the entire team should be working test-first applies to a
+developer’s personal process.  Each developer should want to check that their changes
+are doing what they expect.  Each developer should want to know if their changes break
+other parts of the system.  Each developer should understand that to do that requires
+reliable tests and good coverage.</p>
+
+<p>But this, too, is a process.  And it has nothing to do with going faster or getting a
+good design.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[A Framework for Product Design Beyond the Happy Path]]></title>
+    
+    <link href="https://naildrivin5.com/blog/2022/08/15/product-design-beyond-the-happy-path.html">
+    
+    <updated>2022-08-15T09:00:00+00:00</updated>
+    <id>https://naildrivin5.com/blog/2022/08/15/product-design-beyond-the-happy-path</id>
+    <content type="html"><![CDATA[<p>Product design—really all of design—is about how the user’s problem is solved. It’s
+about how it works, not how it looks. Each problem gets addressed in one of five ways: direct support via the happy path, a supported edge case, the customer support team, the engineering team, or oblivion (where it is not actually solved).</p>
+
+<p>Inexperienced designers focus entirely on the happy path, whereas most product designers
+focus only additionally on edge cases.  Even then, the lack of involvement from
+engineering and customer support can leave the design woefully under-developed.</p>
+
+<p>This post outlines a slightly structured model for thinking through a product design
+inclusive of the entire user experience, including customer support.</p>
+
+<!-- more -->
+
+<p>Each problem a user needs to solve is either an intended problem that is motivating the
+creation of the software, an unintended problem that’s still possible to solve, or
+something that simply cannot be done.</p>
+
+<p>Being explicit about this is critical to product design. During the early days at Stitch
+Fix, we had no dedicated product design team, which forced a cross functional group to
+collaborate. This group included engineering and customer support, which meant we could
+discuss the <em>entire</em> user experience, all the way to getting an engineer to fix
+something.</p>
+
+<aside class="pullquote">Any user problem—no matter how insignificant—had a way to be
+solved</aside>
+
+<p>The result was that any user problem—no matter how insignificant or unusual—had a way to
+be solved, and the team had a way to push solutions from the engineering team, through
+customer support, to the user, based on a feedback cycle of solving problems in any way
+we could.</p>
+
+<p>User problems can be understood in the following framework (also shown in the diagram below):</p>
+
+<ol>
+  <li><em>The Happy Path</em> is what the software exists to do. This is what everyone thinks of as the primary function of the software or feature.</li>
+  <li><em>Edge Cases</em> are less common needs that must  be accounted for in the user-facing design. They inform the design.</li>
+  <li><em>Customer Support</em> handles edge cases that can’t or won’t be included in the user-facing design.  Customer support often has specialized tooling to handle this, which must often be built alongside the user-facing software.</li>
+  <li><em>The Engineering Team</em> solves problems customer support cannot, since they have special access to the underlying data stores and source code.</li>
+  <li>And when engineering can’t handle something that customer support can’t handle because there is no user-facing design for some edge case, the user’s problem ends up in <em>oblivion</em>, never to be addressed.</li>
+</ol>
+
+<p>Feedback from each step feeds the steps before it to help inform roadmaps and staffing.</p>
+
+<figure>
+<a href="/images/ProductDevFlow.jpg"><img src="/images/ProductDevFlow.jpg" alt="A diagram showing the relationship between the five elements of the framework." /></a>
+<figcaption>
+Click image to embiggen.
+</figcaption>
+</figure>
+
+<p>Inexperienced product teams focus only on the happy path.  More experienced teams will
+make sure the design team is handling edge cases, but great teams make sure customer
+support is empowered to solve problems the software can’t—or shouldn’t—handle directly.
+Leaving solutions to the engineering team is expensive, and oblivion is where customer
+satisfaction goes to die.</p>
+
+<h2 id="the-happy-path-is-the-easy-part">The Happy Path is The Easy Part</h2>
+
+<p>It’s always great to start with the idealized use case for the product.  How should it
+behave if there were no oddball edge cases or users with unusual demands?  This is the
+<em>happy path</em> because seeing it should make users happy to see their main problem being
+solved for them.</p>
+
+<p>Inexperienced designers and developers tend to overfocus here.  This is problematic
+because a) the real difficulty in product design lies in edge cases, and b)
+users don’t care about fancy user experiences as much as designers might think.  User
+experience is rarely the primary driver of software sales, and the true value a user
+derives is from the entire experience. The happy path is only a small part of that
+experience.</p>
+
+<p>The way to drive toward a great end to end experience starts with supported edge cases.</p>
+
+<h2 id="handling-edge-cases-is-for-great-software">Handling Edge Cases is for Great Software</h2>
+
+<p>An edge cases is anything that isn’t the primary problem the software solves, but still
+something that must be handled by the software itself and not delegated to customer
+support and beyond.</p>
+
+<p>Some edge cases, such as updating a user’s data or arranging special pricing, don’t have
+to be supported by the user-facing software.  Choosing to do this—or not—is a design decision.  But other edge cases, such as the front-end losing network connectivity to the back-end, <em>have</em> to be handled or the software looks broken.</p>
+
+<p>At Stitch Fix, one of our most commonly used internal applications was also used in an
+environment with terrible internet connectivity.  Simply assuming the user would refresh
+their browser was not sufficient. The software had to handle the case where the network
+was slow or temporarily offline. This edge case not only informed the product design, but even the choice of technical implementation!</p>
+
+<aside class="pullquote">The bulk of the design work should be around edge cases</aside>
+
+<p>The bulk of the design work should be around edge cases.  The reason is that the happy
+path design can create edge cases that need to be handled.  This must inform the happy
+path design.  It’s entirely possible to design an amazing happy path that cannot handle
+necessary edge cases.</p>
+
+<p>An extremely common example is when a system must show data to the user.  Designers
+often allocate what they believe is a sufficient amount of space for the largest amount
+of data reasonably expected.  Users, however, find a way to provide more data.</p>
+
+<p>How will the design accommodate this?  Should the extra information be cropped, shown in
+a tool tip, or do we need an entirely new experience to handle this edge case? <em>This</em> is
+the hard part about design and great designers can find a solution to these problems.</p>
+
+<p>Some edge cases, however, are either too difficult to design for, or affect too few
+users to spend time designing and building up front. But, the user experience can be
+preserved by ensuring that customer support can handle these cases.</p>
+
+<h2 id="customer-support-a-product-designers-secret-weapon">Customer Support: a Product Designer’s Secret Weapon</h2>
+
+<p>We’ve all had to contact customer support at one time or another.  Depending on the
+situation, and depending on the company, this might be painful or it might be quick and
+easy.  A good product design includes customer support and even specifies changes to the
+customer support tooling to account for it.</p>
+
+<div data-ad=""></div>
+
+<p>For example, an app might not want to allow you to change your email once you’ve signed
+up.  The team might feel this isn’t going to happen often and the design and coding
+required to support it would necessitate additional security checks and validations.
+They way the team can get away with not supporting it is to build a way for the customer
+support team to.</p>
+
+<p>Unlike users, customer support is trusted to manipulate at least some internal data.
+Further, a user is likely to reach out via email, and customer support can easily verify
+their identity as well as their new email.  It is likely that building a customer
+support interface for this is far easier—and has a far lower carrying cost—than allowing
+the user to do it.</p>
+
+<p>Of course, the customer support team has to be a part of this design decision - they
+will take on the carrying cost of solving the user’s problem, so they need to have input
+into how this will work.</p>
+
+<p>In a healthy organization, the customer support team can provide feedback on how often
+features like this get used.  This can feed a product roadmap and can easily justify
+that addition of the feature later.</p>
+
+<p>Sadly, the customer support experience and tooling is often the most lacking from product
+designs.  You can tell when you contact a company. If the support agent can quickly
+solve what seems to be a pretty basic problem, they have good tooling and likely someone
+somewhere in the org made sure the user’s needs could be met through customer support.</p>
+
+<aside class="pullquote">The customer support experience and tooling is often the most lacking from product designs</aside>
+
+<p>If, however, you are waiting on the phone for a long time, or the agent has to
+constantly put you on hold, it’s likely the tooling available to the customer support
+team is lacking features needed to address common issues.</p>
+
+<p>That said, even changes to customer support tooling have opportunity and carrying costs.
+For an extremely unlikely edge case—especially one that is complicated to
+support—allowing the engineering team to handle it is the right course of action.</p>
+
+<h2 id="the-engineering-team-is-the-last-resort">The Engineering Team Is the Last Resort</h2>
+
+<p>The engineering team is more trusted than customer support—possibly the most trusted in
+the organization—since they have access to the underlying data stores as well as the
+source code.  They can make changes to solve user problems that no one else can.</p>
+
+<p>It may seem extremely expensive to have the engineering team do what is essentially
+customer support, but this can be a worthwhile trade-off.  If a specific problem is
+complicated to solve, but happens infrequently, the carrying cost of a customer support- or user-facing solution might be higher than the cost of having an engineer handle the
+problem.</p>
+
+<p>Having engineering be involved in support also provides them with a valuable signal
+about user behavior.  Sometimes, a user request uncovers a bug that, when fixed,
+eliminates the need to build a new feature. Or, user requests can help
+prioritize customer service tooling enhancements that may be hard to otherwise justify.</p>
+
+<p>This only works when the team is empowered to place this sort of work ahead of new
+features.  Engineering—and customer support—need to be able to use the feedback they are
+getting to affect their roadmap.  If not, both teams can become fatigued, and user
+problems end up where they will never be solved: oblivion.</p>
+
+<h2 id="oblivion-for-when-the-customer-is-not-always-right">Oblivion for When the Customer is Not Always Right</h2>
+
+<p>Some problems simply can’t be solved.  Some user problems <em>could</em> be solved, but the
+team explicitly doesn’t want to support that.  And, sometimes, the team dynamics and
+staffing mean that solvable problems get dropped.  Either way, oblivion is where
+unsolved problems end up.</p>
+
+<p>This isn’t necessarily all bad.  A team can be tightly focused when everyone agrees on
+what problesm the team simply isn’t in the business of solving. And a roadmap or backlog
+can be much more easily built when there is objective data about solvable, supported
+problems being dropped due to understaffing or mismanagement.</p>
+
+<p>Product marketing can also be more tightly focused when everyone knows what the system
+won’t do, or at least won’t do right now.  Sometimes it’s more important to know what a
+product <em>doesn’t</em> do than what it does.</p>
+
+<h2 id="this-is-a-team-framework-not-a-design-framework">This is a <em>Team</em> Framework, not a Design Framework</h2>
+
+<p>This framework works best when product design, engineering, and customer support all
+work together.  Only the combined group can correctly identify edge cases in the happy
+path and agree on how to support user needs that the software won’t support.  The
+customer service team knows the burden each new process creates, and this can inform the
+design team: perhaps they <em>do</em> need to support an esoteric edge case because customer
+support can’t handle it.</p>
+
+<p>This framework also works when there is no explicit product design team. You may only
+have a visual designer driving the design, or you might only have engineering!  This
+framework builds alignment and provides a way to ensure the user experience is as good
+as it can be without building everything they could ever need right from the start.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[The Four Stages of Testing That Help Your Focus]]></title>
+    
+    <link href="https://naildrivin5.com/blog/2022/08/04/the-four-stages-of-testing-that-help-your-focus.html">
+    
+    <updated>2022-08-04T07:30:00+00:00</updated>
+    <id>https://naildrivin5.com/blog/2022/08/04/the-four-stages-of-testing-that-help-your-focus</id>
+    <content type="html"><![CDATA[<p>When writing tests, it’s useful to consider that the tests are always in one of four distinct stages, and
+knowing which stage they are in can direct your next steps.  This can make testing a bit less painful than it might
+otherwise be.</p>
+
+<p>The four stages are:</p>
+
+<ol>
+  <li>The code doesn’t compile/build/parse</li>
+  <li>The tests produce an error (as opposed to a failure)</li>
+  <li>The tests are failing</li>
+  <li>The tests are passing</li>
+</ol>
+
+<!-- more -->
+
+<p>Working effectively with tests requires understanding the difference in these stages and being super careful to take only certain actions depending on what stage you are in.</p>
+
+<p>When tests aren’t passing, it can be extremely frustrating trying to figure out exactly why and what to do about it.
+Sometimes a test fails on purpose, sometimes it passes when it shouldn’t, and because tests are often an indicator
+of progress when coding, if they aren’t working, it can make programming feel especially chaotic.</p>
+
+<p>Let’s start with a hopefully infrequent stage of testing: the code isn’t even valid.</p>
+
+<h2 id="stage-1---code-is-not-compiling">Stage 1 - Code is not compiling</h2>
+
+<p>In a language that’s interpreted, like Ruby or Python, Stage 1 happens when there are syntax errors or missing
+keywords.  For a compiled language, Stage 1 can happen for syntax errors too, but also for missing libraries or other
+dependencies required to compile the code.</p>
+
+<div data-ad=""></div>
+
+<p>All that to say, it’s usually obvious when you are in Stage 1, and it means you have zero information about your
+tests or your system. You need to get out of this stage as quickly as possible and just focus on getting the code to
+properly parse or compile.</p>
+
+<p>This can lead to any of the other stages, depending on what code you’ve written.  The most frustrating stage is Stage
+2, because it means your test isn’t even failing, it’s just not working right.</p>
+
+<h2 id="stage-2---your-tests-produce-an-error-not-a-failure">Stage 2 - Your Tests Produce an Error, not a Failure</h2>
+
+<p>Here, your code compiles and parses, and your test runs, but it produces an error instead of a failure.</p>
+
+<p>Consider this example test in Ruby where we are setting a customer’s city, based on their zip code.  Let’s assume we
+have test fixtures set up, and a method named <code class="language-plaintext highlighter-rouge">fixtures</code> accepts a parameter and returns a pre-configured object:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">customer</span> <span class="o">=</span> <span class="n">fixtures</span><span class="p">(</span><span class="ss">:customer</span><span class="p">)</span>
+<span class="n">city_lookup</span><span class="p">.</span><span class="nf">lookup</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="nf">address</span><span class="p">.</span><span class="nf">zip_code</span><span class="p">)</span>
+<span class="n">assert_equal</span> <span class="s2">"Washington"</span><span class="p">,</span> <span class="n">customer</span><span class="p">.</span><span class="nf">address</span><span class="p">.</span><span class="nf">city</span>
+</code></pre></div></div>
+
+<p>If our <code class="language-plaintext highlighter-rouge">customer</code> doesn’t have an address, the call to <code class="language-plaintext highlighter-rouge">lookup</code> will fail because we’re trying to get the <code class="language-plaintext highlighter-rouge">zip_code</code>
+of <code class="language-plaintext highlighter-rouge">nil</code> (Ruby’s version of null).  Our assertion isn’t even called!  The test has an error—not a failure—and we’re
+in Stage 2.</p>
+
+<p>The biggest frustration about being in Stage 2 is that an error is not always easily distinguishable from a failure.</p>
+
+<h3 id="test-errors-can-look-like-failures">Test Errors Can Look Like Failures</h3>
+
+<p>The main reason it can be hard to distinguish an error from a failure is that most test runners don’t do much to help distinguish these cases.  Often, both a failure and an error are printed in red text and both provide a stack trace.  You have to read quite carefully to figure out what’s what.</p>
+
+<p>The reason it’s important to know you are in Stage 2—as opposed to Stage 3 where you have a properly failing test—is that you can’t safely change production code, since your test isn’t really testing anything.</p>
+
+<p>Getting out of Stage 2 requires not just a careful reading of the error message but a careful re-examination of the
+code that sets up the test.  If the test setup is complicated or relies on data set up elsewhere (like our fixtures), this can be difficult.</p>
+
+<p>The way I have navigated this is via <em>confidence checks</em>.</p>
+
+<h3 id="confidence-checks-test-the-tests">Confidence Checks Test the Tests</h3>
+
+<p>A confidence check is code that makes assertions about the test itself, designed to fail before the test is run if the test’s assumptions about setup aren’t correct.</p>
+
+<p>Some developers use their testing framework’s assertion library to do this, but this results in error messages that
+look like test failures:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">customer</span> <span class="o">=</span> <span class="n">fixtures</span><span class="p">(</span><span class="ss">:customer</span><span class="p">)</span>
+<span class="n">refute_nil</span> <span class="n">customer</span><span class="p">.</span><span class="nf">address</span> <span class="c1"># &lt;-- produces an assertion failure, but</span>
+                            <span class="c1">#     we haven't run the test yet!</span>
+
+<span class="n">city_lookup</span><span class="p">.</span><span class="nf">lookup</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="nf">address</span><span class="p">.</span><span class="nf">zip_code</span><span class="p">)</span>
+<span class="n">assert_equal</span> <span class="s2">"Washington"</span><span class="p">,</span> <span class="n">customer</span><span class="p">.</span><span class="nf">address</span><span class="p">.</span><span class="nf">city</span>
+</code></pre></div></div>
+
+<p>Instead of an assertion failure, we want a much more clear message that the failure is in our test itself.  Such a
+check gives us confidence our test is valid.</p>
+
+<p>You could achieve this like so:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">customer</span> <span class="o">=</span> <span class="n">fixtures</span><span class="p">(</span><span class="ss">:customer</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">customer</span><span class="p">.</span><span class="nf">address</span><span class="p">.</span><span class="nf">nil?</span>
+  <span class="k">raise</span> <span class="s2">"CONFIDENCE CHECK FAILED: customer.address was nil"</span>
+<span class="k">end</span>
+
+<span class="n">city_lookup</span><span class="p">.</span><span class="nf">lookup</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="nf">address</span><span class="p">.</span><span class="nf">zip_code</span><span class="p">)</span>
+<span class="n">assert_equal</span> <span class="s2">"Washington"</span><span class="p">,</span> <span class="n">customer</span><span class="p">.</span><span class="nf">address</span><span class="p">.</span><span class="nf">city</span>
+</code></pre></div></div>
+
+<p>The use of <code class="language-plaintext highlighter-rouge">raise</code> will cause the test to produce an error <em>and</em> the message will have the words “CONFIDENCE CHECK
+FAILED” which should be hopefully a strong clue about what happened.  I’ve found this pattern so useful that I
+extracted a Ruby gem for it called <a href="https://github.com/sustainable-rails/confidence-check">confidence_check</a> that
+makes this check even more explicit in the code, and allows using the testing library’s assertion methods, rather
+than cumbersome <code class="language-plaintext highlighter-rouge">if</code> statements:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">customer</span> <span class="o">=</span> <span class="n">customers</span><span class="p">(</span><span class="ss">:one</span><span class="p">)</span>
+<span class="n">confidence_check</span> <span class="k">do</span>
+  <span class="n">refute_nil</span> <span class="n">customer</span><span class="p">.</span><span class="nf">address</span>
+<span class="k">end</span>
+
+<span class="n">city_lookup</span><span class="p">.</span><span class="nf">lookup</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="nf">address</span><span class="p">.</span><span class="nf">zip_code</span><span class="p">)</span>
+<span class="n">assert_equal</span> <span class="s2">"Washington"</span><span class="p">,</span> <span class="n">customer</span><span class="p">.</span><span class="nf">address</span><span class="p">.</span><span class="nf">city</span>
+</code></pre></div></div>
+
+<p>I’d strongly encourage the development of tools like this to help navigate the various stages of testing. Unlike
+using a debugger, confidence checks provide a clear and permanent record of what setup is meaningful in your test.</p>
+
+<p>Now, once you understand why your test is creating an error, and with the help of confidence checks, you can fix the
+test so that it’s properly failing.</p>
+
+<h2 id="stage-3---your-tests-are-failing">Stage 3 - Your Tests are Failing</h2>
+
+<p>In this stage, you have a test that is not generating an error, but is failing.  What to do next highly depends on
+how you got here.</p>
+
+<p>If you got here by writing a test as part of doing Test-Driven Development, great!  Your next job is to write
+production code to get that test passing.</p>
+
+<p>But, it’s possible to get to Stage 3 by introducing a regression. You may have written some new code that you believe is correct, but a test elsewhere is now failing.  This may seem like a simple problem to fix, but it’s possible that your code change obviated the need for the test that’s failing.  You now have to figure out if the failing test is still valid.</p>
+
+<p>It’s not always easy to know if you have introduced a regression, and it requires carefully reading both the code that’s failing and the test, then thinking about both in the context of your change.</p>
+
+<p>A few questions you can ask yourself might help:</p>
+
+<ul>
+  <li>Is the test that’s failing testing something related to what was just changed?</li>
+  <li>Is there another way to make the change such that the tests don’t fail?</li>
+  <li>How broadly used is the code that the failing test is testing?</li>
+</ul>
+
+<p>These answers can help figure out which of the three options available you should pursue:</p>
+
+<ul>
+  <li>Fix the code that’s failing so the test passes</li>
+  <li>Change the test so that it no longer fails</li>
+  <li>Remove the test</li>
+</ul>
+
+<p>All three have risk, but I find it useful to assume that all tests are there for a reason and try not to change them
+if I’m not specifically changing the behavior being tested.</p>
+
+<p>Deleting the test is the highest risk option, because you are removing a signal about the code’s behavior.  If you have production monitoring that might reveal a problem with the code in question, deleting the test is less risky. But it should still be a last resort that you are confident is the way to go.</p>
+
+<p>In any case, once you have the test passing, you’re in the hopefully final stage of testing!</p>
+
+<h2 id="stage-4---the-test-is-passing">Stage 4 - The Test is Passing</h2>
+
+<p>Like Stage 3, the meaning of Stage 4 depends on how you got here.  If you got here from Stage 3, that’s good because
+it means you saw your test fail in an expected way and made it pass by writing code.</p>
+
+<p>You may also get here by writing a new test for missing test coverage.  In this case, I would highly recommend
+breaking the code under test to make sure your test is valid.  You can’t really tell what a test is testing unless
+you see it fail.</p>
+
+<p>Where things get tricky is if you ended up in Stage 4 from Stage 1, 2, or…Stage 4. This means you’ve introduced a new
+test that is not asserting any new behavior of your code.</p>
+
+<p>Often, deleting the test and rewriting it can solve the issue.  Test code is the least exciting to write, and in my
+experience, it tends to be a magnet for silly typos, reversed logic, and off-by-one errors.</p>
+
+<p>Barring that, the techniques for getting out of Stage 2 can help.  It’s almost certain that the test setup is not
+sufficient to reveal the missing behavior.  Confidence checks are a great way to debug this and you can leave them in
+if your test setup is complicated enough. They can be highly instructive for future programmers.</p>
+
+<p>Hopefully, this will get you to Stage 3 where you can then get to stage 4 the right way.</p>
+
+<h2 id="using-the-stages-in-real-life-testing">Using the Stages in Real Life Testing</h2>
+
+<p>Writing test code is not fun. I don’t enjoy it, but I feel it’s important.  Thus, it’s important to make it as
+painless as possible to work with.  Understanding what stage your tests are in can help you focus on the next steps
+to get a reliable failing test and an implementation that makes it pass.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Talking SOLID is not Solid on Code with Jason]]></title>
+    
+    <link href="https://www.codewithjason.com/podcast/9819800-127-solid-principles-with-dave-copeland-cto-of-mood-health/">
+    
+    <updated>2022-01-04T09:00:00+00:00</updated>
+    <id>https://naildrivin5.com/blog/2022/01/04/talking-solid-is-not-solid-on-code-with-jason</id>
+    <content type="html"><![CDATA[<p>My <a href="https://www.codewithjason.com/podcast/9819800-127-solid-principles-with-dave-copeland-cto-of-mood-health/">third appearance</a> on the <a href="https://www.codewithjason.com/podcast/">Code with Jason podcast</a>, this time
+talking about how SOLID is not so solid.  Snark level is between <a href="https://solid-is-not-solid.com">the book</a> and my
+<a href="https://naildrivin5.com/blog/2019/11/11/solid-is-not-solid-rexamining-the-single-responsibility-principle.html">more serious takes</a>.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Code Reviews—or not—at an Early Startup]]></title>
+    
+    <link href="https://naildrivin5.com/blog/2021/04/27/code-reviews-or-not-at-a-startup.html">
+    
+    <updated>2021-04-27T09:00:00+00:00</updated>
+    <id>https://naildrivin5.com/blog/2021/04/27/code-reviews-or-not-at-a-startup</id>
+    <content type="html"><![CDATA[<p>As mentioned in <a href="https://naildrivin5.com/blog/2021/03/31/at-a-startup-write-as-little-software-as-you-can.html">a previous
+post</a>, I’m CTO of an early stage
+startup and the engineering team is me and one other engineer. We don’t pair program but we do review pull requests—at least
+sometimes.  I want to talk about how we do it, why we think it works, and how it might scale.</p>
+
+<!-- more -->
+
+<p>Two of our team values are <em>autonomy</em> and <em>respect</em>.  These concepts are the foundation of our current process of creating pull
+requests, possibly reviewing them, and when we merge them to the main branch for deployment.</p>
+
+<h2 id="autonomy-to-ship-respect-when-to-get-or-give-feedback">Autonomy to Ship, Respect When to Get or Give Feedback</h2>
+
+<p>If each of us required the other to review all of each other’s changes, our small team would grind to a halt.  I’m on the east
+coast, she’s on the west. I tend to be in more meetings, she’s not.  That said, both of us do work that we both realize sometimes needs to be looked at by the other person.</p>
+
+<p>Often, it’s to let each other know of significant changes. Other times we’ve done something new or complex and really do
+need the other person’s technical input.  And, of course, we both find bugs in each other’s code by looking at the changes.</p>
+
+<p>We both highly value autonomy and did not want to create gates to shipping that weren’t needed.  We are both comfortable with
+some risk and confident in our systems’ monitoring to know when things go wrong and then fix them.</p>
+
+<aside class="pullquote">
+It is sometimes worth delaying shipping to get feedback
+</aside>
+
+<p>But we also respect each other’s expertise and roles to know that it is sometimes worth delaying shipping to get feedback.  Here is what we ended up coming up with:</p>
+
+<ol>
+  <li>Always make a pull request, since this serves as a marker of changes that were made.
+    <ul>
+      <li>Write the pull request as if another person will review it, even if that’s not going to happen.</li>
+      <li>“Self-comment” on anything that might benefit from more context or be the result of tradeoff that might not be obvious from just the code.</li>
+      <li>If there is any part of the change that the other developer should specifically be aware of, <code class="language-plaintext highlighter-rouge">@</code> reply the other developer.</li>
+    </ul>
+  </li>
+  <li>If the developer making the pull requests wants feedback, explicitly ask for it using GitHub’s mechanism for doing so.</li>
+  <li>The developer making the pull request decides when to merge (and thus deploy). This is where respect comes into play.
+    <ul>
+      <li>If you need to merge before getting feedback, merge.</li>
+      <li>If you <em>did</em> merge, explain why in the pull request to reaffirm that you still need the feedback but had to get the change into production (feature flags can be useful in mitigating the risk of doing this).</li>
+    </ul>
+  </li>
+  <li>Even if a review was not requested, feedback is welcome even after the fact.
+    <ol>
+      <li>If post-merge feedback is actionable, a new pull request is made with changes addressing that feedback.</li>
+      <li>All feedback should be addressed or acknowledged, even if it does not lead to code changes (this is another aspect of respect).</li>
+    </ol>
+  </li>
+</ol>
+
+<div data-ad=""></div>
+
+<p>This might sound complicated, but it does allow us to ship changes when we need them but still get all the benefits from
+asynchronous code review.  We both can be aware of changes in the system. We can both give feedback that will be acted-upon at
+any time.  We can both balance the need for specific feedback and the desire to ship on a case by case basis.</p>
+
+<p>One note is that both of us do our best to give respectful and useful feedback (both affirming and corrective).  Feedback is
+tricky because it must be clear, it must be useful, but it must acknowledge that a real human is receiving it.</p>
+
+<p>Not everyone is used to receiving feedback, nor are there necessarily good at giving it.  This will be something to keep in mind as we add developers to our team.</p>
+
+<p>Which leads to an obvious question about how to go from a two person team to a three, four, or five person team.</p>
+
+<h2 id="how-might-this-scale">How Might This Scale?</h2>
+
+<p>The problem with a simplistic process like “always pair” or “always get a code review” is that it seems like it scales due to
+its simplicity, but it fails to truly solve the problem of balancing speed of delivery with volume of value delivered.  It’s a type of command-and-control leadership that I have not seen to be particularly effective.</p>
+
+<aside class="pullquote">
+[Always pairing or requiring code review] is a type of command-and-control leadership
+</aside>
+
+<p>To be honest, I’m not sure how the process above might scale. I could imagine that if each set of developers has clear areas of
+responsibility, the team understands proper feedback as well as how to build and maintain trust, the above process could work
+fractally.</p>
+
+<p>But, we’ll see.  It depends on who the developers are.  Any process that doesn’t account for the specific people on the team
+isn’t going to work very well.  That’s way there’s just as many people that hate pairing as who hate code review.</p>
+
+<p>This illustrates why leadership is so difficult. If you are too directive, you exclude great people and annoy others.  If you
+don’t clearly set expectations, you end up with uncontrollable output and shadow directives.  Whatever the solution, it surely starts with setting
+clear expectations and being honest about what problem you are trying to solve.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Start Tracking KPIs Early in Your Startup]]></title>
+    
+    <link href="https://naildrivin5.com/blog/2021/04/07/track-kpis-early-for-your-startup-by-modeling-data-well.html">
+    
+    <updated>2021-04-07T08:00:00+00:00</updated>
+    <id>https://naildrivin5.com/blog/2021/04/07/track-kpis-early-for-your-startup-by-modeling-data-well</id>
+    <content type="html"><![CDATA[<p><a href="https://naildrivin5.com/blog/2021/03/31/at-a-startup-write-as-little-software-as-you-can.html">Previously</a>, I gave an overview of getting started as CTO of a startup.  I’d like to expand on the first part, “Understand How the Business Works” by talking about surfacing business metrics or <em>key performance indicators</em> as early as you can to keep everyone aligned.  This is a great way for <em>you</em> to understand the business and motivates good data modeling from the start, which is a great way to manage carrying costs.</p>
+
+<!-- more -->
+
+<h2 id="every-spreadsheet-is-just-a-bit-different-from-the-others">Every Spreadsheet is <em>Just</em> a Bit Different From The Others</h2>
+
+<p>When you have two people looking at different calculations for the same metric, bad things will happen. At Mood, it would be
+very bad if our marketing team dialed down marketing because they thought we were fully booked but our ops team is seeing tons
+of availability.</p>
+
+<p>What’s more likely is that each person on the team will find a source of data plus a method of analysis (i.e. a spreadsheet)
+to help make decisions.  Each spreadsheet ends up showing data that’s <em>close</em>, but not the same.  In the short term, this can lead to distractions when these differences show up, but in the long term it can make it very hard to get everyone aligned on
+exactly how to measure the performance of the business.</p>
+
+<aside class="pullquote">
+The engineering team is uniquely positioned to get everyone aligned.
+</aside>
+
+<p>The engineering team is uniquely positioned to address this problem and get everyone aligned.  This is because the engineering
+team is often at the center of every system in use and will often be managing the database that drives any custom-built
+technology.</p>
+
+<p>I would recommend doing this as early as you can by agreeing on the metrics that are important, aligning on a definition, and
+ensuring the engineering systems can produce the metrics.</p>
+
+<h2 id="agree-on-metrics-early">Agree On Metrics Early</h2>
+
+<p>Even before product/market fit, most startups are using <em>some</em> data to drive decisions.  These are often called <em>key performance
+indicators</em> or KPIs.  Common KPIs might be website conversions, website traffic, recurring revenue, or the number of active customers.  Each startup will have less common KPIs relevant to what it does. For example, Mood tracks the show rate: how many people who scheduled an appointment actually showed up?</p>
+
+<p>As soon as you can, get an understanding of the KPIs relevant to your startup.  Ask everyone how they are making decisions and
+find out where they are getting their data from.  A common way you can help here is to identify edge cases and ask how they are
+handled.  For example, if someone converts to a customer on your website, but their first payment fails, do they count as a
+customer?</p>
+
+<p>Once you’ve got a list, write down how each KPI is calculated.</p>
+
+<h2 id="align-on-calculation-methodology">Align on Calculation Methodology</h2>
+
+<p>At Mood, when a customer books an appointment, this doesn’t count as a conversion.  It only counts if they’ve attended the
+appointment they booked.  This distinction is critical for understanding marketing and it’s not the conventional way you might
+think about it.  We all agree on this because we discussed it and wrote it down.</p>
+
+<div data-ad=""></div>
+
+<p>Do this for all the KPIs you’ve agreed are important.  Where possible, manually calculate the values yourself from real data to
+build alignment on the defitions.  The team will only trust the definitions when they see real data being produced from them.</p>
+
+<p>This is also a good time to discuss internal consistency. For example, if you collect $5,000 this month and your service costs
+$50 per month, you should have about 100 active customers no matter how you calculate it.  Identify internal consistency will
+quickly drive alignment and build trust in any eventual automation.</p>
+
+<h2 id="produce-regular-reports-of-the-kpis">Produce Regular Reports of the KPIs</h2>
+
+<p>Your goal is to eliminate private spreadsheets that are used to produce KPIs.  Each team member will certainly have their own
+ancillary data relevant to their function, but everyone should look at the same source for the KPIs you’ve identified.  The way
+to make this happen is to produce reports of these values from the engineering systems.</p>
+
+<p>Your reports should initially be designed as CSVs of raw but clean data and spreadsheet formulas that do the aggregation.  The
+reason is that the team will not initially trust automated reports produced from a computer, especially if they have been
+accustomed to their hand-crafted spreadsheets.</p>
+
+<aside class="pullquote">
+Anyone can follow from a KPI to the data that produced it
+</aside>
+
+<p>By putting aggregation logic in a spreadsheet, anyone can follow from a KPI to the data that produced it and trust that it’s
+correct.  It also allows them to diagnose bugs in the calculations or errors in the definitions.  For example, Mood calculates
+both conversions and revenue weekly, however an initial version of our spreadsheets used Monday as the start of the week in one
+case and Sunday in another.  Only by tracing to the original data were we able to figure this out.</p>
+
+<p>One issue you will run into is finding a reliable source of the data you need.</p>
+
+<h2 id="understand-and-manage-data-sources">Understand and Manage Data Sources</h2>
+
+<p>Depending on how far along you are, you may not have all transactional data in a single database.  For example, you are not
+likely going to be importing marketing spends from the various ad platforms being used, but this data is critical to
+calculating customer acquisition cost.</p>
+
+<p>For data that you have or could have in your transactional database, it’s <em>critical</em> that you use a normalized schema.
+<em>Normalization</em> is the process of designing a database that prevents ambiguous, redundant, or erroneous data. It’s a deep topic,
+  but here are three things you can do easily to ensure your database has reliable data in it:</p>
+
+<ul>
+  <li>Avoid nullable columns where possible. Most data you collect won’t logically allow null, so don’t let it into your database.</li>
+  <li>Use foreign key constraints between tables. This ensures that if one table depends on another, the data is there. If you have
+a charge that references a non-existent customer, you can’t understand what that charge is for.</li>
+  <li>Make liberal use of database constraints. Postgres allows for sophisticated <em>check constraints</em> that you can use to ensure
+that, for example, a type field you store in a string only allows certain values or that a numeric value is always positive.  Do
+not rely on your application layer to enforce this<a name="back-1"></a><sup><a href="#1">1</a></sup>.</li>
+</ul>
+
+<p>For data that’s not in your database, you can create a tab in your spreadhseet for it to be filled in manually.  At Mood, we
+have a tab for marketing spend per channel per day and our marketing team fills it in daily.  In some cases you could use APIs
+to manually load data from other systems.  This is always a tricky situation because it creates a carrying cost, but it may be
+worth it to ensure that correct KPIs are always available.</p>
+
+<p>Once you have this set up, sit with each person and review the data.</p>
+
+<h2 id="review-the-kpissynchronously">Review the KPIs…Synchronously</h2>
+
+<p>Do not simply email the spreadsheet and hope for the best.  You need people to trust that these calculations are correct and
+reliable.  If you have access to the private sheets each person is using, show how your automated system produced identical
+results.  If it <em>doesn’t</em>, be prepared to explain in detail why not and why your system is more correct.</p>
+
+<aside class="pullquote">
+People will…not be convinced data is correct merely by an explantation of the methodology
+</aside>
+
+<p>People will definitely not be convinced data is correct merely by an explantation of the methodology. They will need to see real
+values and potentially run a few numbers by hand first.  Make it easy to do that and do it synchronously either in person or on
+video.  This will ensure the clearest understanding of their concerns.</p>
+
+<p>Once you’ve got this, review the numbers on a regular basis and make sure the underlying system is still working.  Be sure that
+any new changes to the database or code are relfected in these calculations.</p>
+
+<p>It may seem like dumping CSVs into spreadsheets will not scale, but Stitch Fix used this mechanism for many years…well past
+our last round of VC funding.</p>
+
+<footer class="footnotes">
+<ol>
+<li>
+<a name="1"></a>
+<sup>1</sup>Rails unfortunately defaults to the complete opposite of all of this and provides a lowest-common-denominator
+approach to database schema management.  You *can* access the full power of your database with Rails, you just have to do
+remember to do it yourself as the Rails defaults do the wrong thing most of the time.
+</li>
+</ol></footer>
+]]></content>
+  </entry>
+  
+</feed>

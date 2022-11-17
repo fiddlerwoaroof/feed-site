@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title type="text"><![CDATA[RubySec]]></title>
+  <subtitle type="text"><![CDATA[Providing security resources for the Ruby community]]></subtitle>
+  <link href="https://rubysec.com/atom.xml" rel="self">
+  <link href="https://rubysec.com/" rel="alternate" hreflang="en">
+  <updated>2022-11-06T00:40:56+00:00</updated>
+  <id>https://rubysec.com/</id>
+  <author>
+    <name><![CDATA[RubySec]]></name>
+    
+  </author>
+  <generator uri="https://jekyllrb.com/">Jekyll</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-39379 (fluentd): fluentd vulnerable to remote code execution due to insecure deserialization (in non-default configuration)]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-39379/">
+    <id>https://rubysec.com/advisories/CVE-2022-39379</id>
+    <updated>2022-11-02T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[### Impact
+A remote code execution (RCE) vulnerability in non-default configurations of
+Fluentd allows unauthenticated attackers to execute arbitrary code via
+specially crafted JSON payloads.
+
+Fluentd setups are only affected if the environment variable
+`FLUENT_OJ_OPTION_MODE` is explicitly set to `object`.
+
+Please note: The option FLUENT_OJ_OPTION_MODE was introduced in Fluentd
+version 1.13.2. Earlier versions of Fluentd are not affected by this
+vulnerability.
+
+### Patches
+v1.15.3
+
+### Workarounds
+Do not use `FLUENT_OJ_OPTION_MODE=object`.
+
+### References
+* GHSL-2022-067
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GHSA-2qc6-mcvw-92cw (nokogiri): Update bundled libxml2 to v2.10.3 to resolve multiple CVEs]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/GHSA-2qc6-mcvw-92cw/">
+    <id>https://rubysec.com/advisories/GHSA-2qc6-mcvw-92cw</id>
+    <updated>2022-10-18T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[### Summary
+
+Nokogiri v1.13.9 upgrades the packaged version of its dependency libxml2 to
+[v2.10.3](https://gitlab.gnome.org/GNOME/libxml2/-/releases/v2.10.3) from
+v2.9.14.
+
+libxml2 v2.10.3 addresses the following known vulnerabilities:
+
+- [CVE-2022-2309](https://nvd.nist.gov/vuln/detail/CVE-2022-2309)
+- [CVE-2022-40304](https://nvd.nist.gov/vuln/detail/CVE-2022-40304)
+- [CVE-2022-40303](https://nvd.nist.gov/vuln/detail/CVE-2022-40303)
+
+Please note that this advisory only applies to the CRuby implementation of
+Nokogiri `< 1.13.9`, and only if the _packaged_ libraries are being used. If
+you've overridden defaults at installation time to use _system_ libraries
+instead of packaged libraries, you should instead pay attention to your
+distro's `libxml2` release announcements.
+
+
+### Mitigation
+
+Upgrade to Nokogiri `>= 1.13.9`.
+
+Users who are unable to upgrade Nokogiri may also choose a more complicated
+mitigation: compile and link Nokogiri against external libraries libxml2
+`>= 2.10.3` which will also address these same issues.
+
+
+### Impact
+
+#### libxml2 [CVE-2022-2309](https://nvd.nist.gov/vuln/detail/CVE-2022-2309)
+
+- **CVSS3 score**: Under evaluation
+- **Type**: Denial of service
+- **Description**: NULL Pointer Dereference allows attackers to cause a denial
+of service (or application crash). This only applies when lxml is used
+together with libxml2 2.9.10 through 2.9.14. libxml2 2.9.9 and earlier are not
+affected. It allows triggering crashes through forged input data, given a
+vulnerable code sequence in the application. The vulnerability is caused by
+the iterwalk function (also used by the canonicalize function). Such code
+shouldn't be in wide-spread use, given that parsing + iterwalk would usually
+be replaced with the more efficient iterparse function. However, an XML
+converter that serialises to C14N would also be vulnerable, for example, and
+there are legitimate use cases for this code sequence. If untrusted input is
+received (also remotely) and processed via iterwalk function, a crash can be
+triggered.
+
+Nokogiri maintainers investigated at #2620 and determined this CVE does not
+affect Nokogiri users.
+
+
+#### libxml2 [CVE-2022-40304](https://nvd.nist.gov/vuln/detail/CVE-2022-40304)
+
+- **CVSS3 score**: Unspecified upstream
+- **Type**: Data corruption, denial of service
+- **Description**: When an entity reference cycle is detected, the entity
+content is cleared by setting its first byte to zero. But the entity content
+might be allocated from a dict. In this case, the dict entry becomes corrupted
+leading to all kinds of logic errors, including memory errors like
+double-frees.
+
+See https://gitlab.gnome.org/GNOME/libxml2/-/commit/644a89e080bced793295f61f18aac8cfad6bece2
+
+
+#### libxml2 [CVE-2022-40303](https://nvd.nist.gov/vuln/detail/CVE-2022-40303)
+
+- **CVSS3 score**: Unspecified upstream
+- **Type**: Integer overflow
+- **Description**: Integer overflows with XML_PARSE_HUGE
+
+See https://gitlab.gnome.org/GNOME/libxml2/-/commit/c846986356fc149915a74972bf198abc266bc2c0
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-39281 (fat_free_crm): Fat Free CRM vulnerable to Remote Denial of Service via Tasks endpoint]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-39281/">
+    <id>https://rubysec.com/advisories/CVE-2022-39281</id>
+    <updated>2022-10-07T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[### Impact
+An authenticated user can perform a remote Denial of Service attack against
+Fat Free CRM.
+
+This vulnerability has been assigned the CVE identifier: CVE-2022-39281
+
+Affected versions: All
+Not affected: None
+Fixed versions: 0.20.1
+
+All users running an affected release should either upgrade or apply the patch
+immediately.
+
+### Releases
+Fixed versions: 0.20.1 and above
+
+### Patches
+
+If you are unable to upgrade immediately, you should apply the following
+patch.
+
+```
+diff --git a/app/models/polymorphic/task.rb b/app/models/polymorphic/task.rb
+index d3d5c32c..7cdb24d6 100644
+--- a/app/models/polymorphic/task.rb
++++ b/app/models/polymorphic/task.rb
+@@ -189,6 +189,7 @@ class Task < ActiveRecord::Base
+   #----------------------------------------------------------------------------
+   def self.bucket_empty?(bucket, user, view = "pending")
+     return false if bucket.blank? || !ALLOWED_VIEWS.include?(view)
++    return false unless Setting.task_bucket.map(&:to_s).include?(bucket.to_s)
+
+     if view == "assigned"
+       assigned_by(user).send(bucket).pending.count
+```
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-3171 (google-protobuf): protobuf-java has a potential Denial of Service issue]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-3171/">
+    <id>https://rubysec.com/advisories/CVE-2022-3171</id>
+    <updated>2022-10-04T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[## Summary
+A potential Denial of Service issue in `protobuf-java` core and lite was
+discovered in the parsing procedure for binary and text format data.
+Input streams containing multiple instances of non-repeated [embedded
+messages](http://developers.google.com/protocol-buffers/docs/encoding#embedded)
+with repeated or unknown fields causes objects to be converted back-n-forth
+between mutable and immutable forms, resulting in potentially long garbage
+collection pauses.
+
+Reporter: [OSS Fuzz](https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=48771)
+
+Affected versions: This issue affects both the Java full and lite Protobuf
+runtimes, as well as Protobuf for Kotlin and JRuby, which themselves use the
+Java Protobuf runtime.
+
+## Severity
+
+[CVE-2022-3171](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-3171)
+Medium - CVSS Score: 5.7 (NOTE: there may be a delay in publication)
+
+## Remediation and Mitigation
+
+Please update to the latest available versions of the following packages:
+
+* protobuf-java (3.21.7, 3.20.3, 3.19.6, 3.16.3)
+* protobuf-javalite (3.21.7, 3.20.3, 3.19.6, 3.16.3)
+* protobuf-kotlin (3.21.7, 3.20.3, 3.19.6, 3.16.3)
+* protobuf-kotlin-lite (3.21.7, 3.20.3, 3.19.6, 3.16.3)
+* google-protobuf [JRuby gem only] (3.21.7, 3.20.3, 3.19.6)
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GHSA-mgvv-5mxp-xq67 (sqlite3): SQLite3 addresses vulnerability in packaged version of libsqlite]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/GHSA-mgvv-5mxp-xq67/">
+    <id>https://rubysec.com/advisories/GHSA-mgvv-5mxp-xq67</id>
+    <updated>2022-10-03T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[### Summary
+
+The rubygem sqlite3 v1.5.1 upgrades the packaged version of libsqlite from
+v3.39.3 to [v3.39.4](https://sqlite.org/releaselog/3_39_4.html).
+
+libsqlite v3.39.4 addresses a vulnerability described as follows in the
+release notification:
+
+> Version 3.39.4 is a minimal patch against the prior release that addresses
+> issues found since the prior release. In particular, a potential
+> vulnerability in the FTS3 extension has been fixed, so this should be
+> considered a security update.
+>
+> In order to exploit the vulnerability, an attacker must have full SQL access
+> and must be able to construct a corrupt database with over 2GB of FTS3
+> content. The problem arises from a 32-bit signed integer overflow.
+
+This vulnerability has not been assigned a CVE and does not have a severity
+declared.
+
+Please note that this advisory only applies to the sqlite3 gem v1.5.0, and
+only if the packaged libsqlite is being used. If you've overridden defaults at
+installation time to use system libraries instead of packaged libraries, you
+should instead pay attention to your distro's libsqlite release announcements.
+
+
+### Mitigation
+
+Upgrade to the rubygem sqlite3 v1.5.1 or later.
+
+Users who are unable to upgrade the sqlite3 gem may also choose a more
+complicated mitigation: compile and link sqlite3 against external libsqlite >=
+3.39.4 which will also address these same issues.
+
+
+### References
+
+- Upstream release notes: https://sqlite.org/releaselog/3_39_4.html
+- Instructions for compiling against system libraries:
+  https://github.com/sparklemotion/sqlite3-ruby]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GHSA-4qw4-jpp4-8gvp (commonmarker): Unbounded resource exhaustion in cmark-gfm autolink extension may lead to denial of service]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/GHSA-4qw4-jpp4-8gvp/">
+    <id>https://rubysec.com/advisories/GHSA-4qw4-jpp4-8gvp</id>
+    <updated>2022-09-21T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[### Impact
+
+CommonMarker uses `cmark-gfm` for rendering [Github Flavored
+Markdown](https://github.github.com/gfm/). A polynomial time complexity issue
+in cmark-gfm's autolink extension may lead to unbounded resource exhaustion
+and subsequent denial of service.
+
+### Patches
+
+This vulnerability has been patched in the following CommonMarker release:
+
+- v0.23.6
+
+### Workarounds
+
+Disable use of the autolink extension.
+
+### References
+https://en.wikipedia.org/wiki/Time_complexity
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-39224 (arr-pm): arr-pm vulnerable to arbitrary shell execution when extracting or listing files contained in a malicious rpm]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-39224/">
+    <id>https://rubysec.com/advisories/CVE-2022-39224</id>
+    <updated>2022-09-21T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[### Impact
+
+Arbitrary shell execution is possible when using RPM::File#files and
+RPM::File#extract if the RPM contains a malicious "payload compressor" field.
+
+This vulnerability impacts the `extract` and `files` methods of the
+`RPM::File` class in the affected versions of this library.
+
+### Patches
+
+Version 0.0.12 is available with a fix for these issues.
+
+### Workarounds
+
+When using an affected version of this library (arr-pm), ensure any RPMs
+being processed contain valid/known payload compressor values. Such values
+include: gzip, bzip2, xz, zstd, and lzma.
+
+You can check the payload compressor field in an rpm by using the rpm command
+line tool. For example:
+
+```
+% rpm -qp example-1.0-1.x86_64.rpm --qf "%{PAYLOADCOMPRESSOR}\n"
+gzip
+```
+
+### Impact on known dependent projects
+
+This library is used by [fpm](https://github.com/jordansissel/fpm). The
+vulnerability may impact fpm only when using the flag `-s rpm` or
+`--input-type rpm` to convert a malicious rpm to another format. It does
+not impact creating rpms.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GHSA-wrrw-crp8-979q (pageflow): Pageflow vulnerable to sensitive user data extraction via Ransack query injection]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/GHSA-wrrw-crp8-979q/">
+    <id>https://rubysec.com/advisories/GHSA-wrrw-crp8-979q</id>
+    <updated>2022-09-15T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[### Impact
+
+The attack allows extracting sensitive properties of database objects that are
+associated with users or entries belonging to an account that the attacker has access
+to.
+
+Pageflow uses the `ActiveAdmin` Ruby library to provide some management features to
+its users. `ActiveAdmin` relies on the `Ransack` library to implement search
+functionality. In its default configuration, `Ransack` will allow for query conditions
+based on properties of associated database objects [1]. The `*_starts_with`,
+`*_ends_with` or `*_contains` search matchers [2] can then be abused to exfiltrate
+sensitive string values of associated database objects via character-by-character
+brute-force.
+
+[1] https://activerecord-hackery.github.io/ransack/going-further/associations/
+[2] https://activerecord-hackery.github.io/ransack/getting-started/search-matches/
+
+### Mitigation
+
+Upgrade to version 15.7.1 or 14.5.2 of the `pageflow` gem.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GHSA-qcqv-38jg-2r43 (pageflow): Pageflow vulnerable to insecure direct object reference in membership update endpoint]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/GHSA-qcqv-38jg-2r43/">
+    <id>https://rubysec.com/advisories/GHSA-qcqv-38jg-2r43</id>
+    <updated>2022-09-15T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[### Impact
+
+Pageflow has a membership edit feature which allows users to edit the roles of user
+memberships associated with an account that they have the `manager` role to (including
+their own). While the `Entity` dropdown select field is greyed out in the UI, an attacker
+can use tools which allow sending arbitrary HTTP request to craft a request to the
+`/admin/users/{user_id}/memberships/{membership_id}` endpoint containing an additional
+`membership[entity_id]` parameter. This parameter is honored when the membership is
+updated, allowing an attacker to update the membership object associated with their own
+account (with `manager` role) to be associated with a different attacker-chosen account
+instead. Since `account_id`s are enumerable, an attacker can compromise all accounts
+present on the platform.
+
+### Mitigation
+
+Upgrade to version 15.7.1 or 14.5.2 of the `pageflow` gem.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-25765 (pdfkit): PDFKit vulnerable to Command Injection]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-25765/">
+    <id>https://rubysec.com/advisories/CVE-2022-25765</id>
+    <updated>2022-09-10T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[The package pdfkit from version 0.0.0 through version 0.8.6 is vulnerable
+to Command Injection where the URL is not properly sanitized.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2020-36599 (omniauth): OmniAuth's `lib/omniauth/failure_endpoint.rb` does not escape `message_key` value]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2020-36599/">
+    <id>https://rubysec.com/advisories/CVE-2020-36599</id>
+    <updated>2022-08-19T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[lib/omniauth/failure_endpoint.rb in OmniAuth before 1.9.2 (and before
+2.0) does not escape the message_key value.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-35956 (update_by_case): update_by_case before 0.1.3 can be vulnerable to sql injection]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-35956/">
+    <id>https://rubysec.com/advisories/CVE-2022-35956</id>
+    <updated>2022-08-11T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[Before version 0.1.3 `update_by_case` gem used custom sql strings, and
+it was not sanitized, making it vulnerable to sql injection. Upgrade to version
+>= 0.1.3 that uses `Arel` instead to construct the resulting sql statement, with
+sanitized sql.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-31163 (tzinfo): TZInfo relative path traversal vulnerability allows loading of arbitrary files]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-31163/">
+    <id>https://rubysec.com/advisories/CVE-2022-31163</id>
+    <updated>2022-07-21T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[# Impact
+
+## Affected versions
+
+- 0.3.60 and earlier.
+- 1.0.0 to 1.2.9 when used with the Ruby data source (tzinfo-data).
+
+## Vulnerability
+
+With the Ruby data source (the tzinfo-data gem for tzinfo version 1.0.0 and
+later and built-in to earlier versions), time zones are defined in Ruby files.
+There is one file per time zone. Time zone files are loaded with `require` on
+demand. In the affected versions, `TZInfo::Timezone.get` fails to validate
+time zone identifiers correctly, allowing a new line character within the
+identifier. With Ruby version 1.9.3 and later, `TZInfo::Timezone.get` can be
+made to load unintended files with `require`, executing them within the Ruby
+process.
+
+For example, with version 1.2.9, you can run the following to load a file with
+path `/tmp/payload.rb`:
+
+```ruby
+TZInfo::Timezone.get(\"foo\
+/../../../../../../../../../../../../../../../../tmp/payload\")
+```
+
+The exact number of parent directory traversals needed will vary depending on
+the location of the tzinfo-data gem.
+
+TZInfo versions 1.2.6 to 1.2.9 can be made to load files from outside of the
+Ruby load path. Versions up to and including 1.2.5 can only be made to load
+files from directories within the load path.
+
+This could be exploited in, for example, a Ruby on Rails application using
+tzinfo version 1.2.9, that allows file uploads and has a time zone selector
+that accepts arbitrary time zone identifiers.
+The CVSS score and severity have been set on this basis.
+
+Versions 2.0.0 and later are not vulnerable.
+
+# Patches
+
+Versions 0.3.61 and 1.2.10 include fixes to correctly validate time zone
+identifiers.
+
+Note that version 0.3.61 can still load arbitrary files from the Ruby load
+path if their name follows the rules for a valid time zone identifier and the
+file has a prefix of `tzinfo/definition` within a directory in the load path.
+For example if `/tmp/upload` was in the load path, then
+`TZInfo::Timezone.get('foo')` could load a file with path
+`/tmp/upload/tzinfo/definition/foo.rb`. Applications should ensure that
+untrusted files are not placed in a directory on the load path.
+
+# Workarounds
+
+As a workaround, the time zone identifier can be validated before passing to
+`TZInfo::Timezone.get` by ensuring it matches the regular expression
+`\\A[A-Za-z0-9+\\-_]+(?:\\/[A-Za-z0-9+\\-_]+)*\\z`.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2020-35305 (gollum): XSS via `filename` parameter to New Page dialog]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2020-35305/">
+    <id>https://rubysec.com/advisories/CVE-2020-35305</id>
+    <updated>2022-07-16T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[Cross site scripting (XSS) in gollum 5.0 to 5.1.2 via the `filename` parameter
+to the 'New Page' dialog.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-32224 (activerecord): Possible RCE escalation bug with Serialized Columns in Active Record]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-32224/">
+    <id>https://rubysec.com/advisories/CVE-2022-32224</id>
+    <updated>2022-07-12T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[There is a possible escalation to RCE when using YAML serialized columns in
+Active Record. This vulnerability has been assigned the CVE identifier
+CVE-2022-32224.
+
+Versions Affected:  All.
+Not affected:       None
+Fixed Versions:     7.0.3.1, 6.1.6.1, 6.0.5.1, 5.2.8.1
+
+Impact
+------
+When serialized columns that use YAML (the default) are deserialized, Rails
+uses `YAML.unsafe_load` to convert the YAML data in to Ruby objects.  If an
+attacker can manipulate data in the database (via means like SQL injection),
+then it may be possible for the attacker to escalate to an RCE.
+
+Impacted Active Record models will look something like this:
+
+```ruby
+class User < ApplicationRecord
+  serialize :options       # Vulnerable: Uses YAML for serialization
+  serialize :values, Array # Vulnerable: Uses YAML for serialization
+  serialize :values, JSON  # Not vulnerable
+end
+```
+
+All users running an affected release should either upgrade or use one of the
+workarounds immediately.
+
+Releases
+--------
+The FIXED releases are available at the normal locations.
+
+The released versions change the default YAML deserializer to use
+`YAML.safe_load`, which prevents deserialization of possibly dangerous
+objects.  This may introduce backwards compatibility issues with existing
+data.
+
+In order to cope with that situation, the released version also contains two
+new Active Record configuration options.  The configuration options are as
+follows:
+
+* `config.active_record.use_yaml_unsafe_load`
+
+When set to true, this configuration option tells Rails to use the old
+"unsafe" YAML loading strategy, maintaining the existing behavior but leaving
+the possible escalation vulnerability in place.  Setting this option to true
+is *not* recommended, but can aid in upgrading.
+
+* `config.active_record.yaml_column_permitted_classes`
+
+The "safe YAML" loading method does not allow all classes to be deserialized
+by default.  This option allows you to specify classes deemed "safe" in your
+application.  For example, if your application uses Symbol and Time in
+serialized data, you can add Symbol and Time to the allowed list as follows:
+
+```
+config.active_record.yaml_column_permitted_classes = [Symbol, Date, Time]
+```
+
+Workarounds
+-----------
+There are no feasible workarounds for this issue, but other coders (such as
+JSON) are not impacted.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-31115 (opensearch-ruby): Unsafe YAML deserialization in opensearch-ruby]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-31115/">
+    <id>https://rubysec.com/advisories/CVE-2022-31115</id>
+    <updated>2022-07-05T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[### Impact
+A YAML deserialization in opensearch-ruby 2.0.0 can lead to unsafe deserialization using
+YAML.load if the response is of type YAML.
+
+### Patches
+The problem has been patched in opensearch-ruby gem version 2.0.2.
+
+### Workarounds
+No viable workaround.  Please upgrade to 2.0.2
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2021-3779 (ruby-mysql): ruby-mysql Client File Read]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2021-3779/">
+    <id>https://rubysec.com/advisories/CVE-2021-3779</id>
+    <updated>2022-06-28T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[A malicious MySQL server can request local file content from a client using ruby-mysql prior to version
+2.10.0 without explicit authorization from the user. This issue was resolved in version 2.10.0 and
+later.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-30123 (rack): Possible shell escape sequence injection vulnerability in Rack]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-30123/">
+    <id>https://rubysec.com/advisories/CVE-2022-30123</id>
+    <updated>2022-06-27T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[There is a possible shell escape sequence injection vulnerability in the Lint
+and CommonLogger components of Rack.  This vulnerability has been assigned the
+CVE identifier CVE-2022-30123.
+
+Versions Affected:  All.
+Not affected:       None
+Fixed Versions:     2.0.9.1, 2.1.4.1, 2.2.3.1
+
+## Impact
+Carefully crafted requests can cause shell escape sequences to be written to
+the terminal via Rack's Lint middleware and CommonLogger middleware.  These
+escape sequences can be leveraged to possibly execute commands in the victim's
+terminal.
+
+Impacted applications will have either of these middleware installed, and
+vulnerable apps may have something like this:
+
+```
+use Rack::Lint
+```
+
+Or
+
+```
+use Rack::CommonLogger
+```
+
+All users running an affected release should either upgrade or use one of the
+workarounds immediately.
+
+## Workarounds
+Remove these middleware from your application
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-30122 (rack): Denial of Service Vulnerability in Rack Multipart Parsing]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-30122/">
+    <id>https://rubysec.com/advisories/CVE-2022-30122</id>
+    <updated>2022-06-27T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[There is a possible denial of service vulnerability in the multipart parsing
+component of Rack.  This vulnerability has been assigned the CVE identifier
+CVE-2022-30122.
+
+Versions Affected:  >= 1.2
+Not affected:       < 1.2
+Fixed Versions:     2.0.9.1, 2.1.4.1, 2.2.3.1
+
+## Impact
+Carefully crafted multipart POST requests can cause Rack's multipart parser to
+take much longer than expected, leading to a possible denial of service
+vulnerability.
+
+Impacted code will use Rack's multipart parser to parse multipart posts.  This
+includes directly using the multipart parser like this:
+
+```
+params = Rack::Multipart.parse_multipart(env)
+```
+
+But it also includes reading POST data from a Rack request object like this:
+
+```
+p request.POST # read POST data
+p request.params # reads both query params and POST data
+```
+
+All users running an affected release should either upgrade or use one of the
+workarounds immediately.
+
+## Workarounds
+There are no feasible workarounds for this issue.
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CVE-2022-33127 (diffy): Improper handling of double quotes in file name in Diffy in Windows environment]]></title>
+    <link rel="alternate" href="https://rubysec.com/advisories/CVE-2022-33127/">
+    <id>https://rubysec.com/advisories/CVE-2022-33127</id>
+    <updated>2022-06-24T00:00:00+00:00</updated>
+    <content type="html"><![CDATA[The function that calls the diff tool in versions of Diffy prior to 3.4.1
+does not properly handle double quotes in a filename when run in a Windows environment.
+This allows attackers to execute arbitrary commands via a crafted string.
+]]></content>
+  </entry>
+  
+</feed>

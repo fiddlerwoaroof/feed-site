@@ -1,0 +1,1355 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="https://blog.eq8.eu/feed.xml" rel="self" type="application/atom+xml"><link href="https://blog.eq8.eu/" rel="alternate" type="text/html"><updated>2022-08-17T20:14:11+00:00</updated><id>https://blog.eq8.eu/feed.xml</id><title type="html">EquiValent</title><subtitle>Ruby, Ruby on Rails, Elixir fullstack developer, DevOps and code philosopher.</subtitle><author><name>EquiValent - Tomas Valent</name></author><entry><title type="html">Elasticsearch 7 under Ubuntu - protect with basic password</title><link href="https://blog.eq8.eu/til/elasticsearch-7-protect-with-basic-password-ubuntu.html" rel="alternate" type="text/html" title="Elasticsearch 7 under Ubuntu - protect with basic password"><published>2022-08-16T00:00:00+00:00</published><updated>2022-08-16T00:00:00+00:00</updated><id>https://blog.eq8.eu/til/elasticsearch-7-protect-with-basic-password-ubuntu</id><content type="html" xml:base="https://blog.eq8.eu/til/elasticsearch-7-protect-with-basic-password-ubuntu.html">&lt;p&gt;Set up simple password for ElasticSearch &lt;code&gt;7.17.5&lt;/code&gt; localhost running under Ubuntu 20.04 from standard atp-get instalation (&lt;a href=&quot;https://blog.eq8.eu/article/set-up-ubuntu-1804-for-rails-developer-2019.html&quot;&gt;example&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;` sudo vim /etc/elasticsearch/elasticsearch.yml`&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;# .....
+# xpack.security.enabled: false  # make sure this is commented
+
+
+discovery.type: single-node
+xpack.security.enabled: true
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;sudo service elasticsearch stop 
+sudo service elasticsearch status  
+sudo service elasticsearch start  
+sudo service elasticsearch status  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to set up password:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;$ sudo  /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let say I hoose a pasword &lt;code&gt;xxmypaswdxx&lt;/code&gt; :&lt;/p&gt;
+
+&lt;p&gt;test&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;$  curl  -XGET localhost:9200
+
+{&quot;error&quot;:{&quot;root_cause&quot;:[{&quot;type&quot;:&quot;security_exception&quot;,&quot;reason&quot;:&quot;missing authentication credentials for REST request [/]&quot;,&quot;header&quot;:{&quot;WWW-Authenticate&quot;:&quot;Basic realm=\&quot;security\&quot; charset=\&quot;UTF-8\&quot;&quot;}}],&quot;type&quot;:&quot;security_exception&quot;,&quot;reason&quot;:&quot;missing authentication credentials for REST request [/]&quot;,&quot;header&quot;:{&quot;WWW-Authenticate&quot;:&quot;Basic realm=\&quot;security\&quot; charset=\&quot;UTF-8\&quot;&quot;}},&quot;status&quot;:401
+
+
+
+
+$  curl --user elastic:xxmypaswdxx -XGET localhost:9200
+
+{
+  &quot;name&quot; : &quot;xxxxxxxx&quot;,
+  &quot;cluster_name&quot; : &quot;xxxxxxxx&quot;,
+  &quot;cluster_uuid&quot; : &quot;FWhvJOvmTCmp_Nevybmb2g&quot;,
+  &quot;version&quot; : {
+    &quot;number&quot; : &quot;7.17.5&quot;,
+    &quot;build_flavor&quot; : &quot;default&quot;,
+    &quot;build_type&quot; : &quot;deb&quot;,
+    &quot;build_hash&quot; : &quot;8d61b4f7ddf931f219e3745f295ed2bbc50c8e84&quot;,
+    &quot;build_date&quot; : &quot;2022-06-23T21:57:28.736740635Z&quot;,
+    &quot;build_snapshot&quot; : false,
+    &quot;lucene_version&quot; : &quot;8.11.1&quot;,
+    &quot;minimum_wire_compatibility_version&quot; : &quot;6.8.0&quot;,
+    &quot;minimum_index_compatibility_version&quot; : &quot;6.0.0-beta1&quot;
+  },
+  &quot;tagline&quot; : &quot;You Know, for Search&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;you can also &lt;code&gt;base64(username:pssword)&lt;/code&gt; eg and pass it as header. E.g.: &lt;code&gt;base64(elastic:xxmypaswdxx) = &quot;ZWxhc3RpYzp4eG15cGFzd2R4eA==&quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;$ curl -H 'Authorization: Basic ZWxhc3RpYzp4eG15cGFzd2R4eA==' -XGET localhost:9200
+
+{
+  &quot;name&quot; : &quot;xxxxxxxx&quot;,
+  ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;$  curl  -XGET http://elastic:xxmypaswdxx@localhost:9200
+
+{
+  &quot;name&quot; : &quot;xxxxxxxx&quot;,
+  ...
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;ruby-on-rails&quot;&gt;Ruby on Rails&lt;/h3&gt;
+
+&lt;p&gt;Most imortant for &lt;a href=&quot;https://github.com/elastic/elasticsearch-rails&quot;&gt;Ruby/Rails ElasticSearch Client gem&lt;/a&gt; you can pass it as a host, that means in Rails you can:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# config/initializers/elasticsearch.rb
+  client = Elasticsearch::Client.new(url: ENV.fetch('ELASTICSEARCH_HOST') )
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;make sure your &lt;code&gt;ENV['ELASTICSEARCH_HOST']=&quot;http://elastic:xxmypaswdxx@localhost:9200&quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;sources&quot;&gt;sources&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://www.elastic.co/guide/en/elasticsearch/reference/7.17/security-minimal-setup.html&lt;/li&gt;
+  &lt;li&gt;https://www.elastic.co/guide/en/elasticsearch/reference/current/http-clients.html&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;discusion&quot;&gt;discusion&lt;/h3&gt;</content><author><name>EquiValent - Tomas Valent</name></author><category term="til"/><summary type="html">Set up simple password for ElasticSearch 7.17.5 localhost running under Ubuntu 20.04 from standard atp-get instalation (example)</summary></entry><entry><title type="html">Use Importmaps without Rails</title><link href="https://blog.eq8.eu/til/use-importmaps-without-rails.html" rel="alternate" type="text/html" title="Use Importmaps without Rails"><published>2022-05-09T00:00:00+00:00</published><updated>2022-05-09T00:00:00+00:00</updated><id>https://blog.eq8.eu/til/use-importmaps-without-rails</id><content type="html" xml:base="https://blog.eq8.eu/til/use-importmaps-without-rails.html">&lt;p&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1621839673705-6617adf9e890?ixlib=rb-1.2.1&amp;amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;amp;auto=format&amp;amp;fit=crop&amp;amp;w=1332&amp;amp;q=80&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Rails 7 embraced the use of &lt;a href=&quot;https://github.com/rails/importmap-rails&quot;&gt;Import maps&lt;/a&gt; and they are awesome.&lt;/p&gt;
+
+&lt;p&gt;If you wonder how to use importmap in plain HTML here is an example:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+  &amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot; /&amp;gt;
+    &amp;lt;title&amp;gt;Import maps without Rails - Local-time example&amp;lt;/title&amp;gt;
+
+    &amp;lt;script async src=&quot;https://unpkg.com/es-module-shims@1.2.0/dist/es-module-shims.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script type=&quot;importmap-shim&quot;&amp;gt;
+      {
+        &quot;imports&quot;: {
+          &quot;local-time&quot;: &quot;https://ga.jspm.io/npm:local-time@2.1.0/app/assets/javascripts/local-time.js&quot;
+        }
+      }
+    &amp;lt;/script&amp;gt;
+    &amp;lt;script type=&quot;module-shim&quot;&amp;gt;
+      import LocalTime from &quot;local-time&quot;
+      LocalTime.start()
+    &amp;lt;/script&amp;gt;
+
+    &amp;lt;style&amp;gt;
+      time { color: #c11; font-size: 1.1em; }
+    &amp;lt;/style&amp;gt;
+  &amp;lt;/head&amp;gt;
+  &amp;lt;body&amp;gt;
+    &amp;lt;h1&amp;gt;Import maps without Rails - Local-time JS example&amp;lt;/h1&amp;gt;
+
+    &amp;lt;p&amp;gt;
+      Last time I had chocolate was &amp;lt;time datetime=&quot;2022-05-08T23:00:00+02:00&quot; data-local=&quot;time-ago&quot;&amp;gt;8th of May&amp;lt;/time&amp;gt;
+    &amp;lt;/p&amp;gt;
+
+  &amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;to see the example in action check &lt;a href=&quot;https://jsfiddle.net/8oa9fjbs/&quot;&gt;this JS fiddle&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Example uses importmap to loads &lt;a href=&quot;https://www.npmjs.com/package/local-time&quot;&gt;local-time js&lt;/a&gt;
+that converts &lt;code&gt;&amp;lt;time&amp;gt;&lt;/code&gt; HTML elements from UTC to the browser’s local time (&lt;a href=&quot;https://github.com/basecamp/local_time&quot;&gt;more info&lt;/a&gt;).&lt;/p&gt;
+
+&lt;h3 id=&quot;other-examples&quot;&gt;Other examples&lt;/h3&gt;
+
+&lt;p&gt;Looking for Hotwire Stimulus examples ?&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Some can be found in &lt;a href=&quot;https://github.com/afcapel/stimulus-autocomplete/tree/main/examples&quot;&gt;stimulus-autocomplete gem examples&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;source&quot;&gt;Source&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Photo by Jackson So via &lt;a href=&quot;https://unsplash.com/photos/_t-l5FFH8VA&quot;&gt;unsplash&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.npmjs.com/package/local-time&quot;&gt;https://www.npmjs.com/package/local-time&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/basecamp/local_time&quot;&gt;https://github.com/basecamp/local_time&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/afcapel/stimulus-autocomplete/tree/main/examples&quot;&gt;https://github.com/afcapel/stimulus-autocomplete/tree/main/examples&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/importmap-rails&quot;&gt;https://github.com/rails/importmap-rails&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;discussion&quot;&gt;Discussion&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.reddit.com/r/rails/comments/ulq85p/use_importmaps_without_rails_pure_html_example/&quot;&gt;https://www.reddit.com/r/rails/comments/ulq85p/use_importmaps_without_rails_pure_html_example/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>EquiValent - Tomas Valent</name></author><category term="til"/><summary type="html"/></entry><entry><title type="html">Simple way how to use Bootstrap 5 in Rails 7 - importmaps &amp;amp; sprockets</title><link href="https://blog.eq8.eu/til/how-to-use-bootstrap-5-in-rails-7.html" rel="alternate" type="text/html" title="Simple way how to use Bootstrap 5 in Rails 7 - importmaps &amp;amp; sprockets"><published>2022-04-28T00:00:00+00:00</published><updated>2022-04-28T00:00:00+00:00</updated><id>https://blog.eq8.eu/til/how-to-use-bootstrap-5-in-rails-7</id><content type="html" xml:base="https://blog.eq8.eu/til/how-to-use-bootstrap-5-in-rails-7.html">&lt;p&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1615752865424-62638daceeae?ixlib=rb-1.2.1&amp;amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;amp;auto=format&amp;amp;fit=crop&amp;amp;w=2064&amp;amp;q=80&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Rails 7 is a breath of fresh air. Thanks to
+&lt;a href=&quot;https://github.com/rails/importmap-rails&quot;&gt;importmaps&lt;/a&gt; everything is
+simple again. JavaScript (JS) is easy to be implemented without the need
+to install node,npm,yarn,webpack,..other 150 non-Ruby tools on your Laptop&lt;/p&gt;
+
+&lt;p&gt;But what about CSS ?&lt;/p&gt;
+
+&lt;p&gt;Well there is good old  Sprockets (a.k.a &lt;a href=&quot;https://guides.rubyonrails.org/asset_pipeline.html&quot;&gt;Rails asset pipeline&lt;/a&gt;) and good old gems contanining SCSS (remember those?)&lt;/p&gt;
+
+&lt;p&gt;Let’s make life easy again&lt;/p&gt;
+
+&lt;h2 id=&quot;instalation-of-bootstrap-5-in-rails-7&quot;&gt;Instalation of Bootstrap 5 in Rails 7&lt;/h2&gt;
+
+&lt;h3 id=&quot;javascript-js&quot;&gt;JavaScript (JS)&lt;/h3&gt;
+
+&lt;p&gt;If you don’t have &lt;a href=&quot;https://github.com/rails/importmap-rails&quot;&gt;importmaps&lt;/a&gt; yet in your Rails project:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;# to check if you already have importmaps 
+$ cat config/importmap.rb
+
+# to install importmaps in your Rails7 project
+$ rails importmap:install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To add Bootstrap 5 JS to Rails 7 project via importmaps:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ bin/importmap pin bootstrap
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;…this will add necessary JS (bootstrap and popperjs)  to &lt;code&gt;config/importmaps.rb&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Then you need to just import bootstrap in your &lt;code&gt;application.js&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-js&quot;&gt;// app/javascript/application.js
+// ...
+import 'bootstrap'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;quick-note&quot;&gt;Quick Note:&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;For some reason popperjs acts broken in my Rails7 project  when I load it from
+default &lt;code&gt;ga.jspm.io&lt;/code&gt; CDN. That’s why I recommend to load it from &lt;code&gt;unpkg.com&lt;/code&gt;:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# config/importmaps.rb
+# ...
+pin &quot;bootstrap&quot;, to: &quot;https://ga.jspm.io/npm:bootstrap@5.1.3/dist/js/bootstrap.esm.js&quot;
+pin &quot;@popperjs/core&quot;, to: &quot;https://unpkg.com/@popperjs/core@2.11.2/dist/esm/index.js&quot; # use unpkg.com as ga.jspm.io contains a broken popper package
+# ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;css-js&quot;&gt;CSS (JS)&lt;/h3&gt;
+
+&lt;p&gt;To install official
+&lt;a href=&quot;https://github.com/twbs/bootstrap-rubygem&quot;&gt;Bootstrap 5 Ruby gem&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# Gemfile
+# ...
+gem 'bootstrap', '~&amp;gt; 5.1.3'
+# ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and &lt;code&gt;bundle install&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Then just edit your &lt;code&gt;app/assets/stylesheets/application.scss&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-scss&quot;&gt;// app/assets/stylesheets/application.scss
+// ...
+@import &quot;bootstrap&quot;;
+// ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;note: be sure you replace your application.&lt;strong&gt;css&lt;/strong&gt; with application.&lt;strong&gt;scss&lt;/strong&gt;.
+That means &lt;code&gt;app/assets/stylesheets/application.css&lt;/code&gt; should not exist!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;If you want to change some variables:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-scss&quot;&gt;// app/assets/stylesheets/application.scss
+// ...
+$primary: #c11;
+@import &quot;bootstrap&quot;;
+// ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/twbs/bootstrap-rubygem/blob/master/assets/stylesheets/bootstrap/_variables.scss&quot;&gt;list of all variables&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/twbs/bootstrap-rubygem/issues/210&quot;&gt;advanced way how to change variables&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;layout-files&quot;&gt;Layout files&lt;/h3&gt;
+
+&lt;p&gt;Make sure your layout (&lt;code&gt;app/views/application.html.erb&lt;/code&gt;) contains:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-erb&quot;&gt;&amp;lt;%# ... %&amp;gt;
+&amp;lt;head&amp;gt;
+&amp;lt;%# ... %&amp;gt;
+&amp;lt;%= stylesheet_link_tag &quot;application&quot;, &quot;data-turbo-track&quot;: &quot;reload&quot; %&amp;gt;  &amp;lt;%# this loads Sprockets/Rails asset pipeline %&amp;gt;
+    &amp;lt;%= javascript_importmap_tags %&amp;gt; &amp;lt;%#  this loads JS from importmaps %&amp;gt;
+    &amp;lt;%# ... %&amp;gt;
+  &amp;lt;/head&amp;gt;
+  &amp;lt;!-- ... --&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;alternative-solutions&quot;&gt;Alternative solutions&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://dev.to/coorasse/rails-7-bootstrap-5-and-importmaps-without-nodejs-4g8&quot;&gt;gem bootstrap and importmaps to load vendor javascript in the gem&lt;/a&gt; - good solution if you want to avoid CDN&lt;/li&gt;
+  &lt;li&gt;you can use the &lt;code&gt;rails new --css bootstrap&lt;/code&gt; option but that will
+require &lt;code&gt;esbuild&lt;/code&gt; which requires all the JS shenanigans in your laptop this article wants to
+avoid&lt;/li&gt;
+  &lt;li&gt;you can use &lt;a href=&quot;https://guides.rubyonrails.org/webpacker.html&quot;&gt;webpacker&lt;/a&gt; but again you need node,yarn,… So, have fun&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;counterarguments&quot;&gt;counterarguments&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“but this way you load a gem and you don’t use the JS bit of it”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;So what? Like if there’s no single gem in your project you don’t use at 100%. I love “vanilla Rails” approach and
+love to avoid 3rd party gems as much as I can but this will save you so
+much hustle, especially if you are a beginner new to Rails or you are
+starting a sideproject (there’s always a time to refactor if you really
+need to)&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“but Sprockets are no longer used”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Yes they are. There was a period of time with RoR 5.2 &amp;amp; 6.x where webpacker
+was taking over and developers were ditching Rails asset pipeline but
+this new importmaps approach is fresh breath to bring gems with scss
+back.&lt;/p&gt;
+
+&lt;p&gt;&lt;del&gt;Basecamp (&amp;amp; DHH) were quite clear about it that Sprockets will not
+disappear  anyday soon.&lt;/del&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;update&lt;/strong&gt; Well actually I was wrong. Sprockets will probably be
+replaced by &lt;a href=&quot;https://github.com/rails/propshaft&quot;&gt;Propshaft&lt;/a&gt; in Rails 8.
+&lt;a href=&quot;https://rubyrogues.com/propshaft-with-david-heinemeier-hansson-dhh-ruby-542&quot;&gt;source of this claim&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;But still Sprockets are the most convinient way how to use CSS in
+Rails7&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;what about DartSass&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;if you decide to configure &lt;a href=&quot;https://github.com/rails/dartsass-rails&quot;&gt;DartSass Rails&lt;/a&gt; go for it.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;but &lt;code&gt;--css&lt;/code&gt; (esbuild) is there to replace sprockets&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;No it’s not, same way how webpacker didn’t replace it&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;But what if CDN provider goes down, then my application JS will not work&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Yes you and other billion websites as well.  If your project is a bank then yeah sure use your
+own CDN or load from vendor. But if your project is
+startup to sell T-shirts  then I’m pretty sure everyone will
+survive that 5 min downtime.&lt;/p&gt;
+
+&lt;h2 id=&quot;sources&quot;&gt;Sources&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=PtxZvFnL2i0&quot;&gt;Learn more on importmaps - DHH video&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Photo by Pablo Arroyo via &lt;a href=&quot;https://unsplash.com/photos/_SEbdtH4ZLM&quot;&gt;unsplash&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;discussion&quot;&gt;Discussion&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.reddit.com/r/ruby/comments/udtsz8/how_to_use_bootstrap_5_in_rails_7_importmaps/&quot;&gt;https://www.reddit.com/r/ruby/comments/udtsz8/how_to_use_bootstrap_5_in_rails_7_importmaps/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>EquiValent - Tomas Valent</name></author><category term="til"/><summary type="html"/></entry><entry><title type="html">How to test performance of caching with RSpec in Rails</title><link href="https://blog.eq8.eu/til/how-to-test-caching-on-individual-tests-rails-rspec.html" rel="alternate" type="text/html" title="How to test performance of caching with RSpec in Rails"><published>2022-01-24T00:00:00+00:00</published><updated>2022-01-24T00:00:00+00:00</updated><id>https://blog.eq8.eu/til/how-to-test-caching-on-individual-tests-rails-rspec</id><content type="html" xml:base="https://blog.eq8.eu/til/how-to-test-caching-on-individual-tests-rails-rspec.html">&lt;p&gt;e.g.: if you implemeted fragment caching or russian doll caching&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;account = Account.last
+Rails.cache.fetch ['posts', account] do
+  # ....
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;how-to-enable-cache-in-single-test&quot;&gt;how to enable cache in single test&lt;/h3&gt;
+
+&lt;p&gt;NOTE by default caching is disabled in test enviroment (which is a good
+thing). You &lt;strong&gt;don’t&lt;/strong&gt; need to change default &lt;code&gt;null_store&lt;/code&gt; caching&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# config/environments/test.rb
+Rails.application.configure do
+  # ...
+  config.cache_store = :null_store #  feel free to keep this as it is
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;What we want is enable the caching only for particular test:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# spec/any_spec.rb
+module TestFileCachingHelper
+  def self.cache
+    return @file_cache if @file_cache
+    path = &quot;tmp/test#{ENV['TEST_ENV_NUMBER']}/cache&quot;
+    FileUtils::mkdir_p(path)
+    @file_cache = ActiveSupport::Cache.lookup_store(:file_store, path)
+    @file_cache
+  end
+end
+
+before do
+  allow(Rails).to receive(:cache).and_return(TestFileCachingHelper.cache)
+  Rails.cache.clear
+end
+
+it do
+  expect(Rails.cache.exist?('some_key')).to be(false)
+  Rails.cache.write('some_key', 'test')
+  expect(Rails.cache.exist?('some_key')).to be(true)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Credit for this part of article goes to Emanuel De and his article &lt;a href=&quot;https://makandracards.com/makandra/46189-how-to-rails-cache-for-individual-rspec-tests&quot;&gt;How to: Rails cache for individual rspec tests&lt;/a&gt; Consider this as a mirror article&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;rspec-tag-to-mark-which-tests-should-enable-cache&quot;&gt;RSpec tag to mark which tests should enable cache&lt;/h3&gt;
+
+&lt;p&gt;we can go step further and enable cache only on tests with specific  RSpec tag / filters&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# spec/support/test_file_caching_helper.rb
+module TestFileCachingHelper
+  def self.cache
+    return @file_cache if @file_cache
+    path = &quot;tmp/test#{ENV['TEST_ENV_NUMBER']}/cache&quot;
+    FileUtils::mkdir_p(path)
+    @file_cache = ActiveSupport::Cache.lookup_store(:file_store, path)
+    @file_cache
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# spec/rails_helper.rb
+
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+
+RSpec.configure do |config|
+  # ...
+
+  # tests that use Rails cache https://blog.eq8.eu/til/how-to-test-caching-on-individual-tests-rails-rspec.html
+  config.before(:example, :cache_enabled) do
+    Rails.cache.clear
+    allow(Rails).to receive(:cache).and_return(TestFileCachingHelper.cache)
+  end
+  # ...
+end
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# spec/any_spec.rb
+require 'rails_helper'
+RSpec.describe 'Anything' do
+  it 'should behave like test without cache enabled'
+    # ...
+  end
+
+  it 'should behave like test with enabled cache', :cache_enabled
+    # ...
+  end
+
+  context 'entire section under influence of cache', :cache_enabled do
+    it 'should behave like test with cache enabled' do
+      # ...
+    end
+
+    it do
+      Rails.cache.fetch 'hello' { 123 }
+      expect(Rails.cache.fetch('hello').to eq 123
+    end
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;how-to-test-performance-of-implemented-caching&quot;&gt;how to test performance of implemented caching&lt;/h3&gt;
+
+&lt;p&gt;Gem  &lt;a href=&quot;https://github.com/civiccc/db-query-matchers&quot;&gt;db-query-matchers&lt;/a&gt;
+will help you test how many SQL calls the request has made&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# Gemfile
+# ...
+group :test do
+  gem 'rspec-rails'
+  # ...
+  gem 'db-query-matchers'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# spec/controllers/accounts_controller_spec.rb
+RSpec.describe AccountsController do
+  # ...
+  def trigger
+    get :index
+  end
+
+  it 'is performant', :cache_enabled do
+    #First call
+    expect { trigger }.to make_database_queries(count: 420..430)
+
+    # cache kicked in
+    expect { trigger }.to make_database_queries(count: 7)
+  end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;note don’t use let(:trigger) { get :index } as that will memoize the
+call =&amp;gt; second call will not trigger&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;sources&quot;&gt;sources&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://guides.rubyonrails.org/caching_with_rails.html&quot;&gt;https://guides.rubyonrails.org/caching_with_rails.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://makandracards.com/makandra/46189-how-to-rails-cache-for-individual-rspec-tests&quot;&gt;https://makandracards.com/makandra/46189-how-to-rails-cache-for-individual-rspec-tests&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;discusion&quot;&gt;Discusion&lt;/h3&gt;</content><author><name>EquiValent - Tomas Valent</name></author><category term="til"/><summary type="html">e.g.: if you implemeted fragment caching or russian doll caching</summary></entry><entry><title type="html">Order attachments in Rails ActiveStorage has_many_attached</title><link href="https://blog.eq8.eu/article/order-attachments-in-rails-activestorage-has_many_attached.html" rel="alternate" type="text/html" title="Order attachments in Rails ActiveStorage has_many_attached"><published>2022-01-15T00:00:00+00:00</published><updated>2022-01-15T00:00:00+00:00</updated><id>https://blog.eq8.eu/article/order-attachments-in-rails-activestorage-has_many_attached</id><content type="html" xml:base="https://blog.eq8.eu/article/order-attachments-in-rails-activestorage-has_many_attached.html">&lt;p&gt;Ruby on Rails &lt;a href=&quot;https://edgeguides.rubyonrails.org/active_storage_overview.html&quot;&gt;Active Storage&lt;/a&gt;  introduced
+bunch of cool features for uploading files. One large advantage is a
+simple way how to store multiple attachments for a model with
+&lt;a href=&quot;https://edgeguides.rubyonrails.org/active_storage_overview.html#has-many-attached&quot;&gt;has_many_attached&lt;/a&gt; but also 
+ability to upload  files with &lt;a href=&quot;https://edgeguides.rubyonrails.org/active_storage_overview.html#direct-uploads&quot;&gt;direct upload&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;has_many_attached&lt;/code&gt; is a cool feature but developers may feels like it’s
+missing one critical feature: change order of attachments.&lt;/p&gt;
+
+&lt;p&gt;In this article I’ll show you one simple way how to order attachments of
+a simple Entry model that has many pictures.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;To limit the scope of this article I’ll  assume your application have a basic setup of
+&lt;a href=&quot;https://edgeguides.rubyonrails.org/active_storage_overview.html&quot;&gt;ActiveStorage&lt;/a&gt;
+such as &lt;code&gt;bin/rails active_storage:install&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;basic-solution&quot;&gt;Basic solution&lt;/h2&gt;
+
+&lt;p&gt;Here is our &lt;code&gt;Entry&lt;/code&gt; model. As you can see it has_many_attached &lt;code&gt;#pictures&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# app/models/entry.rb
+class Entry &amp;lt; ApplicationRecord
+  has_many_attached :pictures
+
+  # ...
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We need to add a new Array field to the &lt;code&gt;Entry&lt;/code&gt; model that will hold ids
+of attached &lt;code&gt;pictures&lt;/code&gt; in order. That means if attachments were uploaded
+in order:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code&gt;ActiveStorage::Attachment id=1&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;ActiveStorage::Attachment id=2&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;ActiveStorage::Attachment id=3&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;…we can store the ids &lt;code&gt;[1,2,3]&lt;/code&gt; in any order we want see them appear in e.g.: &lt;code&gt;[3,1,2]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Assuming we use &lt;strong&gt;PostgreSQL database&lt;/strong&gt; lets add a &lt;code&gt;json&lt;/code&gt; field to our
+database which defalts to an empty Array&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;class AddOrderedPictureIdsToEntries &amp;lt; ActiveRecord::Migration[6.1]
+  def change
+    add_column :entries, :ordered_picture_ids, :json, default: []
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;if you are not using Posgres database you can use Rails model
+&lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html&quot;&gt;serialize&lt;/a&gt;
+field as an Array&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;$ bin/rails db:migrate
+$ bin/rails c
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;entry = Entry.new
+entry.ordered_picture_ids
+# =&amp;gt; []
+entry.ordered_picture_ids = [3,1,2]
+entry.save!
+entry.ordered_picture_ids
+# =&amp;gt; [3,1,2]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we will intreduce method &lt;code&gt;#ordered_pictures&lt;/code&gt; which will return
+&lt;code&gt;#pictures&lt;/code&gt; ordered by the values in &lt;code&gt;#ordered_picture_ids&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# app/models/entry.rb
+class Entry &amp;lt; ApplicationRecord
+  has_many_attached :pictures
+
+
+  def ordered_pictures
+    pictures.sort_by{ |pic| ordered_picture_ids.index(pic.id) || (pic.id*100) }
+  end
+
+  def ordered_picture_ids=(ids)
+    super(ids.map(&amp;amp;:to_i)) # convert any ids passed to this method to integer
+                           # this is just for security reasons,
+                           # you don't need to do this for the feature to work
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;reason why we do &lt;code&gt;|| (pic.id*100)&lt;/code&gt; is so that we give default order to records without explicit order (E.g stuff that was uploaded before we start changing order).  Please have a look at RSpec specs bellow to fully understand edgecases&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Great now when you call &lt;code&gt;entry.ordered_pictures&lt;/code&gt; you will get attached
+pictures in order you like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-slim&quot;&gt;-# app/views/entries/edit.html.slim
+
+- @entry.ordered_pictures.each do |picture|
+  = image_tag(picture)
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you use some JavaScript solution (e.g drag and drop sort) that will send  an Array of ids to your backend then
+this is all you need. Just update your controller to allow our new &lt;code&gt;#ordered_picture_ids&lt;/code&gt; property in &lt;code&gt;params&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;class EntriesController &amp;lt; ApplicationController
+  # ...
+  def update
+    entry_params = params
+      .require(:entry)
+      .permit(:title, pictures: [], ordered_picture_ids: [])
+
+    @entry.attributes = entry_params
+
+    @entry.save
+    # ...
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;move-up-and-down&quot;&gt;Move up and down&lt;/h2&gt;
+
+&lt;p&gt;Rails 7 introduced &lt;a href=&quot;https://turbo.hotwired.dev/&quot;&gt;Hotwire Turbo&lt;/a&gt; which
+makes developers that prefere  to write as little of JavaScript as
+possible (like me) extremly happy.&lt;/p&gt;
+
+&lt;p&gt;With this technology a really elegant solution would be to have buttons that would
+change order of attachments &lt;strong&gt;Up&lt;/strong&gt; or &lt;strong&gt;Down&lt;/strong&gt; within same turbo frame. Let’s have a look how
+this would look like:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2022/reorder.gif&quot; alt=&quot;result&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;model&quot;&gt;Model&lt;/h4&gt;
+
+&lt;p&gt;First let’s introduce methods for moving attachement picture:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# app/models/entry.rb
+class Entry &amp;lt; ApplicationRecord
+  has_many_attached :pictures
+
+  # ...
+
+  def ordered_pictures
+    pictures.sort_by{ |pic| ordered_picture_ids.index(pic.id) || (pic.id*100) }
+  end
+
+  def ordered_picture_ids=(ids)
+    super(ids.map(&amp;amp;:to_i))
+  end
+
+  def ordered_picture_move_up!(picture)
+    ordered_picture_move!(picture, :up)
+  end
+
+  def ordered_picture_move_down!(picture)
+    ordered_picture_move!(picture, :down)
+  end
+
+  private
+    def ordered_picture_move!(picture, where)
+      raise TypeError, &quot;#{picture} must be a ActiveStorage::Attachment&quot; unless picture.is_a?(ActiveStorage::Attachment)
+      pics = ordered_pictures.dup
+      case where
+      when :up   then ArrayElementMove.up!(pics, picture)
+      when :down then ArrayElementMove.down!(pics, picture)
+      else
+        raise &quot;unknown option #{where}&quot;
+      end
+      self.ordered_picture_ids=pics.map(&amp;amp;:id)
+      self.save!
+      self.reload
+      true
+    end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Methods &lt;code&gt;#ordered_pictures&lt;/code&gt; and &lt;code&gt;#ordered_picture_ids&lt;/code&gt; didn’t change
+compared to previous example.
+We introduced two more methods &lt;code&gt;#ordered_picture_move_up!&lt;/code&gt; and &lt;code&gt;#ordered_picture_move_down!&lt;/code&gt;
+that will be our interface to move items up and down.&lt;/p&gt;
+
+&lt;p&gt;Both uses private method &lt;code&gt;#ordered_picture_move&lt;/code&gt; that will manipulate
+order of pictures ids in array &lt;code&gt;#ordered_picture_ids&lt;/code&gt; and save new order to
+this field&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;For details please see RSpec specs at the bottom of this article&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Tricky bit here is how to move items up and down in a Ruby Array. As far
+as I’m aware there is no built in feature directly in Ruby so I
+ created a small helper &lt;code&gt;ArrayElementMove&lt;/code&gt; to do that:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# lib/array_element_move.rb
+module ArrayElementMove
+  MustBeUniqArray = Class.new(StandardError)
+  ItemNotInArray  = Class.new(StandardError)
+
+  def self.up!(array, item)
+    self.check_if_uniq!(array)
+    return array if array.first == item
+    position = array.index(item) || raise(ItemNotInArray)
+    array.insert((position - 1), array.delete_at(position))
+  end
+
+  def self.down!(array, item)
+    self.check_if_uniq!(array)
+    return array if array.last == item
+    position = array.index(item) || raise(ItemNotInArray)
+    array.insert((position + 1), array.delete_at(position))
+  end
+
+  def self.check_if_uniq!(array)
+    raise MustBeUniqArray if array.size != array.uniq.size
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;more about this Class in &lt;a href=&quot;https://blog.eq8.eu/til/move-position-of-item-in-array-up-and-down-in-ruby-lang.html&quot;&gt;this til note&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Don’t forget to require this class in your Rails app:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# config/application.rb
+# ...
+require './lib/array_element_move'
+# ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So this will allow us to do:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;a = [1,2,3]
+ArrayElementMove.up!(a, 2)
+a == [2,1,3]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;controller--views&quot;&gt;Controller &amp;amp; views&lt;/h4&gt;
+
+&lt;p&gt;Let’s introduce seperate controller &lt;code&gt;EntryPicturesController&lt;/code&gt; that will
+be responsible for operations related to entry pictures (so that we don’t
+polute &lt;code&gt;EntryController&lt;/code&gt;)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# config/routes.rb
+resources :entries do
+  resources :pictures, only: [:destroy], controller: 'entry_pictures' do
+    post :up,   on: :member
+    post :down, on: :member
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# app/controllers/entry_pictures_controller.rb
+class EntryPicturesController &amp;lt; ApplicationController
+  before_action :find_entry
+  before_action :find_picture
+
+  def up
+    @entry.ordered_picture_move_up!(@picture)
+    redirect_to(edit_entry_path(@entry))
+  end
+
+  def down
+    @entry.ordered_picture_move_down!(@picture)
+    redirect_to(edit_entry_path(@entry))
+  end
+
+  # not required, just to show why it's nice to separate concerns
+  def destroy
+    @picture.purge
+    redirect_to(edit_entry_path(@entry))
+  end
+
+  private
+    def find_entry_id
+      @entry = Entry.find(params[:entry_id])
+    end
+
+    def find_picture
+      @picture = @entry.pictures.find(params[:id])
+    end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-slim&quot;&gt;-# app/views/entries/edit.html.slim
+
+= turbo_frame_for 'pictures' do
+  - @entry.ordered_pictures.each do |picture|
+    div.entry-picture
+      = image_tag(picture)
+      = button_to 'move left', up_entry_picture_path(@entry, picture)
+      = button_to 'move right', down_entry_picture_path(@entry, picture)
+      = button_to 'Delete', entry_picture_path(@entry, picture), method: :delete, data: {confirm: 'Delete picture?'}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That’s it&lt;/p&gt;
+
+&lt;h2 id=&quot;final-words&quot;&gt;Final words&lt;/h2&gt;
+
+&lt;p&gt;If you are here just for technical solution you don’t have to read
+further. I just want to close this article with some opinions.&lt;/p&gt;
+
+&lt;h4 id=&quot;why-activestorage-has_many_attached-dont-have-built-in-ordering-&quot;&gt;Why ActiveStorage has_many_attached don’t have built in ordering ?&lt;/h4&gt;
+
+&lt;p&gt;I don’t know.&lt;/p&gt;
+
+&lt;p&gt;I personally think this feature is missing from ActiveStorage by design
+because your application may have a different iterpretation on how to
+order attachments.&lt;/p&gt;
+
+&lt;p&gt;For example maybe within same has_many_attached your application is ordering PDFs in front of
+images.&lt;/p&gt;
+
+&lt;p&gt;So it sounds straight forward but order logic may have many meanings&lt;/p&gt;
+
+&lt;h4 id=&quot;wouldnt-be-custom-picture-model-better-&quot;&gt;Wouldn’t be custom Picture model better ?&lt;/h4&gt;
+
+&lt;p&gt;So imagine we do something like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# app/models/entry.rb
+class Entry &amp;lt; ApplicationRecord
+  has_many :pictures
+end
+
+class Picture &amp;lt; ApplicationRecord
+  belongs_to :entry
+  has_one_attached :image
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this case our &lt;code&gt;pictures&lt;/code&gt; table can be more dynamic and have an order
+field upon which we can  do our re-ordering:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# db/schema.rb
+# ...
+  create_table &quot;pictures&quot;, force: :cascade do |t|
+    t.bigint &quot;entry_id&quot;
+    t.integer &quot;order&quot;, default: 0
+    # ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Yes sure this is a good solution (I’m using simmilar solutions plenty in
+other projects) So if it works for you go ahead. Just realize you are
+giving up native ActiveStorage has_many_attached features that come
+default in Rails (like no sweat direct upload). If that’s not a big deal
+for you then no problem.&lt;/p&gt;
+
+&lt;h3 id=&quot;rspec-specs&quot;&gt;RSpec specs&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# spec/model/entry_spec.rb
+require 'rails_helper'
+
+RSpec.describe Entry, type: :model do
+  describe 'ordered_pictures' do
+    let!(:entry) { create :entry, :with_pictures }
+
+    before do
+      @pic1, @pic2, @pic3 = entry.pictures
+    end
+
+    context 'when no exact order' do
+      it do
+        expect(entry.ordered_pictures).to eq([@pic1, @pic2, @pic3])
+      end
+
+      describe 'up' do
+        it do
+          expect(entry.ordered_pictures).to eq([@pic1, @pic2, @pic3])
+
+          entry.ordered_picture_move_up!(@pic3)
+          expect(entry.ordered_pictures).to eq([@pic1, @pic3, @pic2])
+
+          entry.ordered_picture_move_up!(@pic3)
+          expect(entry.ordered_pictures).to eq([@pic3, @pic1, @pic2])
+
+          entry.ordered_picture_move_up!(@pic3)
+          expect(entry.ordered_pictures).to eq([@pic3, @pic1, @pic2])
+
+          entry.ordered_picture_move_up!(@pic2)
+          expect(entry.ordered_pictures).to eq([@pic3, @pic2, @pic1])
+        end
+
+        it 'check type' do
+          expect { entry.ordered_picture_move_up!(@pic2.blob) }
+            .to raise_exception(TypeError, /ActiveStorage::Blob/)
+          expect(entry.ordered_pictures).to eq([@pic1, @pic2, @pic3])
+        end
+      end
+
+      describe 'down' do
+        it do
+          expect(entry.ordered_pictures).to eq([@pic1, @pic2, @pic3])
+
+          entry.ordered_picture_move_down!(@pic1)
+          expect(entry.ordered_pictures).to eq([@pic2, @pic1, @pic3])
+
+          entry.ordered_picture_move_down!(@pic1)
+          expect(entry.ordered_pictures).to eq([@pic2, @pic3, @pic1])
+
+          entry.ordered_picture_move_down!(@pic1)
+          expect(entry.ordered_pictures).to eq([@pic2, @pic3, @pic1])
+
+          entry.ordered_picture_move_down!(@pic2)
+          expect(entry.ordered_pictures).to eq([@pic3, @pic2, @pic1])
+        end
+
+        it 'check type' do
+          expect { entry.ordered_picture_move_down!(2) }
+            .to raise_exception(TypeError, &quot;2 must be a ActiveStorage::Attachment&quot;)
+          expect(entry.ordered_pictures).to eq([@pic1, @pic2, @pic3])
+        end
+      end
+    end
+
+    context 'when order' do
+      it do
+        entry.ordered_picture_ids = [@pic2.id, @pic3.id, @pic1.id]
+        expect(entry.ordered_pictures).to eq([@pic2, @pic3, @pic1])
+      end
+    end
+
+    context 'when order with mistakes' do
+      it do
+        entry.ordered_picture_ids = [@pic2.id, nil, @pic3.id, 'poop', @pic1.id]
+        expect(entry.ordered_pictures).to eq([@pic2, @pic3, @pic1])
+      end
+    end
+
+    context 'when order but element missing' do
+      it do
+        entry.ordered_picture_ids = [@pic2.id, @pic1.id]
+        expect(entry.ordered_pictures).to eq([@pic2, @pic1, @pic3])
+      end
+    end
+
+    context 'when order but element missing' do
+      it do
+        entry.ordered_picture_ids = [@pic2.id]
+        expect(entry.ordered_pictures).to eq([@pic2, @pic1, @pic3])
+      end
+    end
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# spec/lib/array_element_move_spec.rb
+require 'rails_helper'
+RSpec.describe ArrayElementMove do
+  let(:arr) { [1,2,3,4,5,6] }
+
+  it do
+    ArrayElementMove.up!(arr, 4)
+    expect(arr).to eq([1,2,4,3,5,6])
+
+    expect(ArrayElementMove.up!(arr, 4)).to eq([1,4,2,3,5,6])
+    expect(arr).to eq([1,4,2,3,5,6])
+
+    ArrayElementMove.up!(arr, 4)
+    expect(arr).to eq([4,1,2,3,5,6])
+
+    ArrayElementMove.up!(arr, 4)
+    expect(arr).to eq([4,1,2,3,5,6])
+  end
+
+  it do
+    ArrayElementMove.down!(arr, 4)
+    expect(arr).to eq([1,2,3,5,4,6])
+
+    expect(ArrayElementMove.down!(arr, 4)).to eq([1,2,3,5,6,4])
+    expect(arr).to eq([1,2,3,5,6,4])
+
+    expect(ArrayElementMove.down!(arr, 4)).to eq([1,2,3,5,6,4])
+    expect(arr).to eq([1,2,3,5,6,4])
+  end
+
+  context 'when non uniq array' do
+    let(:arr) { [1,4,2,3,4,5,6] }
+
+    it do
+      expect { ArrayElementMove.down!(arr, 3) }.to raise_exception(ArrayElementMove::MustBeUniqArray)
+      expect(arr).to eq([1,4,2,3,4,5,6])
+    end
+
+    it do
+      expect { ArrayElementMove.down!(arr, 3) }.to raise_exception(ArrayElementMove::MustBeUniqArray)
+      expect(arr).to eq([1,4,2,3,4,5,6])
+    end
+  end
+
+  context 'when non existing item' do
+    it do
+      expect { ArrayElementMove.up!(arr, 9) }.to raise_exception(ArrayElementMove::ItemNotInArray)
+      expect(arr).to eq([1,2,3,4,5,6])
+    end
+
+    it do
+      expect { ArrayElementMove.up!(arr, 9) }.to raise_exception(ArrayElementMove::ItemNotInArray)
+      expect(arr).to eq([1,2,3,4,5,6])
+    end
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;related-articles&quot;&gt;Related articles&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/rails-activestorage-aws-s3-bucket-policy-permissions.html&quot;&gt;https://blog.eq8.eu/til/rails-activestorage-aws-s3-bucket-policy-permissions.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/rails-active-storage-cdn.html&quot;&gt;https://blog.eq8.eu/til/rails-active-storage-cdn.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/image-width-and-height-in-rails-activestorage.html&quot;&gt;https://blog.eq8.eu/til/image-width-and-height-in-rails-activestorage.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/rails-active-storage-crop-and-resize.html&quot;&gt;https://blog.eq8.eu/til/rails-active-storage-crop-and-resize.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/upload-remote-file-from-url-with-activestorage-rails.html&quot;&gt;https://blog.eq8.eu/til/upload-remote-file-from-url-with-activestorage-rails.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/factory-bot-trait-for-active-storange-has_attached.html&quot;&gt;https://blog.eq8.eu/til/factory-bot-trait-for-active-storange-has_attached.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/ruby-on-rails-active-storage-how-to-change-host-for-url_for.html&quot;&gt;https://blog.eq8.eu/til/ruby-on-rails-active-storage-how-to-change-host-for-url_for.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/move-position-of-item-in-array-up-and-down-in-ruby-lang.html&quot;&gt;https://blog.eq8.eu/til/move-position-of-item-in-array-up-and-down-in-ruby-lang.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;discussion&quot;&gt;Discussion&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.reddit.com/r/ruby/comments/s4w02y/how_to_change_order_of_attachments_in_rails/&quot;&gt;Reddit&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>EquiValent - Tomas Valent</name></author><category term="article"/><summary type="html">Ruby on Rails Active Storage introduced bunch of cool features for uploading files. One large advantage is a simple way how to store multiple attachments for a model with has_many_attached but also ability to upload files with direct upload</summary></entry><entry><title type="html">Move position of item in Array up and down in Ruby lang</title><link href="https://blog.eq8.eu/til/move-position-of-item-in-array-up-and-down-in-ruby-lang.html" rel="alternate" type="text/html" title="Move position of item in Array up and down in Ruby lang"><published>2022-01-14T00:00:00+00:00</published><updated>2022-01-14T00:00:00+00:00</updated><id>https://blog.eq8.eu/til/move-position-of-item-in-array-up-and-down-in-ruby-lang</id><content type="html" xml:base="https://blog.eq8.eu/til/move-position-of-item-in-array-up-and-down-in-ruby-lang.html">&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;module ArrayElementMove
+  MustBeUniqArray = Class.new(StandardError)
+  ItemNotInArray  = Class.new(StandardError)
+
+  def self.up!(array, item)
+    self.check_if_uniq!(array)
+    return array if array.first == item
+    position = array.index(item) || raise(ItemNotInArray)
+    array.insert((position - 1), array.delete_at(position))
+  end
+
+  def self.down!(array, item)
+    self.check_if_uniq!(array)
+    return array if array.last == item
+    position = array.index(item) || raise(ItemNotInArray)
+    array.insert((position + 1), array.delete_at(position))
+  end
+
+  def self.check_if_uniq!(array)
+    raise MustBeUniqArray if array.size != array.uniq.size
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;require 'spec_helper'
+#  require 'rails_helper' if you use Rails spec
+
+RSpec.describe ArrayElementMove do
+  let(:arr) { [1,2,3,4,5,6] }
+
+  it do
+    ArrayElementMove.up!(arr, 4)
+    expect(arr).to eq([1,2,4,3,5,6])
+
+    expect(ArrayElementMove.up!(arr, 4).to eq([1,4,2,3,5,6])
+    expect(arr).to eq([1,4,2,3,5,6])
+
+    ArrayElementMove.up!(arr, 4)
+    expect(arr).to eq([4,1,2,3,5,6])
+
+    ArrayElementMove.up!(arr, 4)
+    expect(arr).to eq([4,1,2,3,5,6])
+  end
+
+  it do
+    ArrayElementMove.down!(arr, 4)
+    expect(arr).to eq([1,2,3,5,4,6])
+
+    expect(ArrayElementMove.down!(arr, 4)).to eq([1,2,3,5,6,4])
+    expect(arr).to eq([1,2,3,5,6,4])
+
+    expect(ArrayElementMove.down!(arr, 4)).to eq([1,2,3,5,6,4])
+    expect(arr).to eq([1,2,3,5,6,4])
+  end
+
+  context 'when non uniq array' do
+    let(:arr) { [1,4,2,3,4,5,6] }
+
+    it do
+      expect { ArrayElementMove.down!(arr, 3) }.to raise_exception(ArrayElementMove::MustBeUniqArray)
+      expect(arr).to eq([1,4,2,3,4,5,6])
+    end
+
+    it do
+      expect { ArrayElementMove.down!(arr, 3) }.to raise_exception(ArrayElementMove::MustBeUniqArray)
+      expect(arr).to eq([1,4,2,3,4,5,6])
+    end
+  end
+
+  context 'when non existing item' do
+    it do
+      expect { ArrayElementMove.up!(arr, 9) }.to raise_exception(ArrayElementMove::ItemNotInArray)
+      expect(arr).to eq([1,2,3,4,5,6])
+    end
+
+    it do
+      expect { ArrayElementMove.up!(arr, 9) }.to raise_exception(ArrayElementMove::ItemNotInArray)
+      expect(arr).to eq([1,2,3,4,5,6])
+    end
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;reference:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://stackoverflow.com/questions/4733925/how-to-change-the-position-of-an-array-element/70717052#70717052&quot;&gt;https://stackoverflow.com/questions/4733925/how-to-change-the-position-of-an-array-element/70717052#70717052&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>EquiValent - Tomas Valent</name></author><category term="til"/><summary type="html">```ruby module ArrayElementMove MustBeUniqArray = Class.new(StandardError) ItemNotInArray = Class.new(StandardError)</summary></entry><entry><title type="html">disable ElasticSearch security features are not enabled warning message</title><link href="https://blog.eq8.eu/til/disable-elasticsearch-security-features-are-not-enabled-warning-message.html" rel="alternate" type="text/html" title="disable ElasticSearch security features are not enabled warning message"><published>2022-01-06T00:00:00+00:00</published><updated>2022-01-06T00:00:00+00:00</updated><id>https://blog.eq8.eu/til/disable-elasticsearch-security-features-are-not-enabled-warning-message</id><content type="html" xml:base="https://blog.eq8.eu/til/disable-elasticsearch-security-features-are-not-enabled-warning-message.html">&lt;p&gt;Given I’m using Ruby on Rails and ElasticSearch gem in localhost
+When any ElasticSearch update happens a warning message is logged:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;warning: 299 Elasticsearch-7.16.2-2b937c44140b6559905130a8650c64dbd0879cfb &quot;Elasticsearch built-in security features are not enabled. Without authentication, your cluster could be accessible to anyone. See https://www.elastic.co/guide/en/elasticsearch/reference/7.16/security-minimal-setup.html to enable security.&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To silence  this add this line:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;xpack.security.enabled: false
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;…to &lt;code&gt;elasticsearch.yml&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;WARNING be sure this is only in your development machine NEVER IN PRODUCTION !!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;e.g in OSx macbook this config file may be in:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/opt/homebrew/Cellar/elasticsearch-full/7.16.2/libexec/config/elasticsearch.yml
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;related notes:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/change-elasticsearch-memory-usage-on-osx-macbook-homebrew.html&quot;&gt;https://blog.eq8.eu/til/change-elasticsearch-memory-usage-on-osx-macbook-homebrew.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/publicly-accessible-elasticsearch-7x.html&quot;&gt;https://blog.eq8.eu/til/publicly-accessible-elasticsearch-7x.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/til/change-memory-size-for-elasticsearch-jvm-heap.html&quot;&gt;https://blog.eq8.eu/til/change-memory-size-for-elasticsearch-jvm-heap.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>EquiValent - Tomas Valent</name></author><category term="til"/><summary type="html">Given I’m using Ruby on Rails and ElasticSearch gem in localhost When any ElasticSearch update happens a warning message is logged:</summary></entry><entry><title type="html">change Elasticsearch memory consumption on OSX (macbook, homebrew)</title><link href="https://blog.eq8.eu/til/change-elasticsearch-memory-usage-on-osx-macbook-homebrew.html" rel="alternate" type="text/html" title="change Elasticsearch memory consumption on OSX (macbook, homebrew)"><published>2021-12-23T00:00:00+00:00</published><updated>2021-12-23T00:00:00+00:00</updated><id>https://blog.eq8.eu/til/change-elasticsearch-memory-usage-on-osx-macbook-homebrew</id><content type="html" xml:base="https://blog.eq8.eu/til/change-elasticsearch-memory-usage-on-osx-macbook-homebrew.html">&lt;p&gt;I’ve installed Elasticsearch with homebrew on my OSX Macbook (&lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/reference/current/brew.html&quot;&gt;source&lt;/a&gt;)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;brew tap elastic/tap
+brew install elastic/tap/elasticsearch-full
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;note you also need to install Java JDK &lt;a href=&quot;https://stackoverflow.com/questions/70455469/brew-install-elasticsearch-on-m1-macbook-results-in-bad-cpu-type-in-executable&quot;&gt;source&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Now if I start elasticsearch it consumes 4GB - 8GB of Ram == not good&lt;/p&gt;
+
+&lt;p&gt;In order to change this I need to change value of JVM HEAP size for
+ELasticsearch in &lt;code&gt;jvm.options&lt;/code&gt; file&lt;/p&gt;
+
+&lt;p&gt;Now because homebrew  installed Elasticsearch &lt;code&gt;7.16&lt;/code&gt; the path where my
+ES conf files are located is:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/opt/homebrew/Cellar/elasticsearch-full/7.16.2/libexec/config/jvm.options
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;(your path to this file may be different)&lt;/p&gt;
+
+&lt;p&gt;Now I need to add following lines to the &lt;code&gt;jvm.options&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# ...
+-Xms1g
+-Xmx1g
+# ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will use 1 GB of Ram&lt;/p&gt;
+
+&lt;p&gt;if I want even less memory consumption I can do&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# ...
+-Xms300m
+-Xmx300m
+# ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to use 300 MB of memory&lt;/p&gt;
+
+&lt;p&gt;Remember to stop/start your ES service in order for this to take any
+effect&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;brew services stop  elasticsearch-full
+brew services start elasticsearch-full
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you googled this note and you are using Ubuntu check my older note: &lt;a href=&quot;https://blog.eq8.eu/til/change-memory-size-for-elasticsearch-jvm-heap.html&quot;&gt;change Ubuntu elasticsearch memory consumption&lt;/a&gt;&lt;/p&gt;</content><author><name>EquiValent - Tomas Valent</name></author><category term="til"/><summary type="html">I’ve installed Elasticsearch with homebrew on my OSX Macbook (source)</summary></entry><entry><title type="html">Rails Active Storage CDN</title><link href="https://blog.eq8.eu/til/rails-active-storage-cdn.html" rel="alternate" type="text/html" title="Rails Active Storage CDN"><published>2021-07-12T00:00:00+00:00</published><updated>2021-07-12T00:00:00+00:00</updated><id>https://blog.eq8.eu/til/rails-active-storage-cdn</id><content type="html" xml:base="https://blog.eq8.eu/til/rails-active-storage-cdn.html">&lt;p&gt;Ruby on Rails  Active Storage  there is posibility to configure CDN.&lt;/p&gt;
+
+&lt;h3 id=&quot;set-up-rails&quot;&gt;Set up Rails&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# config/environments/staging.rb
+Rails.application.configure do
+  # ...
+  config.x.cdn_host = 'https://myapp-stg.b-cdn.net'
+  config.active_storage.resolve_model_to_route = :cdn_proxy
+  # ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# config/environments/production.rb
+Rails.application.configure do
+  # ...
+  config.x.cdn_host = 'https://myapp-prod.b-cdn.net'
+  config.active_storage.resolve_model_to_route = :cdn_proxy
+  # ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# config/environments/test.rb
+# ..
+# no changes
+# ..
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# config/environments/development.rb
+# ..
+# no changes
+# ..
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;# config/routes.rb
+# ...
+  direct :cdn_proxy do |model, options|
+    if model.respond_to?(:signed_id)
+      route_for(
+        :rails_service_blob_proxy,
+        model.signed_id,
+        model.filename,
+        options.merge(host: Rails.configuration.x.cdn_host)
+      )
+    else
+      signed_blob_id = model.blob.signed_id
+      variation_key  = model.variation.key
+      filename       = model.blob.filename
+      route_for(
+        :rails_blob_representation_proxy,
+        signed_blob_id,
+        variation_key,
+        filename,
+        options.merge(host: Rails.configuration.x.cdn_host)
+      )
+    end
+  end
+# ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Tested and works with Rails 6.1&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://edgeguides.rubyonrails.org/active_storage_overview.html#putting-a-cdn-in-front-of-active-storage&quot;&gt;Official Active Storage docs - CDN&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://edgeguides.rubyonrails.org/active_storage_overview.html#proxy-mode&quot;&gt;Official Active Storage docs - Proxy mode&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;set-up-cdn&quot;&gt;Set up CDN&lt;/h3&gt;
+
+&lt;p&gt;Point your CDN origin URL to point to root of your apps URL.&lt;/p&gt;
+
+&lt;p&gt;E.g. if your app is &lt;code&gt;https://www.myapp.com&lt;/code&gt; CDN origin will point to &lt;code&gt;https://www.myapp.com/&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;https://myapp-prod.b-cdn.net/rails/active_storage/representations/proxy/xxxxxx/example.jpg&lt;/code&gt; -&amp;gt; &lt;code&gt;https://www.myapp.com/rails/active_storage/representations/proxy/xxxxxx/example.jpg&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;https://myapp-stg.b-cdn.net/rails/active_storage/representations/proxy/xxxxxx/example.jpg&lt;/code&gt;  -&amp;gt; &lt;code&gt;https://staging.myapp.com/rails/active_storage/representations/proxy/xxxxxx/example.jpg&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;sources&quot;&gt;Sources&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://discuss.rubyonrails.org/t/putting-a-cdn-in-front-of-activestorage/76948/4&quot;&gt;https://discuss.rubyonrails.org/t/putting-a-cdn-in-front-of-activestorage/76948/4&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/issues/35926&quot;&gt;https://github.com/rails/rails/issues/35926&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/pull/42305&quot;&gt;https://github.com/rails/rails/pull/42305&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/pull/42363/files&quot;&gt;https://github.com/rails/rails/pull/42363/files&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://lipanski.com/posts/activestorage-cdn-rails-direct-route&quot;&gt;https://lipanski.com/posts/activestorage-cdn-rails-direct-route&lt;/a&gt; out of date article (don’t use)&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>EquiValent - Tomas Valent</name></author><category term="til"/><summary type="html">Ruby on Rails Active Storage there is posibility to configure CDN.</summary></entry><entry><title type="html">AWS ElasticBeanstalk update ssh welcome message (motd)</title><link href="https://blog.eq8.eu/til/elasticbeanstalk-update-ssh-welcome-message-motd.html" rel="alternate" type="text/html" title="AWS ElasticBeanstalk update ssh welcome message (motd)"><published>2021-05-20T00:00:00+00:00</published><updated>2021-05-20T00:00:00+00:00</updated><id>https://blog.eq8.eu/til/elasticbeanstalk-update-ssh-welcome-message-motd</id><content type="html" xml:base="https://blog.eq8.eu/til/elasticbeanstalk-update-ssh-welcome-message-motd.html">&lt;p&gt;In order to update welcome message after &lt;code&gt;ssh&lt;/code&gt; a.k.a message of the day (motd) we need to write our custom
+motd script to the AWS ElasticBeanstalk (EB) EC2 instace &lt;code&gt;/etc/update-motd.d/20-custom-welcome-message&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;in order to do that we can tell &lt;code&gt;.ebextensions&lt;/code&gt; to write that file after
+deployment&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;If you need more info on what the f. in &lt;code&gt;.ebextensions&lt;/code&gt;  check &lt;a href=&quot;https://blog.eq8.eu/article/aws-elasticbeanstalk-hooks.html&quot;&gt;this article&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Inside  your project folder (where you execute &lt;code&gt;eb deploy&lt;/code&gt; or &lt;code&gt;eb ssh&lt;/code&gt;) create folder &lt;code&gt;.ebextensions&lt;/code&gt; and crate a file
+&lt;code&gt;.ebextensions/91_update_motd_welcome_message_after_ssh.config&lt;/code&gt; with content&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;files:
+  &quot;/tmp/20-custom-welcome-message&quot;:
+    mode: &quot;000755&quot;
+    owner: root
+    group: root
+    content: |
+      cat &amp;lt;&amp;lt; EOF
+      THIS WILL BE YOUR WELCOME MESSAGE
+      EOF
+
+commands:
+  80_tell_instance_to_regenerate_motd:
+    command: mv /tmp/20-custom-welcome-message /etc/update-motd.d/20-custom-welcome-message
+
+  99_tell_instance_to_regenerate_motd:
+    command: /usr/sbin/update-motd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We create motd file to &lt;code&gt;/tmp/&lt;/code&gt; folder and then copy it to &lt;code&gt;/etc/update-motd.d&lt;/code&gt; where it’s picked up. Reason why we don’t write it directly to this folder is because
+&lt;code&gt;.ebextensions&lt;/code&gt; &lt;code&gt;files&lt;/code&gt; will create &lt;code&gt;.bck&lt;/code&gt; file with a backup of the
+original file on server. This would result in two motd messages.&lt;/p&gt;
+
+&lt;h3 id=&quot;force-motd-regenerate&quot;&gt;Force motd regenerate&lt;/h3&gt;
+
+&lt;p&gt;we are running following to regenerate motd files so that it’s picked up
+by instance without restart&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;sudo /usr/sbin/update-motd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;if this don’t work try&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo run-parts /etc/update-motd.d/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Based on &lt;a href=&quot;http://mytechmembank.blogspot.com/2018/06/motd-on-aws-linux-instances.html#:~:text=To%20change%20the%20MOTD%20on,output%20of%20all%20the%20scripts&quot;&gt;this article&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;my-custom-welcome-message&quot;&gt;my custom welcome message&lt;/h3&gt;
+
+&lt;p&gt;If interested here is  my setup is Ruby on Rails application running in Docker container.
+I like to output quick copy-paste docker exec commands for ease of use.
+The image name is &lt;code&gt;my-webserver-v3&lt;/code&gt; or &lt;code&gt;my-webserver-v3&lt;/code&gt; that’s why the
+&lt;code&gt;grep v3&lt;/code&gt; part&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;files:
+  &quot;/tmp/20-custom-welcome-message&quot;:
+    mode: &quot;000755&quot;
+    owner: root
+    group: root
+    content: |
+      cat &amp;lt;&amp;lt; EOF
+
+      This EC2 instance is running Docker container with Ruby on Rails. To access the container:
+
+          sudo docker ps
+          sudo docker exec -it xxxxxxx bash
+          sudo docker exec -it \$( sudo docker ps | grep v3 | awk '{print \$1;}' | tail -n 1) bash
+
+      To execute Ruby on Rails console:
+
+          sudo docker ps
+          sudo docker exec -it xxxxxxx bin/rails c
+          sudo docker exec -it \$( sudo docker ps | grep v3 | awk '{print \$1;}' | tail -n 1) bin/rails c
+
+      EOF
+
+commands:
+  80_tell_instance_to_regenerate_motd:
+    command: mv /tmp/20-custom-welcome-message /etc/update-motd.d/20-custom-welcome-message
+
+  99_tell_instance_to_regenerate_motd:
+    command: /usr/sbin/update-motd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;related--sources&quot;&gt;related &amp;amp; sources&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://mytechmembank.blogspot.com/2018/06/motd-on-aws-linux-instances.html#:~:text=To%20change%20the%20MOTD%20on,output%20of%20all%20the%20scripts&quot;&gt;http://mytechmembank.blogspot.com/2018/06/motd-on-aws-linux-instances.html#:~:text=To%20change%20the%20MOTD%20on,output%20of%20all%20the%20scripts&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.eq8.eu/article/aws-elasticbeanstalk-hooks.html&quot;&gt;https://blog.eq8.eu/article/aws-elasticbeanstalk-hooks.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html#linux-files&quot;&gt;https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html#linux-files&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>EquiValent - Tomas Valent</name></author><category term="til"/><summary type="html">In order to update welcome message after ssh a.k.a message of the day (motd) we need to write our custom motd script to the AWS ElasticBeanstalk (EB) EC2 instace /etc/update-motd.d/20-custom-welcome-message</summary></entry></feed>

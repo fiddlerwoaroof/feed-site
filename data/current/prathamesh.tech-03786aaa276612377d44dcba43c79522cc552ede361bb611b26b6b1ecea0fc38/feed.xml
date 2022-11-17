@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[Prathamesh Sonpatki]]></title><description><![CDATA[tail -f /var/log/prathamesh]]></description><link>https://prathamesh.tech/</link><image><url>https://prathamesh.tech/favicon.png</url><title>Prathamesh Sonpatki</title><link>https://prathamesh.tech/</link></image><generator>Ghost 4.4</generator><lastBuildDate>Wed, 16 Nov 2022 22:58:30 GMT</lastBuildDate><atom:link href="https://prathamesh.tech/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Confident coding principles - Let it break (loudly) edition]]></title><description><![CDATA[Raising exceptions to define boundaries of the code can help in making sure that unwanted behavior does not go unnoticed until it is too late.]]></description><link>https://prathamesh.tech/2021/06/07/confident-coding-principles-let-it-break-edition/</link><guid isPermaLink="false">6097dd252044f854466b224e</guid><category><![CDATA[confident-code]]></category><category><![CDATA[best-practices]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Mon, 07 Jun 2021 15:28:02 GMT</pubDate><media:content url="https://prathamesh.tech/content/images/2021/06/umberto-dVOq_uij30c-unsplash.jpg" medium="image"/><content:encoded><![CDATA[<img src="https://prathamesh.tech/content/images/2021/06/umberto-dVOq_uij30c-unsplash.jpg" alt="Confident coding principles - Let it break (loudly) edition"><p>A lot of times I see code like this:</p><pre><code class="language-ruby">if alert_type == &apos;static&apos;
+  do_something
+else
+  do_something_else
+end</code></pre><p>When this code was written, we only had two types of alerts - <code>static</code> and <code>dynamic</code>. This code looks innocent but has a major issue. If tomorrow, we add a new <code>alert_type</code>, then the code needs to change, otherwise we will process the new alert as </p><p><code>dynamic</code> alert. Worse thing is that one has to remember to change this code. Now think about such code being present at multiple places and the developer has to remember to change all the occurrences.</p><p>As programmers, we know that we are bad at remembering the code after few weeks even if it is written by ourselves. If we can forget code so quickly, surely we won&apos;t remember all the places which need to be changed. </p><p>Now this may same overkill and one can argue that is it really an issue? Well if you are making some database changes in each of those conditional blocks then your database can very well run into inconsistency. Moreover, the behavior will definitely breaks our mental model as we expected the code to work only with two alert types but now it works with other ones as well.</p><p>What if the code itself tells us that <em>it needs to be changed</em>? Let&apos;s try to refactor this piece of code and see if we can make the code ask us to change it and that too <strong><em>loudly.</em></strong></p><pre><code class="language-ruby">if alert_type == &apos;static&apos;
+  do_something
+else if alert_type == &apos;dynamic&apos;
+  do_something_else
+else
+  raise &quot;boom&quot;
+end</code></pre><p>You might have guessed my intentions when I said loudly :) Now if <em>we</em> or any new developer introduces new alert type, there will be guaranteed exception which will force us to change the code OR at-least take a good look at it. This is way way better than the code silently doing wrong thing or not doing anything at all.</p><blockquote>This post is not specific to any language, same principles can be applied in other languages apart from Ruby as well.</blockquote><p>Raising exceptions can be good and can definitely help us in keeping the scope of the code limited and under control. If a piece of code does only one thing, it is okey as long as it doesn&apos;t do anything unexpected.</p><hr><p> Interested in knowing more about such coding practices? Subscribe to <a href="https://prathamesh.tech/mailing-list">my newsletter</a>.</p>]]></content:encoded></item><item><title><![CDATA[Adding jemalloc to Rails apps on Heroku]]></title><description><![CDATA[How to enable jemalloc on Heroku for Rails apps]]></description><link>https://prathamesh.tech/2021/05/23/adding-jemalloc-to-rails-apps-on-heroku/</link><guid isPermaLink="false">60a9abfa2044f854466b22b4</guid><category><![CDATA[heroku]]></category><category><![CDATA[rails]]></category><category><![CDATA[best-practices]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Sun, 23 May 2021 01:46:23 GMT</pubDate><content:encoded><![CDATA[<p><code>jemalloc</code> is a malloc implementation developed by Jason Evans which is known to improve memory consumption of Rails apps, <a href="https://devcenter.heroku.com/articles/ruby-memory-use#excess-memory-use-due-to-malloc-in-a-multi-threaded-environment">especially on Heroku</a>. By default Ruby uses <code>malloc</code> from C to manage memory but it can run into memory fragmentation issues. </p><p>Whereas <code>jemalloc</code> describes itself as a malloc implementation which tries to avoid memory fragmentation. A <a href="https://dev.to/devteam/how-we-decreased-our-memory-usage-with-jemalloc-4d5n">lot</a> of <a href="https://pawelurbanek.com/2018/01/15/limit-rails-memory-usage-fix-R14-and-save-money-on-heroku/">people</a> have successfully tested jemalloc in production apps deployed on Heroku to verify that it reduces memory usage compared to the default memory management that comes with Ruby.</p><p>Enabling it in a Rails app on Heroku consists of following steps.</p><h3 id="add-jemalloc-buildpack">Add jemalloc buildpack</h3><pre><code class="language-sh">heroku buildpacks:add --index 1 https://github.com/gaffneyc/heroku-buildpack-jemalloc.git</code></pre><h3 id="enable-jemalloc">Enable jemalloc </h3><p>This can be done in two ways. Either we can set the environment variable, <code>JEMALLOC_ENABLED</code> to <code>true</code>.</p><pre><code class="language-sh">heroku config:set JEMALLOC_ENABLED=true</code></pre><p>Alternatively, we can add <code>jemalloc.sh</code> prefix to the processes listed in the Procfile.</p><pre><code class="language-rb"># Procfile
+
+web: jemalloc.sh bin/puma -C config/puma.rb
+worker: jemalloc.sh bundle exec sidekiq -q default -q mailers -c ${SIDEKIQ_CONCURRENCY:-5}</code></pre><blockquote>Note that setting the JEMALLOC_ENABLED environment variable will enable jemalloc for all processes of your app, where as adding <code>jemalloc.sh</code> prefix in Procfile can give you control over for which processes you want to enable it.</blockquote><p>After this is done, deploying the app on Heroku will enable <code>jemalloc</code> and we can monitor the memory consumption.</p><h3 id="jemalloc-version">jemalloc version</h3><p>We can choose the <code>jemalloc</code> version by setting <code>JEMALLOC_VERSION</code> to a version number from this <a href="https://github.com/gaffneyc/heroku-buildpack-jemalloc#jemalloc_version">list</a>. By default, the buildpack chooses the most recent version.</p><h2 id="conclusion">Conclusion</h2><p>With just enabling jemalloc, we can see significant drop in memory usage on Heroku without doing any code change. So I highly recommend enabling it in production apps deployed on Heroku.</p>]]></content:encoded></item><item><title><![CDATA[Bundler 2.2.3+ and deployment of Ruby apps]]></title><description><![CDATA[Fix deployment of Ruby/Rails apps with bundler 2.2.3 and above by adding the deployment platform to Gemfile.lock.]]></description><link>https://prathamesh.tech/2021/04/18/bundler-2-2-3-and-deployment-of-ruby-apps/</link><guid isPermaLink="false">607b3605098b6b2f2102e9b5</guid><category><![CDATA[bundler]]></category><category><![CDATA[deployment]]></category><category><![CDATA[heroku]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Sun, 18 Apr 2021 14:06:49 GMT</pubDate><content:encoded><![CDATA[<p>While deploying a new Rails 6.1.3.1 application built with Bundler 2.2.16 on Heroku, I ran into this error in Heroku build log.</p><pre><code class="language-sh">-----&gt; Ruby app detected
+-----&gt; Installing bundler 2.2.15
+-----&gt; Removing BUNDLED WITH version in the Gemfile.lock
+-----&gt; Compiling Ruby/Rails
+-----&gt; Using Ruby version: ruby-3.0.1
+-----&gt; Installing dependencies using bundler 2.2.15
+       Running: BUNDLE_WITHOUT=&apos;development:test&apos; BUNDLE_PATH=vendor/bundle BUNDLE_BIN=vendor/bundle/bin BUNDLE_DEPLOYMENT=1 bundle install -j4
+       Your bundle only supports platforms [&quot;x86_64-darwin-20&quot;] but your local platform
+       is x86_64-linux. Add the current platform to the lockfile with `bundle lock
+       --add-platform x86_64-linux` and try again.
+       Bundler Output: Your bundle only supports platforms [&quot;x86_64-darwin-20&quot;] but your local platform
+       is x86_64-linux. Add the current platform to the lockfile with `bundle lock
+       --add-platform x86_64-linux` and try again.
+ !
+ !     Failed to install gems via Bundler.
+ !
+ !     Push rejected, failed to compile Ruby app.
+ !     Push failed</code></pre><blockquote>If you are using Bundler 1.x you will not run into this error. It only happens with Bundler 2.2.3 and above. My bundler version is 2.2.16.</blockquote><p>The app was built on Mac OS X. The <code>Gemfile.lock </code> contained following line.</p><pre><code class="language-ruby">PLATFORMS
+  x86_64-darwin-20</code></pre><p>As per the warning it seems that my <code>Gemfile</code> was generated for Mac OS X but I am deploying to Linux and it was raising a flag. Kudos to Heroku buildpack to raise a user friendly error message!</p><p>A lot of gems such as <code>nokogiri</code> ship platform specific releases. In previous versions of Bundler, the approach for detecting the platform specific version was error-prone as per <a href="https://github.com/rubygems/rubygems/issues/4269#issuecomment-758564690">this comment</a>. To mitigate such errors, bundler now sets up <code>Gemfile.lock</code> for the platform on which it was generated.</p><p>When deploying to Heroku, the Heroku Ruby buildpack runs bundle install in <a href="https://bundler.io/man/bundle-install.1.html#DEPLOYMENT-MODE">deployment mode</a>. It expects that <code>Gemfile.lock</code> to be frozen and already compatible with the platform on which it is being run. In our case, the <code>Gemfile.lock</code> is not &#xA0;compatible with the platform on which Heroku is deploying which is Linux and the platform on which it was generated which is Mac. </p><p>If we do not use the deployment mode, then bundler <strong>will resolve the gems in real time with current platform</strong> and this problem will not happen.</p><blockquote>Though you should not do this as dev-prod parity breaks down and in production, bundler may resolve to the gems which you have not tested in development or test mode.</blockquote><p>To fix this, as the warning recommended, I added linux platform using following command.</p><pre><code class="language-sh">bundle lock --add-platform x86_64-linux</code></pre><p>This generated following diff in <code>Gemfile.lock</code>.</p><pre><code class="language-sh">diff --git a/Gemfile.lock b/Gemfile.lock
+index 9f4c3ad..ab20d37 100644
+--- a/Gemfile.lock
++++ b/Gemfile.lock
+@@ -102,6 +102,8 @@ GEM
+     nio4r (2.5.7)
+     nokogiri (1.11.3-x86_64-darwin)
+       racc (~&gt; 1.4)
++    nokogiri (1.11.3-x86_64-linux)
++      racc (~&gt; 1.4)
+     pg (1.2.3)
+     public_suffix (4.0.6)
+     puma (5.2.2)
+@@ -198,6 +200,7 @@ GEM
+
+ PLATFORMS
+   x86_64-darwin-20
++  x86_64-linux</code></pre><p>After pushing this change to Heroku, the deployment went through.</p><h3 id="non-heroku-deployments">Non-Heroku deployments</h3><p>This is not specific to deployments on Heroku only. It can be seen in any other deployment platform as well where we are deploying to Linux and developing on Mac. The fix is same, add the platform to <code>Gemfile.lock</code> and redeploy. </p><hr>]]></content:encoded></item><item><title><![CDATA[Puma installation issue due to missing ctype.h on Mac OS X]]></title><description><![CDATA[<pre><code class="language-sh">puma_http11.c:203:22: note: include the header &lt;ctype.h&gt; or explicitly provide a declaration for &apos;isspace&apos;</code></pre><p>Are you facing this error recently while trying to install puma gem 4.3.5 on Mac OS X?</p><p>This issue is reported on <a href="https://github.com/puma/puma/issues/2304">Puma issue tracker</a> here</p>]]></description><link>https://prathamesh.tech/2020/10/04/puma-installation-issue-due-to-missing-ctype-h/</link><guid isPermaLink="false">5f799c66747d213f7160af36</guid><category><![CDATA[puma]]></category><category><![CDATA[osx]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Sun, 04 Oct 2020 10:01:39 GMT</pubDate><content:encoded><![CDATA[<pre><code class="language-sh">puma_http11.c:203:22: note: include the header &lt;ctype.h&gt; or explicitly provide a declaration for &apos;isspace&apos;</code></pre><p>Are you facing this error recently while trying to install puma gem 4.3.5 on Mac OS X?</p><p>This issue is reported on <a href="https://github.com/puma/puma/issues/2304">Puma issue tracker</a> here and fixed in version 4.3.6 and in the latest 5.0.0 release.</p><p>But if you want to fix it without updating the Puma gem version from 4.3.5, you can use run following command to update your Bundler configuration.</p><pre><code class="language-sh">bundle config build.puma --with-cflags=&quot;-Wno-error=implicit-function-declaration&quot;
+</code></pre><p><code>bundle install</code> will run successfully after this. </p><p>Even better is to just update Puma to latest version which also fixes this issue.</p>]]></content:encoded></item><item><title><![CDATA[OR query with multiple conditions on same column using Sequel]]></title><description><![CDATA[A handy trick to use Sequel library to generate OR query with multiple conditions on same column]]></description><link>https://prathamesh.tech/2020/08/16/sequel-or-with-multiple-conditions-on-same-column/</link><guid isPermaLink="false">5f393491747d213f7160aebd</guid><category><![CDATA[rails]]></category><category><![CDATA[sequel]]></category><category><![CDATA[postgresql]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Sun, 16 Aug 2020 13:40:50 GMT</pubDate><content:encoded><![CDATA[<p>I recently started using <a href="http://sequel.jeremyevans.net/">Sequel</a> to manipulate the PostgreSQL database in our Rails application at <a href="https://last9.io">Last9</a>.</p><p>I had to write an SQL query as follows.</p><pre><code class="language-sql">SELECT * FROM users where status = &apos;inactive&apos; OR status = &apos;deleted&apos;</code></pre><p>Sequel provides <code>or</code> function that can be used to construct <code>OR</code> expressions.</p><pre><code class="language-ruby">exp = Sequel.or(x: 1, y: 2)
+DB[:users].where(exp)
+</code></pre><p>This results into following SQL.</p><pre><code class="language-sql">&quot;SELECT * FROM \&quot;users\&quot; WHERE ((\&quot;x\&quot; = 1) OR (\&quot;y\&quot; = 2))&quot;</code></pre><p>Now let&apos;s try this same technique to write SQL for our use case. We want to select all users whose status is either </p><p><code>inactive</code> or <code>deleted</code>.</p><pre><code class="language-ruby">&gt; DB[:users].where(Sequel.or(status: &apos;deleted&apos;, status: &apos;inactive&apos;)).sql
+(pry):8: warning: key :status is duplicated and overwritten on line 8
+=&gt; &quot;SELECT * FROM \&quot;users\&quot; WHERE (\&quot;status\&quot; = &apos;inactive&apos;)&quot;</code></pre><p>But as you can see if we use same key which is <code>status</code> in this case, Ruby ignores it and the query that gets generated only has last value which is <code>inactive</code> in our case.</p><blockquote>Ruby ignores multiple keys with same name in a hash so beware if you are using multiple values with same keys in a hash.</blockquote><p>So how do we generate the <code>OR</code> query on same column using Sequel?</p><p>We can pass the arguments to <code>Sequel.or</code> as Array instead of Hash.</p><pre><code class="language-ruby">&gt; DB[:users].where(Sequel.or([
+                              [&quot;status&quot;, &quot;inactive&quot;], 
+                              [&quot;status&quot;, &quot;deleted&quot;]
+                             ])
+                   )
+=&gt; &quot;SELECT * FROM \&quot;users\&quot; WHERE ((&apos;status&apos; = &apos;inactive&apos;) 
+    OR (&apos;status&apos; = &apos;deleted&apos;))&quot;&gt;</code></pre><p>This change makes sure that the <code>OR</code> query on same <code>status</code> column gets generated correctly.</p><hr><p>Subscribe to my <a href="https://prathamesh.tech/mailing-list">newsletter </a>or follow me on <a href="https://twitter.com/_cha1tanya">Twitter </a>to know more about how to use Sequel with Rails apps.</p>]]></content:encoded></item><item><title><![CDATA[Creating unlogged (PostgreSQL) tables in Rails]]></title><description><![CDATA[Create unlogged tables to improve performance especially in test environments in Rails and PostgreSQL]]></description><link>https://prathamesh.tech/2020/08/10/creating-unlogged-tables-in-rails/</link><guid isPermaLink="false">5f31734229432442aa71d5a0</guid><category><![CDATA[rails]]></category><category><![CDATA[postgresql]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Mon, 10 Aug 2020 16:52:30 GMT</pubDate><content:encoded><![CDATA[<p>One of the most important aspects of a relational database is durability. The database has to make certain guarantees which add overhead to the database system. But what if you want to give up on the durability aspect and increase the speed instead?</p><p>This can be especially be done in test environment where one may not care about the durability aspect and want to run tests faster. PostgreSQL supports <a href="https://www.postgresql.org/docs/current/non-durability.html">multiple settings</a> for non durability which forgo data integrity and can increase the performance. One such thing is <strong>unlogged tables</strong>.</p><blockquote>Data written to unlogged tables is not written to the write-ahead log which makes them considerably faster than ordinary tables. But it comes with a rider. <strong>These tables are not crash proof.</strong> Whenever there is a crash or unintended shutdown, such tables are truncated. </blockquote><p>But they can be used in test environment where we don&apos;t really care about the durability aspect. They can also be used for temporary tables which are recreated even if they are wiped out. We can create unlogged tables as follows.</p><pre><code class="language-sql">prathamesh@/tmp:prathamesh&gt; create unlogged table users (name varchar, email varchar);
+CREATE TABLE
+Time: 0.031s</code></pre><h3 id="unlogged-tables-and-rails">Unlogged tables and Rails</h3><p>Rails allows creating unlogged tables with PostgreSQL adapter from Rails 6 onwards. We can either create unlogged tables in a migration or we can set a global setting that all tables are created as unlogged.</p><h4 id="creating-unlogged-table-in-a-migration">Creating unlogged table in a migration</h4><p>Rails provides <code>create_unlogged_table</code> similar to <code>create_table</code> which creates an unlogged table.</p><pre><code class="language-ruby">class CreateUsers &lt; ActiveRecord::Migration[6.0]
+  def change
+    create_unlogged_table :users, id: :uuid do |t|
+      t.text :name
+      t.text :email
+      
+      t.timestamps
+    end
+  end
+end
+</code></pre><h4 id="creating-all-tables-as-unlogged-tables">Creating all tables as unlogged tables</h4><p>We can set <code>ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.create_unlogged_tables</code> to <code>true</code> to create all tables as unlogged. This can be set for test environment as follows.</p><pre><code class="language-ruby"># config/environments/test.rb
+
+config.to_prepare do
+  ActiveSupport.on_load(:active_record) do
+    ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.create_unlogged_tables = true
+  end
+end</code></pre><p>That&apos;s it. All tables created in test environment are by default unlogged. </p><blockquote>This setting is set to false by default in all environments.</blockquote><h4 id="does-this-actually-show-any-improvements">Does this actually show any improvements?</h4><p>Our test suite in a Rails API app has seen improvement in execution time after this change. The database setup step was earlier taking 15 seconds, now it takes 7 seconds. Total tests execution used to take 45 seconds, now it takes 41 seconds.</p><h4 id="caution-">Caution!</h4><p>Unlogged tables are not crash proof and should not be used in production environment unless durability is not a concern. Don&apos;t use them blindly.</p><hr><p>Interested in knowing more about Rails and PostgreSQL, subscribe to my <a href="https://prathamesh.tech/mailing-list">newsletter</a>.</p>]]></content:encoded></item><item><title><![CDATA[Effective enqueuing of background jobs]]></title><description><![CDATA[We can increase efficiency of the background jobs by meticulously enqueuing only those jobs which are actually going to be executed and avoid jobs getting enqueued and discarded immediately.]]></description><link>https://prathamesh.tech/2020/08/05/effective-enqueuing-of-background-jobs/</link><guid isPermaLink="false">5f222bc029432442aa71d518</guid><category><![CDATA[rails]]></category><category><![CDATA[programming]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Wed, 05 Aug 2020 18:39:50 GMT</pubDate><content:encoded><![CDATA[<h4 id="tldr-">TLDR;</h4><p>We can increase efficiency of the background jobs by meticulously enqueuing only those jobs which are actually going to be executed and avoid jobs getting enqueued and discarded immediately.</p><hr><p>Let&apos;s say we have a background job to send a webhook notification to Slack.</p><pre><code class="language-ruby"># app/services/events_service.rb
+
+class EventsService
+  def process
+    @event = create_event
+    SlackJob.perform_later(@org, @event)
+  end
+end
+
+# app/jobs/slack_job.rb
+
+class SlackJob &lt; ApplicationJob
+  def perform(org, payload)
+    if org.slack_enabled?
+      SendSlackNotification.new(org, payload).process
+    end
+  end
+end</code></pre><p>The job is enqueued for sending the notification and then inside the job we are checking if the organization has enabled slack or not. Only if slack is enabled then the job will be executed. But it still gets enqueued in the queue and the worker process has to pick it up and start executing. Only then it realizes that the job does not satisfy required conditions and discards it.</p><p><strong><em>This means that each time the SlackJob gets enqueued and gets picked up for execution by the worker process.</em></strong></p><p>A better approach will be to enqueue only the jobs that are going to be actually <strong><em>executed</em></strong>. This will avoid unnecessarily enqueuing jobs which are going to be discarded immediately.</p><pre><code class="language-ruby"># app/services/events_service.rb
+
+class EventsService
+  def process
+    @event = create_event
+    if @org.slack_enabled?
+      SlackJob.perform_later(@org, @event)
+    end
+  end
+end
+
+# app/jobs/slack_job.rb
+
+class SlackJob &lt; ApplicationJob
+  def perform(org, payload)  
+    SendSlackNotification.new(org, payload).process
+  end
+end</code></pre><p>This pattern should be used in cases where the decision of whether to execute the job or not too complex and does not depend on too many entities. If the job has to take decision based on complex logic then it can he handled in the job itself instead of doing it before enqueuing the job. But for simple conditionals, we can check them beforehand to avoid enqueuing of the job and immediately discarding. &#xA0;</p><hr><p>Interested in knowing more about my thoughts on web programming using Ruby on Rails? Subscribe <a href="https://prathamesh.tech/mailing-list">here</a> or follow me on <a href="https://twitter.com/_cha1tanya">Twitter</a>.</p>]]></content:encoded></item><item><title><![CDATA[How I write tests for my Rails (API) apps]]></title><description><![CDATA[My strategy of writing tests for Rails applications. Integration tests over unit tests. No to 100% test coverage.]]></description><link>https://prathamesh.tech/2020/07/28/how-i-write-tests-for-my-rails-api-apps/</link><guid isPermaLink="false">5f1f18b329432442aa71d348</guid><category><![CDATA[rails]]></category><category><![CDATA[testing]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Tue, 28 Jul 2020 08:39:17 GMT</pubDate><media:content url="https://prathamesh.tech/content/images/2020/08/mark-fletcher-brown-nN5L5GXKFz8-unsplash.jpg" medium="image"/><content:encoded><![CDATA[<img src="https://prathamesh.tech/content/images/2020/08/mark-fletcher-brown-nN5L5GXKFz8-unsplash.jpg" alt="How I write tests for my Rails (API) apps"><p>These days I am building lot of Rails APIs and in this post I will discuss my approach for writing tests. </p><hr><h3 id="tldr-">TLDR;</h3><ul><li>Drive code by integration tests to get quick feedback. </li><li>Integration tests over unit tests. </li><li>Don&apos;t chase 100% test coverage.</li><li>Testing outcomes over internals.</li></ul><hr><h3 id="background">Background</h3><p>Broadly there are two types of tests, unit tests and integration tests. Unit tests test a part of code in isolation whereas the integration tests test multiple pieces of the code together. Rails provides a testing DSL built on top of minitest out of the box which supports writing unit tests, integration tests in the form of system tests. RSpec - which is another testing library in the Ruby ecosystem - supports writing tests or specs for a Rails application using request specs, controller specs and model specs.</p><h3 id="my-approach-of-writing-tests">My approach of writing tests</h3><p>I use RSpec for writing tests but my approach would have been similar with minitest as well. For every new API endpoint, I first write a simple request spec with the expectation of successful HTTP response.</p><p>Request specs are RSpec&apos;s way of writing integration specs. They perform an actual HTTP request so that we can test an user interaction end to end.</p><pre><code class="language-rb"># spec/request/users_request_spec.rb
+
+RSpec.describe &apos;Users&apos;, type: :request do
+  describe &apos;post users/&apos; do
+    subject { post &apos;/users&apos; }
+
+    it &apos;returns success&apos; do
+      subject
+      
+      expect(response).to have_http_status(200)
+    end
+  end
+end
+</code></pre><p>This test makes sure that the request returns a successful 200 response. After this I go ahead and start writing the actual code for the <code>UsersController</code>. I already have a test which verifies that the controller action returns HTTP 200 code. So I can develop the controller code slowly piece by piece by adding more functionality. At any point of time if the controller action does not return expected 200 response, the test will fail and give early feedback.</p><p>As I add specific code in the controller, I start updating the test with more details. For eg. when the code for creating users is added, I update the test to make sure user gets created.</p><pre><code class="language-ruby"># spec/request/users_request_spec.rb
+
+RSpec.describe &apos;Users&apos;, type: :request do
+  describe &apos;post users/&apos; do
+    subject { post &apos;/users&apos; }
+
+    it &apos;returns success&apos; do
+      expect { subject }.to change(User, :count).by(1)
+      
+      expect(response).to have_http_status(200)
+    end
+  end
+end</code></pre><p>I don&apos;t follow TDD religiously but make sure that the request specs cover most of the scenarios present in the workflow that I am working on.</p><h4 id="handling-background-jobs-in-request-specs">Handling background jobs in request specs</h4><p>Lot of the times, the controller actions themselves don&apos;t do anything. They just delegate the job of processing into background. In such cases, I prefer to execute the job in request specs themselves using the <code>perform_enqueued_jobs</code> test helper.</p><pre><code class="language-ruby"># spec/request/users_request_spec.rb
+
+RSpec.describe &apos;Users&apos;, type: :request do
+  describe &apos;post users/&apos; do
+    perform_enqueued_jobs do
+      subject { post &apos;/users&apos; }
+    end
+
+    it &apos;returns success&apos; do
+      expect { subject }.to change(User, :count).by(1)
+      
+      expect(response).to have_http_status(200)
+    end
+  end
+end</code></pre><p>The <code>perform_enqueued_job</code> method executes the background jobs and then we can assert about the tasks it executed.</p><figure class="kg-card kg-embed-card"><blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/RailsTips?src=hash&amp;ref_src=twsrc%5Etfw">#RailsTips</a><br><br>`perform_enqueued_job` can be used to perform enqueued jobs during tests. It also supports block form which executes jobs enqueued during the block. Normal form execute jobs enqueued till that time.<br><br>Pro tip: It can also be used with <a href="https://twitter.com/hashtag/RSpec?src=hash&amp;ref_src=twsrc%5Etfw">#RSpec</a><a href="https://twitter.com/hashtag/rubyonrails?src=hash&amp;ref_src=twsrc%5Etfw">#rubyonrails</a> <a href="https://t.co/D0Ek2R8wzD">pic.twitter.com/D0Ek2R8wzD</a></p>&#x2014; Prathamesh Sonpatki &#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; (@_cha1tanya) <a href="https://twitter.com/_cha1tanya/status/1273128437574754305?ref_src=twsrc%5Etfw">June 17, 2020</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</figure><p>The advantages for executing the background jobs &#xA0;within the request specs is that end to end scenario gets tested. Without this, connection between a request and a background job does not get tested and can result into broken contract between the two in production environment.</p><p>Although I prefer executing the jobs in 99% of the cases, executing the background jobs is not possible always. In such cases, I use <code>assert_enqueued_jobs</code> to make sure that the jobs get enqueued as expected. I use <a href="https://github.com/vcr/vcr">VCR cassettes</a> to store the third party API interactions so that they are not repeated in every test run. </p><p>As you might have guessed so far, the focus of the testing is not 100% test coverage but on <strong>covering most scenarios with request specs &#xA0;or integration specs</strong> as the emphasis is on covering the scenarios end to end. 100% code coverage is a myth. Instead focussing on it, we can get most impact from the tests using request specs as much as possible.</p><h4 id="testing-outcomes-instead-of-internals">Testing outcomes instead of internals</h4><p>Within a request spec, I prefer testing the outcome of the request. For eg. whether it updated the database, whether it changed a condition, what was the response code. I don&apos;t test the instance variables assigned in the controller action or which class was called from it. Testing the outcome also tests the code that causes the outcome. This also means I don&apos;t have to write specs for the services or classes that get called from the controller. The request specs cover that code as well.</p><h4 id="what-about-unit-tests">What about unit tests</h4><p>I sometimes do write unit tests for a specific class. They are important in cases when when the code has different output based on input conditions and not all such cases can be covered in the request specs.</p><h4 id="handling-bugs">Handling bugs</h4><p>Bugs are a reality of our life as software developers. Though we try to minimise the bugs, we eventually run into bugs. In my case, every bug fix is accompanied by a test to ensure that the regression does not happen again.</p><h4 id="request-specs-are-not-limited-to-one-request">Request specs are not limited to one request</h4><p>For a long time, I had this belief that each request spec should test only one request. But the request or integration specs are not be limited to testing one request per test. In some cases, we want to test a full interaction which includes two or three requests in sequence. Let&apos;s say we have a onboarding flow where user&apos;s onboarding state is updated within each request. In such cases, we have the option of creating factory data and performing only one request in each spec for each state. </p><p>But I prefer to perform multiple requests instead of creating partial data by hand. This means there might be some duplication in tests but that is acceptable. </p><p>The reason for this approach this is that maintaining the code for partial data becomes hard over time and it can become out of date with the actual workflow over time.</p><h4 id="mocking-and-stubbing">Mocking and Stubbing</h4><p>I &#xA0;avoid mocking and stubbing as much as possible. The idea is to execute as much as code as possible during tests instead of mocking or stubbing so as to validate it instead of mocking it.</p><h4 id="testing-private-methods">Testing private methods</h4><p>I prefer to testing private methods via the public methods that call them.</p><h4 id="speed-concern">Speed concern</h4><p>Will all of these request specs make my test suite slow? No! My test suite still finishes pretty fast. Also I can run tests in parallel if it becomes slow. Rails supports running test in parallel starting from Rails 6 onwards. RSpec also has support for running specs in parallel using gems such as <a href="https://github.com/grosser/parallel_tests">parallel_tests</a>.</p><hr><p>Rails <a href="https://guides.rubyonrails.org/testing.html#integration-testing">testing guide</a> has detailed documentation about integration tests. </p><p>RSpec request specs docs can be found <a href="https://relishapp.com/rspec/rspec-rails/docs/request-specs/request-spec">here</a>.</p><hr><p>So this is how I write tests for my Rails applications these days. Please let me know what approach you use for writing tests in comments or on <a href="https://twitter.com/_cha1tanya">Twitter.</a></p><hr><p><strong><strong><em>If you like this blog post, please consider supporting me on <a href="https://www.patreon.com/bePatron?u=24031879">Patreon</a>. It will help me in producing more useful Ruby/Rails related content on consistent basis &#x1F64F;</em></strong></strong></p>]]></content:encoded></item><item><title><![CDATA[Installing Timescaledb on Mac OS X with Postgres.app]]></title><description><![CDATA[Install Timescaledb on Mac OS X with Postgres.app]]></description><link>https://prathamesh.tech/2020/07/22/installing-timescaledb-on-mac-os-x-with-postgres-app/</link><guid isPermaLink="false">5f13e75529432442aa71d266</guid><category><![CDATA[postgresql]]></category><category><![CDATA[timescaledb]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Wed, 22 Jul 2020 18:35:00 GMT</pubDate><content:encoded><![CDATA[<p>I use <a href="https://postgresapp.com/">Postgres.app</a> to manage PostgreSQL on my Mac. I wanted to install <a href="https://www.timescale.com/">Timescaledb</a> locally and ran into few issues while installing it which are discussed in this post.</p><p>Timescaledb is an open-source database built for analyzing time-series data which is built on top of PostgreSQL.</p><p>Timescaledb allows installation on OS X via two mechanisms - via Source and via Homebrew. If we are using PostgreSQL managed by Homebrew then we can install Timescaledb also via Homebrew. But if we want to use Timescaledb along with Postgres.app then we have to install it via Source as per <a href="https://docs.timescale.com/latest/getting-started/installation">Timescaledb documentation</a>.</p><h3 id="prerequisite">Prerequisite</h3><p>Before starting the installation make sure that the <code>pg_config</code> path is using the path of <code>pg_config</code> utility installed by Postgres.app. This can be verified by running following command.</p><pre><code class="language-sh">&gt; which pg_config                                                           
+/Applications/Postgres.app/Contents/Versions/latest/bin/pg_config</code></pre><p>If the output is something else, then follow the instructions here to <a href="https://postgresapp.com/documentation/cli-tools.html">setup the CLI utilities installed by Postgres.app</a> properly.</p><h3 id="build">Build</h3><p>Now it is time to start installing Timescaledb. First we need to download the source code and switch to appropriate stable release tag for installation.</p><pre><code class="language-shell">git clone https://github.com/timescale/timescaledb.git
+cd timescaledb
+git checkout &lt;release_tag&gt;  # e.g., git checkout 1.7.1
+./bootstap</code></pre><p>This results in following error.</p><pre><code class="language-shell">-- Could NOT find OpenSSL, try to set the path to OpenSSL root folder in the system variable OPENSSL_ROOT_DIR (missing: OPENSSL_INCLUDE_DIR)
+CMake Error at CMakeLists.txt:336 (message):
+  TimescaleDB requires OpenSSL but it wasn&apos;t found.  If you want to continue
+  without OpenSSL, re-run bootstrap with `-DUSE_OPENSSL=0</code></pre><p>We can resolve it as follows.</p><pre><code class="language-shell">OPENSSL_ROOT_DIR=/usr/local/opt/openssl ./bootstrap</code></pre><p>Running this shows up another error.</p><pre><code class="language-shell">CMake Error at test/CMakeLists.txt:83 (message):
+  Program &apos;pg_isolation_regress&apos; not found, but regressions checks were
+  required.
+
+  Skip regression checks using -DREGRESS_CHECKS=OFF
+
+
+-- Configuring incomplete, errors occurred!</code></pre><p>The <code>pg_isolation_regress</code> is a binary from PostgreSQL which does not get built in a normal PostgreSQL build. We have to build it ourself if we want to run the isolation regression tests. As we don&apos;t want to do that we can skip it as mentioned in the above error message.</p><pre><code class="language-shell">OPENSSL_ROOT_DIR=/usr/local/opt/openssl ./bootstrap -DREGRESS_CHECKS=OFF</code></pre><p>If it runs successfully then it will print following at the end.</p><pre><code class="language-shell">-- Build files have been written to: /Users/prathamesh/Projects/sources/timescaledb/build
+TimescaleDB build system initialized in ./build. To compile, do:
+cd ./build &amp;&amp; make</code></pre><h3 id="install">Install</h3><p>We can go ahead and run the next command.</p><pre><code class="language-shell">cd ./build &amp;&amp; make
+make install</code></pre><p>After this, we need to edit the <code>postgresql.conf</code> to add <code>timescaledb</code> to <code>shared_preload_libraries</code>.</p><pre><code class="language-shell">&gt; psql -d postgres -c &quot;SHOW config_file;&quot;                                          
+                                  config_file
+-------------------------------------------------------------------------------
+ /Users/prathamesh/Library/Application Support/Postgres/var-11/postgresql.conf
+(1 row)</code></pre><p>Then uncomment the line with <code>shared_preload_libraries</code> and change it to following.</p><pre><code class="language-shell">shared_preload_libraries = &apos;timescaledb&apos;</code></pre><p>After that we have to restart PostgreSQL. If it restarts successfully, the installation is successful. If not we can check the errors as follows.</p><pre><code class="language-shell">tail -f /Users/prathamesh/Library/Application\ Support/Postgres/var-11/postgresql.log</code></pre><p>After successful restart, we can start <code>psql</code> and add the <code>timescaledb</code> extension to our database.</p><pre><code class="language-shell">prathamesh=# CREATE EXTENSION IF NOT EXISTS &quot;timescaledb&quot; CASCADE;
+WARNING:
+WELCOME TO
+ _____ _                               _     ____________
+|_   _(_)                             | |    |  _  \ ___ \
+  | |  _ _ __ ___   ___  ___  ___ __ _| | ___| | | | |_/ /
+  | | | |  _ ` _ \ / _ \/ __|/ __/ _` | |/ _ \ | | | ___ \
+  | | | | | | | | |  __/\__ \ (_| (_| | |  __/ |/ /| |_/ /
+  |_| |_|_| |_| |_|\___||___/\___\__,_|_|\___|___/ \____/
+               Running version 1.7.1
+For more information on TimescaleDB, please visit the following links:
+
+ 1. Getting started: https://docs.timescale.com/getting-started
+ 2. API reference documentation: https://docs.timescale.com/api
+ 3. How TimescaleDB is designed: https://docs.timescale.com/introduction/architecture
+
+Note: TimescaleDB collects anonymous reports to better understand and assist our users.
+For more information and how to disable, please see our docs https://docs.timescaledb.com/using-timescaledb/telemetry.
+
+CREATE EXTENSION
+prathamesh=#</code></pre><p>And that&apos;s all. Timescaledb is setup properly running with PostgreSQL managed by Postgres.app.</p><h3 id="removing-timescaledb">Removing Timescaledb </h3><p>If you want to remove the Timescaledb installed via above procedure for some reason, follow the steps below.</p><p>Stop the PostgreSQL process from the Postgres.app.</p><p>Run following command in the SQL console.</p><pre><code class="language-sql">prathamesh@/tmp:prathamesh&gt; drop extension timescaledb
+You&apos;re about to run a destructive command.
+Do you want to proceed? (y/n): y
+Your call!
+DROP EXTENSION
+Time: 0.232s</code></pre><p>Remove the line added in the <code>postgresql.conf</code> file.</p><pre><code class="language-sh">vim /Users/prathamesh/Library/Application\ Support/Postgres/var-11/postgresql.conf</code></pre><p>Remove the line:</p><pre><code class="language-sh">shared_preload_libraries = &apos;timescaledb&apos;</code></pre><p>Restart via PostgreSQL from Postgres.app and then Timescaledb is removed.</p>]]></content:encoded></item><item><title><![CDATA[Custom directory for Webpacker in Rails apps]]></title><description><![CDATA[It is now possible to customize the Webpacker directory in Rails apps using the source_path configuration option.]]></description><link>https://prathamesh.tech/2020/07/15/custom-directory-for-webpacker-in-rails-apps/</link><guid isPermaLink="false">5f0e712429432442aa71d20d</guid><category><![CDATA[rails]]></category><category><![CDATA[webpacker]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Wed, 15 Jul 2020 03:19:11 GMT</pubDate><content:encoded><![CDATA[<p>Starting from Rails 6, Webpacker is the <a href="https://prathamesh.tech/2019/08/26/understanding-webpacker-in-rails-6/">default JavaScript compiler</a> for Rails apps.</p><p>By default, Rails recommends adding the Webpacker related JavaScript code in <code>app/javascript</code> directory. A lot of people wanted to place the JavaScript code in custom directory instead of <code>app/javascript</code>. It is now possible to customize it.</p><p>You just need to set the <code>source_path</code> in the <code>config/webpacker.yml</code> to the directory relative to the <code>app</code> folder where you want to place the Webpacker JavaScript code.</p><pre><code class="language-yml"># config/webpacker.yml
+
+default: &amp;default
+  source_path: app/frontend
+</code></pre><p>This change is available in Webpacker gem from version 4.1.0 onwards and in Rails from Rails 6.0.1 onwards.</p><p>With this change, we can place our JavaScript code in any of the custom directory of our choice under the <code>app</code> directory, configure it via the <code>source_path</code> setting in the <code>webpacker.yml</code> and that&apos;s it.</p><p>Once we have configured this directory, then the subsequent Webpacker commands use this directory as reference.</p><pre><code class="language-sh">&#x2717; bundle exec rails webpacker:install:react
+Copying babel.config.js to app root directory
+       force  babel.config.js
+Copying react example entry file to /Users/prathamesh/Projects/fun/frontend_rails_app/app/frontend/packs
+      create  app/frontend/packs/hello_react.jsx
+Updating webpack paths to include .jsx file extension
+      insert  config/webpacker.yml</code></pre><hr><p>Want to know more about Webpacker and Rails, check out my <a href="https://prathamesh.tech/webpacker-on-rails/">other blog posts</a> on this topic or subscribe to my <a href="https://prathamesh.tech/mailing-list">newsletter</a>.</p>]]></content:encoded></item><item><title><![CDATA[Allowing dots in Rails routes]]></title><description><![CDATA[Rails routes by default do not support dot character. This post describes a way to support them while explaining how Rails parses request URLs.]]></description><link>https://prathamesh.tech/2020/06/15/allowing-dots-in-rails-routes/</link><guid isPermaLink="false">5ee6e18029432442aa71d0c8</guid><category><![CDATA[rails]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Mon, 15 Jun 2020 04:53:49 GMT</pubDate><content:encoded><![CDATA[<p>Rails routing is very powerful and it allows to define different types of routes. Though resourceful routes is recommended, it also gives us ability to define routes for specific cases using dynamic segments.</p><pre><code class="language-rb">post &apos;/users/:id/upgrade&apos;, to: &apos;upgrade#create&apos;</code></pre><p>This route matches <code>users/123/upgrade</code> and provides <code>params[:id]</code> with value <code>123</code>.</p><p>All good so far. Now, we want to rather support <code>users/john.smith/upgrade</code> to make the URLs user friendly. As we are using the dynamic <code>id</code> segment in the route already, hopefully we will get that value in the <code>params[:id]</code>.</p><p>Let&apos;s try hitting our application with this URL.</p><pre><code class="language-sh">$ curl -iv &quot;http://localhost:3000/users/john.smith/upgrade&quot;
+
+&lt; HTTP/1.1 404 Not Found
+&lt; Content-Type: text/html; charset=UTF-8
+&lt; X-Web-Console-Session-Id: 8e09e5f6d9e8308f0647622457060bde
+&lt; X-Web-Console-Mount-Point: /__web_console
+&lt; X-Request-Id: bac4bb34-0577-4134-abba-2f8d6aa437f0
+&lt; X-Runtime: 0.101339
+&lt; Transfer-Encoding: chunked</code></pre><p>Surprisingly, instead of getting expected response, we get a 404 response!</p><h3 id="how-rails-parses-urls">How Rails parses URLs</h3><p>One of the lesser known thing about how Rails matches the route segments with incoming requests.</p><p>The default regular expression used for a route segment is <code>/[^\/.?]+/</code>. It matches any combination of characters that is not a forward slash, dot or question mark. </p><p>Because of this, when we hit <code>users/john.smith/upgrade</code>, it is matched with following regular expression by Rails.</p><pre><code class="language-rb">re = /\/users\/([^\/.?]+)\/upgrade/</code></pre><blockquote>This is simplified form of the actual regular expression used by Rails. Actual regular expression is <code>/\A/users/([^/.?]+)/upgrade(?:.([^/.?]+))?\Z/</code></blockquote><pre><code class="language-rb">&gt; &quot;/users/john.smith/upgrade&quot;.match? re
+=&gt; false</code></pre><p>As we can see, the regular expression does not match with the request if the <code>id</code> segment has a <code>dot</code> inside it.</p><h3 id="constraints-to-the-rescue">Constraints to the rescue</h3><p>Rails supports adding URL constraints for every route which can be used to mitigate this problem. We can add HTTP verb based constraints, request attributes based constraints as well as dynamic segment based constraints. In this case, we will add constraint on the dynamic segment <code>id</code>.</p><pre><code class="language-rb">post &apos;/users/:id/upgrade&apos;, to: &apos;upgrade#create&apos;, constraints: { id: /[^\/]+/ }</code></pre><p>This defines a constraint on <code>:id</code> such that it should be any combination of characters other than <code>forward slash</code>. Now our requests containing <code>dot</code> character will get resolved &#xA0;by the Rails router.</p><blockquote>More information about how to add constraints can be found in <a href="https://guides.rubyonrails.org/routing.html#http-verb-constraints">Rails guides</a>.</blockquote><p>We can also add the constraint more succinctly as follows.</p><pre><code class="language-rb">post &apos;/users/:id/upgrade&apos;, to: &apos;upgrade#create&apos;, id: /[^\/]+/</code></pre><p>Let&apos;s see what regular expression Rails uses in this case.</p><pre><code class="language-rb">re = /\/users\/([^\/]+)\/upgrade/
+
+&gt; &quot;/users/john.smith/upgrade&quot;.match? re
+=&gt; true</code></pre><p>As per our instructions, the <code>:id</code> segment is now getting matched with <code>/[^\/]+/</code> instead of the default regular expression used by Rails.</p><h3 id="question-about-question-mark">Question about question mark</h3><p>Although Rails uses <code><code>/[^\/.?]+/</code></code> as regular expression for route segments, by the time the request hits the Rails router, the <code>?</code> is already separated into query string and is no longer part of the path which is matched with the routes defined in our application.</p><p>For eg. consider we are hitting the application with <code>users/john?smith/upgrade</code></p><p>Rails will try to find a route with <code>users/john</code> in this case which will result into 404 if there is no such route.</p><h3 id="takeaway">Takeaway</h3><p>Rails uses <code>dot</code> and <code>forward slash</code> as separators while parsing the route segments. They can only be matched when explicitly requested using the <code>constraints</code>.</p><hr><p>Subscribe to <a href="https://prathamesh.tech/mailing-list">my newsletter</a> to know more such insights about Ruby on Rails.</p>]]></content:encoded></item><item><title><![CDATA[Disable logging of (sensitive) arguments in Active Job]]></title><description><![CDATA[Filter out logging of sensitive parameters in background jobs handled by Active Job]]></description><link>https://prathamesh.tech/2020/04/29/disable-logging-of-arguments-in-active-job/</link><guid isPermaLink="false">5ea97b0729432442aa71d007</guid><category><![CDATA[rails]]></category><category><![CDATA[security]]></category><category><![CDATA[activejob]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Wed, 29 Apr 2020 14:01:32 GMT</pubDate><content:encoded><![CDATA[<p>If you are using Active Job for managing background jobs in Rails, you might have noticed that it logs the job arguments when the job is enqueued or run. Let&apos;s see an example of this.</p><pre><code class="language-rb">class ImportDataJob &lt; ApplicationJob
+  queue_as :default
+
+  def perform(*args)
+    puts &quot;Completed&quot;
+    # Do something later
+  end
+end
+</code></pre><pre><code class="language-rb">&gt;&gt; ImportDataJob.perform_later(password: &quot;secret&quot;)
+
+Enqueued ImportDataJob (Job ID: 4c44944b-0b1e-41ff-8679-c9757e09bdb2) to Async(default) 
+with arguments: {:password=&gt;&quot;secret&quot;}
+
+&gt;&gt; Performing ImportDataJob (Job ID: 4c44944b-0b1e-41ff-8679-c9757e09bdb2) 
+from Async(default) 
+enqueued at 2020-04-29T13:23:37Z 
+with arguments: {:password=&gt;&quot;secret&quot;}
+Completed
+
+Performed ImportDataJob (Job ID: 4c44944b-0b1e-41ff-8679-c9757e09bdb2) 
+from Async(default) in 9.39ms</code></pre><p>As we can, see Active Job logs the arguments two times, once when the job is enqueued and once when the job starts performing.</p><p>We can filter request parameters on the controller level using <code>Rails.application.config.filter_parameters</code> configuration option so that sensitive parameters are not leaked in the logs. But if you are enqueuing such parameters to Active Job then the purpose of filtering them at controller level is defeated as they are logged at job level regardless.</p><p>A feature is now present in Rails master to fix this issue. We can disable logging for individual jobs by setting <code>log_arguments</code> configuration option.</p><pre><code class="language-rb">class ImportDataJob &lt; ApplicationJob
+  queue_as :default
+  self.log_arguments = false
+
+  def perform(*args)   
+    # Do something later
+  end
+end</code></pre><pre><code class="language-rb">&gt;&gt; ImportDataJob.perform_later password: &quot;secret&quot;
+Enqueued ImportDataJob (Job ID: 1c388f29-b83c-477c-a046-50837b8941e8) 
+to Async(default)
+
+&gt;&gt; Performing ImportDataJob (Job ID: 1c388f29-b83c-477c-a046-50837b8941e8) 
+from Async(default) enqueued at 2020-04-29T13:39:31Z
+
+Completed
+Performed ImportDataJob (Job ID: 1c388f29-b83c-477c-a046-50837b8941e8) 
+from Async(default) in 5.81ms</code></pre><p>We can see that now there is no trace of the arguments in the log. </p><blockquote>By default the <code>log_arguments</code> setting is true for every job and we can customize it per job based on whether the job consumes sensitive data.</blockquote><h2 id="why-can-t-we-reuse-the-filter_parameters-for-active-job">Why can&apos;t we reuse the filter_parameters for Active Job</h2><p>At this point, you might be wondering why can&apos;t we use the <code>filter_parameters</code> configuration that is used to filter sensitive parameters at the controller level. The reason for that is Active Jobs can accept all types of arguments whereas the <code>filter_parameters</code> is designed to work well with <code>hash</code> like objects only. There is a discussion about this issue here.</p><p> <a href="https://github.com/rails/rails/pull/34438#issuecomment-438455378">https://github.com/rails/rails/pull/34438#issuecomment-438455378</a> </p><p><a href="https://github.com/rails/rails/pull/38963#issuecomment-614767901">https://github.com/rails/rails/pull/38963#issuecomment-614767901</a></p><h3 id="is-this-bullet-proof-solution">Is this bullet proof solution?</h3><p>Definitely not, if we are inspecting the arguments ourselves in the a code then they will definitely be logged. This configuration prevents Rails from logging the arguments.</p><hr><p>This feature is not yet released. It will be part of Rails 6.1. I will update this post when it is released.</p><hr><p><strong><em><a href="https://prathamesh.tech/mailing-list">Subscribe to my newsletter</a> to be on top of latest changes happening in Ruby on Rails framework. No spam only Ruby and Rails!</em></strong></p>]]></content:encoded></item><item><title><![CDATA[Passing Rails controller params to Sidekiq]]></title><description><![CDATA[Passing Rails controller params to Sidekiq jobs]]></description><link>https://prathamesh.tech/2020/04/20/passing-rails-controller-params-to-sidekiq/</link><guid isPermaLink="false">5e9c7ba529432442aa71cefe</guid><category><![CDATA[rails]]></category><category><![CDATA[sidekiq]]></category><category><![CDATA[ruby]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Mon, 20 Apr 2020 18:31:02 GMT</pubDate><content:encoded><![CDATA[<p>If we pass Rails controller params, directly to a Sidekiq worker then they are not parsed correctly by Sidekiq when the job is executed. Let&apos;s see an example.</p><pre><code class="language-rb">class UsersController &lt; ApplicationController
+  def create
+    CreateUserWorker.perform_async(user_params)
+  end
+  
+  private
+  
+    def user_params
+      params.require(:user).permit(:name, :email)
+    end
+end
+ 
+class CreateUserWorker
+  include Sidekiq::Worker
+  
+  def perform(params)
+    User.create!(params)
+  end
+end</code></pre><p>This is because Sidekiq expects the arguments to be primitive types such as <code>Hash</code>, <code>String</code>, <code>Boolean</code>, <code>Array</code> etc.</p><p>Sidekiq uses <code>JSON.generate</code> to generate JSON and then pushes the job data to Redis. When the job is pulled from Redis for execution, Sidekiq parses the saved job data using <code>JSON.parse</code> and then passes it to the worker.</p><p>Let&apos;s see what is the output of <code>JSON.generate</code> with controller params as argument.</p><pre><code class="language-ruby">JSON.generate user_params
+=&gt; &quot;\&quot;{\\\&quot;user\\\&quot;=&gt;{\\\&quot;name\\\&quot;=&gt;\\\&quot;Prathamesh\\\&quot;, \\\&quot;email\\\&quot;=&gt;\\\&quot;prathamesh@exampless.com\\\&quot;}}\&quot;&quot;</code></pre><p>This is not the expected output because when Sidekiq will parse it, we will not get the <code>ActionController::Parameters</code> back.</p><pre><code class="language-rb">job_data = JSON.generate user_params
+
+JSON.parse job_data
+=&gt; &quot;{\&quot;user\&quot;=&gt;{\&quot;name\&quot;=&gt;\&quot;Prathamesh\&quot;, \&quot;email\&quot;=&gt;\&quot;prathamesh@exampless.com\&quot;}}&quot;</code></pre><p>We can see that the data is not parsed correctly, because the JSON payload was not generated correctly.</p><p>Ruby&apos;s <code>JSON.generate</code> method treats certain primitive objects such as <code>Hash</code>, <code>String</code>, <code>True</code>, <code>False</code> as special cases when generating JSON representation. Whereas for custom objects, it checks whether the object responds to <code>to_json</code> or not. If yes then it returns the output of calling <code>to_json</code> on that object. If the object does not respond to the <code>to_json</code> method, then it generates its JSON representation considering the object as String. This code can be found <a href="https://github.com/ruby/ruby/blob/8e517942656f095af2b3417f0df85ae0b216002a/ext/json/generator/generator.c#L996-L1027">here</a>.</p><p><s>In case of <code>ActionController::Parameters</code> objects, Ruby generates JSON representation considering it as <code>String</code>. Even though <code>ActionController::Parameters</code> gets <a href="https://github.com/rails/rails/blob/0fac4559e1ccbdba1be8a4457dc666b3e560de94/activesupport/lib/active_support/core_ext/object/json.rb#L36"><code>to_json</code> method from Active Support,</a> still Ruby is not able to figure out that <code>ActionController::Parameters</code> objects respond to <code>to_json</code></s>. </p><pre><code class="language-c"># https://github.com/ruby/ruby/blob/8e517942656f095af2b3417f0df85ae0b216002a/ext/json/generator/generator.c#L1018
+
+else if (rb_respond_to(obj, i_to_json)) {
+        tmp = rb_funcall(obj, i_to_json, 1, Vstate);
+        Check_Type(tmp, T_STRING);
+        fbuffer_append_str(buffer, tmp);
+    }</code></pre><p><s>As <code>ActionController::Parameters</code> respond to <code>to_json</code> it should go into this branch of code but somehow it goes into the final else code branch.</s></p><p><s>I am not able to figure out why that is happening.</s> Rohit Kumar pointed in comments on this post that when you call <code>JSON.generate</code>, the <code>to_json</code> method is not called on the instance of <code>ActionController::Parameters</code> which is the reason why Ruby does not use the <code>to_json</code> output defined by Active Support for serialization. I have not fully understood yet what does <code>rb_funcall(obj, i_to_json, 1, Vstate);</code> outputs in this case.</p><p>So to fix this, we need to pass the params as <code>Hash</code> object to the Sidekiq job. A simple way will be to pass the params after calling <code>to_h</code> on them.</p><pre><code class="language-rb">class UsersController &lt; ApplicationController
+  def create
+    CreateUserWorker.perform_async(user_params.to_h)
+  end
+  
+  private
+  
+    def user_params
+      params.require(:user).permit(:name, :email)
+    end
+end</code></pre><blockquote>Importantly, <code>to_h</code> will result into an error when we have not permitted any of the parameters. You can also call <code>to_unsafe_h</code> to pass all the parameters without permitting.</blockquote><p>Before Rails 5, <code>ActionController::Parameters</code> was inheriting from <code>Hash</code> class so the JSON serialization and deserialization was working properly without converting the params to a <code>Hash</code>. But now because <code>ActionController::Parameters</code> do not inherit from <code>Hash</code> anymore, we need to pass it to Sidekiq worker as a <code>Hash</code>.</p>]]></content:encoded></item><item><title><![CDATA[Don't add database index if it already exists in Rails]]></title><description><![CDATA[Rails supports conditionally creating indexes based on whether they exist or not, without raising any error]]></description><link>https://prathamesh.tech/2020/04/16/dont-add-database-index-if-it-already-exists/</link><guid isPermaLink="false">5e56bd2b29432442aa71ca9f</guid><category><![CDATA[rails]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Thu, 16 Apr 2020 04:46:05 GMT</pubDate><content:encoded><![CDATA[<p>Rails 6 added an option <code>if_not_exists</code> to the <code>create_table</code> method which will not create the table if it already exists. &#xA0;This option is handy when we have added a table directly in production but now want to add it through a migration so that it is available in other environments as well.</p><blockquote>Check out how the <code>if_not_exists</code> option works for creating tables <a href="https://dev.to/prathamesh/create-table-in-rails-only-if-it-does-not-exist-already-10mb">here</a>.</blockquote><p>Let&apos;s look at a migration to understand this feature.</p><pre><code class="language-rb">class CreateIssues &lt; ActiveRecord::Migration[6.0]
+  def change
+    create_table :issues, if_not_exists: true do |t|
+      t.integer   :comment_count
+      t.string    :url, :repo_name, :user_name
+      t.datetime  :last_touched_at
+      t.integer   :number
+
+      t.timestamps
+    end
+  end
+end</code></pre><p>This migration will not create the <code>issues</code> table if it exists already, as we have passed <code>if_not_exists: true</code> to the <code>create_table</code> method. Let&apos;s change the migration a little bit. We will now add a reference to <code>users</code> table in <code>issues</code> table because we want to create a reference to the <code>users</code> table as well.</p><pre><code class="language-rb">class AddIssuesAgainAgainAgain &lt; ActiveRecord::Migration[6.0]
+  def change
+    create_table :issues, if_not_exists: true do |t|
+      t.integer   :comment_count
+      t.string    :url, :repo_name, :user_name
+      t.datetime  :last_touched_at
+      t.integer   :number
+
+      t.references :user
+      t.timestamps
+    end
+  end
+end
+</code></pre><p>If this migration is run twice, it results into following error.</p><pre><code class="language-sh">&#x279C;  codetriage git:(master) &#x2717; be rake db:migrate
+== 20200401140530 AddIssuesAgainAgainAgain: migrating =========================
+-- create_table(:issues, {:if_not_exists=&gt;true})
+rake aborted!
+StandardError: An error has occurred, this and all later migrations canceled:
+
+Index name &apos;index_issues_on_user_id&apos; on table &apos;issues&apos; already exists
+/Users/prathamesh/Projects/sources/codetriage/db/migrate/20200401140530_add_issues_again_again_again.rb:3:in `change&apos;
+/Users/prathamesh/.rbenv/versions/2.6.5/bin/bundle:23:in `load&apos;
+/Users/prathamesh/.rbenv/versions/2.6.5/bin/bundle:23:in `&lt;main&gt;&apos;
+
+Caused by:
+ArgumentError: Index name &apos;index_issues_on_user_id&apos; on table &apos;issues&apos; already exists
+/Users/prathamesh/Projects/sources/codetriage/db/migrate/20200401140530_add_issues_again_again_again.rb:3:in `change&apos;
+/Users/prathamesh/.rbenv/versions/2.6.5/bin/bundle:23:in `load&apos;
+/Users/prathamesh/.rbenv/versions/2.6.5/bin/bundle:23:in `&lt;main&gt;&apos;
+Tasks: TOP =&gt; db:migrate
+(See full trace by running task with --trace)</code></pre><p>We can see that it did not cause an error related to creating the table. The error was raised for existing index. </p><p><em>But we do know that the index may exist. That&apos;s why we added the <code>if_not_exists: true</code> flag.</em> </p><p>Then why is Rails trying to create the index when we clearly told it check if the index exists or not.</p><p>Well, turns out the <code>if_not_exists</code> flag was not getting passed to the query that Rails was generating for adding index. To understand this properly, let&apos;s take a look at queries generated by above migration.</p><pre><code class="language-sql">CREATE TABLE IF NOT EXISTS `issues`
+CREATE INDEX `index_issues_on_user_id` on `issues`</code></pre><p>The <code>INDEX</code> query that was generated by the above migration was not having the <code>IF NOT EXISTS</code> clause so Rails was trying to create the index again even if the <code>if_not_exists: true</code> was passed.</p><p>Let&apos;s look at the code of <code>create_table</code> method in Rails to understand why this is happening. We will only see the relevant code related to adding indexes as the method is very big.</p><pre><code class="language-rb">def create_table
+  td = create_table_definition(table_name, **options.extract!(:temporary, :if_not_exists, :options, :as, :comment))
+  ...
+  
+  result = execute schema_creation.accept td
+  ...
+  
+  unless supports_indexes_in_create?
+    td.indexes.each do |column_name, index_options|
+      add_index(table_name, column_name, index_options)
+    end
+  end
+  ...
+  
+  result    
+end</code></pre><p>This code if translated to plain English looks like this.</p><pre><code class="language-rb">def create_table
+  Generate SQL for CREATE TABLE
+  result = Execute SQL for CREATE TABLE
+  
+  For each of the indexes -
+   - Generate SQL for ADD INDEX
+   - Execute SQL for ADD INDEX
+  End
+   
+  return result
+end</code></pre><p>Looking at the error that we got related to existing index, it is pretty evident that <code>if_not_exists</code> option was not used while generating the SQL for index whereas it was used while generating the SQL for creating table.</p><p>Now the solution is straightforward. We need to make sure that Rails uses the <code>if_not_exists</code> option while generating the SQL for index.</p><p>The generation of SQL for indexes and its execution is handled by the <code>add_index</code> method. It looks like this.</p><pre><code class="language-rb">def add_index(table_name, column_name, options = {})
+  index_name, index_type, index_columns, index_options = add_index_options(table_name, column_name, **options)
+  execute &quot;CREATE #{index_type} INDEX #{quote_column_name(index_name)} ON #{quote_table_name(table_name)} (#{index_columns})#{index_options}&quot;
+end</code></pre><p>So if we pass the <code>if_not_exists</code> option from <code>create_table</code> to <code>add_index</code> which in turn passes it to </p><p><code>add_index_options</code> and which generates the proper SQL that we want, then our problem is solved!</p><p>That&apos;s what I did in this pull request <a href="https://github.com/rails/rails/pull/38555">https://github.com/rails/rails/pull/38555</a> and this issue is now fixed on Rails master.</p><h3 id="how-to-handle-this-issue-with-rails-6-0-2-and-below">How to handle this issue with Rails 6.0.2 and below</h3><p>Support for <code>if_not_exists</code> was added in Rails 6.0.0. This change for supporting it for indexes is merged in Rails master but it is not yet released. If you are running into similar issue while using Rails 6.0.2 or below, you can simply skip the migration based on an environment check.</p><pre><code class="language-rb">class AddIssuesAgainAgainAgain &lt; ActiveRecord::Migration[6.0]
+  def change
+    return if Rails.env.production?
+    
+    create_table :issues, if_not_exists: true do |t|
+      t.integer   :comment_count
+      t.string    :url, :repo_name, :user_name
+      t.datetime  :last_touched_at
+      t.integer   :number
+
+      t.references :user
+      t.timestamps
+    end
+  end
+end
+</code></pre><p>In this way, if you are creating any indexes in the migration, you will not see errors about their presence if the migration is already run.</p><h3 id="one-last-thing">One last thing</h3><p>While working on this fix, I realized that MySQL does not support <code>IF NOT EXISTS</code> clause for indexes. Bummer! To support this feature for MySQL adapter, we have to actually check if the index exists or not before trying to add it.</p><pre><code class="language-rb"># activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb 
+
+def add_index(table_name, column_name, options = {}) #:nodoc:
+  return if options[:if_not_exists] &amp;&amp; index_exists?(table_name, column_name, options)
+  ..
+  execute ..
+end</code></pre><h3 id="one-more-thing-">One more thing!</h3><p>The support for <code>if_not_exists</code> is also available to <code>add_index</code> method now. So you can just pass it as follows when trying to create standalone indexes.</p><pre><code class="language-rb">add_index :issues, :user_id, if_not_exists: true</code></pre><hr><p><em>If you are interested in more such articles about Ruby on Rails, then <a href="https://prathamesh.tech/mailing-list">subscribe to my newsletter.</a></em></p>]]></content:encoded></item><item><title><![CDATA[Webpacker 5.0 released]]></title><description><![CDATA[Get to know latest features from Webpacker 5 including multiple files per entry]]></description><link>https://prathamesh.tech/2020/03/25/webpacker-5-0-released/</link><guid isPermaLink="false">5e7b639e29432442aa71cc8f</guid><category><![CDATA[rails]]></category><category><![CDATA[webpacker]]></category><dc:creator><![CDATA[Prathamesh Sonpatki]]></dc:creator><pubDate>Wed, 25 Mar 2020 17:52:54 GMT</pubDate><content:encoded><![CDATA[<p>Webpacker 5.0.1 was released <a href=" https://github.com/rails/webpacker/releases/tag/v5.0.1">yesterday</a>. The previous release of Webpacker happened in December 2019 which was version 4.2.2. As 5.0 is a major version bump, I decided to see what are the changes from the 4.x series and the 5.x series.</p><h3 id="minimum-node-version">Minimum node version</h3><p>Minimum node version for Webpacker is now updated to <code>10.13.0</code> from <code>8.16.0</code>. This means that to use Webpacker, we have to use Node <code>10.13.0</code> or above. Node 8 is no longer maintained so this change changes the minimum node version to the next active node version which is 10.x.</p><h4 id="how-does-it-affect-us">How does it affect us?</h4><p>On Heroku, Node version 10.x, 11.x and 12.x are supported so we don&apos;t have to change anything. </p><p>If we are using Node 8 locally or on your deployment server, we will see an error when trying to use Webpacker 5.</p><pre><code class="language-sh">&#x279C;  yank-notifier git:(master) &#x2717; bundle exec rake assets:precompile
+yarn install v1.22.4
+[1/4] &#x1F50D;  Resolving packages...
+success Already up-to-date.
+&#x2728;  Done in 0.63s.
+I, [2020-03-25T20:52:13.580560 #12181]  INFO -- : Writing /Users/prathamesh/Projects/sources/yank-notifier/public/assets/manifest-cadda289ef9c70eaa0879a36e6263cb33f7523a16b3ef862e0b8609cdc2bdab1.js
+....
+Webpacker requires Node.js &quot;&gt;=10.13.0&quot; and you are using v8.17.0
+Please upgrade Node.js https://nodejs.org/en/download/
+Exiting!</code></pre><h3 id="minimum-rails-version">Minimum Rails version</h3><p>Webpacker 5 will also require Rails 5.2 &amp; above and Ruby 2.4 &amp; above. This change is inline with the <a href="https://rubyonrails.org/maintenance/">Rails maintenance policy</a>.</p><h3 id="multiple-files-per-entry">Multiple files per entry</h3><p>Rails recommends that Webpacker should only be used for the JavaScript code. The CSS and other assets should be managed by the Asset pipeline. But Webpacker also supports managing CSS. Before Webpacker 5.0, to manage the CSS using Webpacker, following steps need to be performed.</p><ul><li>Add CSS in <code>app/javascript/scss/application.css</code></li><li>Import the CSS in the application pack - <code>import &apos;../scss/application.css&apos;</code></li><li>Use <code>stylesheet_pack_tag &apos;application&apos;</code> in the layout to load the CSS in Rails views.</li></ul><p>But this leads to confusion as the CSS is not treated as <code>entry point</code> or <code>pack</code> but instead imported in a JavaScript <code>pack</code>. </p><blockquote>Checkout my article on <a href="https://prathamesh.tech/2019/09/24/mastering-packs-in-webpacker/">Mastering packs</a> to know more about &#xA0;packs and entrypoints.</blockquote><p>Asset pipeline allows generating separate bundles for CSS and JavaScript. Similarly, <strong>webpack</strong> supports multiple types of files per entry to generate separate bundles for JavaScript and CSS. Let&apos;s say we have a <code>home</code> layout and <code>accounts</code> layout in our Rails app and have page specific JavaScript and CSS for these two layouts.</p><p>Using webpack, we can specify the CSS and JavaScript files per entry as follows.</p><pre><code class="language-js"># webpack.config.js
+...
+entry: {
+  home: [&apos;./home.js&apos;, &apos;./home.scss&apos;],
+  account: [&apos;./accounts.js&apos;, &apos;./accounts.scss&apos;],
+}
+...</code></pre><p>This webpack configuration generates <code>home.js</code>, <code>home.css</code>, <code>accounts.js</code> and <code>accounts.css</code> as output. Then we can include the individual output files in the individual pages for <code>home</code> and <code>accounts</code>. This feature was not supported in Webpacker earlier.</p><p>In Webpacker 5, the support for specifying multiple files per entry is added. We don&apos;t have to add any configuration for it. We just have to create the multiple files per entry in the <code>app/javascript/packs</code> directory.</p><p>So in this case, we will create following files in the <code>packs</code> directory.</p><pre><code class="language-sh"># app/javascript/packs
+
+accounts.js
+application.js
+home.js
+accounts.css
+home.css
+</code></pre><p>We also have to set the <code>extract_css</code> option as <code>true</code> in <code>config/webpacker.yml</code>.</p><blockquote>The <code>extract_css</code> option tells webpack to generate a separate output file for CSS packs. This option is set to <code>false</code> in development environment so it needs to explicitly changed to <code>true</code> to generate the CSS bundles in development.</blockquote><p>Once this is done, then the asset pre-compilation will generate the separate JavaScript and CSS bundles for <code>home</code> and <code>accounts</code> assets as follows.</p><pre><code class="language-sh">{
+  &quot;accounts.css&quot;: &quot;/packs/css/accounts-c5080fd3.css&quot;,
+  &quot;accounts.js&quot;: &quot;/packs/js/accounts-a40e36aac42a1276f57d.js&quot;,
+  &quot;accounts.js.map&quot;: &quot;/packs/js/accounts-a40e36aac42a1276f57d.js.map&quot;,
+  &quot;application.js&quot;: &quot;/packs/js/application-81fbdc52ed23d5b18118.js&quot;,
+  &quot;application.js.map&quot;: &quot;/packs/js/application-81fbdc52ed23d5b18118.js.map&quot;,
+  &quot;entrypoints&quot;: {
+    &quot;accounts&quot;: {
+      &quot;css&quot;: [
+        &quot;/packs/css/accounts-c5080fd3.css&quot;
+      ],
+      &quot;js&quot;: [
+        &quot;/packs/js/accounts-a40e36aac42a1276f57d.js&quot;
+      ],
+      &quot;js.map&quot;: [
+        &quot;/packs/js/accounts-a40e36aac42a1276f57d.js.map&quot;
+      ]
+    },
+    &quot;application&quot;: {
+      &quot;js&quot;: [
+        &quot;/packs/js/application-81fbdc52ed23d5b18118.js&quot;
+      ],
+      &quot;js.map&quot;: [
+        &quot;/packs/js/application-81fbdc52ed23d5b18118.js.map&quot;
+      ]
+    },
+    &quot;home&quot;: {
+      &quot;css&quot;: [
+        &quot;/packs/css/home-f7b12d47.css&quot;
+      ],
+      &quot;js&quot;: [
+        &quot;/packs/js/home-97c9afb755be496f3c2f.js&quot;
+      ],
+      &quot;js.map&quot;: [
+        &quot;/packs/js/home-97c9afb755be496f3c2f.js.map&quot;
+      ]
+    }
+  },
+  &quot;home.css&quot;: &quot;/packs/css/home-f7b12d47.css&quot;,
+  &quot;home.js&quot;: &quot;/packs/js/home-97c9afb755be496f3c2f.js&quot;,
+  &quot;home.js.map&quot;: &quot;/packs/js/home-97c9afb755be496f3c2f.js.map&quot;
+}%</code></pre><p>We can then use these bundles in the layout files as follows.</p><pre><code class="language-html">// app/views/layouts/home.html.erb
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;YankNotifier&lt;/title&gt;
+    &lt;%= csrf_meta_tags %&gt;
+    &lt;%= csp_meta_tag %&gt;
+
+    &lt;%= stylesheet_link_tag &apos;application&apos;, media: &apos;all&apos;, &apos;data-turbolinks-track&apos;: &apos;reload&apos; %&gt;
+    &lt;%= javascript_pack_tag &apos;application&apos;, &apos;data-turbolinks-track&apos;: &apos;reload&apos; %&gt;
+    &lt;%= javascript_pack_tag &apos;home&apos;, &apos;data-turbolinks-track&apos;: &apos;reload&apos; %&gt;
+    &lt;%= stylesheet_pack_tag &apos;home&apos; %&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;%= yield %&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h3 id="using-webpacker-5-in-our-rails-apps">Using Webpacker 5 in our Rails apps</h3><p>Update the <code>webpacker</code> gem in the <code>Gemfile</code>.</p><pre><code class="language-Gemfile">gem &apos;webpacker&apos;, &apos;~&gt; 5.0&apos;</code></pre><p>We will also need to update the Webpacker node package as follows.</p><pre><code class="language-sh">yarn upgrade @rails/webpacker --latest</code></pre><p>Now we are ready to roll with Webpacker 5!</p><hr><p>Want to stay current with Webpacker and Rails? <a href="https://prathamesh.tech/mailing-list">Subscribe to my newsletter</a> or follow me on <a href="https://twitter.com/_cha1tanya">Twitter</a>.</p>]]></content:encoded></item></channel></rss>

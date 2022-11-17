@@ -1,0 +1,1119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>zverok's space</title>
+    <description>I don't build systems. I imagine them, then write them.</description>
+    <link>https://zverok.space/</link>
+    <atom:link href="https://zverok.space/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 11 Nov 2022 13:26:11 +0000</pubDate>
+    <lastBuildDate>Fri, 11 Nov 2022 13:26:11 +0000</lastBuildDate>
+    <generator>Jekyll v3.9.2</generator>
+    
+      <item>
+        <title>Ruby language evolution on a large scale (as observed from Ukraine)</title>
+        <description>&lt;p&gt;&lt;strong&gt;Last Saturday, I published a new &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/evolution.html&quot;&gt;Ruby Evolution&lt;/a&gt; section on my Ruby Changes site.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Ruby Changes is a passion project of mine dedicated to describing and explaining how the Ruby programming language changes from version to version. I described how I came to the idea and what following it gave me in a series of posts in January:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;/blog/2022-01-06-changelog.html&quot;&gt;What you can learn by merely writing a programming language changelog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/blog/2022-01-13-it-evolves.html&quot;&gt;Following the programming language evolution, and taking it personally&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/blog/2022-01-20-still-flying.html&quot;&gt;Programming language evolution: with all that, we are still flying&lt;/a&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;For a long time, I wanted to enrich version-by-version features lists with a bird-eye overview of how the language change with years, structured by topic. I believed it would be interesting not only for Rubyists but maybe for other programming language enthusiasts.&lt;/p&gt;
+
+&lt;p&gt;So, this year I started working on the “Evolution” changelog section and the accompanying blog post explaining why observing the language evolving matters and my views on that evolution.&lt;/p&gt;
+
+&lt;p&gt;This should’ve been that blog post. But alas, it isn’t.&lt;/p&gt;
+
+&lt;p&gt;* * *&lt;/p&gt;
+
+&lt;p&gt;My initial plan was to release the “Evolution” and the blogpost on February 24th, Ruby’s informal birthday. Due to some personal/work reasons, I didn’t finish it on time but still hoped to publish it that week—or, worst case, the next one. I haven’t imagined the &lt;em&gt;real&lt;/em&gt; worst case, though.&lt;/p&gt;
+
+&lt;p&gt;On February 24th, 2022, the local war Russia led against Ukraine for eight years turned into a full-scale invasion. My home city was heavily shelled. I was abroad at the day and spent 50 hours on the road to get to my family (wife and three kids) hiding in the cellar.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-03-03/family.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Since then, a lot has happened to us. The war is still ongoing, and half of my family lives in another city. I am still in Kharkiv, and it is still shelled on an everyday basis. I divide my days between doing my regular job as a software architect (donating most of my salary to the army and refugees), volunteering to bring food to people, and trying to remember what I considered important when I had the luxury of peace.&lt;/p&gt;
+
+&lt;p&gt;I still identify as a Rubyist, almost as much as a Ukrainian. So this unfinished work on the “Evolution” document always was in the back of my head.&lt;/p&gt;
+
+&lt;p&gt;Finally, on the summer weekends, I got some spare time to complete the work.&lt;/p&gt;
+
+&lt;p&gt;Probably, &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/evolution.html&quot;&gt;the result&lt;/a&gt; is worth your attention. I definitely hope so, but it is hard to judge by myself: I am still struggling to remember why I considered it important. I am happy I finished and got rid of the “outstanding homework” feeling; that’s it.&lt;/p&gt;
+
+&lt;p&gt;* * *&lt;/p&gt;
+
+&lt;p&gt;That being said, I am in no mood for theoretical reminiscences planned as an accompanying article. (I still feel my #RubyFriends😍 have failed me with their indifference. And probably will feel that for a long time.)&lt;/p&gt;
+
+&lt;p&gt;While working on the changelog and looking into versions, years, and histories, I can’t not juxtapose what happened to the language I care about with my personal life and the life of my country.&lt;/p&gt;
+
+&lt;p&gt;I fell in love with Ruby in 2004. I studied it by a pirate copy of “Pickaxe book”—at that time, my salary was $80, and I didn’t even have a bank card to pay online. It was a big year in my life: I finished the university, and my first daughter was born. It was also a year of our first Maidan: a democratic revolution against old (post-Soviet and pro-Russian) elites, whose achievements were hugely undermined by Russia’s never-ending colonialistic pressure.&lt;/p&gt;
+
+&lt;p&gt;2013 was the year when the first version of “modern” Ruby was released (2.0 and 2.1, adding keyword arguments, lazy enumerators, proper Unicode, etc.) It is also the year when the EuroMaidan started: the second pro-democratic and pro-European revolution (also anti-Soviet, anti-dictator, and anti-Russian), with both sides—people and old government-backed by The Empire—now fighting more fiercely.&lt;/p&gt;
+
+&lt;p&gt;At the beginning of the following year, Russia annexed Crimea and started the war on Eastern Ukraine, and the world just shrugged and wiped its ass with the &lt;a href=&quot;https://en.wikipedia.org/wiki/Budapest_Memorandum_on_Security_Assurances&quot;&gt;Budapest memorandum&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In the second half of the 2010s, I worked on perfecting my understanding of Ruby and my writing on it and even made a (small) recognizability for myself while needing to keep in mind that the war is ongoing a mere 100 km from my home. That the beautiful Crimea is annexed with many of my friends from there losing their homes. That small miner town of Snizhne, where my father grew up and where my grandma is buried, a town of a few happy summers of my childhood, is occupied by Russians.&lt;/p&gt;
+
+&lt;p&gt;I had the chance to visit and speak at several international conferences. It had its ups and downs, moderate successes and unexpected disappointments, meeting awesome people and not always being able to interest them, acquiring some friends, and missing some opportunities. But in the background, I was constantly appalled at how small people knew and cared about our war: the imperialistic war being led in the middle of Europe based on blatant lies. (Not all, of course: I remember a taxi driver in Kenya who had a perfect understanding of the anti-colonialist struggle— But I also remember Europeans who considered all the “kerfuffle” just a small domestic turmoil, unreasonably overblown by media.)&lt;/p&gt;
+
+&lt;p&gt;In 2022, I became Ruby core committer, with an ambitious plan to rethink and modernize official language docs on the basis of my work on a &lt;a href=&quot;https://rubyreferences.github.io/rubyref/&quot;&gt;Ruby Reference&lt;/a&gt;. For the first time in 18 years with the language, I felt my understanding of it coherent enough to want to shape it in the form of a book, which I have a name and a plan for: it should’ve been called “&lt;a href=&quot;https://rubyintuitions.substack.com/&quot;&gt;Ruby Intuitions&lt;/a&gt;” and the (semi-public via Substack) writing was planned to begin on June 1st.&lt;/p&gt;
+
+&lt;p&gt;Then, you know what happened.&lt;/p&gt;
+
+&lt;p&gt;* * *&lt;/p&gt;
+
+&lt;p&gt;Sometimes (quite frequently, honestly), I think now that I’d better spend my attention and energy of the last years on going into military or medical training or political activism. But I can’t change who I am: Ukrainian, and Rubyist.&lt;/p&gt;
+
+&lt;p&gt;I didn’t lose all hope to write that Ruby book and to work on a new and shiny Ruby Reference. They are just placed in my planner under the category “AFTER THE WAR.”&lt;/p&gt;
+
+&lt;p&gt;(Weirdly enough, I am still writing the other book I planned for the year: a post-apocalyptic road novel happening in 2003’s Crimea. You can &lt;a href=&quot;https://goingtoyalta.substack.com/&quot;&gt;follow it on Substack&lt;/a&gt;.)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;But at least I published that &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/evolution.html&quot;&gt;Ruby Evolution&lt;/a&gt; thing; please enjoy!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-06-11/pine.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;I don’t do “impressive” photos of demolition in my district (there are plenty of opportunities). This old pine, though, is just next street, some 20 meters from my home. It was twice as tall before March shellings; you can see it’s top lying nearby.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Please proceed with your day.&lt;/p&gt;
+
+&lt;p&gt;PS: How can you help? Please &lt;a href=&quot;https://war.ukraine.ua/donate/&quot;&gt;donate to Ukraine&lt;/a&gt;, and call your government to increase the support. The quicker we win, the better for the world, you including.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 11 Jun 2022 00:00:00 +0000</pubDate>
+        <link>https://zverok.space/blog/2022-06-11-ruby-evolution.html</link>
+        <guid isPermaLink="true">https://zverok.space/blog/2022-06-11-ruby-evolution.html</guid>
+        
+        
+        <category>ruby</category>
+        
+        <category>history</category>
+        
+      </item>
+    
+      <item>
+        <title>Kharkiv Rubyist during the war: We are still here</title>
+        <description>&lt;p&gt;Добрий вечір, ми з України*&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;* “Good evening, we are from Ukraine” is a meme-like phrase of complicated origins that is now frequently used at the beginning of the news reports and as a comment to the current situation.&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;I am Victor Shepelev from Kharkiv, Ukraine, also known as @zverok (&lt;a href=&quot;https://twitter.com/zverok&quot;&gt;Twitter&lt;/a&gt;, &lt;a href=&quot;https://github.com/zverok&quot;&gt;GitHub&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;I’d really like this blog to return to its “weird things on Ruby and other languages” mode. But all I can do for now is write another blog post about the war. &lt;strong&gt;I don’t want us to become “old news” for the world.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Russia still proceeds with a full-scale aggressive war in my country.&lt;/p&gt;
+
+&lt;h2 id=&quot;how-am-i-you-can-skip-this&quot;&gt;How am I (you can skip this)&lt;/h2&gt;
+
+&lt;p&gt;Since &lt;a href=&quot;/blog/2022-03-03-WAR.html&quot;&gt;the last post&lt;/a&gt;, I managed to evacuate my family to Poltava (further from the frontlines, and no bombings there) and returned to Kharkiv to do something useful for the city.&lt;/p&gt;
+
+&lt;p&gt;With no military experience and even no driving license, I do things on a very small scale: just delivering food and other necessities (diapers, cat food, toilet paper, women hygienic products) to those in need in my district, on foot. With a large tourist backpack, it takes just several hours of my day, and I am happy with this distraction.&lt;/p&gt;
+
+&lt;p&gt;The rest of the time, I am trying to work on my day job (though my employer Hubstaff made it clear they’ll support me even if I am not able to, for which I am thankful). Doomscrolling. Talking with friends and family who stayed in other districts or went to safer cities.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;So, no, I am not “hiding in my cave” as some good-intentioned people on Twitter sometimes put this. Yes, I have a bomb shelter in the basement (where my family is photographed in prev.post). But sitting in there is not what I do all day.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-going-on-around&quot;&gt;What’s going on around&lt;/h2&gt;
+
+&lt;p&gt;My district is relatively calm for those last few days. Only distant explosions, only regular air raid alerts, only some buildings without windows/roofs (but those were damaged a week ago).&lt;/p&gt;
+
+&lt;p&gt;Other districts of my city have it harder. Just yesterday, several dozens of shellings counted (not several dozens of &lt;em&gt;shells&lt;/em&gt;, several dozens of &lt;em&gt;multi-shell strikes&lt;/em&gt;). The city reportedly has 600+ living houses ruined (most of them are apartment buildings that were homes for hundreds of families each), ~50 schools, some hospitals, multiple historical buildings in the center, many lively city markets, the list goes on and on. There is a rumor that Putin had recently made a personal order to damage as much of Kharkiv as possible, to retaliate for breaking the hope of being “pro-Russian.” And however absurd it might sound, I am close to believing it because there seems to be no other point in doing what they do now.&lt;/p&gt;
+
+&lt;p&gt;Other cities have it harder. At least Kharkiv is not blockaded, like Mariupol, where reportedly 2000+ civilians are dead and humanitarian convoys are detained by Russians. Kharkiv is not occupied like Kherson and Melitopol, where city inhabitants go on squares, unarmed, every day, to protest with Ukrainian flags and show those cities that “expected to be pro-Russian” are not; where occupiers kidnaped multiple Ukrainian officials. Kharkiv is not obliterated completely like Volnovaha and many small towns in Kharkiv and Kyiv regions, where every building is ruined or damaged.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Yeah, we have it easy. Here’s just one photo I took personally on today’s walk. A peaceful early spring landscape, right?.. Please notice broken trees, burned car, and windows with blankets instead of glass (yes, people are still living there). Now imagine this being 3 min walk from your home.&lt;/p&gt;
+
+  &lt;p&gt;&lt;img src=&quot;/img/2022-03-15/landscape.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+  &lt;p&gt;I put here this mild image, not all the dead people and ruined quarters from all Ukrainian cities. Maybe it will feel more real for some, but I’ll emphasize: we have it easy here.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It is like Russians deliberately invoke the Godwin law: who in their right mind will believe the regular army of “civilized European country” does bomb hospitals and schools and living quarters, and agree on green corridors to bomb the next morning and shoot evacuating civilians, and marauder, and take hostages, and do what they do?.. Unfortunately, too many independent and verifiable reports are they do just this.&lt;/p&gt;
+
+&lt;h2 id=&quot;how-to-help&quot;&gt;How to help&lt;/h2&gt;
+
+&lt;p&gt;There are many ways to help.&lt;/p&gt;
+
+&lt;p&gt;You can send money: &lt;a href=&quot;https://war.ukraine.ua/donate/&quot;&gt;Here&lt;/a&gt; is a verified list of funds to give money to, both to help the army and many humanitarian causes. You can support Ukrainian refugees. You can help to gather and send necessities for military and humanitarian usage.&lt;/p&gt;
+
+&lt;p&gt;I know that a lot of my online friends and acquaintances already do a lot – frequently much more than I am able to do from here. We are eternally grateful. We see you.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;But I want to ask my community about one small thing.&lt;/strong&gt; It is the same thing as in &lt;a href=&quot;/blog/2022-03-03-WAR.html&quot;&gt;my previous post&lt;/a&gt;: &lt;strong&gt;Write about us.&lt;/strong&gt; Make us seen. Put notices on top of your services. Mention us in your blogs and newsletters. Write in your Twitter. And don’t stop.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Why is it important?&lt;/strong&gt; At this point, it seems real that we will win. But how long will it take (= how long will cities be ruined, civilians killed, infrastructure destroyed) severely depends on moves of large and slow entities: countries, international organizations, big companies. To send help to us. And to break all ties with Russia and close all ways for it to maintain its war economy, supply its army, and keep its people calm and controlled. So we need massive pressure to put all the countries too cautious about making sanctions more severe. On all the international organizations with their half-measures. On all the large companies that are still doing business with Russia because why not.&lt;/p&gt;
+
+&lt;p&gt;And for that, we need a lot of visibility.&lt;/p&gt;
+
+&lt;p&gt;I am not asking you to cease all of your life and running around screaming, “HELP UKRAINE”. Any small gesture counts. Like sites with memes that do regular sets with memes about badassery of Zelensky or sad eyes of evacuated Ukrainian animals. Like Instagrams of photo magazines that just dedicate a few slots a day to Ukrainian photographers – let it be pre-war photos, but if the war is explicitly mentioned, it counts.&lt;/p&gt;
+
+&lt;p&gt;And your silence counts, too. Your unwillingness to see and hear, or to upset your thousands of followers or to spend your social capital on something unrelated to your main interest counts, too.&lt;/p&gt;
+
+&lt;p&gt;Please proceed with your day.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Victor Shepelev, Kharkiv, Ukraine, Mar 15, 2022.&lt;/em&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 15 Mar 2022 00:00:00 +0000</pubDate>
+        <link>https://zverok.space/blog/2022-03-15-STILL-WAR.html</link>
+        <guid isPermaLink="true">https://zverok.space/blog/2022-03-15-STILL-WAR.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Appeal to Ruby community from Kharkiv Rubyist</title>
+        <description>&lt;p&gt;Hi.&lt;/p&gt;
+
+&lt;p&gt;I am Victor Shepelev from Kharkiv, Ukraine, also known as @zverok (&lt;a href=&quot;https://twitter.com/zverok&quot;&gt;Twitter&lt;/a&gt;, &lt;a href=&quot;https://github.com/zverok&quot;&gt;GitHub&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;I am writing in Ruby since 2003; I maintain several libraries and &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/&quot;&gt;Ruby Changelog&lt;/a&gt;. You might’ve met me on several international conferences, &lt;a href=&quot;https://www.reddit.com/r/ruby/&quot;&gt;/r/ruby&lt;/a&gt; and elsewhere. This year I also applied to be Ruby commiter this year and was honored to be approved. I am working on Ruby documentation improvement (as well as invented several minor features), here is a &lt;a href=&quot;https://zverok.space/ruby.html&quot;&gt;summary of my work for the language&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I was always feeling welcome in the community, despite my origin from Eastern Europe, hot temper and less-than-ideal English.&lt;/p&gt;
+
+&lt;p&gt;I tried to never mix my tech/Ruby persona with my peronal life and life of my country, which was not easy, especially for last years. But today, everything is different.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;I write to Ruby community in days of war Russia leads against my country.&lt;/strong&gt; Not some “special operation”, or political turmoil, or local conflicts. It is full-scale agressive war, and dirty one: with bombing of cities with Grads (reactive artillery), aerial bombs and flying missiles. With demolished hospitals, schools, and living quarters. With thousand of civilians dead, wounded or displaced. With tanks going through cities. With whole small towns leveled with earth.&lt;/p&gt;
+
+&lt;p&gt;I am no hero. I am sheltering with my family (wife, three daughers, two cats, and a dumb dog) in Kharkiv, which is constantly bombarded and attacked with armoured batallions. We have deep cellar where we are sitting during bombardments, my family still has food, electricity and running water. Half of the city doesn’t have even this. Many dead. City center in ruins.&lt;/p&gt;
+
+&lt;p&gt;We are still standing.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;We need your help.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I am not asking you to stop living your comfortable lifes, writing your blogs, visiting your conferences and fighting your usual enemies like scammers and sexists.&lt;/p&gt;
+
+&lt;p&gt;I am not asking you to go here to fight, or to give all your money, or even to ban Russian companies and individuals from your services (though the latter would be suitable sometimes).&lt;/p&gt;
+
+&lt;p&gt;I am just asking you to &lt;strong&gt;spread the word and show the support&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;We need international support: political, military, humanitarian, and to have this, we need as many people to be aware what’s happening there as humanly possible.&lt;/p&gt;
+
+&lt;p&gt;So, at the very least, please tell what’s happening and that you support us.&lt;/p&gt;
+
+&lt;p&gt;Don’t write that to me in private. I appreciate your concern, but I don’t need that, currently.&lt;/p&gt;
+
+&lt;p&gt;Please just &lt;strong&gt;publish a message. Any message. In your Twitters, on your mailing list, on top of your sites&lt;/strong&gt;. That’s easy to do and costs nothing. It is not “political affiliation” or “entangling in local politics”. It is just about stopping the war. We need it to reach every politician, every representative, every humanitarian organization, everybody who can do something substantial.&lt;/p&gt;
+
+&lt;p&gt;I could add a megaton of disturbing photos here to strengthen the message.&lt;/p&gt;
+
+&lt;p&gt;But I’ll just add two: my family in shelter and the central square of my city bombed a few days ago.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-03-03/family.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-03-03/freedom_square.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;You can always find more info, evidence and ways to help at &lt;a href=&quot;https://war.ukraine.ua/&quot;&gt;war.ukraine.ua&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 03 Mar 2022 00:00:00 +0000</pubDate>
+        <link>https://zverok.space/blog/2022-03-03-WAR.html</link>
+        <guid isPermaLink="true">https://zverok.space/blog/2022-03-03-WAR.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>How I tried to invent a new query language feature and failed (because the old one worked fine)</title>
+        <description>&lt;p&gt;&lt;strong&gt;A slightly unusual story of a &lt;em&gt;fail I am not too angry with&lt;/em&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;It was a part of the effort to create some sort of &lt;a href=&quot;https://github.com/zverok/wikipedia_ql&quot;&gt;query language&lt;/a&gt; for fetching data from Wikipedia. I’ve been on and off the idea for half a year but recently decided to give it a more systematic resource. To make myself stay on track, I decided to &lt;a href=&quot;https://zverok.substack.com/p/wikipedia-and-irregular-data-how&quot;&gt;describe my path as I go&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;This article is written for my &lt;a href=&quot;https://zverok.substack.com/&quot;&gt;Substack&lt;/a&gt;, you can subscribe to it by email now!&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;By that time, the base was &lt;a href=&quot;https://zverok.substack.com/p/wikipediaql-1&quot;&gt;essentially in place&lt;/a&gt;. I wanted Wikipedia pages to be queriable in CSS-selector-alike language, incorporate content semantic-level selectors into it (sections, sentences, etc.), and, most crucially, select the most common and useful types of data in one expression.&lt;/p&gt;
+
+&lt;p&gt;As I &lt;a href=&quot;https://zverok.substack.com/p/wikipedia-and-irregular-data-how&quot;&gt;started&lt;/a&gt; with that describe-as-I-go approach, it gave insights to straighten up a few loose parts of the language that were hard to explain. It also gave the possibility to estimate the effort necessary to take to describe internally complex structures with easy-to-remember and straightforward expressions.&lt;/p&gt;
+
+&lt;p&gt;After that last chapter (some three weeks ago, sorry, life catches us sometimes!), I proudly announced that the next plan is&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[to] extend dictionary of supported selectors/concepts for some time: we need at the very least infoboxes and hatnotes; most probably, some of the other formalized elements, like navboxes.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;And that’s where the things went weird.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-problem&quot;&gt;The problem&lt;/h2&gt;
+
+&lt;p&gt;So, what are those “&lt;a href=&quot;https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Infoboxes&quot;&gt;infoboxes&lt;/a&gt;” and why are they so important?&lt;/p&gt;
+
+&lt;p&gt;It is a term to designate the most &lt;em&gt;seemingly&lt;/em&gt; formal part of the Wikipedia article:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-02-17-infoboxes/infobox.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;That’s the part of Wikipedia that creates a temptation to parse—and that’s how I was hooked up too, many years ago. Wikipedia infoboxes were my very first guess when &lt;a href=&quot;https://zverok.substack.com/p/wikipedia&quot;&gt;I imagined&lt;/a&gt; that API like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;World.country(&quot;Ukraine&quot;).attr(&quot;area&quot;)&lt;/code&gt; should be available in open programming languages, using open data sources.&lt;/p&gt;
+
+&lt;p&gt;That’s why my very first project on the topic—Wikipedia parser for Ruby, still alive and quite powerful—was called &lt;a href=&quot;https://github.com/molybdenum-99/infoboxer&quot;&gt;Infoboxer&lt;/a&gt;. Its scope quickly grew wider than this part of the page, but the name stuck.&lt;/p&gt;
+
+&lt;p&gt;And so, I was returning to where it all started: looking into Wikipedia infoboxes parsing for WikipediaQL query language and trying to design parsing primitives for it—in a slow realtime, while writing this article.&lt;/p&gt;
+
+&lt;p&gt;When I started to write, the working title was &lt;em&gt;Fantastic Wikipedia Infoboxes and How To Parse Them&lt;/em&gt;. Not the freshest approach, but it seemed to fit.&lt;/p&gt;
+
+&lt;p&gt;By the end of the article/new version development, I expected to have some new neat &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;infobox&lt;/code&gt; &lt;em&gt;selector&lt;/em&gt; (or maybe a few related ones). The details of how exactly it would be used to describe data were still unclear, but that’s what the “write about it, then implement” approach is for!&lt;/p&gt;
+
+&lt;h2 id=&quot;the-implementation-effort&quot;&gt;The implementation effort&lt;/h2&gt;
+
+&lt;p&gt;So, I just opened some page and absentmindedly started to try to extract data from it with the tools I already had—expecting it to &lt;em&gt;not&lt;/em&gt; work (or be extremely clumsy), so I’ll know where to look for missing parts.&lt;/p&gt;
+
+&lt;p&gt;To my slight awe, it was actually OK.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ wikipedia_ql -p &quot;Dune (2021 film)&quot; \
+  'table.infobox &amp;gt;&amp;gt; table-data &amp;gt;&amp;gt; td &amp;gt;&amp;gt;
+   { @row as &quot;title&quot;; text as &quot;value&quot; }'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Output &lt;em&gt;(Note: I am humanizing YAML output a bit for the article, the real output is more regular yet takes more lines. YAML is the default output format because its structure is very human-readable; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--output-format json&lt;/code&gt; is also supported.)&lt;/em&gt;:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;...
+- &quot;title&quot;: Directed by
+  &quot;value&quot;: Denis Villeneuve
+- &quot;title&quot;: Screenplay by
+  &quot;value&quot;: &amp;gt;
+    Jon Spaihts
+    Denis Villeneuve
+    Eric Roth
+- &quot;title&quot;: Based on
+  &quot;value&quot;: &amp;gt;
+    Dune
+    by Frank Herbert
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It is somewhat wordy (the wordiness is acceptable for occasionally-read language, I assume), but otherwise quite to the point. Looking at it as just a usual table and using already designed tools, one doesn’t need anything infobox-specific to fetch data.&lt;/p&gt;
+
+&lt;p&gt;I went to several more pages. The same extraction statement worked perfectly fine, both for turning the entire infobox into structured data and for extracting some particular value by field name:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ wikipedia_ql -p &quot;Dune (2021 film)&quot; \
+  'table.infobox &amp;gt;&amp;gt; table-data &amp;gt;&amp;gt; { td[row=&quot;Budget&quot;]; td[row=&quot;Box office&quot;] }'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Output:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- $165 million
+- $368.1 million
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Finally, I met the infobox that doesn’t correspond to the model at all, still being structured: at the page dedicated to &lt;a href=&quot;https://en.wikipedia.org/wiki/World_War_II&quot;&gt;World War II&lt;/a&gt;, this structure can be seen:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-02-17-infoboxes/wwii-source.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It is still obviously regular but doesn’t match the expectation of having a field name and a field value in each row.&lt;/p&gt;
+
+&lt;p&gt;But after some consideration, I remembered I had another trick up my sleeve: the table parsing heuristic I planned but not yet implemented on the previous approach to tables. What if table “normalization” would automatically turn mid-table full-row &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;th&lt;/code&gt; into a row-level &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;th&lt;/code&gt; for all subsequent rows? In other words, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;table-data&lt;/code&gt; pseudo-selector was adjusted to perceive the table above as this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-02-17-infoboxes/wwii-normalized.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And that was all we needed to fetch some data from the table:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ wikipedia_ql -p &quot;World War II&quot; \
+  'table.infobox &amp;gt;&amp;gt; table-data &amp;gt;&amp;gt; td[row^=&quot;Casualties&quot;]'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Output:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- &amp;gt;
+  Military dead:
+  Over 16,000,000
+  [...skip...]
+- &amp;gt;
+  Military dead:
+  Over 8,000,000
+  [...skip...]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Interestingly enough, both services providing structured data from Wikipedia—Wikidata and DBPedia—seem to fail to fully formalize data from this part of the page (&lt;a href=&quot;https://www.wikidata.org/wiki/Q362&quot;&gt;Wikidata&lt;/a&gt;, &lt;a href=&quot;https://live.dbpedia.org/page/World_War_II&quot;&gt;DBPedia&lt;/a&gt;). This probably implies we are onto something here!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;With that, and going through many more pages, it seemed… Good enough? I even spent several hours creating the &lt;a href=&quot;https://github.com/zverok/wikipedia_ql/blob/master/docs/showcase/Infoboxes.md&quot;&gt;showcase page&lt;/a&gt;—mainly to document the approach, but also to persuade my baffled self that it really works this way.&lt;/p&gt;
+
+&lt;p&gt;Some quirks do show themselves there, but most of the time, it is easy to handle in the data post-processing stage.&lt;/p&gt;
+
+&lt;p&gt;But wait, where is my cool &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;infobox&lt;/code&gt; primitive to design?!&lt;/p&gt;
+
+&lt;h2 id=&quot;the-fail&quot;&gt;The fail?&lt;/h2&gt;
+
+&lt;p&gt;As stated in the first paragraph, I am not &lt;strong&gt;angry&lt;/strong&gt; at a failure to design a new primitive, but I still feel uneasy about it. My &lt;a href=&quot;https://github.com/molybdenum-99/infoboxer&quot;&gt;old&lt;/a&gt; Wikipedia parsing project had “infobox” in the project’s name—and the second one even wouldn’t have it is a named construct?!&lt;/p&gt;
+
+&lt;p&gt;But it also shifted my perspective significantly.&lt;/p&gt;
+
+&lt;p&gt;The “revelation” that led to WikipediaQL’s birth was the sudden understanding that Wikipedia’s HTML is much more regular and predictable than its source markup that I spent a good chunk of my 30th parsing. The “infoboxes fail,” from a certain point of view, is just logical.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-02-17-infoboxes/scooby.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There are many discrepancies between the HTML DOM model and the perceived data model of the Wikipedia page. Those discrepancies make straightforward web-scraping too tedious, asking for a specialized tool. I initially assumed that following the Wikipedia-specific structuring is the best way to handle these discrepancies.&lt;/p&gt;
+
+&lt;p&gt;I thought that defining first-class scraping primitives for  &lt;a href=&quot;https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Infoboxes&quot;&gt;infobox&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Wikipedia:Categories,_lists,_and_navigation_templates#WP:NAVBOX&quot;&gt;navboxes&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Wikipedia:Hatnote&quot;&gt;hatnote&lt;/a&gt; is the only way forward.&lt;/p&gt;
+
+&lt;p&gt;But it seems that the useful approach is more subtle. As &lt;em&gt;accidental usefulness&lt;/em&gt; of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;table-data&lt;/code&gt; shows, we probably can stay in the “almost generic DOM” domain, enhancing it with some good heuristics matching the usual structure of MediaWiki content.&lt;/p&gt;
+
+&lt;p&gt;This will lead to a much smaller and more conventional “dictionary,”—which is also easier to master for library users. All in all, we shouldn’t forget that the terms for page elements like “infobox” are a domain language of Wikipedia maintainers, not of its readers.&lt;/p&gt;
+
+&lt;p&gt;I still consider some possibilities when looking at infoboxes (I spent too many years with them to let them go easily!). One of the possibilities is to introduce shortcuts/aliases in WikipediaQL: instead of writing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;table.infobox &amp;gt;&amp;gt; table-data &amp;gt;&amp;gt; td[row=&quot;Born&quot;]&lt;/code&gt;, one might want to do something like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;infobox-field[name=&quot;Born&quot;]&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In any case, it is something to think about down the road: a well-chosen base is more important to me now than rapidly growing the language to handle any demo-friendly case with just one word.&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-next&quot;&gt;What’s next&lt;/h2&gt;
+
+&lt;p&gt;I am not sure! Designing the thing that has so many &lt;em&gt;cool potential purposes&lt;/em&gt; makes one greedy to invent all the features in the world. Programmers gonna program, you know.&lt;/p&gt;
+
+&lt;p&gt;The initial assumption behind the WikipediaQL is that the most non-trivial and useful part of it needs to be Wikipedia-specific, talking in the parlance of infoboxes, navboxes, hatnotes, and such. But the encounter with the “no need for infoboxes” revelation led me to rethink my course for now.&lt;/p&gt;
+
+&lt;p&gt;(Frankly, the development course is also affected by the fact that I am still not sure the project will find its users. It is fun to develop, though!)&lt;/p&gt;
+
+&lt;p&gt;I’ll try to look the new direction opened: maybe the generic-from-the-beginning is actually better? There are several equally useful albeit less known wikis. My favorite is &lt;a href=&quot;https://en.wikivoyage.org/wiki/Main_Page&quot;&gt;Wikivoyage&lt;/a&gt;, which grew into a go-to resource for initial acquaintance with a new place when traveling. &lt;a href=&quot;https://en.wikivoyage.org/wiki/Main_Page&quot;&gt;Wiktionary&lt;/a&gt; is quite cool too!&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Also, I always liked the &lt;a href=&quot;https://tardis.fandom.com/wiki/Doctor_Who_Wiki&quot;&gt;Fandom&lt;/a&gt; (nee Wikia) rich set of wikis dedicated to specific books, movies, and other topics; but unsure whether I want to get involved with them for experiments and demos. For one, the site is so ad-ridden now my Chrome is almost dying, even with AdBlock. Another thing to consider is that they seem not to advertise the MediaWiki API, and the &lt;a href=&quot;https://www.mediawiki.org/wiki/API:REST_API&quot;&gt;REST part&lt;/a&gt; is not implemented/disabled there. WikipediaQL uses this API for page source fetching, though alternative approaches exist.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;So, next time I might look into what it takes to apply WikipediaQL to other MediaWiki installations, starting from Wikipedias in languages other than English and going sideways from there. We’ll see!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;I am eager for feedback; please don’t hesitate to drop me a line on anything related to the library or my writing!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;iframe src=&quot;https://zverok.substack.com/embed&quot; width=&quot;480&quot; height=&quot;320&quot; style=&quot;border:1px solid #EEE; background:white;&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+</description>
+        <pubDate>Thu, 17 Feb 2022 00:00:00 +0000</pubDate>
+        <link>https://zverok.space/blog/2022-02-17-infoboxes-fail.html</link>
+        <guid isPermaLink="true">https://zverok.space/blog/2022-02-17-infoboxes-fail.html</guid>
+        
+        
+        <category>opendata</category>
+        
+        <category>wikipedia</category>
+        
+        <category>python</category>
+        
+      </item>
+    
+      <item>
+        <title>Wikipedia and irregular data: how much can you fetch in one expression?</title>
+        <description>&lt;p&gt;&lt;strong&gt;Using the idea of a phrase-level expressiveness to design a succinct and unobtrusive query language.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;After months of &lt;a href=&quot;https://zverok.substack.com/p/grok-shan-shui&quot;&gt;digging into generative art&lt;/a&gt; in JS and &lt;a href=&quot;https://zverok.substack.com/p/what-you-can-learn-by-merely-writing&quot;&gt;handling the recent Ruby version&lt;/a&gt;, &lt;strong&gt;I am now returning to my Python open data project—&lt;a href=&quot;https://github.com/zverok/wikipedia_ql&quot;&gt;WikipediaQL&lt;/a&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;This article is written for my &lt;a href=&quot;https://zverok.substack.com/&quot;&gt;Substack&lt;/a&gt;, you can subscribe to it by email now!&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It is still in the early/experimental stages, and the last few months of writing gave me the idea that for my mindset, it would be much easier to &lt;strong&gt;write about the project and ideas behind it simultaneously with developing&lt;/strong&gt;. Previous months of work on WikipediaQL were quite chaotic: I’ve tried to build some feature I imagined should be useful, spent several weeks on it, then it was ready, then I started to &lt;a href=&quot;https://zverok.substack.com/p/wikipediaql-1&quot;&gt;write an article&lt;/a&gt;… And typically, found out that trying to explain the new idea exposes it lacking some important nuance or being overcooked.&lt;/p&gt;
+
+&lt;p&gt;So, this text is written &lt;em&gt;simultaneously&lt;/em&gt; with working on a new (minor) version; we’ll see how it goes!&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-this-all-about&quot;&gt;What’s this all about?&lt;/h2&gt;
+
+&lt;p&gt;I’ve explained the set of ideas behind WikipediaQL in the previous write-up (“&lt;a href=&quot;https://zverok.substack.com/p/wikipediaql-1&quot;&gt;Taming the irregular&lt;/a&gt;”). In short, I am trying to build “what it says on the tin”: &lt;strong&gt;a query language to fetch data from Wikipedia&lt;/strong&gt; (and then, other MediaWiki-based sites). Like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-27-wikipedia_ql/demo.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There is, though, one important angle of view on this work I haven’t investigated yet: &lt;strong&gt;I am trying to design a way to fetch data in one expressive phrase&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Now that I started to write more texts about my work as an open-source developer, I am trying to build some coherence and openness about what I am interested in. Like, how do you jump from Chinese landscape generation in JS to programming language changelogs to Wikipedia parser, right? The answer is the same that is &lt;a href=&quot;https://zverok.substack.com/about&quot;&gt;written on top of my Substack&lt;/a&gt;: The range of “my” topics is united by an urge to &lt;em&gt;understand and explain&lt;/em&gt;. Or, the problems of knowledge acquiring (with code) and expressing meaning (with code).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;There are several challenges I am constantly taking, and that’s what unite my projects and endeavors: I am investigating &lt;em&gt;phrase-level expressiveness&lt;/em&gt;, and trying to achieve it in a way that would seem &lt;em&gt;natural&lt;/em&gt; (or: &lt;em&gt;intuitive&lt;/em&gt;) to the reader and to the writer.&lt;/p&gt;
+
+&lt;p&gt;All of the epithets above—&lt;em&gt;expressive, natural, intuitive&lt;/em&gt;—could be easily brushed off as purely subjective and therefore impossible to achieve objectively. But I still think there is more to it than “to each their own”/”tastes differ”, and &lt;em&gt;that’s&lt;/em&gt; what I am actually working on: uncovering intuitions, expectations, and habits and creating new means of expressions on top of them. Or, more generically: base on existing culture, and try to build new cultural artifacts on top of it.&lt;/p&gt;
+
+&lt;h2 id=&quot;designing-the-natural-language&quot;&gt;Designing the “natural” language&lt;/h2&gt;
+
+&lt;p&gt;As WikipediaQL would hardly be the main language for its user, I wanted to think in terms of a language that you don’t need to &lt;em&gt;learn&lt;/em&gt;. Rather, one should be able just can &lt;em&gt;get&lt;/em&gt; in one sitting, and then use immediately—maybe with some &lt;a href=&quot;https://github.com/zverok/wikipedia_ql/blob/main/docs/Cheatsheet.md&quot;&gt;cheatsheet&lt;/a&gt; besides.&lt;/p&gt;
+
+&lt;p&gt;So, where do we start?&lt;/p&gt;
+
+&lt;p&gt;Looking at multiple example pages (a &lt;a href=&quot;https://en.wikipedia.org/wiki/Dune_(2021_film), a [city](https://en.wikipedia.org/wiki/Kharkiv), a [person](https://en.wikipedia.org/wiki/Kurt_Vonnegut), an [animal](https://en.wikipedia.org/wiki/Raccoon)&quot;&gt;movie&lt;/a&gt; and trying to imagine the extraction of semi-formalized data, we might notice that a lot of semantically meaningful elements can be clearly identified as HTML elements (a list, a link, an image). There is a well-defined and widely used tool/language for information extraction from HTML: CSS selectors. Here would be an important &lt;strong&gt;principle 1: start from what is known for your users&lt;/strong&gt;, without reinventing the wheel: in WikipediaQL, usual CSS selectors like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;a.foo[href^=&quot;https://google.com&quot;]:first-of-type&lt;/code&gt; just work.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ wikipedia_ql -p Mini '.hatnote &amp;gt;&amp;gt; a'
+
+- Mini (marque)
+- Mini Hatch
+- Mini (disambiguation)
+- Cooper-S
+- Mini (Mark I)
+- Mini Moke
+- List of Mini limited editions
+- Mini concept cars
+- List of Mini-based cars
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;(This prints text of all links in the &lt;strong&gt;hatnote&lt;/strong&gt; see-also paragraphs from the “&lt;a href=&quot;https://en.wikipedia.org/wiki/Mini&quot;&gt;Mini&lt;/a&gt;” page. I’ll explain the logic behind &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;gt;&amp;gt;&lt;/code&gt; below.)&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Looking into it further, I identified that some of the elements are easily identifiable for human, but doesn’t have a representation in HTML: “it is in section ‘Discography’”, “it is somewhere in the first sentence”—so I have thrown in selectors like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;section&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sentence&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ wikipedia_ql --page &quot;Dune (2021 film)&quot; \
+  'section[heading=&quot;Critical response&quot;] &amp;gt;&amp;gt; sentence:contains(&quot;Rotten Tomatoes&quot;)'
+
+- On the review aggregator site Rotten Tomatoes, the film has an approval rating of
+  82% with an average rating of 7.60/10 based on 420 reviews.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Finally, no matter how well-structured the content is, a simple text search is a useful and frequently inevitable escape hatch. So I threw in a pseudo-selector &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;text&lt;/code&gt; (and its accompanying &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;text-group&lt;/code&gt;): it doesn’t correspond to any particularly identifiable element on the page but allows to &lt;em&gt;select&lt;/em&gt; some range of elements.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ wikipedia_ql --page Raccoon \
+  'text:matches(&quot;raccoons measure between (.+?) and (.+?) cm&quot;)'
+
+- raccoons measure between 40 and 70 cm
+
+$ wikipedia_ql --page Raccoon \
+  'text:matches(&quot;raccoons measure between (.+?) and (.+?) cm&quot;) &amp;gt;&amp;gt;
+   { text; text-group[group=1]; text-group[group=2] }'
+
+- raccoons measure between 40 and 70 cm
+- '40'
+- '70'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Principle 2: extend the recognizable base in a predictable way.&lt;/strong&gt; In early versions, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;text&lt;/code&gt; selector had an unfortunate form &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;text[&quot;pattern&quot;]&lt;/code&gt;. It was easy to write but hard to explain: it defied every habit about how selectors look in CSS. Since version 0.0.6, &lt;strong&gt;due to writing this explanations&lt;/strong&gt;, it is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;text:matches(&quot;pattern&quot;)&lt;/code&gt;—corresponding to CSS selector’s distinction of objectively-existing attribute and dynamic function, and removing the unseen in CSS selectors syntax &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;identifier[&quot;string&quot;]&lt;/code&gt;. This change, by the way, simplified the micro-language parser.&lt;/p&gt;
+
+&lt;p&gt;The important thing about selectors of various semantic layers is that they are compatible—so if you see “a link inside that sentence of that section”, you can just say so:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-27-wikipedia_ql/vonnegut.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Try it: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$ wikipedia_ql --page &quot;Kurt Vonnegut&quot; 'section[heading=&quot;Novels&quot;] &amp;gt;&amp;gt; li &amp;gt;&amp;gt; { a &amp;gt;&amp;gt; text as &quot;title&quot;; text:matches(&quot;\(.+?\)&quot;) as &quot;year&quot; }'&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Note that the sequence of selectors diverges from what’s normal for CSS: I believe that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parent child&lt;/code&gt; would be too confusing for a query language, making trivial typos in complex queries changing the semantics. I went through several approaches with this: started with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parent { child }&lt;/code&gt;, then for simplest cases introduced the shortcut &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parent &amp;gt;&amp;gt; child&lt;/code&gt;—it was inspired by XPath’s distinction if &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parent/immediate_child&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parent//any_child&lt;/code&gt;; so if in CSS selectors &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parent &amp;gt; immediate_child&lt;/code&gt; is a thing, I believed a stretch to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parent &amp;gt;&amp;gt; any_child&lt;/code&gt; should not be far from acceptable. &lt;strong&gt;While writing this article&lt;/strong&gt;, I’ve reviewed the system and simplified it to have &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;gt;&amp;gt;&lt;/code&gt; as the only way of nesting, leaving &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{}&lt;/code&gt; only for grouping.&lt;/p&gt;
+
+&lt;p&gt;So, let’s call it &lt;strong&gt;principle 3: diverge from usual when there is a good reason to, but try to do so in an explainable manner&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The efficient implementation of the multi-layered selector’s system wasn’t an easy task (and at these early stages, internally it is &lt;a href=&quot;https://github.com/zverok/wikipedia_ql/blob/v0.0.5/wikipedia_ql/fragment.py#L166&quot;&gt;quite&lt;/a&gt; &lt;a href=&quot;https://github.com/zverok/wikipedia_ql/blob/v0.0.5/wikipedia_ql/fragment.py#L81&quot;&gt;ugly&lt;/a&gt; &lt;em&gt;don’t look please don’t look why did you look&lt;/em&gt;), and I am perfectly fine with it. I am coming from Ruby, which has “complex language to write simple code” as one of its semi-official mottoes, and I can state that my &lt;strong&gt;principle 4 is consent that humane/natural API might be complex to implement&lt;/strong&gt;. As far as this complexity has clearly defined rules and is well-contained, it is acceptable.&lt;/p&gt;
+
+&lt;p&gt;That’s about the size of the language. As I’ve said: just a few syntax elements, most of them already familiar, and a dictionary of possible words that can grow with versions. &lt;em&gt;There are also a few parts related to multi-page fetching, but we’ll get to it later.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;But, to my mix of excitement and contempt, it is only a start of implementation complexity.&lt;/p&gt;
+
+&lt;h2 id=&quot;consent-to-internal-complexity&quot;&gt;Consent to internal complexity&lt;/h2&gt;
+
+&lt;p&gt;The visible simplicity of the language doesn’t necessarily imply the simplicity of the implementation. I want the query language to be useful, not just beautiful-for-demos. And this means we can’t avoid parts o the data that &lt;em&gt;should&lt;/em&gt; be simple to query, but the underlying structure makes them complex.&lt;/p&gt;
+
+&lt;p&gt;There are several parts of your typical Wikipedia page that have a simple mental model but a complex DOM model. Those are typically most formalized—and therefore most useful!—parts.&lt;/p&gt;
+
+&lt;p&gt;Take this climate table (I already briefly used it as an example in &lt;a href=&quot;https://zverok.substack.com/p/wikipediaql-1&quot;&gt;the previous article&lt;/a&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-27-wikipedia_ql/climate.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;How would you say “average low in January”? Or “all temperature values for January”? Or “daily mean for all months”? It should be simple, right?&lt;/p&gt;
+
+&lt;p&gt;So I started from the mental model: average low in January &lt;em&gt;should&lt;/em&gt; be pronounced (preserving all the language elements we made up above) somewhat like&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;tr[title=&quot;Average low °C (°F)&quot;] &amp;gt;&amp;gt; td[column=&quot;Jan&quot;]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Or maybe even &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;td[row=&quot;Average low °C (°F)&quot;][column=&quot;Jan&quot;]&lt;/code&gt;, why not.&lt;/p&gt;
+
+&lt;p&gt;And in WikipediaQL, this works:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-27-wikipedia_ql/climate_query.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Try it: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$ wikipedia_ql -p Kharkiv 'section[heading=&quot;Climate&quot;] &amp;gt;&amp;gt; table &amp;gt;&amp;gt; table-data &amp;gt;&amp;gt; td[row=&quot;Average low °C (°F)&quot;] &amp;gt;&amp;gt; td &amp;gt;&amp;gt; { @column as &quot;column&quot;; text as &quot;value&quot; }'&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Note the pseudo-element &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;table-data&lt;/code&gt; in the query. &lt;em&gt;That’s where the magic happens&lt;/em&gt;— Except that I hate this phrase and tools pretending that something happened magically, without the user of tool &lt;em&gt;needing to think of it&lt;/em&gt; (read: or understanding what’s going on, or understanding where to look if something is broken).&lt;/p&gt;
+
+&lt;p&gt;That’s why there &lt;em&gt;is&lt;/em&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;table-data&lt;/code&gt; pseudo-element: it is an explicit statement to prepare a DOM structure that would be “natural” to navigate. I am still thinking about this balance between natural and explicit. (One of the problems, say, that if you use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[column=...]&lt;/code&gt; selector without applying &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;table-data&lt;/code&gt; before, you’ll see no data at all. That probably can be handled on a query pre-processing stage: all in all, no element could have &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;row&lt;/code&gt;/&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;column&lt;/code&gt; attrs unless they are inside the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;table-data&lt;/code&gt;.)&lt;/p&gt;
+
+&lt;p&gt;In its current implementation, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;table-data&lt;/code&gt; table reflowing “selector” does much more than just attaching &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;row&lt;/code&gt;/&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;column&lt;/code&gt; attribute (if it would be just for that, maybe that could’ve been done by default). Consider this table—that’s how the TV shows episodes are typically rendered:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-27-wikipedia_ql/bebop.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Note how the full-row-cell with episode synopsis is “logically” just a long cell belonging to the previous row. At the same time, it is completely regular—and defies any generic table parser. But not WikipediaQL, you know :)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-27-wikipedia_ql/bebop_query.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Try it: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$ wikipedia_ql -p &quot;Cowboy Bebop (2021 TV series)&quot; 'section[heading=&quot;Episodes&quot;] &amp;gt;&amp;gt; table &amp;gt;&amp;gt; table-data &amp;gt;&amp;gt; tr &amp;gt;&amp;gt; { td[column=&quot;Title&quot;] as &quot;title&quot;; td:last-child as &quot;synopsys&quot; }'&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;table-data&lt;/code&gt; catches this known in Wikipedia pattern of using full-row table cell and just attaches it to the previous row instead. Several other things are done in table reflowing: some of them are of generic use (normalizing joined columns and rows), some other Wikipedia-specific, see the &lt;a href=&quot;https://github.com/zverok/wikipedia_ql/blob/main/docs/Tables.md&quot;&gt;full and growing list&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;It is complicated. It is irritatingly heuristic and works only for formatting approaches that I deduced to be frequent in Wikipedia. But it is also &lt;em&gt;contained&lt;/em&gt; in &lt;a href=&quot;https://github.com/zverok/wikipedia_ql/blob/v0.0.5/wikipedia_ql/tables.py&quot;&gt;one module&lt;/a&gt; (&lt;em&gt;don’t look there either&lt;/em&gt;), and pluggable in a singular selector. I hope it to be a seed of a &lt;em&gt;contained extensibility&lt;/em&gt; of the query language.&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-next&quot;&gt;What’s next?&lt;/h2&gt;
+
+&lt;p&gt;The unticked boxes in my README-aka-TODO are still numerous, but the high-level plan is simple:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Extend dictionary of supported selectors/concepts for some time: we need at the very least &lt;a href=&quot;https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Infoboxes&quot;&gt;infoboxes&lt;/a&gt; and &lt;a href=&quot;https://en.wikipedia.org/wiki/Wikipedia:Hatnote&quot;&gt;hatnotes&lt;/a&gt;; most probably, some of the other formalized elements, like &lt;a href=&quot;https://en.wikipedia.org/wiki/Wikipedia:Categories,_lists,_and_navigation_templates#WP:NAVBOX&quot;&gt;navboxes&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Make the selectors and their features that emerged work consistently and predictably with each other (for example, currently you can’t say &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sentence:first&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;li:matches(&quot;regexp&quot;)&lt;/code&gt;—but you definitely should be able to!)&lt;/li&gt;
+  &lt;li&gt;Improve handling of multi-page queries: even today, WikipediaQL has &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-&amp;gt;&lt;/code&gt; link-following operator, but there is a lot more to be done with multi-page fetching&lt;/li&gt;
+  &lt;li&gt;Stop, look at what I have, polish it, formalize, optimize and document.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;One of the end goals here is to have code structured, described, and formalized in a way that will make porting it into other languages easy. I am interested in following the idea of the “query language for Wikipedia”, and if it is worth the attention, also making it &lt;em&gt;followable&lt;/em&gt; by others.&lt;/p&gt;
+
+&lt;p&gt;Honestly, I don’t want WikipediaQL to be a monstrous “framework” to build through many years. I want it reasonably finished and reasonably useful in the next 4-6 weeks.&lt;/p&gt;
+
+&lt;p&gt;Now, I wonder whether this development journey seems to be an interesting read; will several more emails about how it goes be welcome? (Honestly feeling a bit embarrassed to expose my development/thinking process… like some weird kind of OnlyFans, but for OSS development.) &lt;strong&gt;So, please don’t hesitate to give honest feedback, if you have any!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;give-it-a-try&quot;&gt;Give it a try&lt;/h3&gt;
+
+&lt;p&gt;Just&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ pip install wikipedia_ql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;…and try some of the examples from above, or invent your own?&lt;/p&gt;
+
+&lt;iframe src=&quot;https://zverok.substack.com/embed&quot; width=&quot;480&quot; height=&quot;320&quot; style=&quot;border:1px solid #EEE; background:white;&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+</description>
+        <pubDate>Thu, 27 Jan 2022 00:00:00 +0000</pubDate>
+        <link>https://zverok.space/blog/2022-01-27-wikipedia_ql-phrases.html</link>
+        <guid isPermaLink="true">https://zverok.space/blog/2022-01-27-wikipedia_ql-phrases.html</guid>
+        
+        
+        <category>opendata</category>
+        
+        <category>wikipedia</category>
+        
+        <category>python</category>
+        
+      </item>
+    
+      <item>
+        <title>Programming language evolution: with all that, we are still flying</title>
+        <description>&lt;p&gt;&lt;strong&gt;Final part of adventures in understanding, explaining, and challenging the facts that should be obvious.&lt;/strong&gt;&lt;br /&gt; (&lt;a href=&quot;/blog/2022-01-06-changelog.html&quot;&gt;Part 1&lt;/a&gt; → &lt;a href=&quot;/blog/2022-01-13-it-evolves.html&quot;&gt;Part 2&lt;/a&gt; → &lt;strong&gt;Part 3&lt;/strong&gt;)&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;This article is written for my &lt;a href=&quot;https://zverok.substack.com/&quot;&gt;Substack&lt;/a&gt;, you can subscribe to it by email now!&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;em&gt;In the previous two parts, I described how working on Ruby’s changelog made me imagine I understand language’s logic and intentions behind it. Then, that fantasy brought me to participate more insistently in language development. And then, that participation made me suffer when several aspects of Ruby 2.7 evolution hasn’t developed the way I expected—and in one case, an important feature was reverted a couple of months before the final release.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I was devastated. Probably it all wouldn’t bear that much significance for me, would I consider the programming language as just a bag of convenience features thrown together: one feature less, one feature more, one feature doesn’t look like others, who cares?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;What always amazed me in Ruby is the feeling of a very small core of informal rules—let’s say &lt;em&gt;intuitions&lt;/em&gt;—that everything else followed.&lt;/strong&gt; You could’ve uncovered behaviors without explicitly looking for them in the docs, just by assuming that what’s intuitively right would work. And a lot of my work in the Ruby community was dedicated to those intuitions: sharing them with others in my roles of a mentor and senior/principal developer; documenting them; and—yes—trying to push them further, to make small parts of the language as short and clear as they &lt;em&gt;intuitively should’ve been&lt;/em&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Spoiler alert: this year, a small(ish) book of mine, called—you guessed!—”Ruby Intuitions” is in development. It is still in the early stages, but I really hope I can lift it off.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;That’s why I was sad about what happened. It didn’t feel like a rejection of “just some feature I liked” (I had plenty of such rejections and was totally OK with them), but rather that my imaginary alignment with the intentions of Ruby core developers was broken. Either my understanding of the aforementioned intuitions was loose, or—and I imagined that being the case—language development ceased to be coherent; now it is “every core member for themselves,” and I don’t have a place in this carnival, and don’t want to.&lt;/p&gt;
+
+&lt;p&gt;I proudly proclaimed I was done with Ruby and moving forward. But it couldn’t happen immediately due to several factors—and eventually, it didn’t happen at all. Which turned out to be a good thing.&lt;/p&gt;
+
+&lt;h3 id=&quot;making-peace&quot;&gt;Making peace&lt;/h3&gt;
+
+&lt;p&gt;The decision to “be done with Ruby” came in an awkward moment: I was in the final stages of preparation for talking at &lt;a href=&quot;https://rubyconf.org/2019/program.html#session-871&quot;&gt;RubyConf Nashville&lt;/a&gt;—my first time at &lt;em&gt;The&lt;/em&gt; RubyConf, first time in the U.S. (and, as it turned out later, my last talk on the in-person conference).&lt;/p&gt;
+
+&lt;p&gt;Even worse: the talk I worked on summarized my views on Ruby’s evolution and future, and the new “method reference operator” was one of the central points in it! To add insult to injury, the reverting discussion started three weeks before the conference and ended (with reverting confirmed) one week before it.&lt;/p&gt;
+
+&lt;p&gt;Maintaining a talk plan/slides (and my sanity) during those weeks was not an easy task: I needed to ensure my ideas were still relevant regardless of the recent development. I also needed to maintain a light and constructive tone of the talk, which I mostly did—though I couldn’t keep myself from pasting the random photo I made from the window of Georgia-Nashville Greyhound:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-20-still-flying/falls.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=iMBqqjkbvl4&quot;&gt;The talk&lt;/a&gt; flopped. Not even in a catastrophic way, rather it was “Nobody cared enough to even tweet about it” offensive way. But that’s not the point, because—&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;At the conference, I had several important conversations, but most importantly—I had an opportunity to reconcile with the latest events in Ruby evolution.&lt;/strong&gt; For that, I just needed to talk to Yukihiro Matsumoto—Matz—openly (and I did!), and listen to his &lt;a href=&quot;https://www.youtube.com/watch?v=2g9R7PUCEXo&quot;&gt;talk&lt;/a&gt; and &lt;a href=&quot;https://www.youtube.com/watch?v=vqpNmaEDn-o&quot;&gt;Q&amp;amp;A&lt;/a&gt; (and I did!).&lt;/p&gt;
+
+&lt;p&gt;That brought me two insights into the unexpected turns in development.&lt;/p&gt;
+
+&lt;p&gt;For one, the &lt;strong&gt;method reference operator’s reversal&lt;/strong&gt; was initiated not by one of the core team members due to gate-keeping of the language becoming “too functional” (that’s how it &lt;a href=&quot;https://bugs.ruby-lang.org/issues/16275&quot;&gt;looked in the tracker&lt;/a&gt;), but by Matz himself—he never liked how the feature &lt;em&gt;looked&lt;/em&gt; (“looked like Braille to me!”).&lt;/p&gt;
+
+&lt;p&gt;In the same way, &lt;strong&gt;pattern-matching&lt;/strong&gt; wasn’t just a one-person project merged in an inexplicable rush: it was discussed &lt;em&gt;and redesigned&lt;/em&gt; by Matz to match the rest of the language.&lt;/p&gt;
+
+&lt;p&gt;Those two simple discoveries made me rethink my disenchantment. Not of mindless fanboyism “oh, if Matz said so, it is good!” I just understood that &lt;strong&gt;the internal consistency/coherence of the language is still deeply cared about; and yes—I trust Matz’s &lt;em&gt;intuitions&lt;/em&gt; a lot. Even if I am still, to the day, unhappy about not having method references—I hope one day we’ll find a way to express them better; maybe, with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.:&lt;/code&gt; syntax, it would just become the hated feature nobody uses.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;and-moving-forward&quot;&gt;…and moving forward&lt;/h3&gt;
+
+&lt;p&gt;Soon, I was able to check the new understanding of the coherence still being maintained. It happened during work on &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.7.html&quot;&gt;that year’s changelog&lt;/a&gt; (we started from changelogs, you remember?).&lt;/p&gt;
+
+&lt;p&gt;As usual, working on the changelog gave me mixed feelings. I was happy to describe &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.7.html#beginless-range&quot;&gt;several&lt;/a&gt; &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.7.html#better-methodinspect&quot;&gt;features&lt;/a&gt; &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.7.html#comparableclamp-with-range&quot;&gt;that&lt;/a&gt; &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.7.html#enumeratorproduce&quot;&gt;grew&lt;/a&gt; of my proposals. I was curious and energetic to understand better some features and the reason for their changes. I was mildly irritated with new/changed features lacking documentation updates (but just sighed and got to work).&lt;/p&gt;
+
+&lt;p&gt;But I was totally stunned to find out that the two new big features—numbered block arguments and pattern-matching—got no docs at all! So, eventually, I had to document them, too, suppressing my inner resistance to their design. &lt;em&gt;Pattern-matching docs were submitted even later than the release date—till the end, I couldn’t believe nobody else works on documentation and didn’t want to duplicate efforts… but alas, it was back to me again.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;And it turned out to be an ultimately good thing for me.&lt;/p&gt;
+
+&lt;p&gt;Because, while trying to document the pattern matching, I caught myself doing this: I looked into the initial description of the feature on the tracker; then, I wrote draft docs with assumptions of what examples will make sense and how they should work; then, I started to really run the examples to check my assumptions.&lt;/p&gt;
+
+&lt;p&gt;And you know what? Most of the time (save for minor things), my first guess of “how it should be possible to express” and “what it should produce” were completely right. The drafty code (and approximate output) that I just guess-imagined was the real code (and the real output) that worked.&lt;/p&gt;
+
+&lt;p&gt;It didn’t mean I am a genius with extrasensory abilities. &lt;strong&gt;It just meant that at the end of the day, pattern-matching is integrating naturally with language and its intuitions.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;And that’s how working on that year’s changelog/docs gave me back peace of mind and appreciation for the language I am fond of.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;And I needed that peace of mind when, after a month of back and forth and describing all the details, the docs were &lt;a href=&quot;https://github.com/ruby/ruby/pull/2786&quot;&gt;finally merged&lt;/a&gt;. I proudly proclaimed the work done, and the very first Reddit comment was: “These docs are pretty horrible.”&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;But I was mostly undisturbed. I knew what I do and why it should be done and felt useful and ready for whatever happens to the language next. Next year, “whatever” promptly started to happen.&lt;/p&gt;
+
+&lt;h2 id=&quot;you-know-nothing&quot;&gt;You know nothing&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;The one where a routine task of describing and documenting Ruby 3.0 poses a challenge and requires a level-up (December 2020).&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I haven’t participated much in the Ruby development/discussions during the preparation of the Big Three-Point-Oh due to a number of reasons (the residual offense was one of them, but not the main—it was 2020, after all!). I still followed the development from a distance and assumed I had a pretty clear idea of how much work there would be in December—when preparing the changelog and updating docs for new features. I was (habitually) wrong in those assumptions.&lt;/p&gt;
+
+&lt;p&gt;There was a bunch of small(ish) nice things that lacked their respective docs (like new &lt;a href=&quot;https://github.com/ruby/ruby/pull/3997&quot;&gt;method definition syntax&lt;/a&gt;), but also &lt;strong&gt;there were two new concurrency primitives I needed to wrap my head around: &lt;a href=&quot;https://docs.ruby-lang.org/en/3.0/doc/ractor_md.html&quot;&gt;Ractors&lt;/a&gt; (Ruby’s take on actors/isolated threads) and &lt;a href=&quot;https://bugs.ruby-lang.org/issues/16786&quot;&gt;non-blocking Fibers&lt;/a&gt; (Ruby’s take on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;async&lt;/code&gt;)&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now, to put a final point in the demolition of whatever reputation I had, I should acknowledge that I don’t possess a deep knowledge of concurrency/parallelism. By day, I am a fairly traditional web developer of Rails-based, mostly business-related code. In my OSS maintainer suite, I am interested in open data, development tools, and small idiomatic libraries. Neither of those typically required to write a lot of concurrent/parallel code on a daily basis. So… I have a solid understanding of the bases, but it is not as nuanced as I’d liked to have—especially that year.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;To describe new features in the changelog, I need to take them close to my heart. To write some code that demonstrates feature’s usage—and demonstrates meaningfully, not only “how it works”, but also “why would you use it.” I need to be sure I really &lt;em&gt;get it&lt;/em&gt; before explaining.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;If only I had enough documentation for those features to rely upon! To be fair, neither was &lt;em&gt;completely&lt;/em&gt; undescribed, but descriptions provided by respective authors were by means of &lt;a href=&quot;https://docs.ruby-lang.org/en/3.0/doc/ractor_md.html&quot;&gt;design&lt;/a&gt; &lt;a href=&quot;https://docs.ruby-lang.org/en/3.0/doc/fiber_md.html#label-Scheduler&quot;&gt;documents&lt;/a&gt; in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;doc/&lt;/code&gt; folder, that weren’t integrated tightly with the corresponding modules. To make it more challenging, the non-blocking Fibers is a unique feature relying on the user to implement some interface, so you can’t “just” run it to experiment (changelog—in the end—&lt;a href=&quot;https://rubyreferences.github.io/rubychanges/3.0.html#non-blocking-fiber-and-scheduler&quot;&gt;explains it all in details&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Of course, I took the challenge of fully understanding and documenting both: “whatever it takes,” right? Even if it takes to become quickly and intimately familiar with ruby core’s approach to an area of CS I lacked a clear knowledge about. I managed to, in the end, document both: &lt;a href=&quot;https://docs.ruby-lang.org/en/3.0/Ractor.html&quot;&gt;Ractor&lt;/a&gt;, and &lt;a href=&quot;https://docs.ruby-lang.org/en/3.0/Fiber/SchedulerInterface.html&quot;&gt;Fiber::SchedulerInterface&lt;/a&gt;, and participated in a lot of design/edge case discussions on the road.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;I would never pull it up without the enormous help of two people: ruby-core member &lt;a href=&quot;https://github.com/marcandre&quot;&gt;Marc-André Lafortune&lt;/a&gt; who worked with me side-by-side on documentation merging and feature discussion, and my long-time friend and mentor Alexey Makhotkin, who was the first reader and ruthless editor of the first attempt to document things I am yet to understand (he writes &lt;a href=&quot;https://minimalmodeling.substack.com/&quot;&gt;an awesome Substack on database modeling&lt;/a&gt;, go check it).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Cutting the already long story, there was an important lesson for me in that year’s adventures (besides becoming a bit more versed in concurrency primitives). I can say even that I gathered some deeper understanding into a (part of) the nature of the Ruby development. If I try to formulate it in one phrase, it would be: &lt;strong&gt;there is no higher authority of the small things&lt;/strong&gt;. Or: there is no “them” who will take care of small-scale consistency and per-method docs. There is only “us.” At least that’s how it is in the Ruby community, and despite sounding at times like a grumpy old man, I see a great justice and wholesomeness in how things are.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-20-still-flying/wait-it-is.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Even if you are slightly jealous about the authors of “real features” who gets praised after the release, you should carry on.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;with-all-this-we-are-still-flying&quot;&gt;With all this, we are still flying&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;The one where the author doesn’t give up, works on the changelog for Ruby 3.1, and looks into the future (Dec 2021-Jan 2022)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“I am a leaf on the wind. Watch how I soar.”—Hoban “Wash” Washburne&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;My friends—those unlucky enough to know what Ruby is—could testify I’ve promised to stop caring about Ruby for many years now. Some of the community, too, witnessed my grumpy ramblings about the current state of affairs and doomsaying of the near future.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;It is not that I was unhappy with the language itself. Rather, I believed (and to some extent, still do) that the language is underused and underappreciated for the things it fits best—teaching, experimenting, prototyping, playing—and overused for things it wasn’t designated (large apps development).&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This situation seems to distort the language’s reputation. The qualities that shouldn’t be central for expressive dynamic language (performance and robustness) are widely discussed, criticized, defended, improved, and criticized again. At the same time, the qualities that are important to me—small and coherent core, leaning on several explicit intuitions, phrase-level clarity, and pliability—are brushed off as secondary for “the real work.”&lt;/p&gt;
+
+&lt;p&gt;When I started to submerge into Ruby’s development process, its visible informality and “homemadeness” were initially perceived as just another sign of nearing doom. “Is it just me, or does nobody care anymore?” was my thinking.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“Just compare the process some similar language has,” I might’ve cried, “take Python: they have feature-freeze several months before the release!” And when they introduced pattern-matching—just a year after Ruby—it was the &lt;a href=&quot;https://mail.python.org/archives/list/python-committers@python.org/thread/SQC2FTLFV5A7DV7RCEAR2I2IKJKGK7W3/&quot;&gt;first and explicit goal&lt;/a&gt; to have it widely discussed beforehand and extensively documented on release.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;After a few years, with not a small amount of personal struggles behind, I understood this initial impression was wrong. That’s why I started to write this big three-part text about the changelog—not really about the changelog, after all.&lt;/p&gt;
+
+&lt;p&gt;The text is turned out to be rather about the changing language. And its way of keeping balance, or—keeping in the air.&lt;/p&gt;
+
+&lt;p&gt;The balance between those who love the language for its expressiveness and constantly want to take it further—and those using it for building large apps and looking for performance and robustness. The balance between coherence and humanity. The balance between keeping pace and maintaining altitude.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;And I now believe the highly informal, decentralized (almost aggressively so) development process is instrumental in keeping true to &lt;em&gt;this&lt;/em&gt; language. It might bring frustration and sudden turns and might seem “broken” for those striving for more controlled environments—but that’s the process that is keeping us airborne.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The language is still here and still evolving. And I am still here and still proud of being part of this evolution. The &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/3.1.html&quot;&gt;3.1’s changelog&lt;/a&gt; was published the day I’ve started the first part of this big text, and I &lt;a href=&quot;https://twitter.com/zverok/status/1482997291975860229&quot;&gt;became a Ruby committer&lt;/a&gt; the day I am finishing the last part. After all, I am happy to be a small wind under the wing of this aircraft.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;But I need to keep my balance too. After last month and a half almost fully dedicated to Ruby’s release, the changelog, and this text, I’ll be switching back for my &lt;a href=&quot;https://zverok.substack.com/p/wikipediaql-1&quot;&gt;investigations of Wikipedia&lt;/a&gt; and open data next week. Stay tuned.&lt;/em&gt;&lt;/p&gt;
+
+&lt;iframe src=&quot;https://zverok.substack.com/embed&quot; width=&quot;480&quot; height=&quot;320&quot; style=&quot;border:1px solid #EEE; background:white;&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+</description>
+        <pubDate>Thu, 20 Jan 2022 00:00:00 +0000</pubDate>
+        <link>https://zverok.space/blog/2022-01-20-still-flying.html</link>
+        <guid isPermaLink="true">https://zverok.space/blog/2022-01-20-still-flying.html</guid>
+        
+        
+        <category>ruby</category>
+        
+        <category>development</category>
+        
+        <category>philosophy</category>
+        
+      </item>
+    
+      <item>
+        <title>Following the programming language evolution, and taking it personally</title>
+        <description>&lt;p&gt;&lt;strong&gt;Further adventures in understanding, explaining, and challenging the facts that should be obvious.&lt;/strong&gt;&lt;br /&gt; (&lt;a href=&quot;/blog/2022-01-06-changelog.html&quot;&gt;Part 1&lt;/a&gt; → &lt;strong&gt;Part 2&lt;/strong&gt; → &lt;a href=&quot;/blog/2022-01-20-still-flying.html&quot;&gt;Part 3&lt;/a&gt;)&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;There are characters in me who do not talk to each other who fill each other with grief
+who have never dined at the same table&lt;br /&gt; […]
+but I with all of my characters go on caring for you&lt;br /&gt;
+— Garous Abdolmalekian, as heard on &lt;a href=&quot;https://www.slowdownshow.org/episode/2021/03/26/395-characters&quot;&gt;The Slowdown, ep. 395&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;I deeply believe in language’s evolution that is unstoppable, inevitable, and perpetual. Be it the human language or programming language—all the same.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;However, this is not a universally accepted truth in many programming language communities. Especially for mature, widely-used languages like Java, Python, Ruby, and especially when the language is considered good by its users (unlike old PHP or old JS), many syntax/API changes are frowned upon. &lt;em&gt;Improving the implementation? Yes, everybody wants it faster, more stable, support more platforms; also, concurrency. But changing the language? What for? The language was already good three (four, five) versions ago; every new syntax is just an unnecessary syntactic sugar!&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;That’s not how I see it. &lt;strong&gt;With years, I understood my main motive for writing the &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/&quot;&gt;changelogs for Ruby&lt;/a&gt;: to put changes in the context, to try explaining how they logically follow from existing &lt;em&gt;language intuitions&lt;/em&gt;, and how they invoke the urge for the next changes.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Working on changelogs, though, brought a lot to discover and understand about Ruby’s development process. And now I am telling this story.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;This article is written for my &lt;a href=&quot;https://zverok.substack.com/&quot;&gt;Substack&lt;/a&gt;, you can subscribe to it by email now!&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;never-look-back-you-should&quot;&gt;Never look back you should&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;The one where changelogs for older Ruby 2.4 and 2.5 are created, and some things become clearer about the Ruby development process (spring-summer 2019).&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;After my &lt;a href=&quot;/blog/2022-01-06-changelog.html&quot;&gt;experiences with Ruby 2.6 changelog&lt;/a&gt;, I somehow got the idea it would be interesting to do the same for the last version of the language before 2.5; then, the version before it. I really don’t remember how this idea got born.&lt;/p&gt;
+
+&lt;p&gt;Ruby community, mostly, is just 1-2 versions behind the trunk (and it is encouraged by previous versions becoming EOL soon). However, from looking at others’ code and discussions, I noticed many people are still not aware of newer-but-not-that-new language features. Maybe I wanted to improve this situation, to provide contexts and descriptions. Maybe I felt my own understanding of the language would be improved (it was!). Maybe, I wanted to catch insights on the development process and to see whether it is always as rough at the edges as during 2.6.&lt;/p&gt;
+
+&lt;p&gt;Or maybe, as one old sci-fi author said, after all the work on parts of big systems, you just want to see something concrete done by your own hands—even if it is as inconsequential as a pile of clean plates. Or, a changelog for an old version of your programming language.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Anyway, while doing changelogs for &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.5.html&quot;&gt;2.5&lt;/a&gt; (released in 2017), and &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.4.html&quot;&gt;2.4&lt;/a&gt; (2016), there were many things to learn—again.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The quiet evolution of changes became obvious: when you have a perspective of several versions worth of changes at once, you can see how the mind of the language developers travels—the precious effect of “when introduced, this feature made us think of…”. I added a “&lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.4.html#warning-module&quot;&gt;Follow-up&lt;/a&gt;” item to some changelog features, exposing the effect.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-13-it-evolves/follow-ups.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Some &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.4.html#chomp-option-for-string-splitting&quot;&gt;features&lt;/a&gt; discovered in the older version were unfamiliar to me, despite their obvious usefulness. Yes, because they weren’t documented at the time of the introduction. (And yes, I &lt;a href=&quot;https://github.com/ruby/ruby/pull/2612/files#diff-430d86fdb6c4a558ab0f1b6648bbfae1720e8bde84f026e95a52740014752040R8377&quot;&gt;fixed&lt;/a&gt; &lt;a href=&quot;https://github.com/ruby/ruby/pull/2615/files#diff-409e35b5049888d5d4b3f2fb8ddb3322e27e1dd47b1e7b7e8b6f52b696f287b7R1291&quot;&gt;that&lt;/a&gt;.) The big picture started to reveal itself, the features and syntaxes playing together and their consequences being exposed. This vision made me bolder in proposing some more significant features—several I am still proud of &lt;a href=&quot;https://bugs.ruby-lang.org/issues/14784&quot;&gt;got&lt;/a&gt; &lt;a href=&quot;https://bugs.ruby-lang.org/issues/14799&quot;&gt;accepted&lt;/a&gt; in Ruby 2.7, which was in development that year. In one case, a questionable feature received a more sane alias in 2.5 and planned to be deprecated after that—but somehow, it wasn’t. You bet, I &lt;a href=&quot;https://bugs.ruby-lang.org/issues/15893&quot;&gt;opened a ticket&lt;/a&gt;, and it was finally deprecated in 2.7 and removed in 3.0.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Looking back at the near history of your language turned out to be beneficial both for me and for the language. It also gives some insight into how the development process works—and in Ruby’s case, I corroborated the previous half-formed feeling of “homemade-ness.”&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;However unconventional, the process still produced high-quality core consistency but definitely lacked some housekeeping. Contributors came and went, some bringing much more improvement in a month than I did in the last four years. The core team worked hard on the, well, the core. But the whole process was—and still is—highly informal, and there was no single person, less the group, responsible for checking the docs, following up on old deprecations, and evaluating how small improvements looked together.&lt;/p&gt;
+
+&lt;p&gt;So, almost accidentally and reluctantly, I became this person. Or so I imagined.&lt;/p&gt;
+
+&lt;h2 id=&quot;all-my-puny-sorrows&quot;&gt;All my puny sorrows&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;One where nothing goes as planned during the development of Ruby 2.7, and the author questions his commitment (Nov-Dec 2019)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The year 2019 was hard on me, in more than one way, but in the context of perception of my place in Ruby development too.&lt;/p&gt;
+
+&lt;p&gt;It started to look extremely promising for me: after publishing three changelogs (appreciated by the community), merging lots of documentation improvements, and participating/initiating the design of several new features, I felt being at the right place now. I wasn’t—and didn’t want to be—one of the decision-makers, but I felt—as always wanted—just a part of the evolution. I was bringing small additional angles to the shared perspective and was aligned with the core team enough for those angles to match their vision.&lt;/p&gt;
+
+&lt;p&gt;But then, a few unexpected things happened.&lt;/p&gt;
+
+&lt;p&gt;It was a big year for Ruby’s development. Next year—2020, “year of Tokyo Olympics” (little did we know!)—was designated for 3.0 release. &lt;strong&gt;And the 2019th version 2.7 was the last version before that, making it informally the last version to introduce some experimental ideas.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;taking-offense-for-method-references&quot;&gt;Taking offense for method references&lt;/h3&gt;
+
+&lt;p&gt;One of those new ideas especially dear to me: method references. The thing is, in many languages like Python and JS, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo.bar()&lt;/code&gt; is the method/function call, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo.bar&lt;/code&gt; is a reference to a method that can be stored in variables, sent to other methods, etc.&lt;/p&gt;
+
+&lt;p&gt;In Ruby, with its flexible syntax, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo.bar&lt;/code&gt; is already a call. There are good reasons for that, but it leaves the question “how do I get the reference to a method as a value” unanswered. For years, the best we could do was &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo.method(:bar)&lt;/code&gt;. It might even be considered logical, but not that convenient:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# read every file, usual way:&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'README.md'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Changelog.md'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'version.txt'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# read every file, try to DRY it with a method:&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'README.md'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Changelog.md'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'version.txt'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The second version is somewhat purer (no intermediate block to define, no local variable to name) but still wordy. For years, there were discussions about the method reference operator, which I personally was pushing for. Finally, before the 2.7 release, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.:&lt;/code&gt; form was chosen, making this possible:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'README.md'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Changelog.md'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'version.txt'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I was happy and started to write blog posts about it… But then, things got off the tracks—or that’s how it felt at that time. After lengthy discussions and iterations, another similar feature was merged—anonymous block arguments. This became possible too:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'README.md'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Changelog.md'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'version.txt'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It made me suspect that of two somewhat “competing” features in 2.7, allowing for shorter blocks, the anonymous block arguments will take more attention and overshadow method references—while the latter is much more important and consequential!&lt;/p&gt;
+
+&lt;p&gt;But it became worse quickly: &lt;strong&gt;the method references feature &lt;a href=&quot;https://bugs.ruby-lang.org/issues/16275&quot;&gt;was reverted&lt;/a&gt;&lt;/strong&gt;—and it was communicated in a way that made me feel offended! Like, &lt;em&gt;one&lt;/em&gt; of the core team members didn’t like it, and everybody else was just indifferent… And that did it for the feature I considered the most important in the release! How’s that for “being aligned with the core team”?&lt;/p&gt;
+
+&lt;h3 id=&quot;taking-offense-for-pattern-matching&quot;&gt;Taking offense for pattern-matching&lt;/h3&gt;
+
+&lt;p&gt;I was heartbroken, but it wasn’t even the last grief of the year. Another one—or what at the time felt like one—was pattern-matching merging.&lt;/p&gt;
+
+&lt;p&gt;I, as many of us, dreamed about “proper” pattern-matching in Ruby for a long time. In fact, my Ruby-dedicated blog was once started with an &lt;a href=&quot;https://zverok.github.io/blog/2015-07-18-matchish.html&quot;&gt;experiment in implementing it&lt;/a&gt; at a library level. I &lt;a href=&quot;https://zverok.github.io/blog/2018-06-26-pattern-matching.html&quot;&gt;returned to the questions&lt;/a&gt; &lt;a href=&quot;https://bugs.ruby-lang.org/issues/14709&quot;&gt;many times&lt;/a&gt;—as did others. As with method references, the potential syntaxes were discussed in the issue tracker, twitters, blogs, &lt;a href=&quot;https://rubykaigi.org/2017/presentations/yotii23.html&quot;&gt;even conferences&lt;/a&gt; for many years.&lt;/p&gt;
+
+&lt;p&gt;And then, out of the blue—&lt;em&gt;or so it felt&lt;/em&gt;—&lt;strong&gt;some pattern-matching syntax was &lt;a href=&quot;https://bugs.ruby-lang.org/issues/14912&quot;&gt;just merged&lt;/a&gt; during Ruby 2.7 development&lt;/strong&gt;. It seemed neat. It appeared even similar to my latest &lt;a href=&quot;https://zverok.github.io/blog/2018-06-26-pattern-matching.html&quot;&gt;published ideas&lt;/a&gt; of how it should look¹.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-13-it-evolves/pm-merged.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;¹I am happy to believe it &lt;em&gt;was&lt;/em&gt; affected by my ideas… At least I know Matz has read/retweeted that article. But I can’t say it for sure: all in all, I didn’t try to &lt;em&gt;invent&lt;/em&gt; something, I tried to guess what would be &lt;em&gt;natural&lt;/em&gt;, so it might be just a coincidence.&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;But also, it was merged without any discussion with the community, didn’t seamlessly integrate with the rest of the language (pattern is not an object you can put into a variable/constant, for example). Oh, and it looked, again, as “one of the core developers invented it, and it was immediately merged.”&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;A lot of decision-making about Ruby is made in offline core team meetings—in Japan and in the Japanese language. And while the process became much more open in the latest years, non-Japanese Rubyists (me included) are sometimes too quick to infer that “they” are deciding everything without “us”.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;So… Yeah, I became offended again.&lt;/p&gt;
+
+&lt;h3 id=&quot;making-peace-and-moving-forward&quot;&gt;Making peace and moving forward&lt;/h3&gt;
+
+&lt;p&gt;What would you do? What would you feel? I felt like some great understanding I worked hard for was slipping away. That feeling of “solid core, maybe rough edges” started to dissolve: I doubted the core is solid anymore, with syntax elements this important decided on a whim.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Of course, I was wrong—twice wrong, one might say: both in my quick conclusion about the direction of the language lost and in having feelings this strong about it.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Some might say it is wrong to have &lt;em&gt;any&lt;/em&gt; feelings about the software you develop or projects you participate in—but that’s what I do. Writing code is a big part of my life; I take pride in what I do, and I approach it with my “true self,” and most of the time, I &lt;em&gt;am&lt;/em&gt; efficient due to this approach.&lt;/p&gt;
+
+&lt;p&gt;But of course, feeling offended by the decisions of others instead of trying to understand is never good for you. Thankfully, meditation helps. And an intention to &lt;em&gt;always&lt;/em&gt; try to understand things helps, too. And that’s what I do—both in my professional and personal life.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;It took me several months to adjust my mental image of how things are &lt;em&gt;now&lt;/em&gt; in Ruby. And it will take me one more week to finish the story of how it happened. Next week’s part will describe my meeting with Matz at RubyConf Nashville, finishing of Ruby 2.7 changelog, struggle with documenting the new and shiny pattern-matching, and moving forward towards Ruby 3.0 and 3.1—which posed their own challenges.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;I hope I keep you entertained with this weird over-sharing kind of development write-ups. And I’ll be happy for any feedback.&lt;/em&gt;&lt;/p&gt;
+
+&lt;iframe src=&quot;https://zverok.substack.com/embed&quot; width=&quot;480&quot; height=&quot;320&quot; style=&quot;border:1px solid #EEE; background:white;&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+</description>
+        <pubDate>Thu, 13 Jan 2022 00:00:00 +0000</pubDate>
+        <link>https://zverok.space/blog/2022-01-13-it-evolves.html</link>
+        <guid isPermaLink="true">https://zverok.space/blog/2022-01-13-it-evolves.html</guid>
+        
+        
+        <category>ruby</category>
+        
+        <category>development</category>
+        
+        <category>philosophy</category>
+        
+      </item>
+    
+      <item>
+        <title>What you can learn by merely writing a programming language changelog</title>
+        <description>&lt;p&gt;&lt;strong&gt;Adventures in understanding, explaining, and challenging the facts that should be obvious.&lt;/strong&gt; (&lt;strong&gt;Part 1&lt;/strong&gt; → &lt;a href=&quot;/blog/2022-01-13-it-evolves.html&quot;&gt;Part 2&lt;/a&gt; → &lt;a href=&quot;/blog/2022-01-20-still-flying.html&quot;&gt;Part 3&lt;/a&gt;)&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;This article is written for my &lt;a href=&quot;https://zverok.substack.com/&quot;&gt;Substack&lt;/a&gt;, you can subscribe to it by email now!&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;First of all: I am deeply fond of Ruby-the-language. I have strong and frequently harsh (probably harsher than yours!) opinions on Ruby-the-tool in its current prevalent usage and some frameworks and practices associated with it. But the language—after 17 years of everyday use—is still incredibly helpful for my thought process, and I only half-jokingly call it my mother tongue. At least when thinking of the problems that could be formalized.&lt;/p&gt;
+
+&lt;p&gt;So, I understand the text below might be read as bragging. It can also be read as a critique of Ruby’s development process or even witnessing its inadequacy. I assure you, it is not the latter. Am I bragging? A little: I do take pride in my work. Am I describing the broken language development process? I believe not. I describe a process that is &lt;em&gt;different&lt;/em&gt; from some other languages and some industry expectations—but at the same time, I concede that it is the only development process suiting &lt;em&gt;this&lt;/em&gt; language.&lt;/p&gt;
+
+&lt;p&gt;Second of all: I am not asking you of the same fondness to Ruby or any at all. I believe the story I will tell can be interesting even for non-Rubyists, those who have never written in the language, and those who resent or despise it. It is a story of what happens when you “just” try to understand and document the reasons and consequences of new features of your programming language—once per year, every year. This story is full of surprises, heated discussions, moments of enlightenment, and moments of despair. It is also a story of caring and being involved.&lt;/p&gt;
+
+&lt;p&gt;It goes like this.&lt;/p&gt;
+
+&lt;h2 id=&quot;december-2018-how-it-all-started-or-good-things-could-come-from-negative-emotions&quot;&gt;December 2018: How it all started, or, Good things could come from negative emotions&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Vampire: Like my daddy said right before he killed my mom, “If ya want somethin’ done right, ya gotta do it yourself.” — &lt;em&gt;Blade 2&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I have been writing in Ruby since 2004. Unlike many others, I’ve come not because o Rails (and managed to mostly avoid Rails till 2016, I think), but due to the language itself. I always felt it fitting extremely well to my mental models of programming, and always expanding them.&lt;/p&gt;
+
+&lt;p&gt;My understanding of how the language should evolve also expanded with time. By 2018 and the wake of Ruby 2.6, I became very active in Ruby Issue Tracker, which is almost the only thing where the development happens (more on this below). A few language features I proposed and defended made it into the release. A few other things in the release made me happy, too.&lt;/p&gt;
+
+&lt;p&gt;Ruby is traditionally released every Christmas. &lt;strong&gt;A few weeks before and after that date, many blog posts occurred listing and explaining new features—and that year, I became very attentive to them. And quickly discovered I was not happy with either.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Some were written by language enthusiasts explaining a few features they care about. Others—by consultancies and studios trying to keep their marketing blog alive, just retelling the (dry) &lt;a href=&quot;https://github.com/ruby/ruby/blob/master/doc/NEWS-2.6.0&quot;&gt;official NEWS-file&lt;/a&gt; in their own words. Neither was wide and deep enough to make people &lt;em&gt;feel&lt;/em&gt; why new features are designed and what their consequences are.&lt;/p&gt;
+
+&lt;p&gt;So, after a few &lt;a href=&quot;https://reddit.com/r/ruby&quot;&gt;/r/ruby&lt;/a&gt; ramblings about this (which I am not proud of!), &lt;strong&gt;I decided I’d rather do the “right” list of changes—aka “changelog”—myself.&lt;/strong&gt; And I did it, and doing it since then. And it turned out a much harder job than I imagined—but also, much more consequential, too.&lt;/p&gt;
+
+&lt;h3 id=&quot;should-be-a-simple-thing-to-do-or-the-rest-of-the-effing-owl&quot;&gt;Should be a simple thing to do (or, the rest of the effing owl)&lt;/h3&gt;
+
+&lt;p&gt;When I started to do The Proper Changelog a few days before Christmas 2018, I had a pretty clear vision of what should be there. This vision turned out to be valid. I also had some clear estimation of how much time this should take—one or two spare evenings—now, the estimation turned out to be total BS.&lt;/p&gt;
+
+&lt;p&gt;It took closer to two weeks of very intense work and a few sudden discoveries on the road.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The experience was quite humbling, not to say humiliating at moments.&lt;/strong&gt; And not because I’ve underestimated the task—as a professional developer, I am no stranger to too optimistic estimates—but because I needed to learn a lot.&lt;/p&gt;
+
+&lt;p&gt;After almost fifteen years of loving and using Ruby and several years of following its development, I was (vainly) smug about me knowing everything I needed to fill the changelog even before I started. But—&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;First&lt;/strong&gt; and obviously, each feature needed a &lt;strong&gt;link to official docs&lt;/strong&gt;. It seemed the simplest thing to do &lt;em&gt;(grumpily: and still missed by most “what’s new” blogs)&lt;/em&gt;, but I discovered, to some surprise, not all of the changes were reflected in documentation updates.&lt;/p&gt;
+
+&lt;p&gt;It was my first deep glance into the peculiarities of Ruby’s development process—but by far not the last. It felt like updating docs when the code is updated is the responsibility of those who commit new features, and commiters don’t always have enough time and resources to do that.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;So, one of the side effects of the changelog creation was &lt;a href=&quot;https://bugs.ruby-lang.org/issues/15452&quot;&gt;me&lt;/a&gt; &lt;a href=&quot;https://bugs.ruby-lang.org/issues/15405&quot;&gt;providing&lt;/a&gt; &lt;a href=&quot;https://bugs.ruby-lang.org/issues/15480&quot;&gt;patches&lt;/a&gt; for the documentation missing.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;Next,&lt;/strong&gt; I wanted to describe the &lt;strong&gt;reason&lt;/strong&gt; for every not-immediately-obvious-change. Again, it started egotistically: I wrote a “Reason:” point for &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.6.html#range-uses-cover-instead-of-include&quot;&gt;the&lt;/a&gt; &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.6.html#then-as-an-alias-for-yield_self&quot;&gt;three&lt;/a&gt; &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.6.html#enumerator-chaining&quot;&gt;changes&lt;/a&gt; I argued for and considered important. Simple fairness now required me to explain the other ones with the same thoroughness—even for changes I didn’t care much about.&lt;/p&gt;
+
+&lt;p&gt;Now I needed to learn what others considered important about the language, investigate why they felt something natural, and how several opinions of “what’s natural” clashed in heated arguments.&lt;/p&gt;
+
+&lt;p&gt;I read through discussions observing how feature request mutates from the initial idea through several rounds of choosing the names (hard!) and protocols—and to the final approval (or alternative proposal) by Yukihiro Matsumoto, aka Matz, the language creator and ultimate final authority of the design.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Then,&lt;/strong&gt; I provided &lt;strong&gt;code examples&lt;/strong&gt; for most of the features, not only the most trivial usage. Sometimes, I felt it needs &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.6.html#proc-composition&quot;&gt;realistic examples&lt;/a&gt; of &lt;em&gt;how&lt;/em&gt; it could be useful, thus complementing the “Reason”; other times, non-obvious behaviors needed to &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.6.html#hashmerge-with-multiple-arguments&quot;&gt;be demonstrated&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This stage required me to &lt;em&gt;know myself&lt;/em&gt;, or, rather my &lt;strong&gt;unspoken expectations and intuitions&lt;/strong&gt; about how Ruby &lt;em&gt;usually&lt;/em&gt; behaves and how language elements are &lt;em&gt;expected&lt;/em&gt; to be combined. Only then I could question and demonstrate how new features follow those intuitions and expectations—or break them.&lt;/p&gt;
+
+&lt;p&gt;In some cases, though, I became sure that the feature design does &lt;em&gt;not&lt;/em&gt; follow those intuitions/expectations of an ordinary Rubyist (me) and raised concern in the issue tracker. In &lt;a href=&quot;https://bugs.ruby-lang.org/issues/15485&quot;&gt;one case&lt;/a&gt;, I was persuaded otherwise; &lt;a href=&quot;https://bugs.ruby-lang.org/issues/15527&quot;&gt;two&lt;/a&gt; &lt;a href=&quot;https://bugs.ruby-lang.org/issues/15428&quot;&gt;others&lt;/a&gt; are still (after three years) under discussion.&lt;/p&gt;
+
+&lt;p&gt;The culprit here was, of course, raising the concern &lt;em&gt;after&lt;/em&gt; the language version was released. At this point, “can we change this?” is the question for the next version (next year!) already—and sometimes is asked too late due to the backward compatibility (like the “timezones” issue above).&lt;/p&gt;
+
+&lt;p&gt;Though the fact that my concerns weren’t immediately dismissed taught me that questioning the design &lt;em&gt;might&lt;/em&gt; be fruitful (spoilers: and in the next years, it frequently was!). It also made me curious about the whole Ruby language development process. &lt;strong&gt;The language always felt somewhat &lt;em&gt;home-made&lt;/em&gt; to me: great overall care, but occasional uneven cuts or rough edges, now I started to understand why.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;the-end-result-is-that-so&quot;&gt;The end result (is that so?)&lt;/h3&gt;
+
+&lt;p&gt;After those weeks of work, on Dec 29, 2018, I finally published the &lt;a href=&quot;https://rubyreferences.github.io/rubychanges/2.6.html&quot;&gt;very first installment&lt;/a&gt; of the project I named Ruby Changes.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2022-01-06-changelog/screen.png&quot; alt=&quot;Example of one feature description&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Example of one feature description&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It turned out to be quite useful—and quite popular too (one of my rare endeavors that received the amount of attention it deserved according to my overblown expectations). It was retweeted by Matz himself, published in Ruby News Weekly, heavily upvoted on Reddit, etc., etc.&lt;/p&gt;
+
+&lt;p&gt;For me, it was a moment to exhale and relax… And make a mental notice to maybe next year start earlier!&lt;/p&gt;
+
+&lt;p&gt;But at the same time, it was the beginning of some larger story. Since that Dec 2018 rush, I started to follow Ruby development even closer than before and participate with more resolve.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Through these years, I reflected on Ruby’s development process, which is quite different from other languages I follow&lt;/strong&gt; (say, Python and Rust). In the second part of this text (in a week, hopefully!), I’ll try to catch the essence of what is uncovered for me and how it made me sometimes critical, sometimes supportive for the group of Ruby developers—which turned out to be smaller and more open than I expected.&lt;/p&gt;
+
+&lt;p&gt;I am writing this mere two hours after publishing this year’s installment: &lt;strong&gt;&lt;a href=&quot;https://rubyreferences.github.io/rubychanges/3.1.html&quot;&gt;Ruby 3.1 changelog&lt;/a&gt;&lt;/strong&gt;. I am still on board, and the way the language evolves and changes still amazes and amuses me to not a small extent. I’ll try to share these feelings next time.&lt;/p&gt;
+
+&lt;iframe src=&quot;https://zverok.substack.com/embed&quot; width=&quot;480&quot; height=&quot;320&quot; style=&quot;border:1px solid #EEE; background:white;&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+</description>
+        <pubDate>Thu, 06 Jan 2022 00:00:00 +0000</pubDate>
+        <link>https://zverok.space/blog/2022-01-06-changelog.html</link>
+        <guid isPermaLink="true">https://zverok.space/blog/2022-01-06-changelog.html</guid>
+        
+        
+        <category>ruby</category>
+        
+        <category>development</category>
+        
+        <category>philosophy</category>
+        
+      </item>
+    
+      <item>
+        <title>Grok {Shan, Shui}*: Advent of understanding the generative art</title>
+        <description>&lt;p&gt;&lt;strong&gt;I spent 24 days digging into the code of &lt;a href=&quot;https://github.com/LingDong-/shan-shui-inf&quot;&gt;{Shan, Shui}*&lt;/a&gt; Chinese painting generator and lived to tell the story.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;This article is written for my &lt;a href=&quot;https://zverok.substack.com/&quot;&gt;Substack&lt;/a&gt;, you can subscribe to it by email now!&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;While a lot of fellow developers spent this year’s advent on solving this year’s &lt;a href=&quot;https://adventofcode.com/&quot;&gt;Advent of Code&lt;/a&gt; puzzles, I decided to have my own little “advent.”&lt;/p&gt;
+
+&lt;p&gt;A few weeks before December, I’ve stumbled upon an awesome &lt;a href=&quot;https://github.com/LingDong-/shan-shui-inf&quot;&gt;generative art project&lt;/a&gt; by developer and artist &lt;a href=&quot;https://github.com/LingDong-&quot;&gt;Lingong Huang&lt;/a&gt;. It generates infinite (and surprisingly varying) scrolls of Chinese paintings like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/advent2021/image00.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It struck me with its beauty—as well as with the fact that I don’t have the slightest idea of how it might work. After half-an-hour looking into the &lt;a href=&quot;https://github.com/LingDong-/shan-shui-inf/blob/master/index.html&quot;&gt;code&lt;/a&gt;, I knew I wanted to have some level of understanding of how those things are done in general—and this one, in particular—enough to spend some hours on it. So, I thought, let it be my “advent”—and that happened.&lt;/p&gt;
+
+&lt;h2 id=&quot;trying-to-understand&quot;&gt;Trying to understand&lt;/h2&gt;
+
+&lt;p&gt;My usual way to understand how others’ code works is to translate it into another language. I did &lt;a href=&quot;https://github.com/zverok/xkcdize&quot;&gt;quite&lt;/a&gt; &lt;a href=&quot;https://github.com/zverok/drosterize&quot;&gt;a&lt;/a&gt; &lt;a href=&quot;https://github.com/zverok/magic_cloud&quot;&gt;few&lt;/a&gt; &lt;a href=&quot;https://zverok.github.io/blog/2020-05-16-ruby-as-apl.html&quot;&gt;projects&lt;/a&gt; &lt;a href=&quot;https://github.com/molybdenum-99/mormor&quot;&gt;of&lt;/a&gt; &lt;a href=&quot;https://zverok.github.io/spellchecker.html&quot;&gt;this kind&lt;/a&gt;. And deciding on what language to translate it to, I made a weird decision: to just rewrite (some parts of the) &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{Shan, Shui}*&lt;/code&gt; in the same JavaScript—but using modern features of the latest versions and semi-functional style of chained computations I am fond of.&lt;/p&gt;
+
+&lt;p&gt;This is not to say the original author’s code was “bad,” and I made it “good”—nothing of the kind. I just experimented with how things &lt;em&gt;might&lt;/em&gt; be expressed so they would be closer to my reading/writing habits—just as &lt;em&gt;some&lt;/em&gt; goal making me understand them.&lt;/p&gt;
+
+&lt;p&gt;The result of the project is the diary below. By the end of 24 advent days, I haven’t seen/read/rewritten all parts of the algorithm—that would require trice this amount of time, probably. But I went through all the layers of the picture and got &lt;em&gt;some&lt;/em&gt; understanding on how things are done there—from a singular brushstroke to generating a whole mountain with a small village and a forest. And I didn’t lose my awe, and I am trying to pass it to others.&lt;/p&gt;
+
+&lt;p&gt;For the impatient: you can probably just go through the &lt;a href=&quot;/advent2021/day01.html&quot;&gt;day 1 intro&lt;/a&gt; and then go immediately to &lt;a href=&quot;/advent2021/day24.html&quot;&gt;day 24&lt;/a&gt; with the overview of everything I’ve understood on the road. But I hope that reading through the whole diary might also be of some fun. There are small philosophical bits here and there, too, discussing how the code &lt;em&gt;might&lt;/em&gt; be written, and it can be either insightful or repulsing, or both.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Note that JS is not my mother tongue. While using modern features for better expression of the meaning, I probably still went far for the modern preferred JS &lt;em&gt;style&lt;/em&gt;: say, I dropped a lot of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;var&lt;/code&gt;s everywhere (never bothering with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;let&lt;/code&gt;/&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;const&lt;/code&gt;, though I probably should’ve) and didn’t use any linter/autoformatter. So it might be a somewhat painful reading or a JS developer by trade.&lt;/p&gt;
+
+  &lt;p&gt;And English is not my first language either. Usually, I use at least Grammarly to make sure the texts are decent… But with the amount of work this project brought, I can only promise the diary was spellchecked. Have mercy.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;So, here goes!&lt;/p&gt;
+
+&lt;h2 id=&quot;the-diary-of-grokking&quot;&gt;The diary of grokking!&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day01.html&quot;&gt;Day 01: Advent of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Grok {Shan, Shui}*&lt;/code&gt;&lt;/a&gt;&lt;/strong&gt;—Intro to the project and the way I am planning (planned) to do it.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day02.html&quot;&gt;Day 02: Overview and starting to change the code&lt;/a&gt;&lt;/strong&gt;—Analysing the whole, and starting to read &amp;amp; rewrite one of the tree-generating functions, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tree01&lt;/code&gt;…&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day03.html&quot;&gt;Day 03: Fighting the tree&lt;/a&gt;&lt;/strong&gt;—…and continue…&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day04.html&quot;&gt;Day 04: Making sense of the tree&lt;/a&gt;&lt;/strong&gt;—…and continue; also look into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;poly&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;blob&lt;/code&gt; low-level shapes-generating functions.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day05.html&quot;&gt;Day 05: Moar treees!&lt;/a&gt;&lt;/strong&gt;—Finalize &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tree01&lt;/code&gt; and look into another tree, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tree02&lt;/code&gt;,&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day06.html&quot;&gt;Day 06: Even moar treees!&lt;/a&gt;&lt;/strong&gt;—…and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tree03&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day07.html&quot;&gt;Day 07: Build me a house&lt;/a&gt;&lt;/strong&gt;—With trees being (somewhat) understood, starting to look into how architectural elements are made, starting with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;arch02&lt;/code&gt;; which turned out to be a tough nut to crack. A lot of simple arithmetic, but, like, a lot of it! So I started with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;box&lt;/code&gt; function for drawing parallelepipeds…&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day08.html&quot;&gt;Day 08: What’s in a box?&lt;/a&gt;&lt;/strong&gt;—…and spent on it…&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day09.html&quot;&gt;Day 09: Lines and boxes&lt;/a&gt;&lt;/strong&gt;—…good…&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day10.html&quot;&gt;Day 10: (there are no good puns with the word “stroke”)&lt;/a&gt;&lt;/strong&gt;—…few days, finishing with other small(ish) functions.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day11.html&quot;&gt;Day 11: Back to home&lt;/a&gt;&lt;/strong&gt;—And with that, considering the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;arch02&lt;/code&gt; logic more or less understood.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day12.html&quot;&gt;Day 12: Seeing the forest behind the trees&lt;/a&gt;&lt;/strong&gt;—Starting anew, from top-to-bottom now, I started to look into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chunkloader&lt;/code&gt; function that created big parts of the landscape.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day13.html&quot;&gt;Day 13: Plan for the mountains&lt;/a&gt;&lt;/strong&gt;—…and into the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mountplanner&lt;/code&gt; function that decides which landscape feature would be where…&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day14.html&quot;&gt;Day 14: Mountain-planning, continued&lt;/a&gt;&lt;/strong&gt;—..and looked into how it decides on a list of big objects.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day15.html&quot;&gt;Day 15: Between the landscape and the tree&lt;/a&gt;&lt;/strong&gt;—Then, I started with the last big endeavor: the thing between chunk and a singular tree: a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mountain&lt;/code&gt; with all the contours, trees, and houses.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day16.html&quot;&gt;Day 16: Deeper into the mountain&lt;/a&gt;&lt;/strong&gt;—…and…&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day17.html&quot;&gt;Day 17: Let’s Vegetate!&lt;/a&gt;&lt;/strong&gt;—…continued…&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day18.html&quot;&gt;Day 18: Generation details&lt;/a&gt;&lt;/strong&gt;—…to do…&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day19.html&quot;&gt;Day 19: Wrapping up the mountain&lt;/a&gt;&lt;/strong&gt;—…so…&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day20.html&quot;&gt;Day 20: REALLY wrapping up the mountain&lt;/a&gt;&lt;/strong&gt;—…for a while.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day21.html&quot;&gt;Day 21: Now what?&lt;/a&gt;&lt;/strong&gt;—Then, I reviewed the big picture: planning and rendering “chunks”&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day22.html&quot;&gt;Day 22: Where were we?..&lt;/a&gt;&lt;/strong&gt;—…and how it is made truly infinite.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day23.html&quot;&gt;Day 23: Housekeeping&lt;/a&gt;&lt;/strong&gt;—The technical one, explaining how I’ll organize the project/diary to wrap it up.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;a href=&quot;/advent2021/day24.html&quot;&gt;Day 24: Putting it all together&lt;/a&gt;&lt;/strong&gt;—The most important one, summarizing all of the findings and outcomes of the investigation!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ps&quot;&gt;PS&lt;/h2&gt;
+
+&lt;p&gt;You know what? I have a Substack now! And &lt;em&gt;a lot&lt;/em&gt; of plans for writings for the upcoming year.&lt;/p&gt;
+
+&lt;iframe src=&quot;https://zverok.substack.com/embed&quot; width=&quot;480&quot; height=&quot;320&quot; style=&quot;border:1px solid #EEE; background:white;&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+</description>
+        <pubDate>Tue, 28 Dec 2021 00:00:00 +0000</pubDate>
+        <link>https://zverok.space/blog/2021-12-28-grok-shan-shui.html</link>
+        <guid isPermaLink="true">https://zverok.space/blog/2021-12-28-grok-shan-shui.html</guid>
+        
+        
+        <category>js</category>
+        
+        <category>programming</category>
+        
+        <category>porting</category>
+        
+        <category>generative-art</category>
+        
+      </item>
+    
+      <item>
+        <title>Small nice feature that emerged in Ruby 3.1... But has a nasty quirk</title>
+        <description>&lt;p&gt;A few days ago, I stumbled upon &lt;a href=&quot;https://christianheilmann.com/2021/11/01/developer-tools-secrets-that-shouldnt-be-secrets/&quot;&gt;an article about small JS debugging techniques&lt;/a&gt;—right when I was in the middle of debugging my JS hobby project. There is a lot of cool stuff there, but one that struck me as “brilliant, why didn’t I think about it myself?..” was this:&lt;/p&gt;
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;42&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// &quot;classic&quot; way I used, logs 42&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// the way article suggested, logs {x: 42} --- variable name AND value&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is invaluable when debugging small algorithms with a lot of intermediate values: just a few more characters, and instead of a bunch of values thrown into the console, you see a clear picture of “this variable was this, that variable was that”.&lt;/p&gt;
+
+&lt;p&gt;It is possible due to “shortcut” hash syntax, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{x}&lt;/code&gt; is the same as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{x: x}&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Then, I remembered that in my primary and beloved language’s new version (3.1, coming December), hash omission syntax was recently introduced:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RUBY_VERSION&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;3.1.0&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;42&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;x:
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; {:x =&amp;gt; 42}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Tada! Our life will be so much better now! I immediately posted a happy &lt;a href=&quot;https://twitter.com/zverok/status/1468240457826193416&quot;&gt;tweet&lt;/a&gt;, and happy &lt;a href=&quot;https://www.reddit.com/r/ruby/comments/rb4rez/with_ruby_31_this_is_now_posible/&quot;&gt;announce to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/r/ruby&lt;/code&gt;&lt;/a&gt;, feeling a bit like Discoverer Of Things.&lt;/p&gt;
+
+&lt;p&gt;But, in a few hours, I saw &lt;a href=&quot;https://bugs.ruby-lang.org/issues/18396&quot;&gt;a new ticket&lt;/a&gt; in Ruby Bug Tracker (probably caused by my tweet? Or maybe I am delusional) and understood my joy was premature.&lt;/p&gt;
+
+&lt;p&gt;Let’s try a new and shiny “debugging feature” in a more realistic program:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hypotenuse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;b:
+  &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hypotenuse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;This is expected to print &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{:a =&amp;gt; 10, :b =&amp;gt; 15}&lt;/code&gt;, and then hypotenuse value &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;18.027...&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;But, to my &lt;em&gt;mild&lt;/em&gt; horror (I already knew what would go wrong from the above ticket), the actual result was:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{:a=&amp;gt;10, :b=&amp;gt;18.027756377319946}
+{:a=&amp;gt;10, :b=&amp;gt;18.027756377319946}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;(yes, twice).&lt;/p&gt;
+
+&lt;p&gt;What’s happening?..&lt;/p&gt;
+
+&lt;p&gt;Backward compatibility is happening!&lt;/p&gt;
+
+&lt;p&gt;In Ruby 3.0, this (with only one key) would be a valid code:&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;b:
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# It is actually parsed as:&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;b: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Therefore line ending with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo:&lt;/code&gt; treats the next line as the value for that key. Therefore, our method is actually saying&lt;/p&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hypotenuse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;b: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# calculate hash, then `p` it and return the result of `p` (hash itself)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Damn.&lt;/p&gt;
+
+&lt;p&gt;Thus, any parenthesis-less method ending in omitted keyword argument will actually treat the next line as the value—if not, too much code would be broken by a sudden “value omission feature” being turned on in the middle of the long expression broken in lines for formatting reasons.&lt;/p&gt;
+
+&lt;p&gt;This would work as expected (though mandating parenthesis is less appealing for debug):&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hypotenuse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;              &lt;span class=&quot;c1&quot;&gt;# prints {:a=&amp;gt;10, :b=&amp;gt;15}&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Math&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hypotenuse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# prints 18.027756377319946&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So, the sad outtakes!&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;You shouldn’t actually do &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p variable:&lt;/code&gt; for debugging&lt;/strong&gt; (but still can &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p(variable:)&lt;/code&gt;, which is just a bit more typing… but you should always remember!)&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;You should be very careful with parenthesis omission now AND keyword argument values omission&lt;/strong&gt; in the same method call.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Stay safe.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 08 Dec 2021 00:00:00 +0000</pubDate>
+        <link>https://zverok.space/blog/2021-12-08-value-omission-debug.html</link>
+        <guid isPermaLink="true">https://zverok.space/blog/2021-12-08-value-omission-debug.html</guid>
+        
+        
+        <category>ruby</category>
+        
+      </item>
+    
+  </channel>
+</rss>

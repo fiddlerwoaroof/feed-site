@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Blog of WJWH</title>
+    <link href="https://wjwh.eu/atom.xml" rel="self">
+    <link href="https://wjwh.eu">
+    <id>https://wjwh.eu/atom.xml</id>
+    <author>
+        <name>Wander Hillen</name>
+        <email>wjw.hillen@gmail.com</email>
+    </author>
+    <updated>2022-05-06T00:00:00Z</updated>
+    <entry>
+    <title>Making type-safe internet bots with Haskell</title>
+    <link href="https://wjwh.eu/posts/2022-05-06-haskell-conduit-bots.html">
+    <id>https://wjwh.eu/posts/2022-05-06-haskell-conduit-bots.html</id>
+    <published>2022-05-06T00:00:00Z</published>
+    <updated>2022-05-06T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Using the `conduit` library to write type-safe network client applications that work with streaming data of potentially unbounded size.]]></summary>
+</entry>
+<entry>
+    <title>Stupid tricks with io_uring: a server that does zero syscalls per request</title>
+    <link href="https://wjwh.eu/posts/2021-10-01-no-syscall-server-iouring.html">
+    <id>https://wjwh.eu/posts/2021-10-01-no-syscall-server-iouring.html</id>
+    <published>2021-10-01T00:00:00Z</published>
+    <updated>2021-10-01T00:00:00Z</updated>
+    <summary type="html"><![CDATA[In which I (ab)use some of the more obscure functionality of io_uring to make a simple server that does not do any system calls while handling connnections, as measured with strace.]]></summary>
+</entry>
+<entry>
+    <title>Submitting many ActionMail jobs at once with Sidekiq</title>
+    <link href="https://wjwh.eu/posts/2021-08-24-sidekiq-rails-bulk-push.html">
+    <id>https://wjwh.eu/posts/2021-08-24-sidekiq-rails-bulk-push.html</id>
+    <published>2021-08-24T00:00:00Z</published>
+    <updated>2021-08-24T00:00:00Z</updated>
+    <summary type="html"><![CDATA[The default integration of ActiveJob with Sidekiq can be slow when submitting many jobs in a loop, because a new network roundtrip is made for every job. While Sidekiq does allow for multiple jobs to be submitted in the same call, this functionality is not natively available from Rails. This post describes the root cause of the problem and shows how to work around it with the `push_bulk` method provided by Sidekiq.]]></summary>
+</entry>
+<entry>
+    <title>Pre-emptive fiber-based concurrency in MRI Ruby</title>
+    <link href="https://wjwh.eu/posts/2021-02-07-ruby-preemptive-fiber.html">
+    <id>https://wjwh.eu/posts/2021-02-07-ruby-preemptive-fiber.html</id>
+    <published>2021-02-07T00:00:00Z</published>
+    <updated>2021-02-07T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Because Ruby Fibers use cooperative multitasking, Fiber-based concurrency frameworks can have a problem with CPU-intensive tasks starving other tasks of running time. In this article I go over some ways to prevent this from happening.]]></summary>
+</entry>
+<entry>
+    <title>Ruby 3.0 and the new FiberScheduler interface</title>
+    <link href="https://wjwh.eu/posts/2020-12-28-ruby-fiber-scheduler-c-extension.html">
+    <id>https://wjwh.eu/posts/2020-12-28-ruby-fiber-scheduler-c-extension.html</id>
+    <published>2020-12-28T00:00:00Z</published>
+    <updated>2020-12-28T00:00:00Z</updated>
+    <summary type="html"><![CDATA[From Ruby 3.0 onwards, it is possible to use user-defined schedulers to implement efficient non-blocking I/O when using Fibers. In this article I take a look at how that works under the hood and how to make use of this scheduler in gems that use C extensions.]]></summary>
+</entry>
+<entry>
+    <title>Advent of Haskell 2020 Day 11: The `retry` package.</title>
+    <link href="https://wjwh.eu/posts/2020-12-11-haskell-retries.html">
+    <id>https://wjwh.eu/posts/2020-12-11-haskell-retries.html</id>
+    <published>2020-12-11T00:00:00Z</published>
+    <updated>2020-12-11T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Pure computations can either succeed or fail; the result will not be different a second time around. In a distributed setting however, retrying a failed request can be a valid option. The `retry` package can wrap arbitrary monadic computations and retry them until they succeed with a variety of retry policies. This can be very helpful to retry things like HTTP or RPC requests where the remote server may have been temporarily overloaded.]]></summary>
+</entry>
+<entry>
+    <title>Streaming HTTP responses with Ruby and Rack</title>
+    <link href="https://wjwh.eu/posts/2020-11-01-ruby-streaming-http.html">
+    <id>https://wjwh.eu/posts/2020-11-01-ruby-streaming-http.html</id>
+    <published>2020-11-01T00:00:00Z</published>
+    <updated>2020-11-01T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Streaming HTTP responses with Ruby and Rack.]]></summary>
+</entry>
+<entry>
+    <title>How software is like a wooden boat, musings on maintainability</title>
+    <link href="https://wjwh.eu/posts/2020-10-14-software-maintenance.html">
+    <id>https://wjwh.eu/posts/2020-10-14-software-maintenance.html</id>
+    <published>2020-10-14T00:00:00Z</published>
+    <updated>2020-10-14T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Fix it before it breaks because "if it ain't broke don't fix it" really means "don't start fixing it until it breaks". Maintaining the human capability for software maintenance is as important as the work itself.]]></summary>
+</entry>
+<entry>
+    <title>Preliminary benchmarking results for a Haskell I/O manager backend based on io_uring</title>
+    <link href="https://wjwh.eu/posts/2020-07-26-haskell-iouring-manager.html">
+    <id>https://wjwh.eu/posts/2020-07-26-haskell-iouring-manager.html</id>
+    <published>2020-07-26T00:00:00Z</published>
+    <updated>2020-07-26T00:00:00Z</updated>
+    <summary type="html"><![CDATA[I wrote a new event manager backend for the Haskell I/O manager based on the new Linux io_uring interface. It is mildly faster than the current event manager backend based on epoll, mostly because it allocates less memory and thereby reduces GC pressure.]]></summary>
+</entry>
+<entry>
+    <title>How Haskell threads block</title>
+    <link href="https://wjwh.eu/posts/2020-07-10-haskell-thread-blocked.html">
+    <id>https://wjwh.eu/posts/2020-07-10-haskell-thread-blocked.html</id>
+    <published>2020-07-10T00:00:00Z</published>
+    <updated>2020-07-10T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Having a M:N threading model is both a blessing and a curse for Haskell. In this article we have a brief look at some of the problems that arise from having userspace thread scheduling and how those problems are handled by the Haskell runtime.]]></summary>
+</entry>
+
+</feed>

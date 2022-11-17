@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Andy Croll]]></title>
+  <link href="https://andycroll.com/index.xml" rel="self">
+  <link href="https://andycroll.com/">
+  <updated>2022-11-17T12:08:33+00:00</updated>
+  <id>https://andycroll.com/</id>
+  <author>
+    <name><![CDATA[Andy Croll]]></name>
+    <email><![CDATA[andy@goodscary.com]]></email>
+  </author>
+  <generator uri="http://jekyllrb.com/">Jekyll</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Safely Remove a Column from an Active Record Model]]></title>
+    <link href="https://andycroll.com/ruby/safely-remove-a-column-field-from-active-record/">
+    <updated>2022-11-14T00:00:00+00:00</updated>
+    <id>https://andycroll.com/ruby/safely-remove-a-column-field-from-active-record</id>
+    <content type="html"><![CDATA[<p>Adding and deploying new columns to an existing Active Record model is often straightforward. Typically the first deployment runs your migrations, and then new code that uses the recently-added database column is released afterward.</p>
+
+<p>However, removing a column tends to cause problems. Active Record caches database columns when it spins up a Rails application. When the column is removed from the database table it raises exceptions until your app reboots or redeploys.</p>
+
+<p>It’s also worth a multi-step strategy when removing columns in your database.</p>
+
+<h2 id="use">Use…</h2>
+
+<p>…this multi-step strategy:</p>
+
+<p>First tell Active Record to ignore the column. This stops the rest of your application being able to reference this column.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Thing</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="c1"># ...</span>
+  <span class="nb">self</span><span class="p">.</span><span class="nf">ignored_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"old_column"</span><span class="p">]</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>You can use your test suite to find places you might be still using the column, if you haven’t already removed usage of it, in your application. Once your tests are passing, deploy this code.</p>
+
+<p>Then, create the migration to remove the actual database column:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">RemoveOldColumnFromThings</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">7.0</span><span class="p">]</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">remove_column</span> <span class="ss">:things</span><span class="p">,</span> <span class="ss">:old_column</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Then deploy, migrating the column into oblivion.</p>
+
+<p>After that, in a final change, remove the <code class="language-plaintext highlighter-rouge">ignored_columns</code> line you added for the initial step and deploy once more.</p>
+
+<h2 id="why">Why?</h2>
+
+<p>In a larger team or application, having stable and predictable ways to change your database, without causing errors or downtime, is very important.</p>
+
+<p>Rails gives you built-in tools to change your database, but doing it in the production environment of a busy application often requires greater care.</p>
+
+<p>To a certain extent having good test coverage and a healthy process for deploying multiple times a day is a prerequisite of this method given that this “simple” column removal requires three separate deployments.</p>
+
+<h3 id="theres-a-gem-for-that">There’s a gem for that!</h3>
+
+<p>Look into the <a href="https://github.com/ankane/strong_migrations"><code class="language-plaintext highlighter-rouge">strong_migrations</code> gem</a> that was initially developed at InstaCart.</p>
+
+<p>It blocks potentially dangerous migrations and warns you, with lovely helpful instructions, if your code might block reads or writes for more than a few seconds or, like in this case, has a good chance of causing other application errors.</p>
+
+<h2 id="why-not">Why not?</h2>
+
+<p>In projects with low traffic, or during the early stages of a Rails application, this isn’t strictly necessary. In cases like this, you’re likely fine putting up with a handful of errors on deploy.</p>
+
+<p>Still, this is a good habit to begin to exercise as early as possible!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Use zero? for comparison of numerics like Integer, Float and BigDecimal]]></title>
+    <link href="https://andycroll.com/ruby/use-zero-for-integer-float-comparison/">
+    <updated>2022-10-31T00:00:00+00:00</updated>
+    <id>https://andycroll.com/ruby/use-zero-for-integer-float-comparison</id>
+    <content type="html"><![CDATA[<p>Compared to other similar languages, Ruby often prioritises readability (and joy) when it comes to its syntax and the methods provided in its Standard Library.</p>
+
+<p>An example of this is the syntactic sugar used when comparing a value to zero.</p>
+
+<p>Take a look at the documentation for the <code class="language-plaintext highlighter-rouge">.zero?</code> method on <a href="https://ruby-doc.org/core-3.1.2/Integer.html#zero-3F-method"><code class="language-plaintext highlighter-rouge">Integer</code></a>, <a href="https://ruby-doc.org/core-3.1.2/Float.html#zero-3F-method"><code class="language-plaintext highlighter-rouge">Float</code></a>, <a href="https://ruby-doc.org/core-3.1.2/Numeric.html#zero-3F-method"><code class="language-plaintext highlighter-rouge">Numeric</code></a> and <a href="https://ruby-doc.org/stdlib-3.1.2/libdoc/bigdecimal/rdoc/BigDecimal.html#zero-3F-method"><code class="language-plaintext highlighter-rouge">BigDecimal</code></a>.</p>
+
+<h2 id="instead-of">Instead of…</h2>
+
+<p>…checking whether a value is equal to <code class="language-plaintext highlighter-rouge">0</code> in a conditional:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">number</span> <span class="o">==</span> <span class="mi">0</span>
+  <span class="ss">:yes</span>
+<span class="k">else</span>
+  <span class="ss">:no</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="use">Use…</h2>
+
+<p>…the built-in <code class="language-plaintext highlighter-rouge">#zero?</code> method on all numeric types:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">number</span><span class="p">.</span><span class="nf">zero?</span>
+  <span class="ss">:yes</span>
+<span class="k">else</span>
+  <span class="ss">:no</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="why">Why?</h2>
+
+<p>The Ruby-ish syntax is clearer and less error prone.</p>
+
+<p>In the first example, it is very easy to mistakenly type <code class="language-plaintext highlighter-rouge">number = 0</code> and thus assign a variable in the conditional rather than perform a comparison (although you might use tests to protect yourself from that particular error).</p>
+
+<h2 id="why-not">Why not?</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">== 0</code> syntax is how <em>many</em> other similar languages perform comparisons and is deeply ingrained for many of us. I still struggle to apply this advice even after 15 years of Ruby programming.</p>
+
+<p>You might get some folks pushing back for “performance” reasons.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"benchmark/ips"</span>
+
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"1 == 0"</span><span class="p">)</span> <span class="p">{</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">}</span> <span class="c1">#=&gt; false</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"0 == 0"</span><span class="p">)</span> <span class="p">{</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">}</span> <span class="c1">#=&gt; true</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"1.zero?"</span><span class="p">)</span> <span class="p">{</span> <span class="mi">1</span><span class="p">.</span><span class="nf">zero?</span> <span class="p">}</span> <span class="c1">#=&gt; false</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"0.zero?"</span><span class="p">)</span> <span class="p">{</span> <span class="mi">0</span><span class="p">.</span><span class="nf">zero?</span> <span class="p">}</span> <span class="c1">#=&gt; true</span>
+
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"1.0 == 0"</span><span class="p">)</span> <span class="p">{</span> <span class="mf">1.0</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">}</span> <span class="c1">#=&gt; false</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"0.0 == 0"</span><span class="p">)</span> <span class="p">{</span> <span class="mf">0.0</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">}</span> <span class="c1">#=&gt; true</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"1.0.zero?"</span><span class="p">)</span> <span class="p">{</span> <span class="mf">1.0</span><span class="p">.</span><span class="nf">zero?</span> <span class="p">}</span> <span class="c1">#=&gt; false</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"0.0.zero?"</span><span class="p">)</span> <span class="p">{</span> <span class="mf">0.0</span><span class="p">.</span><span class="nf">zero?</span> <span class="p">}</span> <span class="c1">#=&gt; true</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>For <code class="language-plaintext highlighter-rouge">Integer</code>:</p>
+
+<table>
+<tr>
+  <th>1 == 0</th>
+  <td class="text-right">29.049M <small>(± 0.7%)</small> i/s</td>
+</tr>
+<tr>
+  <th>0 == 0</th>
+  <td class="text-right">28.972M <small>(± 0.3%)</small> i/s</td>
+</tr>
+<tr>
+  <th>1.zero?</th>
+  <td class="text-right">23.009M <small>(± 1.0%)</small> i/s</td>
+</tr>
+<tr>
+  <th>0.zero?</th>
+  <td class="text-right">22.860M <small>(± 1.7%)</small> i/s</td>
+</tr>
+</table>
+
+<p>For <code class="language-plaintext highlighter-rouge">Float</code>:</p>
+
+<table>
+<tr>
+  <th>1.0 == 0</th>
+  <td class="text-right">18.768M <small>(± 2.0%)</small> i/s</td>
+</tr>
+<tr>
+  <th>0.0 == 0</th>
+  <td class="text-right">19.066M <small>(± 0.5%)</small> i/s</td>
+</tr>
+<tr>
+  <th>1.0.zero?</th>
+  <td class="text-right">22.784M <small>(± 0.6%)</small> i/s</td>
+</tr>
+<tr>
+  <th>0.0.zero?</th>
+  <td class="text-right">22.841M <small>(± 0.8%)</small> i/s</td>
+</tr>
+</table>
+
+<p>The benchmark shows that for <code class="language-plaintext highlighter-rouge">Integer</code>s the <code class="language-plaintext highlighter-rouge">==</code> syntax is faster, but for <code class="language-plaintext highlighter-rouge">Float</code>s the <code class="language-plaintext highlighter-rouge">.zero?</code> syntax wins out.</p>
+
+<p>However, the important thing to note is that in all cases you still get millions of executions per second, so in <em>your</em> code you should emphasise the readability over any perceived performance implications!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Time Ranges are Clearer When Querying Databases]]></title>
+    <link href="https://andycroll.com/ruby/time-ranges-are-clearer-when-querying-databases/">
+    <updated>2022-10-17T00:00:00+00:00</updated>
+    <id>https://andycroll.com/ruby/time-ranges-are-clearer-when-querying-databases</id>
+    <content type="html"><![CDATA[<p>Active Record‘s query interface has <em>many</em> different ways to turn your logic into SQL to get rows from your database.</p>
+
+<p>I previously extolled the virtues of the <a href="/ruby/date-and-time-extensions-are-an-unsung-hero-of-active-support">core extensions to <code class="language-plaintext highlighter-rouge">Date</code> and <code class="language-plaintext highlighter-rouge">Time</code></a> and in our web applications we‘re often extracting records from databases where time periods are one of our primary filters. So let’s use those extensions to query our database.</p>
+
+<h2 id="instead-of">Instead of…</h2>
+
+<p>…using a text-based SQL fragments to query time fields:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"created_at &gt; ? AND created_at &lt; ?"</span><span class="p">,</span> <span class="mi">2</span><span class="p">.</span><span class="nf">weeks</span><span class="p">.</span><span class="nf">ago</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="nf">week</span><span class="p">.</span><span class="nf">ago</span><span class="p">).</span><span class="nf">to_sql</span>
+<span class="c1">#=&gt; "SELECT ... WHERE (created_at &gt; '2022-08-31 11:29:53.945995' AND created_at &lt; '2022-09-07 11:29:53.946280')"</span>
+<span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"created_at &gt; ? AND created_at &lt; ?"</span><span class="p">,</span> <span class="mi">2</span><span class="p">.</span><span class="nf">weeks</span><span class="p">.</span><span class="nf">ago</span><span class="p">.</span><span class="nf">beginning_of_day</span><span class="p">,</span> <span class="mi">2</span><span class="p">.</span><span class="nf">weeks</span><span class="p">.</span><span class="nf">ago</span><span class="p">.</span><span class="nf">end_of_day</span><span class="p">).</span><span class="nf">to_sql</span>
+<span class="c1">#=&gt; "SELECT ... WHERE (created_at &gt; '2022-08-31 00:00:00' AND created_at &lt; '2022-08-31 23:59:59.999999')"</span>
+<span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"created_at &gt;= ?"</span><span class="p">,</span> <span class="mi">2</span><span class="p">.</span><span class="nf">weeks</span><span class="p">.</span><span class="nf">ago</span><span class="p">.</span><span class="nf">beginning_of_day</span><span class="p">).</span><span class="nf">to_sql</span>
+<span class="c1">#=&gt; "SELECT ... WHERE \"users\".\"created_at\" &gt;= '2022-08-31 00:00:00'"</span>
+</code></pre></div></div>
+
+<h2 id="use">Use…</h2>
+
+<p>…<code class="language-plaintext highlighter-rouge">Range</code>s of time passed as an argument.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">created_at: </span><span class="p">(</span><span class="mi">2</span><span class="p">.</span><span class="nf">weeks</span><span class="p">.</span><span class="nf">ago</span><span class="o">..</span><span class="mi">1</span><span class="p">.</span><span class="nf">week</span><span class="p">.</span><span class="nf">ago</span><span class="p">)).</span><span class="nf">to_sql</span>
+<span class="c1">#=&gt; "SELECT ... WHERE \"users\".\"created_at\" BETWEEN '2022-08-31 11:29:33.248193' AND '2022-09-07 11:29:33.248938'"</span>
+<span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">created_at: </span><span class="mi">2</span><span class="p">.</span><span class="nf">weeks</span><span class="p">.</span><span class="nf">ago</span><span class="p">.</span><span class="nf">all_day</span><span class="p">).</span><span class="nf">to_sql</span>
+<span class="c1">#=&gt; "SELECT ... WHERE \"users\".\"created_at\" BETWEEN '2022-08-31 00:00:00' AND '2022-08-31 23:59:59.999999'"</span>
+<span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">created_at: </span><span class="p">(</span><span class="mi">2</span><span class="p">.</span><span class="nf">weeks</span><span class="p">.</span><span class="nf">ago</span><span class="p">.</span><span class="nf">beginning_of_day</span><span class="o">..</span><span class="p">)).</span><span class="nf">to_sql</span>
+<span class="c1">#=&gt; "SELECT ... WHERE \"users\".\"created_at\" &gt;= '2022-08-31 00:00:00'"</span>
+</code></pre></div></div>
+
+<h2 id="why">Why?</h2>
+
+<p>The ruby syntax in this case is shorter and clearer.</p>
+
+<p>You’re also likely to make fewer mistakes as the SQL statement generated by the scope won‘t have a big splurge of your text inserted into it.</p>
+
+<p>In addition the SQL generated by the framework when passed a range takes advantage of the correct <code class="language-plaintext highlighter-rouge">BETWEEN</code> SQL syntax (at least in Postgres). This more accurately describes the behaviour and allows the underlying database to use it’s statisics and indexes to return results as quickly as possible from the resulting query.</p>
+
+<h2 id="why-not">Why not?</h2>
+
+<p>Passing <code class="language-plaintext highlighter-rouge">Range</code>s to Active Record scopes seems less common than it should be. I presume this is because <code class="language-plaintext highlighter-rouge">String</code>-based conditions are listed first in the guides documentation, and were—for early versions of Rails—the primary syntax.</p>
+
+<p>There’s very little reason not to use this more modern syntax. It’s clearer to read and reason about when you’re using the features of Active Record than throwing <code class="language-plaintext highlighter-rouge">String</code>s around. That way it stands out more when you <em>do</em> have to drop down to <code class="language-plaintext highlighter-rouge">String</code>s for more complicated SQL queries.</p>
+
+<p>My final example uses an endless <code class="language-plaintext highlighter-rouge">Range</code> which was introduced in Ruby 2.6 (in 2018) and it took a little while to include into Rails so you might see examples that interplate <code class="language-plaintext highlighter-rouge">String</code>s to get the same effect.</p>
+
+<h2 id="indexes">Indexes!</h2>
+
+<p>If you’re regularly querying on a field it is probably worth investigating whether your database table could benefit from adding a database index.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Time extensions are an unsung hero of Active Support]]></title>
+    <link href="https://andycroll.com/ruby/date-and-time-extensions-are-an-unsung-hero-of-active-support/">
+    <updated>2022-10-03T00:00:00+00:00</updated>
+    <id>https://andycroll.com/ruby/date-and-time-extensions-are-an-unsung-hero-of-active-support</id>
+    <content type="html"><![CDATA[<p>In Active Support‘s extensions to the core Ruby classes, some of the most useful and plentiful are related to <code class="language-plaintext highlighter-rouge">Time</code>.</p>
+
+<p>One of Rails’s founding uses was to provide helpful, reusable methods for regularly performed tasks. In our web applications we‘re often working with times and dates.</p>
+
+<p>Enter the methods from <a href="https://github.com/rails/rails/blob/main/activesupport/lib/active_support/core_ext/date_and_time/calculations.rb">DateAndTime::Calculations</a>. To find out more check out out the <a href="http://api.rubyonrails.org/classes/DateAndTime/Calculations.html">API documentation</a> or the <a href="http://guides.rubyonrails.org/active_support_core_extensions.html#extensions-to-datetime"><code class="language-plaintext highlighter-rouge">DateTime</code> section in the Core Extensions Rails guide</a>.</p>
+
+<h2 id="familiarise-yourself-with">Familiarise yourself with…</h2>
+
+<p>…the extensions to <code class="language-plaintext highlighter-rouge">Date</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">today</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">today</span>
+<span class="c1">#=&gt; Mon, 03 Oct 2022</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">end_of_week</span>
+<span class="c1">#=&gt; Sun, 09 Oct 2022</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">beginning_of_month</span>
+<span class="c1">#=&gt; Sat, 01 Oct 2022</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">end_of_quarter</span>
+<span class="c1">#=&gt; Sat, 31 Dec 2022</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">beginning_of_year</span>
+<span class="c1">#=&gt; Sat, 01 Jan 2022</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">all_day</span>
+<span class="c1">#=&gt; Mon, 03 Oct 2022 00:00:00.000000000 UTC +00:00..Mon, 03 Oct 2022 23:59:59.999999999 UTC +00:00</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">all_week</span>
+<span class="c1">#=&gt; Mon, 03 Oct 2022..Sun, 09 Oct 2022</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">all_month</span>
+<span class="c1">#=&gt; Sat, 01 Oct 2022..Mon, 31 Oct 2022</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">all_year</span>
+<span class="c1">#=&gt; Sat, 01 Jan 2022..Sat, 31 Dec 2022</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">on_weekday?</span>
+<span class="c1">#=&gt; true</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">next_occurring</span><span class="p">(</span><span class="ss">:thursday</span><span class="p">)</span>
+<span class="c1">#=&gt; Thurs, 06 Oct 2022</span>
+</code></pre></div></div>
+
+<p>…and <code class="language-plaintext highlighter-rouge">DateTime</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">right_now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">now</span>
+<span class="c1">#=&gt; Mon, 03 Oct 2022 08:30:23.666835000 UTC +00:00</span>
+<span class="n">right_now</span><span class="p">.</span><span class="nf">beginning_of_day</span>
+<span class="c1">#=&gt; Mon, 03 Oct 2022 00:00:00.000000000 UTC +00:00</span>
+<span class="n">right_now</span><span class="p">.</span><span class="nf">end_of_week</span>
+<span class="c1">#=&gt; Sun, 09 Oct 2022 23:59:59.999999999 UTC +00:00</span>
+<span class="n">right_now</span><span class="p">.</span><span class="nf">beginning_of_month</span>
+<span class="c1">#=&gt; Sat, 01 Oct 2022 00:00:00.000000000 UTC +00:00</span>
+<span class="n">right_now</span><span class="p">.</span><span class="nf">end_of_quarter</span>
+<span class="c1">#=&gt; Sat, 31 Dec 2022 23:59:59.999999999 UTC +00:00</span>
+<span class="n">right_now</span><span class="p">.</span><span class="nf">beginning_of_year</span>
+<span class="c1">#=&gt; Sat, 01 Jan 2022 00:00:00.000000000 UTC +00:00</span>
+<span class="n">right_now</span><span class="p">.</span><span class="nf">all_day</span>
+<span class="c1">#=&gt; Mon, 03 Oct 2022 00:00:00.000000000 UTC +00:00..Mon, 03 Oct 2022 23:59:59.999999999 UTC +00:00</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">all_week</span>
+<span class="c1">#=&gt; Mon, 03 Oct 2022 00:00:00.000000000 UTC +00:00..Sun, 09 Oct 2022 23:59:59.999999999 UTC +00:00</span>
+<span class="n">today</span><span class="p">.</span><span class="nf">all_month</span>
+<span class="c1">#=&gt; Sat, 01 Oct 2022 00:00:00.000000000 UTC +00:00..Mon, 31 Oct 2022 23:59:59.999999999 UTC +00:00</span>
+<span class="n">right_now</span><span class="p">.</span><span class="nf">all_year</span>
+<span class="c1">#=&gt; Sat, 01 Jan 2022 00:00:00.000000000 UTC +00:00..Sat, 31 Dec 2022 23:59:59.999999999 UTC +00:00</span>
+<span class="n">right_now</span><span class="p">.</span><span class="nf">on_weekday?</span>
+<span class="c1">#=&gt; true</span>
+<span class="n">right_now</span><span class="p">.</span><span class="nf">next_occurring</span><span class="p">(</span><span class="ss">:thursday</span><span class="p">)</span>
+<span class="c1">#=&gt; Thurs, 06 Oct 2022 08:30:23.666835000 UTC +00:00</span>
+</code></pre></div></div>
+
+<h2 id="why">Why?</h2>
+
+<p>These are tremendously useful, and well-named, methods to help describe the date and time logic in your applications.</p>
+
+<h2 id="why-not">Why not?</h2>
+
+<p>While this style of extending core Ruby classes is sometimes derided by folks who dislike Rails’s ”magical” style… you’d be a bit silly to reimplement your own date calculations inside a Rails application.</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Use before? and after? Methods When Comparing Dates and Times in Rails]]></title>
+    <link href="https://andycroll.com/ruby/use-before-and-after-methods-when-comparing-dates-and-times-in-rails/">
+    <updated>2022-09-19T00:00:00+00:00</updated>
+    <id>https://andycroll.com/ruby/use-before-and-after-methods-when-comparing-dates-and-times-in-rails</id>
+    <content type="html"><![CDATA[<p>Active Support contains many additions to the basic classes that form the standard libraries of Ruby. There are extensions to <code class="language-plaintext highlighter-rouge">String</code>, <code class="language-plaintext highlighter-rouge">Hash</code>, <code class="language-plaintext highlighter-rouge">Array</code> and even <code class="language-plaintext highlighter-rouge">Date</code> and <code class="language-plaintext highlighter-rouge">Time</code>.</p>
+
+<p>If you spend most of your time working inside Rails applications, you might not realise that these are Rails-isms rather than Ruby-isms.</p>
+
+<p>Some folks dislike these ”superfluous” additions. Some of these additions end up back inside the Ruby standard library itself. <em>Some</em> of these methods help me not make mistakes when comparing times and dates.</p>
+
+<h2 id="instead-of">Instead of…</h2>
+
+<p>…comparing dates and times with greater than or less than operators:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">1979</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span> <span class="o">&gt;</span> <span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">now</span>
+<span class="c1">#=&gt; false</span>
+
+<span class="mi">10</span><span class="p">.</span><span class="nf">minutes_ago</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">.</span><span class="nf">minutes</span><span class="p">.</span><span class="nf">from_now</span>
+<span class="c1">#=&gt; true</span>
+</code></pre></div></div>
+
+<h2 id="use">Use…</h2>
+
+<p>…<code class="language-plaintext highlighter-rouge">before?</code> and <code class="language-plaintext highlighter-rouge">after?</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">1979</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">).</span><span class="nf">after?</span><span class="p">(</span><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">now</span><span class="p">)</span>
+<span class="c1">#=&gt; false</span>
+
+<span class="mi">10</span><span class="p">.</span><span class="nf">minutes_ago</span><span class="p">.</span><span class="nf">before?</span><span class="p">(</span><span class="mi">5</span><span class="p">.</span><span class="nf">minutes</span><span class="p">.</span><span class="nf">from_now</span><span class="p">)</span>
+<span class="c1">#=&gt; true</span>
+</code></pre></div></div>
+
+<h2 id="why">Why?</h2>
+
+<p>This is a personal stylistic choice. I find the readability to be hugely improved when using <code class="language-plaintext highlighter-rouge">before?</code> and <code class="language-plaintext highlighter-rouge">after?</code>. It helps me to reason about the code much more easily as I’m writing it and, more importantly, to quickly understand my logic when I come back to it months later.</p>
+
+<h2 id="why-not">Why not?</h2>
+
+<p>Maybe you never get it wrong when you compare date and time objects. I do. A lot.</p>
+
+]]></content>
+  </entry>
+  
+</feed>
